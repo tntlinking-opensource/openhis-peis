@@ -1,7 +1,0 @@
-## RabbitMQ 配置
-#spring:
-#  rabbitmq:
-#    host:
-#    port:
-#    username:
-#    password:
