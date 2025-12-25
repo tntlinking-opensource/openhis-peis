@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.center.qingdao.profession.mapper.WfjkMapper">
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getHarmList" resultType="com.center.medical.center.qingdao.profession.entity.dto.HarmDto">
+        SELECT
+            id,
+            harm_name
+        FROM
+            md_harm
+        <where>
+            is_delete = 0
+        </where>
+    </select>
+
+
+
+</mapper>
+

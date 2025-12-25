@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.SamplePersonMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.SamplePerson" id="SamplePersonMap">
+        <id property="id" column="id"/>
+        <result property="ballCheckId" column="ball_check_id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="groupId" column="group_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientId" column="patient_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSamplePersonVo">
+        select id, ball_check_id, patientcode, group_id, createdate, modifydate, patient_id
+        from md_sample_person
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="SamplePersonMap">
+        <include refid="selectSamplePersonVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SamplePersonMap">
+        <include refid="selectSamplePersonVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="loadSamplePersonData" resultType="com.center.medical.bean.vo.SamplePersonVo">
+        SELECT
+            p.id,
+            s.group_id,
+            s.patientcode,
+            s.ball_check_id,
+            p.f_examstarted,
+            p.f_finalexamed,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.org_name,
+            p.org_depart,
+            p.jktjzt,
+            p.zytjzt,
+            s.id AS sampleid,
+            p.f_registered,
+            p.f_readytofinal
+        FROM
+            md_sample_person s
+            LEFT JOIN md_peispatient p ON p.patientcode = s.patientcode
+        <where>
+            <if test="param.groupId !=null">
+                s.group_id = #{param.groupId}
+            </if>
+            <if test="param.reportId !=null">
+                AND s.ball_check_id = #{param.reportId}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND s.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByCriteria">
+        delete from md_sample_person
+        <where>
+            <if test="reportId != null and reportId!=''">
+                AND ball_check_id = #{reportId}
+            </if>
+            <if test="groupId != null and groupId!=''">
+                AND group_id = #{groupId}
+            </if>
+        </where>
+    </delete>
+    
+    <select id="getListByBallCheckId" resultMap="SamplePersonMap">
+        <include refid="selectSamplePersonVo"/>
+        <where>
+            ball_check_id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

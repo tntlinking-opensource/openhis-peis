@@ -1,0 +1,33 @@
+package com.center.medical.dao;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.center.medical.bean.model.TjbbXyjc;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.center.medical.common.utils.page.PageParam;
+import org.apache.ibatis.annotations.Param;
+
+/**
+ * KS血压检测(TjbbXyjc)表数据库访问层
+ *
+ * @author 路飞船长
+ * @since 2022-11-08 18:33:27
+ */
+public interface TjbbXyjcMapper extends BaseMapper<TjbbXyjc> {
+
+    /**
+     * 分页查询[KS血压检测]列表
+     *
+     * @param page  分页参数
+     * @param param TjbbXyjc查询参数
+     * @return 分页数据
+     */
+    IPage<TjbbXyjc> getList(PageParam<TjbbXyjc> page, @Param("param") TjbbXyjc param);
+
+    /**
+     * 根据主键id获取记录详情
+     *
+     * @param id id主键
+     */
+    TjbbXyjc getInfoById(@Param("id") String id);
+
+}

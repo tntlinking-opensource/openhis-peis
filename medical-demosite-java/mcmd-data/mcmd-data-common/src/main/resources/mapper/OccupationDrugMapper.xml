@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.OccupationDrugMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.OccupationDrug" id="OccupationDrugMap">
+        <id property="id" column="id"/>
+        <result property="harmId" column="harm_id"/>
+        <result property="poststage" column="poststage"/>
+        <result property="industrialDisease" column="industrial_disease"/>
+        <result property="contraindication" column="contraindication"/>
+        <result property="keyword" column="keyword"/>
+        <result property="diagnosis" column="diagnosis"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOccupationDrugVo">
+        select id,
+               harm_id,
+               poststage,
+               industrial_disease,
+               contraindication,
+               keyword,
+               diagnosis,
+               createdate,
+               modifydate,
+               is_public,
+               fzx_ids
+        from md_occupation_drug
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.data.bean.model.OccupationDrug">
+        SELECT
+        d.id,
+        d.harm_id,
+        h.harm_name,
+        d.poststage,
+        d.keyword,
+        d.diagnosis,
+        d.industrial_disease,
+        d.contraindication,
+        CASE WHEN d.is_public=1 THEN '公共' ELSE (SELECT fzx FROM sys_branch b WHERE b.id=d.fzx_ids) end fzx
+        FROM md_occupation_drug D
+        LEFT JOIN md_harm h ON h.id = d.harm_id
+        WHERE 1 = 1
+        <if test="param.harmId!=null and param.harmId!=''">
+            AND d.harm_id = #{param.harmId}
+        </if>
+        ORDER BY h.harm_name
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.data.bean.model.OccupationDrug">
+        select modi.id,
+        modi.harm_id,
+        modi.poststage,
+        modi.industrial_disease,
+        modi.contraindication,
+        modi.keyword,
+        modi.diagnosis,
+        modi.createdate,
+        modi.modifydate,
+        modi.is_public,
+        modi.fzx_ids,
+        mh.harm_name
+        from md_occupation_drug modi
+        left join md_harm mh on mh.id = modi.harm_id
+        <where>
+            modi.id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPrictureMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPricture" id="MdPrictureMap">
+        <id property="id" column="id"/>
+        <result property="url" column="url"/>
+        <result property="sectionId" column="section_id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="prictureName" column="pricture_name"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPrictureVo">
+        select id, url, section_id, patientcode, pricture_name, createdate, modifydate
+        from md_pricture
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPrictureMap">
+        <include refid="selectMdPrictureVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPrictureMap">
+        <include refid="selectMdPrictureVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

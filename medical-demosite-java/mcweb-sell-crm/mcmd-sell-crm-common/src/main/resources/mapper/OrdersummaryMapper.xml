@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.OrdersummaryMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Ordersummary" id="OrdersummaryMap">
+        <id property="id" column="id"/>
+        <result property="ddid" column="ddid"/>
+        <result property="ddmc" column="ddmc"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="zj" column="zj"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrdersummaryVo">
+        select id,
+               ddid,
+               ddmc,
+               khdwmc,
+               xsjl,
+               zj,
+               xsjlid,
+               fzxid,
+               is_delete,
+               createdate,
+               modifydate
+        from md_ordersummary
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrdersummaryMap">
+        <include refid="selectOrdersummaryVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.ddmc!=null and param.ddmc!=''">
+                AND ddmc LIKE concat('%',#{param.ddmc},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.xsjlid!=null">
+                AND xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.branchIds!=null">
+                AND fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrdersummaryMap">
+        <include refid="selectOrdersummaryVo"/>
+        <where>
+            is_delete = 0
+            AND id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

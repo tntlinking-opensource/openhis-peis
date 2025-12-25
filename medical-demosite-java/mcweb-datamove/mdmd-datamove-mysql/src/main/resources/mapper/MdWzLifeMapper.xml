@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdWzLifeMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdWzLife" id="MdWzLifeMap">
+        <id property="id" column="id"/>
+        <result property="djls" column="djls"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="amount" column="amount"/>
+        <result property="id1" column="id1"/>
+        <result property="createDate" column="create_date"/>
+        <result property="cqshdq" column="cqshdq"/>
+        <result property="ysxg" column="ysxg"/>
+        <result property="qjxg" column="qjxg"/>
+        <result property="xgtz" column="xgtz"/>
+        <result property="jszk" column="jszk"/>
+        <result property="dfb" column="dfb"/>
+        <result property="yqshs" column="yqshs"/>
+        <result property="ywlyqk" column="ywlyqk"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="remark" column="remark"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdWzLifeVo">
+        select id,
+               djls,
+               patientcode,
+               amount,
+               id1,
+               create_date,
+               cqshdq,
+               ysxg,
+               qjxg,
+               xgtz,
+               jszk,
+               dfb,
+               yqshs,
+               ywlyqk,
+               db_user,
+               remark,
+               create_id,
+               modify_id,
+               createdate,
+               modifydate
+        from md_wz_life
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdWzLifeMap">
+        <include refid="selectMdWzLifeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdWzLifeMap">
+        <include refid="selectMdWzLifeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

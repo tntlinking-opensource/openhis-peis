@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdUserMappingSysMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdUserMappingSys" id="MdUserMappingSysMap">
+        <id property="systemId" column="system_id"/>
+        <result property="name" column="name"/>
+        <result property="ramark" column="ramark"/>
+        <result property="publicKey" column="public_key"/>
+        <result property="privateKey" column="private_key"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdUserMappingSysVo">
+        select system_id,
+               name,
+               ramark,
+               public_key,
+               private_key,
+               status,
+               createdate,
+               modifydate
+        from md_user_mapping_sys
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdUserMappingSysMap">
+        <include refid="selectMdUserMappingSysVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdUserMappingSysMap">
+        <include refid="selectMdUserMappingSysVo"/>
+        <where>
+            systemId = #{id}
+        </where>
+    </select>
+
+</mapper>
+

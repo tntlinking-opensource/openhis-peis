@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPeisOlMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPeisOl" id="MdPeisOlMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientbizno" column="patientbizno"/>
+        <result property="orgDepartsubc" column="org_departsubc"/>
+        <result property="orgDepartsubd" column="org_departsubd"/>
+        <result property="orgDepartsube" column="org_departsube"/>
+        <result property="ageofreal" column="ageofreal"/>
+        <result property="idDoctorconclusion" column="id_doctorconclusion"/>
+        <result property="wechatCode" column="wechat_code"/>
+        <result property="isWechatNoticed" column="is_wechat_noticed"/>
+        <result property="wechatNoticeType" column="wechat_notice_type"/>
+        <result property="wechatNoticeTime" column="wechat_notice_time"/>
+        <result property="wechatNoticeFailedCount" column="wechat_notice_failed_count"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPeisOlVo">
+        select id,
+               createdate,
+               modifydate,
+               patientbizno,
+               org_departsubc,
+               org_departsubd,
+               org_departsube,
+               ageofreal,
+               id_doctorconclusion,
+               wechat_code,
+               is_wechat_noticed,
+               wechat_notice_type,
+               wechat_notice_time,
+               wechat_notice_failed_count
+        from md_peis_ol
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPeisOlMap">
+        <include refid="selectMdPeisOlVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPeisOlMap">
+        <include refid="selectMdPeisOlVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

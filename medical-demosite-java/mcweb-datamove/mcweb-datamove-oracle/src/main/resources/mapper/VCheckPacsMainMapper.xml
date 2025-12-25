@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.VCheckPacsMainMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.VCheckPacsMain" id="VCheckPacsMainMap">
+        <id property="checkreqid" column="CheckReqID"/>
+        <result property="checkregno" column="CheckRegNo"/>
+        <result property="checkregdate" column="CheckRegDate"/>
+        <result property="checkdate" column="CheckDate"/>
+        <result property="checkdoctorcode" column="CheckDoctorCode"/>
+        <result property="checkdoctorname" column="CheckDoctorName"/>
+        <result property="reportno" column="ReportNo"/>
+        <result property="reprtdate" column="ReprtDate"/>
+        <result property="reportdoctorcode" column="ReportDoctorCode"/>
+        <result property="reprtdoctorname" column="ReprtDoctorName"/>
+        <result property="patientname" column="PatientName"/>
+        <result property="sex" column="Sex"/>
+        <result property="itemcode" column="ItemCode"/>
+        <result property="itemname" column="ItemName"/>
+        <result property="departname" column="DepartName"/>
+        <result property="doctorname" column="DoctorName"/>
+        <result property="checkreqtypecode" column="CheckReqTypeCode"/>
+        <result property="checkpartname" column="CheckPartName"/>
+        <result property="imagediag" column="ImageDiag"/>
+        <result property="imageresult" column="ImageResult"/>
+        <result property="checkresult" column="CheckResult"/>
+        <result property="checkdesc" column="CheckDesc"/>
+        <result property="otherdesc" column="OtherDesc"/>
+        <result property="reportpath" column="ReportPath"/>
+        <result property="imagepath" column="ImagePath"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectVCheckPacsMainVo">
+        select CheckReqID,
+               CheckRegNo,
+               CheckRegDate,
+               CheckDate,
+               CheckDoctorCode,
+               CheckDoctorName,
+               ReportNo,
+               ReprtDate,
+               ReportDoctorCode,
+               ReprtDoctorName,
+               PatientName,
+               Sex,
+               ItemCode,
+               ItemName,
+               DepartName,
+               DoctorName,
+               CheckReqTypeCode,
+               CheckPartName,
+               ImageDiag,
+               ImageResult,
+               CheckResult,
+               CheckDesc,
+               OtherDesc,
+               ReportPath,
+               ImagePath
+        from v_Check_PACS_Main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="VCheckPacsMainMap">
+        <include refid="selectVCheckPacsMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="VCheckPacsMainMap">
+        <include refid="selectVCheckPacsMainVo"/>
+        <where>
+            checkreqid = #{id}
+        </where>
+    </select>
+
+</mapper>
+

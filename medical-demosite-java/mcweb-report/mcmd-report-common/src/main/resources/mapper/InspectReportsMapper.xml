@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.InspectReportsMapper">
+
+    <resultMap type="com.center.medical.bean.model.InspectReport" id="InspectReportMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="printTime" column="print_time"/>
+        <result property="printCount" column="print_count"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectInspectReportVo">
+        select id, createdate, modifydate, patientcode, print_time, print_count
+        from md_inspect_report
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.report.bean.vo.IRPageVo">
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.dateregister,
+        p.age,
+        ir.print_count,
+        ir.print_time,
+        p.id_examtype
+        FROM
+        md_peispatient p
+        LEFT JOIN md_inspect_report ir ON ir.patientcode = p.patientcode
+        <where>
+            p.f_registered = 1
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            md_peispatientfeeitem pi
+            WHERE
+            p.patientcode = pi.id_patient
+            AND pi.id_ks = '19'
+            AND pi.f_giveup = 0
+            AND ( pi.sfjj IS NULL OR pi.sfjj = 0 )
+            AND pi.change_item = 0
+            AND pi.f_feecharged = 1
+            AND pi.f_transferedhl7 IS NULL
+            )
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND instr(p.patientcode,#{param.patientcode})>0
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND instr(p.patientname,#{param.patientname})>0
+            </if>
+            <if test="param.printStatus!=null">
+                <choose>
+                    <when test="param.printStatus == 1">
+                        AND ir.print_count > 0
+                    </when>
+                    <otherwise>
+                        AND ( ir.print_count IS NULL OR ir.print_count = 0)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY p.patientcode DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="InspectReportMap">
+        <include refid="selectInspectReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取右侧详情 -->
+    <select id="getInfoListData" resultType="com.center.medical.report.bean.vo.InfoListDataVo">
+        SELECT pei.examitem_nameprn,
+               pei.examitemvaluesreport,
+               pei.refrange,
+               pei.units,
+               pei.lisybbh
+        FROM md_peispatientexamitem pei
+                 INNER JOIN md_items i ON i.id = pei.id_examfeeitem
+                 INNER JOIN md_inspect_charge c ON c.charge_id = i.id
+            AND c.inspect_id = pei.id_examitem
+            AND c.is_delete = 0
+                 INNER JOIN md_basexamltem e ON e.id = pei.id_examitem
+                 LEFT JOIN md_yblx yb ON yb.id = i.id_labtype
+        WHERE pei.patientcode = #{patientcode}
+        ORDER BY e.disporder DESC
+    </select>
+
+
+    <!-- 获取检验报告数据 -->
+    <select id="findInfoSql" resultType="com.center.medical.report.bean.dto.InfoSqlDto">
+        SELECT pei.examitem_nameprn,
+               pei.examitemvaluesreport,
+               pei.refrange,
+               pei.units,
+               pei.lisybbh,
+               pei.audit_date,
+               pei.receive_date,
+               pei.audit_name,
+               pei.inspect_name,
+               e.examitem_nameeng,
+               pei.status
+        FROM md_peispatientexamitem pei
+                 INNER JOIN md_items i ON i.id = pei.id_examfeeitem
+                 INNER JOIN md_inspect_charge c ON c.charge_id = i.id
+            AND c.inspect_id = pei.id_examitem
+            AND c.is_delete = 0
+                 INNER JOIN md_basexamltem e ON e.id = pei.id_examitem
+                 LEFT JOIN md_yblx yb ON yb.id = i.id_labtype
+        WHERE pei.patientcode = #{patientcode}
+        ORDER BY e.disporder DESC
+    </select>
+</mapper>
+

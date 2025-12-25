@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.ConclusionAndFzxMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.ConclusionAndFzx" id="ConclusionAndFzxMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="conclusionId" column="conclusion_id"/>
+        <result property="fzxId" column="fzx_id"/>
+        <result property="tbzt" column="tbzt"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectConclusionAndFzxVo">
+        select id, createdate, modifydate, conclusion_id, fzx_id, tbzt
+        from md_conclusion_and_fzx
+    </sql>
+    <insert id="addWithBrandId">
+        INSERT INTO md_conclusion_and_fzx (id, conclusion_id, fzx_id, tbzt, createdate, modifydate)
+        SELECT UPPER(REPLACE(UUID(), '-', '')),
+               id,
+               #{branchId},
+               0,
+               NOW(),
+               NOW()
+        FROM md_basconclusion
+        WHERE is_public = 1
+    </insert>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="ConclusionAndFzxMap">
+        <include refid="selectConclusionAndFzxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ConclusionAndFzxMap">
+        <include refid="selectConclusionAndFzxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

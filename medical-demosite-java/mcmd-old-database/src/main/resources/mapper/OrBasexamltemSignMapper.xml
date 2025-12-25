@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrBasexamltemSignMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.OrBasexamltemSign" id="BasexamltemSignMap">
+        <id property="id" column="ID"/>
+        <result property="inspectId" column="INSPECT_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="resultId" column="RESULT_ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isInSummary" column="IS_IN_SUMMARY"/>
+        <result property="bodyInputCode" column="BODY_INPUT_CODE"/>
+        <result property="bodyDetail" column="BODY_DETAIL"/>
+        <result property="bodyDetailZy" column="BODY_DETAIL_ZY"/>
+        <result property="intensiveLevel" column="INTENSIVE_LEVEL"/>
+        <result property="otherMutex" column="OTHER_MUTEX"/>
+        <result property="numMutex" column="NUM_MUTEX"/>
+        <result property="isPositive" column="IS_POSITIVE"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isDefault" column="IS_DEFAULT"/>
+        <result property="orderindex" column="ORDERINDEX"/>
+        <result property="isInput" column="IS_INPUT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBasexamltemSignVo">
+        select ID,
+               INSPECT_ID,
+               NAME,
+               RESULT_ID,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_IN_SUMMARY,
+               BODY_INPUT_CODE,
+               BODY_DETAIL,
+               BODY_DETAIL_ZY,
+               INTENSIVE_LEVEL,
+               OTHER_MUTEX,
+               NUM_MUTEX,
+               IS_POSITIVE,
+               INPUT_CODE,
+               IS_DELETE,
+               IS_DEFAULT,
+               ORDERINDEX,
+               IS_INPUT
+        from BASEXAMLTEM_SIGN
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="BasexamltemSignMap">
+        <include refid="selectBasexamltemSignVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BasexamltemSignMap">
+        <include refid="selectBasexamltemSignVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

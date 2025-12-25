@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.pacslis.dao.PacsInterfaceMapper">
+    <select id="selectItemList" resultType="com.center.medical.pacslis.bean.dto.PacsItemDto">
+        select
+            i.id_examfeeitem,
+            t.examfeeitem_code,
+            i.id_ks,
+            i.id,
+            t.examfeeitem_name,
+            t.examfeeitem_nameprn
+        from md_peispatientfeeitem i
+        inner join md_items t on t.id=i.id_examfeeitem
+        inner join sys_dept d on d.dept_no=i.id_ks
+        where
+        <if test="deptNos!=null">
+            d.dept_no IN
+            <foreach collection="deptNos" item="deptNo" open="(" close=")" separator=",">
+                #{deptNo}
+            </foreach>
+        </if>
+        <if test="deptNos==null">
+            d.ks_type=1
+        </if>
+        and i.id_patient =#{patientcode}
+        and (i.f_giveup is null or i.f_giveup=0)
+        and (i.sfjj is null or i.sfjj=0)
+        and (i.change_item is null or i.change_item=0)
+        and i.f_feecharged=1
+        and i.f_transferedhl7 is null
+        order by i.id_ks,t.xh
+    </select>
+
+    <select id="receivePacsDataUser" resultType="java.lang.String">
+        SELECT
+        i.id_patient
+        FROM
+        md_peispatientfeeitem i
+        INNER JOIN md_items t ON t.id = i.id_examfeeitem
+        INNER JOIN sys_dept d ON d.dept_no = i.id_ks
+        INNER JOIN md_peispatient p ON p.patientcode = i.id_patient
+        WHERE
+        <if test="deptNos!=null">
+            d.dept_no IN
+            <foreach collection="deptNos" item="deptNo" open="(" close=")" separator=",">
+                #{deptNo}
+            </foreach>
+        </if>
+        <if test="deptNos==null">
+            d.ks_type=1
+        </if>
+        <if test="daysAgo != null and daysAgo >= 0">
+            AND p.modifydate <![CDATA[ >= ]]> DATE (
+            subdate( now(), INTERVAL #{daysAgo} DAY ))
+        </if>
+        AND ( i.f_giveup IS NULL OR i.f_giveup = 0 )
+        AND ( i.sfjj IS NULL OR i.sfjj = 0 )
+        AND ( i.change_item IS NULL OR i.change_item = 0 )
+        AND i.f_transferedhl7 IS NULL
+        AND i.f_feecharged = 1
+        AND ( p.f_paused IS NULL OR p.f_paused != 1 )
+        AND ( i.f_examinated IS NULL OR i.f_examinated = 0 )
+        AND p.f_registered = 1
+        AND ((
+        p.jktjzt IS NULL
+        OR p.jktjzt = 0
+        )
+        AND ( p.zytjzt IS NULL OR p.zytjzt = 0 ))
+        AND ( p.f_finallocked IS NULL OR p.f_finallocked != 1 )
+        AND ( p.id_Guidenurse IS NULL OR p.id_Guidenurse != 1 )
+        GROUP BY
+        i.id_patient
+        ORDER BY
+        i.id_patient DESC
+    </select>
+</mapper>

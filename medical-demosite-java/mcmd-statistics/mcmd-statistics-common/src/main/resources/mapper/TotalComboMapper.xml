@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.TotalComboMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.TotalComboVo">
+        SELECT
+            STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS combo0,
+            p.examsuite_name AS combo1,
+            count( 1 ) AS combo2,
+            IFNULL ( m.zhjg, c.zhjg ) AS tcyhj,
+            (count( 1 )* IFNULL ( m.zhjg, c.zhjg )) AS yhtshj,
+            sum( CASE WHEN p.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS combo5,
+            count( DISTINCT ( CASE WHEN p.f_usecodehiden = 1 THEN p.id_org ELSE NULL END ) ) AS combo6
+        FROM
+            md_peispatient p
+                LEFT JOIN md_createmeal m ON m.id = p.id_tjtc
+                LEFT JOIN md_createcombo c ON c.id = p.id_tjtc
+        <where>
+            p.examsuite_name IS NOT NULL
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.examsuite_name LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.tjtcsrm!=null and param.tjtcsrm!=''">
+                AND (m.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%')
+                OR c.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%') )
+            </if>
+        </where>
+        GROUP BY
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ),
+        p.examsuite_name,
+        m.zhjg,
+        c.zhjg
+        ORDER BY
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ),
+        p.examsuite_name
+    </select>
+
+
+    <!-- 导出体检套餐统计 -->
+    <select id="getExportData" resultType="com.center.medical.statistics.bean.vo.TotalComboVo">
+        SELECT
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS combo0,
+        p.examsuite_name AS combo1,
+        count( 1 ) AS combo2,
+        IFNULL ( m.zhjg, c.zhjg ) AS tcyhj,
+        (count( 1 )* IFNULL ( m.zhjg, c.zhjg )) AS yhtshj,
+        sum( CASE WHEN p.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS combo5,
+        count( DISTINCT ( CASE WHEN p.f_usecodehiden = 1 THEN p.id_org ELSE NULL END ) ) AS combo6
+        FROM
+        md_peispatient p
+        LEFT JOIN md_createmeal m ON m.id = p.id_tjtc
+        LEFT JOIN md_createcombo c ON c.id = p.id_tjtc
+        <where>
+            p.examsuite_name IS NOT NULL
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.examsuite_name LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.tjtcsrm!=null and param.tjtcsrm!=''">
+                AND (m.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%')
+                OR c.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%') )
+            </if>
+        </where>
+        GROUP BY
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ),
+        p.examsuite_name,
+        m.zhjg,
+        c.zhjg
+        ORDER BY
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ),
+        p.examsuite_name
+    </select>
+
+</mapper>
+

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.SectionTotalMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.SectionTotal" id="SectionTotalMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="totalTime" column="total_time"/>
+        <result property="writeId" column="write_id"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="summarize" column="summarize"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="offer" column="offer"/>
+        <result property="verdict" column="verdict"/>
+        <result property="posistive" column="posistive"/>
+        <result property="jkoffer" column="jkoffer"/>
+        <result property="scbs" column="scbs"/>
+        <result property="reportConclusions" column="report_conclusions"/>
+        <result property="summaryId" column="summary_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionTotalVo">
+        select id,
+               patientcode,
+               createdate,
+               modifydate,
+               doctor_id,
+               total_time,
+               write_id,
+               write_time,
+               summarize,
+               disease_health,
+               is_delete,
+               offer,
+               verdict,
+               posistive,
+               jkoffer,
+               scbs,
+               report_conclusions,
+               summary_id
+        from md_section_total
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SectionTotalMap">
+        <include refid="selectSectionTotalVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionTotalMap">
+        <include refid="selectSectionTotalVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!--获取总检历史记录-->
+    <select id="getHistory" resultType="com.center.medical.report.bean.vo.STHistoryVo">
+        SELECT
+        s.patientcode,
+        s.total_time,
+        s.summarize,
+        s.offer,
+        s.posistive,
+        p.medicaltype,
+        p.org_name
+        FROM
+        md_section_total s
+        INNER JOIN md_peispatient p ON p.patientcode = s.patientcode
+        <where>
+            s.disease_health=#{dh}
+            AND s.id!=#{smId}
+            AND p.patientarchiveno=#{patientarchiveno}
+        </where>
+        ORDER BY s.total_time DESC
+    </select>
+
+
+    <!--分页获取总检历史记录-->
+    <select id="getHistoryData" resultType="com.center.medical.report.bean.vo.STHistoryVo">
+        SELECT
+        s.patientcode,
+        STR_TO_DATE( s.total_time, '%Y-%m-%d' ) as totalTime,
+        s.summarize,
+        s.offer,
+        s.posistive,
+        p.medicaltype,
+        p.org_name,
+        (case when r.create_num is not null then 1 else 0 end) AS fpdf,
+        r.url_pdf,
+        0 as isOld
+        FROM
+        md_section_total s
+        INNER JOIN md_peispatient p ON p.patientcode = s.patientcode
+        LEFT JOIN md_report r ON r.patientcode = s.patientcode
+        AND r.disease_health = #{dh}
+        <where>
+            s.disease_health = #{dh}
+            AND s.id != #{smId}
+            AND p.patientarchiveno = #{patientarchiveno}
+        </where>
+        ORDER BY
+        s.total_time DESC
+    </select>
+
+
+
+    <!--查询mysql历史数据-->
+    <select id="getMysqlHistoryData" resultType="com.center.medical.report.bean.vo.STHistoryVo">
+        SELECT
+        s.patientcode,
+        STR_TO_DATE( s.total_time, '%Y-%m-%d' ) as totalTime,
+        s.summarize,
+        s.offer,
+        s.posistive,
+        p.medicaltype,
+        p.org_name,
+        (case when r.create_num is not null then 1 else 0 end) AS fpdf,
+        r.url_pdf,
+        0 as isOld
+        FROM
+        md_section_total s
+        INNER JOIN md_peispatient p ON p.patientcode = s.patientcode
+        LEFT JOIN md_report r ON r.patientcode = s.patientcode
+        AND r.disease_health = #{dh}
+        <where>
+            s.disease_health = #{dh}
+            AND s.id != #{smId}
+            AND p.patientarchiveno = #{patientarchiveno}
+        </where>
+        ORDER BY
+        s.total_time DESC
+    </select>
+
+
+    <!--查询oracle历史数据-->
+    <select id="getOracleHistoryData" resultType="com.center.medical.report.bean.vo.STHistoryVo">
+        SELECT
+        s.patientcode,
+        to_char ( s.total_time, 'yyyy-mm-dd') as totalTime,
+        s.summarize,
+        s.offer,
+        s.posistive,
+        p.medicaltype,
+        p.org_name,
+        (case when r.create_num is not null then 1 else 0 end) AS fpdf,
+        r.url_pdf,
+        1 as isOld
+        FROM
+        section_total s
+        INNER JOIN peispatient p ON p.patientcode = s.patientcode
+        LEFT JOIN report r ON r.patientcode = s.patientcode
+        AND r.disease_health = #{dh}
+        <where>
+            s.disease_health = #{dh}
+            AND s.id != #{smId}
+            AND p.idcardno = #{idcardno}
+        </where>
+        ORDER BY
+        s.total_time DESC
+    </select>
+
+
+    <!--查询oracle历史数据-->
+    <select id="getOracleHisHistoryData" resultType="com.center.medical.report.bean.vo.STHistoryVo">
+        SELECT
+        s.patientcode,
+        to_char ( s.total_time, 'yyyy-mm-dd') as totalTime,
+        s.summarize,
+        s.offer,
+        s.posistive,
+        p.medicaltype,
+        p.org_name,
+        (case when r.create_num is not null then 1 else 0 end) AS fpdf,
+        r.url_pdf
+        FROM
+        section_total s
+        INNER JOIN PEISPATIENT_HIS p ON p.patientcode = s.patientcode
+        LEFT JOIN report r ON r.patientcode = s.patientcode
+        AND r.disease_health = #{dh}
+        <where>
+            s.disease_health = #{dh}
+            AND s.id != #{smId}
+            AND p.idcardno = #{idcardno}
+        </where>
+        ORDER BY
+        s.total_time DESC
+    </select>
+</mapper>
+

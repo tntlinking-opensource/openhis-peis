@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.SysVersionItemMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.SysVersionItem" id="SysVersionItemMap">
+        <id property="logId" column="log_id"/>
+        <result property="versionId" column="version_id"/>
+        <result property="sysType" column="sys_type"/>
+        <result property="modifyType" column="modify_type"/>
+        <result property="moduleName" column="module_name"/>
+        <result property="pics" column="pics"/>
+        <result property="content" column="content"/>
+        <result property="priority" column="priority"/>
+        <result property="devCycle" column="dev_cycle"/>
+        <result property="progress" column="progress"/>
+        <result property="remark" column="remark"/>
+        <result property="status" column="status"/>
+        <result property="developer" column="developer"/>
+        <result property="developTime" column="develop_time"/>
+        <result property="tester" column="tester"/>
+        <result property="testTime" column="test_time"/>
+        <result property="proponentId" column="proponent_id"/>
+        <result property="proponent" column="proponent"/>
+        <result property="proposeTime" column="propose_time"/>
+        <result property="confirmerId" column="confirmer_id"/>
+        <result property="confirmer" column="confirmer"/>
+        <result property="comfirmTime" column="comfirm_time"/>
+        <result property="accepterId" column="accepter_id"/>
+        <result property="accepter" column="accepter"/>
+        <result property="acceptTime" column="accept_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="finishTime" column="finish_time"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysVersionItemVo">
+        select log_id,
+               version_id,
+               sys_type,
+               modify_type,
+               module_name,
+               pics,
+               content,
+               priority,
+               dev_cycle,
+               progress,
+               remark,
+               status,
+               developer,
+               develop_time,
+               tester,
+               test_time,
+               proponent_id,
+               proponent,
+               propose_time,
+               confirmer_id,
+               confirmer,
+               comfirm_time,
+               accepter_id,
+               accepter,
+               accept_time,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               finish_time
+        from sys_version_item
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysVersionItemMap">
+        <include refid="selectSysVersionItemVo"/>
+        <where>
+            <if test="param.versionId!=null">
+                AND version_id = #{param.versionId}
+            </if>
+            <if test="param.moduleName!=null and param.moduleName!=''">
+                AND module_name LIKE concat('%',#{param.moduleName},'%')
+            </if>
+            <if test="param.sysType!=null">
+                AND sys_type = #{param.sysType}
+            </if>
+            <if test="param.modifyType!=null">
+                AND modify_type = #{param.modifyType}
+            </if>
+            <if test="param.priority!=null">
+                AND priority = #{param.priority}
+            </if>
+            <if test="param.progress!=null">
+                AND progress = #{param.progress}
+            </if>
+            <if test="param.proponent!=null and param.proponent!=''">
+                AND proponent LIKE concat('%',#{param.proponent},'%')
+            </if>
+            <if test="param.status!=null">
+                AND status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysVersionItemMap">
+        <include refid="selectSysVersionItemVo"/>
+        <where>
+            log_id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

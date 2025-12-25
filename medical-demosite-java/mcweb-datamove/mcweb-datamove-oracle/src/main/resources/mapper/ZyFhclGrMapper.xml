@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ZyFhclGrMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ZyFhclGr" id="ZyFhclGrMap">
+        <id property="id" column="ID"/>
+        <result property="defendIndividualCode" column="DEFEND_INDIVIDUAL_CODE"/>
+        <result property="defendIndividual" column="DEFEND_INDIVIDUAL"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="defendIndividualClass" column="DEFEND_INDIVIDUAL_CLASS"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="grId" column="GR_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectZyFhclGrVo">
+        select ID,
+               DEFEND_INDIVIDUAL_CODE,
+               DEFEND_INDIVIDUAL,
+               INPUT_CODE,
+               DB_USER,
+               DEFEND_INDIVIDUAL_CLASS,
+               CREATEDATE,
+               MODIFYDATE,
+               GR_ID,
+               IS_DELETE
+        from ZY_FHCL_GR
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ZyFhclGrMap">
+        <include refid="selectZyFhclGrVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ZyFhclGrMap">
+        <include refid="selectZyFhclGrVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

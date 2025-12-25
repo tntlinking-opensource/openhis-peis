@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.TjbbXyjcMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.TjbbXyjc" id="TjbbXyjcMap">
+        <id property="id" column="ID"/>
+        <result property="xh" column="XH"/>
+        <result property="xyjc" column="XYJC"/>
+        <result property="ckfwSsy" column="CKFW_SSY"/>
+        <result property="ckfwSzy" column="CKFW_SZY"/>
+        <result property="valueMinSsy" column="VALUE_MIN_SSY"/>
+        <result property="valueMaxSsy" column="VALUE_MAX_SSY"/>
+        <result property="valueMinSzy" column="VALUE_MIN_SZY"/>
+        <result property="valueMaxSzy" column="VALUE_MAX_SZY"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectTjbbXyjcVo">
+        select XH,
+               XYJC,
+               CKFW_SSY,
+               CKFW_SZY,
+               VALUE_MIN_SSY,
+               VALUE_MAX_SSY,
+               VALUE_MIN_SZY,
+               VALUE_MAX_SZY,
+               CREATE_ID,
+               MODIFY_ID,
+               ID,
+               PATIENTCODE,
+               CREATEDATE,
+               MODIFYDATE
+        from TJBB_XYJC
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="TjbbXyjcMap">
+        <include refid="selectTjbbXyjcVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="TjbbXyjcMap">
+        <include refid="selectTjbbXyjcVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.FamilyMemberMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientarchiveVo">
+        select id,
+               id_patientarchive,
+               patientarchiveno,
+               patientcardno,
+               idcardno,
+               patientname,
+               input_code,
+               id_sex,
+               sex,
+               age,
+               agebasedate,
+               birthdate,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               phone,
+               id_education,
+               education,
+               id_occupation,
+               occupation,
+               id_resarea,
+               resarea,
+               dateregister,
+               note,
+               ishmd,
+               hmdbz,
+               restatus,
+               yjgzbj,
+               memberlevel,
+               createdate,
+               modifydate,
+               cultural,
+               is_org,
+               membercreate,
+               khjl,
+               jf,
+               fzx,
+               dw,
+               is_delete,
+               countreportoccupationxml,
+               is_main,
+               source,
+               old_card
+        from md_peispatientarchive
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.member.bean.vo.FamilyMemberVo">
+        SELECT
+            a.patientcardno,
+            a.patientname,
+            c.balance_jf,
+            c.balance_money,
+            a.id_sex,
+            a.phone,
+            a.birthdate,
+            a.idcardno,
+            a.dw,
+            b.fzx,
+            pt.patient_name AS patientclass,
+            ct.type_name,
+            a.is_main,
+            a.patientarchiveno,
+            a.id
+        FROM
+            md_peispatientarchive a
+                INNER JOIN md_card c ON c.card_no = a.patientcardno
+                INNER JOIN md_card_type ct ON ct.id = c.type_id
+                LEFT JOIN sys_branch b ON b.id = a.fzx
+                LEFT JOIN md_patienttype pt ON pt.id = a.memberlevel
+                LEFT JOIN md_family_card_charge fcc ON c.card_no = fcc.cardno
+        <where>
+            c.type_id = #{param.card}
+            AND (c.is_delete IS NULL
+            OR c.is_delete = 0)
+            <if test="param.fzx!=null and param.fzx!=''">
+                AND a.fzx = #{param.fzx}
+            </if>
+            <if test="param.cardno!=null and param.cardno!=''">
+                AND a.patientcardno LIKE concat('%',#{param.cardno},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND a.idcardno LIKE concat('%',#{param.idcardno},'%')
+            </if>
+            <if test="param.startMoney!=null and param.startMoney!=''">
+                AND c.balance_money <![CDATA[ >= ]]> #{param.startMoney}
+            </if>
+            <if test="param.endMoney!=null and param.endMoney!=''">
+                AND c.balance_money <![CDATA[ <= ]]> #{param.endMoney}
+            </if>
+        </where>
+        GROUP BY a.idcardno
+        ORDER BY c.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatientarchive">
+        <include refid="selectPeispatientarchiveVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 家庭会员-家庭卡消费查询 -->
+    <select id="familyCardList" resultType="java.lang.String">
+        SELECT
+            c.id
+        FROM
+            md_card c
+        <where>
+            c.type_id = #{param.card}
+            <if test="param.cardno!=null and param.cardno!=''">
+                AND c.card_no = #{param.cardno}
+            </if>
+            <if test="param.idcardno!=null or param.phone!=null">
+                AND EXISTS(SELECT 1 FROM md_peispatientarchive a
+                WHERE a.patientcardno = c.card_no
+                <if test="param.phone!=null and param.phone!=''">
+                    AND a.phone = #{param.phone}
+                </if>
+                <if test="param.idcardno!=null and param.idcardno!=''">
+                    AND a.idcardno = #{param.idcardno}
+                </if>
+                )
+            </if>
+        </where>
+    </select>
+
+
+
+    <!-- 家庭会员-家庭卡消费查询 -->
+    <select id="familyChargeData" resultType="com.center.medical.member.bean.vo.FamilyChargeVo">
+        SELECT
+            fcc.cardno AS patientcardno,
+            fcc.type,
+            STR_TO_DATE( fcc.charge_time, '%Y-%m-%d %T' ) AS chargeTime,
+            fcc.money,
+            fcc.jf,
+            dpp.payway_name,
+            skr.user_name AS bkr,
+            a.patientname,
+            a.is_main,
+            p.patientcode,
+            fcc.end_money,
+            fcc.end_jf,
+            fcc.note AS kbz,
+            fcc.consumetype,
+            c.balance_money
+        FROM
+            md_family_card_charge fcc
+                LEFT JOIN md_peispatient p ON p.patientcode = fcc.patientcode
+                LEFT JOIN md_peispatientarchive a ON a.id = p.id_cis
+                LEFT JOIN md_card c ON c.card_no = fcc.cardno
+                LEFT JOIN sys_user skr ON skr.user_no = c.sell_id
+                LEFT JOIN md_dictpayway dpp ON dpp.id = fcc.id_payway
+        <where>
+            1 = 1
+            <if test="param.cardno!=null and param.cardno!=''">
+                AND fcc.cardno LIKE concat('%',#{param.cardno},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+
+            <if test="param.consumetype!=null and param.consumetype!=''">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND (fcc.consumetype = #{param.consumetype} OR fcc.consumetype IS NULL)
+                    </when>
+                    <otherwise>
+                        AND fcc.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND a.idcardno LIKE concat('%',#{param.idcardno},'%')
+            </if>
+
+            <if test="param.type!=null and param.type!=''">
+                <choose>
+                    <when test="param.type == 0">
+                        AND fcc.type IN (0,2)
+                    </when>
+                    <when test="param.type == 1">
+                        AND fcc.type = 1
+                    </when>
+                </choose>
+            </if>
+
+            <if test="param.startTime!=null">
+                AND fcc.charge_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND fcc.charge_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startMoney!=null and param.startMoney!=''">
+                AND c.balance_money <![CDATA[ >= ]]> #{param.startMoney}
+            </if>
+            <if test="param.endMoney!=null and param.endMoney!=''">
+                AND c.balance_money <![CDATA[ <= ]]> #{param.endMoney}
+            </if>
+        </where>
+        ORDER BY fcc.charge_time DESC
+    </select>
+
+
+
+    <!-- 导出家庭卡消费记录数据 -->
+    <select id="chargeExportData" resultType="com.center.medical.member.bean.vo.FamilyChargeVo">
+        SELECT
+        row_number() over(order by fcc.charge_time) as rownum,
+        fcc.cardno AS patientcardno,
+        fcc.type,
+        STR_TO_DATE( fcc.charge_time, '%Y-%m-%d %T' ) AS chargeTime,
+        fcc.money,
+        fcc.jf,
+        dpp.payway_name,
+        skr.user_name AS bkr,
+        a.patientname,
+        a.is_main,
+        p.patientcode,
+        fcc.end_money,
+        fcc.end_jf,
+        fcc.note AS kbz,
+        fcc.consumetype
+        FROM
+        md_family_card_charge fcc
+        LEFT JOIN md_peispatient p ON p.patientcode = fcc.patientcode
+        LEFT JOIN md_peispatientarchive a ON a.id = p.id_cis
+        LEFT JOIN md_card c ON c.card_no = fcc.cardno
+        LEFT JOIN sys_user skr ON skr.user_no = c.sell_id
+        LEFT JOIN md_dictpayway dpp ON dpp.id = fcc.id_payway
+        <where>
+            1 = 1
+            <if test="param.cardno!=null and param.cardno!=''">
+                AND fcc.cardno LIKE concat('%',#{param.cardno},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+
+            <if test="param.consumetype!=null and param.consumetype!=''">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND (fcc.consumetype = #{param.consumetype} OR fcc.consumetype IS NULL)
+                    </when>
+                    <otherwise>
+                        AND fcc.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND a.idcardno LIKE concat('%',#{param.idcardno},'%')
+            </if>
+
+            <if test="param.type!=null and param.type!=''">
+                <choose>
+                    <when test="param.type == 0">
+                        AND fcc.type IN (0,2)
+                    </when>
+                    <when test="param.type == 1">
+                        AND fcc.type = 1
+                    </when>
+                </choose>
+            </if>
+
+            <if test="param.startTime!=null">
+                AND fcc.charge_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND fcc.charge_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startMoney!=null and param.startMoney!=''">
+                AND c.balance_money <![CDATA[ >= ]]> #{param.startMoney}
+            </if>
+            <if test="param.endMoney!=null and param.endMoney!=''">
+                AND c.balance_money <![CDATA[ <= ]]> #{param.endMoney}
+            </if>
+        </where>
+        ORDER BY fcc.charge_time DESC
+    </select>
+
+
+
+    <!-- 导出家庭卡消费记录数据 -->
+    <select id="FamilyBirthPage" resultType="com.center.medical.member.bean.vo.FamilyBirthVo">
+        SELECT
+            a.patientcardno,
+            a.patientname,
+            c.balance_jf,
+            c.balance_money,
+            a.id_sex,
+            a.phone,
+            a.birthdate,
+            a.idcardno,
+            a.dw,
+            b.fzx,
+            pt.patient_name AS patientclass ,
+            ct.type_name,
+            a.is_main,
+            a.patientarchiveno,
+            a.id
+        FROM
+            md_peispatientarchive a
+                INNER JOIN md_card c ON c.card_no = a.patientcardno
+                INNER JOIN md_card_type ct ON ct.id = c.type_id
+                LEFT JOIN sys_branch b ON b.id = a.fzx
+                LEFT JOIN md_patienttype pt ON pt.id = a.memberlevel
+        <where>
+            c.type_id = #{param.card}
+            AND ( c.is_delete IS NULL OR c.is_delete = 0 )
+            AND DATE_FORMAT(a.birthdate, '%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(NOW(), '%m-%d')
+            AND DATE_FORMAT(a.birthdate, '%m-%d') <![CDATA[ <= ]]> DATE_FORMAT((NOW() + INTERVAL + 7 DAY),'%m-%d')
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND a.idcardno LIKE concat('%',#{param.idcardno},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 导出家庭卡消费记录数据 -->
+    <select id="getChargeInfoData" resultType="com.center.medical.member.bean.vo.ChargeInfoVo">
+        SELECT
+            cpw.id,
+            cpw.moneyamountpaid,
+            cpw.note,
+            pw.payway_name,
+            cpw.id_payway,
+            u.user_name AS feecharger,
+            STR_TO_DATE( cpw.moneyamountpaiddate, '%Y-%m-%d %T') AS moneyamountpaiddate
+        FROM
+            md_card_payway cpw
+                LEFT JOIN md_dictpayway pw ON pw.id = cpw.id_payway
+                LEFT JOIN sys_user u ON u.user_no = cpw.id_feecharger
+        WHERE
+            cpw.id_charge = #{id}
+        ORDER BY
+            cpw.createdate DESC
+    </select>
+
+
+    <!-- 获取其他家庭成员信息 -->
+    <select id="getInfoListData" resultType="com.center.medical.member.bean.vo.InfoListDataVo">
+        SELECT
+            a.patientarchiveno,
+            a.patientcardno,
+            a.patientname,
+            a.input_code,
+            c.balance_jf,
+            c.balance_money,
+            a.id_sex,
+            a.phone,
+            a.birthdate,
+            a.idcardno,
+            a.dw,
+            b.fzx AS fzxName,
+            pt.patient_name AS levelName,
+            ct.type_name,
+            a.is_main,
+            a.id,
+            a.note,
+            a.fzx,
+            a.memberlevel,
+            a.khjl,
+            u.user_name AS khjlName,
+            a.source,
+            a.createdate
+        FROM
+            md_peispatientarchive a
+                INNER JOIN md_card c ON c.card_no = a.patientcardno
+                INNER JOIN md_card_type ct ON ct.id = c.type_id
+                LEFT JOIN sys_branch b ON b.id = a.fzx
+                LEFT JOIN sys_user u ON u.user_no = a.khjl
+                LEFT JOIN md_patienttype pt ON pt.id = a.memberlevel
+        WHERE
+            a.patientcardno = #{cardno}
+          AND a.is_main = 0
+    </select>
+</mapper>
+

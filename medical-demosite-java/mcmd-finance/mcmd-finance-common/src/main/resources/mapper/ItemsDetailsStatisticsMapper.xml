@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.ItemsDetailsStatisticsMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.ItemsDetailsStatisticsVo">
+        SELECT
+            tem.id,
+            tem.examfeeitem_name,
+            tem.examfeeitemid,
+            tem.createdate,
+            tem.unitprice,
+            tem.costprice,
+            COUNT(t1.id) AS personCount,
+            FORMAT(SUM(t1.factprice), 2) AS factpriceSum,
+            FORMAT(SUM(t1.factprice) / COUNT(t1.id), 2) AS averagePrice,
+            FORMAT((SUM(t1.factprice) / COUNT(t1.id)) /tem.unitprice, 2) asAverageDiscount
+        FROM
+            (SELECT id, examfeeitem_name, examfeeitemid, createdate, unitprice, costprice
+             FROM md_items
+             <where>
+                 <if test="param.createdate!=null">
+                     AND createdate > #{param.createdate}
+                 </if>
+                 <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                     AND examfeeitem_name like concat('%',#{param.examfeeitemName},'%')
+                 </if>
+             </where>
+             ) tem
+                LEFT JOIN md_peispatientfeeitem t1 ON t1.id_examfeeitem = tem.id
+                LEFT JOIN md_peispatient t2 ON t1.id_patient = t2.patientcode
+        <where>
+            t2.f_registered = 1
+            AND t1.f_registered = 1
+            AND t1.f_feecharged = 1
+            AND t1.f_mark_feereturn != 1
+            <if test="param.branchIds!=null">
+                AND t2.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+            tem.id, tem.examfeeitem_name, tem.examfeeitemid, tem.createdate, tem.unitprice, tem.costprice
+    </select>
+
+
+    <!-- 导出报告信息 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.ItemsDetailsStatisticsVo">
+        SELECT
+        tem.id,
+        tem.examfeeitem_name,
+        tem.examfeeitemid,
+        tem.createdate,
+        tem.unitprice,
+        tem.costprice,
+        COUNT(t1.id) AS personCount,
+        FORMAT(SUM(t1.factprice), 2) AS factpriceSum,
+        FORMAT(SUM(t1.factprice) / COUNT(t1.id), 2) AS averagePrice,
+        FORMAT((SUM(t1.factprice) / COUNT(t1.id)) /tem.unitprice, 2) asAverageDiscount
+        FROM
+        (SELECT id, examfeeitem_name, examfeeitemid, createdate, unitprice, costprice
+        FROM md_items
+        <where>
+            <if test="param.createdate!=null">
+                AND createdate > #{param.createdate}
+            </if>
+            <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                AND examfeeitem_name like concat('%',#{param.examfeeitemName},'%')
+            </if>
+        </where>
+        ) tem
+        LEFT JOIN md_peispatientfeeitem t1 ON t1.id_examfeeitem = tem.id
+        LEFT JOIN md_peispatient t2 ON t1.id_patient = t2.patientcode
+        <where>
+            t2.f_registered = 1
+            AND t1.f_registered = 1
+            AND t1.f_feecharged = 1
+            AND t1.f_mark_feereturn != 1
+            <if test="param.branchIds!=null">
+                AND t2.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        tem.id, tem.examfeeitem_name, tem.examfeeitemid, tem.createdate, tem.unitprice, tem.costprice
+    </select>
+
+</mapper>
+

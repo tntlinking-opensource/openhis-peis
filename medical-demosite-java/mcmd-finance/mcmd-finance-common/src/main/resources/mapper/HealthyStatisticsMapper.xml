@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.HealthyStatisticsMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.HSPageVo">
+        SELECT min(qu.user_name) AS xsjl,
+        co.ddh AS ddh,
+        min(p.org_name) AS khdwmc,
+        IFNULL(sum(yjpi.price), 0) AS yj,
+        sum(IFNULL(pcm.moneyamountpaid, 0)) AS ss,
+        IFNULL(co.kdzl_name, '') AS kdzl,
+        count(CASE WHEN p.insuranceno IS NULL THEN p.id ELSE NULL END) AS rs,
+        CASE
+        WHEN sum(IFNULL(p.personpricelimit, 0)) = 0 THEN 0
+        ELSE round(sum(IFNULL(pcm.moneyamountpaid, 0)) / sum(yjpi.price), 2)
+        END zk,
+        CASE
+        WHEN count(p.id) = 0 THEN NULL
+        ELSE round(sum(IFNULL(pcm.moneyamountpaid, 0)) / count(p.id), 2)
+        END kdj,
+        sc.int_id,
+        co.id,
+        IFNULL ( sum( pc.moneyamountpaid ), 0 ) as tsfy,
+        count( DISTINCT pi.id_patient ) AS jxrs,
+        IFNULL ( sum( pi.factprice ), 0 ) AS jxfy
+        FROM md_createorder co
+        LEFT JOIN crm_sellcustomer sc ON co.khdwmcid = sc.id
+        LEFT JOIN sys_user qu ON sc.xsjlid = qu.user_no
+        LEFT JOIN md_peispatient p ON co.ddh = p.numorgresv
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN sys_user_dep qud ON qud.user_id = qu.user_no
+        LEFT JOIN sys_dept qd ON qud.dep_id = qd.dept_no
+        left join (
+        SELECT
+        pc.patientcode,
+        sum( pc.moneyamountpaid ) AS moneyamountpaid
+        FROM
+        md_peispatientcharge pc
+        LEFT JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        WHERE
+            pc.id_payway = '5'
+            AND pc.is_delete = 0
+            AND p.f_usecodehiden = 1
+            AND p.f_registered = 1
+        <if test="param.fzxid!=null and param.fzxid!=''">
+            AND p.hospitalcode = #{param.fzxid}
+        </if>
+        <if test="param.jhjqc!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+        </if>
+        <if test="param.jhjqd!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+        </if>
+        <if test="param.tjlx!=null">
+            <if test="param.tjlx == 0">
+                AND p.id_examtype = 0
+            </if>
+            <if test="param.tjlx == 1">
+                AND p.id_examtype != 0
+            </if>
+        </if>
+        GROUP BY pc.patientcode
+        ) pc ON p.patientcode = pc.patientcode
+        LEFT JOIN (
+        SELECT
+        pi.id_patient,
+        sum( pi.factprice ) AS factprice
+        FROM
+        md_peispatientfeeitem pi
+        LEFT JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        WHERE
+        pi.sfjx = 1
+        AND pi.f_feecharged = 1
+        AND pi.change_item = 0
+        AND p.f_usecodehiden = 1
+        AND p.f_registered = 1
+        <if test="param.fzxid!=null and param.fzxid!=''">
+            AND p.hospitalcode = #{param.fzxid}
+        </if>
+        <if test="param.jhjqc!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+        </if>
+        <if test="param.jhjqd!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+        </if>
+        <if test="param.tjlx!=null">
+            <if test="param.tjlx == 0">
+                AND p.id_examtype = 0
+            </if>
+            <if test="param.tjlx == 1">
+                AND p.id_examtype != 0
+            </if>
+        </if>
+        GROUP BY pi.id_patient
+        ) pi ON p.patientcode = pi.id_patient
+        LEFT JOIN (
+        SELECT pi.id_patient,
+        sum(pi.price) price
+        FROM md_peispatientfeeitem pi
+        LEFT JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        <where>
+            pi.change_item = 0
+            AND pi.f_feecharged = 1
+            AND p.f_usecodehiden = 1
+            AND p.f_registered = 1
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+        GROUP BY pi.id_patient
+        ) yjpi ON yjpi.id_patient = p.patientcode
+        <where>
+            p.f_usecodehiden = 1
+            AND p.f_registered = 1
+            AND qd.dept_name = '销售部'
+            <if test="param.userName!=null and param.userName!=''">
+                AND (
+                qu.user_name = #{param.userName}
+                OR qu.superior_id = #{param.userNo}
+                OR co.kdzl_name LIKE concat('%',#{param.userName},'%')
+                )
+            </if>
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND co.khdwmcid = #{param.idOrg}
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND sc.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id = #{param.intId}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+        GROUP BY co.ddh,qu.user_no,sc.createdate,sc.int_id,co.kdzl_name
+        ORDER BY qu.user_no DESC,sc.int_id,sc.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.sellcrm.bean.model.Createorder">
+
+    </select>
+
+
+    <!-- 查询统收费用 -->
+    <select id="getTongJi" resultType="java.lang.String">
+        SELECT
+        IFNULL ( sum( pc.moneyamountpaid ), 0 )
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        <where>
+            pc.id_payway = '5'
+            AND p.numorgresv = #{ddh}
+            AND pc.f_feecharged = 1
+            AND pc.is_delete = 0
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <!-- 加项费用、加项人数 -->
+    <select id="getJiaXiang" resultType="com.center.medical.finance.bean.dto.JiaXiangDto">
+        SELECT
+        count( DISTINCT pi.id_patient ) AS count ,
+        IFNULL ( sum( pi.factprice ), 0 ) AS factprice
+        FROM
+        md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        <where>
+            pi.sfjx = 1
+            AND pi.f_feecharged = 1
+            AND pi.change_item = 0
+            AND p.numorgresv = #{ddh}
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 查询右边列表 -->
+    <select id="getTotalList" resultType="com.center.medical.finance.bean.vo.TotalListVo">
+        SELECT co.ddh AS `order`,
+        o.bdrq AS regDate,
+        p.dateregister AS FirstDate,
+        s.khdwmc AS khdwmc,
+        sum(CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS hj,
+        sum(CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS ts,
+        sum(CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END) AS jz
+        FROM md_createorder co
+        LEFT JOIN md_peispatient p ON p.numorgresv = co.ddh
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN crm_sellcustomer s ON co.khdwmcid = s.id
+        LEFT JOIN md_orderandfzx o ON o.ddid = co.id
+        <where>
+            p.f_registered = 1
+            <if test="param.id!=null and param.id!=''">
+                AND s.int_id = #{param.id}
+            </if>
+            <if test="param.fzxId!=null and param.fzxId!=''">
+                AND p.hospitalcode = #{param.fzxId}
+            </if>
+            <if test="param.type!=null">
+                <if test="param.type == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.type == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY co.ddh,o.bdrq,p.dateregister,s.khdwmc
+        ORDER BY co.ddh,p.dateregister DESC
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.HSPageVo">
+        SELECT min(qu.user_name) AS xsjl,
+        co.ddh AS ddh,
+        min(p.org_name) AS khdwmc,
+        IFNULL(sum(yjpi.price), 0) AS yj,
+        sum(IFNULL(pcm.moneyamountpaid, 0)) AS ss,
+        IFNULL(co.kdzl_name, '') AS kdzl,
+        count(CASE WHEN p.insuranceno IS NULL THEN p.id ELSE NULL END) AS rs,
+        CASE
+        WHEN sum(IFNULL(p.personpricelimit, 0)) = 0 THEN 0
+        ELSE round(sum(IFNULL(pcm.moneyamountpaid, 0)) / sum(yjpi.price), 2)
+        END zk,
+        CASE
+        WHEN count(p.id) = 0 THEN NULL
+        ELSE round(sum(IFNULL(pcm.moneyamountpaid, 0)) / count(p.id), 2)
+        END kdj,
+        sc.int_id,
+        co.id,
+        IFNULL ( sum( pc.moneyamountpaid ), 0 ) as tsfy,
+        count( DISTINCT pi.id_patient ) AS jxrs,
+        IFNULL ( sum( pi.factprice ), 0 ) AS jxfy
+        FROM md_createorder co
+        LEFT JOIN crm_sellcustomer sc ON co.khdwmcid = sc.id
+        LEFT JOIN sys_user qu ON sc.xsjlid = qu.user_no
+        LEFT JOIN md_peispatient p ON co.ddh = p.numorgresv
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN sys_user_dep qud ON qud.user_id = qu.user_no
+        LEFT JOIN sys_dept qd ON qud.dep_id = qd.dept_no
+        left join (
+        SELECT
+        pc.patientcode,
+        sum( pc.moneyamountpaid ) AS moneyamountpaid
+        FROM
+        md_peispatientcharge pc
+        LEFT JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        WHERE
+        pc.id_payway = '5'
+        AND pc.is_delete = 0
+        AND p.f_usecodehiden = 1
+        AND p.f_registered = 1
+        <if test="param.fzxid!=null and param.fzxid!=''">
+            AND p.hospitalcode = #{param.fzxid}
+        </if>
+        <if test="param.jhjqc!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+        </if>
+        <if test="param.jhjqd!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+        </if>
+        <if test="param.tjlx!=null">
+            <if test="param.tjlx == 0">
+                AND p.id_examtype = 0
+            </if>
+            <if test="param.tjlx == 1">
+                AND p.id_examtype != 0
+            </if>
+        </if>
+        GROUP BY pc.patientcode
+        ) pc ON p.patientcode = pc.patientcode
+        LEFT JOIN (
+        SELECT
+        pi.id_patient,
+        sum( pi.factprice ) AS factprice
+        FROM
+        md_peispatientfeeitem pi
+        LEFT JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        WHERE
+        pi.sfjx = 1
+        AND pi.f_feecharged = 1
+        AND pi.change_item = 0
+        AND p.f_usecodehiden = 1
+        AND p.f_registered = 1
+        <if test="param.fzxid!=null and param.fzxid!=''">
+            AND p.hospitalcode = #{param.fzxid}
+        </if>
+        <if test="param.jhjqc!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+        </if>
+        <if test="param.jhjqd!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+        </if>
+        <if test="param.tjlx!=null">
+            <if test="param.tjlx == 0">
+                AND p.id_examtype = 0
+            </if>
+            <if test="param.tjlx == 1">
+                AND p.id_examtype != 0
+            </if>
+        </if>
+        GROUP BY pi.id_patient
+        ) pi ON p.patientcode = pi.id_patient
+        LEFT JOIN (
+        SELECT pi.id_patient,
+        sum(pi.price) price
+        FROM md_peispatientfeeitem pi
+        LEFT JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        <where>
+            pi.change_item = 0
+            AND pi.f_feecharged = 1
+            AND p.f_usecodehiden = 1
+            AND p.f_registered = 1
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+        GROUP BY pi.id_patient
+        ) yjpi ON yjpi.id_patient = p.patientcode
+        <where>
+            p.f_usecodehiden = 1
+            AND p.f_registered = 1
+            AND qd.dept_name = '销售部'
+            <if test="param.userName!=null and param.userName!=''">
+                AND (
+                qu.user_name = #{param.userName}
+                OR qu.superior_id = #{param.userNo}
+                OR co.kdzl_name LIKE concat('%',#{param.userName},'%')
+                )
+            </if>
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND p.hospitalcode = #{param.fzxid}
+            </if>
+            <if test="param.jhjqc!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.jhjqc}
+            </if>
+            <if test="param.jhjqd!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.jhjqd}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND co.khdwmcid = #{param.idOrg}
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND sc.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id = #{param.intId}
+            </if>
+            <if test="param.tjlx!=null">
+                <if test="param.tjlx == 0">
+                    AND p.id_examtype = 0
+                </if>
+                <if test="param.tjlx == 1">
+                    AND p.id_examtype != 0
+                </if>
+            </if>
+        </where>
+        GROUP BY co.ddh,qu.user_no,sc.createdate,sc.int_id,co.kdzl_name
+        ORDER BY qu.user_no DESC,sc.int_id,sc.createdate DESC
+    </select>
+
+
+
+    <!-- 获取变动成本率 -->
+    <select id="getVariableCostRate" resultType="com.center.medical.finance.bean.dto.VariableCostRateDto">
+        SELECT
+            sum( tc.costprice ) costprice,
+            sum( tc.zhjg ) zhjg,
+            oac.tcid,
+            count( p.id ) num
+        FROM
+            md_createorder o
+                INNER JOIN md_orderandcombo oac ON oac.ddid = o.id
+                INNER JOIN (
+                SELECT
+                    m.id,
+                    m.tcysjg,
+                    m.zhjg,
+                    IFNULL ( sum( i.costprice ), 0 ) costprice
+                FROM
+                    md_createmeal m
+                        INNER JOIN md_mealanditem mai ON mai.tcid = m.id
+                        INNER JOIN md_items i ON i.id = mai.sfxmid
+                WHERE
+                    EXISTS ( SELECT 1 FROM md_orderandcombo oacc WHERE oacc.ddid = #{id} AND oacc.tcid = m.id )
+                GROUP BY
+                    m.id,
+                    m.tcysjg,
+                    m.zhjg UNION ALL
+                SELECT
+                    m.id,
+                    m.tcysjg,
+                    m.zhjg,
+                    IFNULL ( sum( i.costprice ), 0 ) costprice
+                FROM
+                    md_createcombo m
+                        INNER JOIN md_comboanditem mai ON mai.tcid = m.id
+                        INNER JOIN md_items i ON i.id = mai.sfxmid
+                WHERE
+                    EXISTS ( SELECT 1 FROM md_orderandcombo oacc WHERE oacc.ddid = #{id} AND oacc.tcid = m.id )
+                GROUP BY
+                    m.id,
+                    m.tcysjg,
+                    m.zhjg
+            ) tc ON tc.id = oac.tcid
+                LEFT JOIN md_peispatient p ON p.id_tjtc = oac.tcid
+                AND p.id_orgreservation = #{taskId}
+        WHERE
+            o.id = #{id}
+        group by oac.tcid
+    </select>
+
+
+    <!-- 获取变动成本率 -->
+    <select id="getGroupCount" resultType="java.lang.Double">
+        SELECT
+            count(p.id)
+        FROM
+            md_peisorgreservationgroup pg
+                left join md_peispatient p on p.id_orgreservationgroup = pg.id
+        WHERE
+            pg.id_orgreservation = #{id}
+          and pg.is_delete = 0
+          and pg.id_examsuite = #{tcid}
+    </select>
+</mapper>
+

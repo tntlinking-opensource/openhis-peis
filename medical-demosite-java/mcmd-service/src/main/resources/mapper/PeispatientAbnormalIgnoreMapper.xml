@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.PeispatientAbnormalIgnoreMapper">
+
+    <resultMap type="com.center.medical.bean.model.PeispatientAbnormalIgnore" id="PeispatientAbnormalIgnoreMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="patientId" column="patient_id"/>
+        <result property="creator" column="creator"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientAbnormalIgnoreVo">
+        select id, createdate, patient_id, creator
+        from md_peispatient_abnormal_ignore
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeispatientAbnormalIgnoreMap">
+        <include refid="selectPeispatientAbnormalIgnoreVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientAbnormalIgnoreMap">
+        <include refid="selectPeispatientAbnormalIgnoreVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

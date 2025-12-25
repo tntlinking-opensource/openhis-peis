@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdTjregMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdTjreg" id="MdTjregMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="tjbh" column="tjbh"/>
+        <result property="tjrq" column="tjrq"/>
+        <result property="sg" column="sg"/>
+        <result property="tz" column="tz"/>
+        <result property="xl" column="xl"/>
+        <result property="xy" column="xy"/>
+        <result property="xj" column="xj"/>
+        <result property="tjzt" column="tjzt"/>
+        <result property="djid" column="djid"/>
+        <result property="bmi" column="bmi"/>
+        <result property="ssy" column="ssy"/>
+        <result property="szy" column="szy"/>
+        <result property="yw" column="yw"/>
+        <result property="djls" column="djls"/>
+        <result property="mb" column="mb"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="commonState" column="common_state"/>
+        <result property="respiratoryRate" column="respiratory_rate"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="depId" column="dep_id"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="xyms" column="xyms"/>
+        <result property="bmims" column="bmims"/>
+        <result property="scbz" column="scbz"/>
+        <result property="temperature" column="temperature"/>
+        <result property="waist" column="waist"/>
+        <result property="bust" column="bust"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdTjregVo">
+        select id,
+               patientcode,
+               tjbh,
+               tjrq,
+               sg,
+               tz,
+               xl,
+               xy,
+               xj,
+               tjzt,
+               djid,
+               bmi,
+               ssy,
+               szy,
+               yw,
+               djls,
+               mb,
+               create_id,
+               modify_id,
+               common_state,
+               respiratory_rate,
+               createdate,
+               modifydate,
+               dep_id,
+               short_code,
+               xyms,
+               bmims,
+               scbz,
+               temperature,
+               waist,
+               bust
+        from md_tjreg
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdTjregMap">
+        <include refid="selectMdTjregVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdTjregMap">
+        <include refid="selectMdTjregVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

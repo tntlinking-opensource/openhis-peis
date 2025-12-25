@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.ItemListMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientVo">
+        select id,
+               id_orgpatient,
+               id_cis,
+               patientarchiveno,
+               patientcode,
+               patientbizno,
+               idcardno,
+               numorgresv,
+               patientname,
+               input_code,
+               id_orgreservationgroup,
+               id_orgreservation,
+               id_org,
+               org_name,
+               org_depart,
+               have_private,
+               id_payway,
+               payway,
+               personpricelimit,
+               id_sex,
+               birthdate,
+               age,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               id_informway,
+               id_opendoctor,
+               email,
+               phone,
+               id_patientclass,
+               id_resarea,
+               resarea,
+               f_isforprepare,
+               f_isforreserve,
+               f_registered,
+               dateregister,
+               guidancenote,
+               id_doctorreg,
+               doctorreg,
+               id_examtype,
+               id_examsuite,
+               examsuite_name,
+               examsuite_alias,
+               id_doctorapply,
+               doctorapply,
+               f_guidanceprinted,
+               f_examstarted,
+               f_readytofinal,
+               f_paused,
+               f_finallocked,
+               f_finalexamed,
+               id_doctorfinal,
+               doctorfinal_name_r,
+               datefinalexamed,
+               f_closed,
+               dateclosed,
+               note,
+               knowledge,
+               timingstartedat,
+               hospitalcode,
+               id_examplace,
+               parsedassignedsuiteandfi,
+               parsedassignedgroupandfi,
+               parsedsuiteandfi,
+               parsedsuiteandfilab,
+               id_guidenurse,
+               patientnameencoded,
+               patientcodehiden,
+               f_wordprinted,
+               guidancenote2,
+               f_usecodehiden,
+               id_patientclass3,
+               dateregisternotime,
+               counterreportprinted,
+               f_isrecheck,
+               f_settlenone,
+               dateguidancereturned,
+               f_outpatient,
+               patientnamereceipt,
+               patientnamepinyin,
+               statusofhm,
+               instancetag,
+               inpatientno,
+               insuranceno,
+               countreportxml,
+               countreportcompare,
+               countreportoccupation,
+               countreportoccupationpdf,
+               countreportoccupationxml,
+               scbs,
+               id_tjtc,
+               jzdw,
+               jzdwr,
+               spr,
+               tjr,
+               lqfs,
+               yzbm,
+               yjaddress,
+               qtxz,
+               is_hmdb,
+               is_hmd,
+               isjj,
+               zgl,
+               jhgl,
+               jhys,
+               jktjzt,
+               zytjzt,
+               tmyd,
+               medicaldate,
+               trades,
+               cjjgsfyhf,
+               bhgybsfyhf,
+               yxjgsfyhf,
+               medicaltype,
+               prepayment,
+               tcprice,
+               createdate,
+               modifydate,
+               cultural,
+               workno,
+               work_date,
+               harm_date,
+               disease_print_num,
+               health_print_num,
+               readytofinal_date,
+               guide_signle_count,
+               short_code,
+               is_noticed,
+               review_pdf,
+               contraindicated_pdf,
+               disease_pdf,
+               ts_limit,
+               checkout_date,
+               checkout_status,
+               worktype_id,
+               id_examclass,
+               original_trade,
+               `status`
+        from md_peispatient
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.reception.bean.vo.ItemListVo">
+        SELECT
+        p.id,
+        p.patientcode,
+        p.patientname,
+        p.id_sex as idSex,
+        p.age,
+        p.birthdate,
+        s.khdwmc as orgName,
+        p.id_examtype as idExamtype,
+        pg.id_examsuite,
+        IFNULL(cm.tjtcmc, c.tjtcmc) tjtcmc,
+        IFNULL(p.f_paused,0) as ispaused,
+        pg.orgreservationgroupname as groupname,
+        pg.id as groupid,
+        p.id_marriage as idMarriage,
+        p.jhys,
+        p.medicaltype,
+        p.numorgresv as ddh
+        FROM
+        md_peispatient p
+        inner join md_peisorgreservationgroup pg on p.id_orgreservationgroup = pg.id
+        and pg.is_delete = 0
+        inner join md_group_and_fzx gaf on gaf.group_id = pg.id
+        inner join md_peisorgreservation pn on pg.id_orgreservation = pn.id
+        inner join md_vation_and_fzx vaf on vaf.vation_id = pn.id
+        left join crm_sellcustomer s on pn.id_org = s.id
+        left join md_createcombo c on p.id_tjtc = c.id
+        left join md_createmeal cm on p.id_tjtc = cm.id
+        <where>
+            p.f_registered = 0
+            AND p.f_paused = 0
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND p.id_opendoctor = #{param.userNo}
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.tcCode!=null and param.tcCode!=''">
+                AND (c.tjtcsrm LIKE concat('%',#{param.tcCode},'%')
+                OR cm.tjtcsrm LIKE concat('%',#{param.tcCode},'%'))
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.sex!=null and param.sex!=''">
+                AND p.id_sex = #{param.sex}
+            </if>
+            <if test="param.idMarriage!=null and param.idMarriage!=''">
+                AND p.id_marriage = #{param.idMarriage}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.minAge!=null">
+                AND p.age <![CDATA[ >= ]]> #{param.minAge}
+            </if>
+            <if test="param.maxAge!=null">
+                AND p.age <![CDATA[ <= ]]> #{param.maxAge}
+            </if>
+            <if test="param.branchIds!=null">
+                and gaf.fzx_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+                and vaf.fzx_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        group by p.patientcode
+        ORDER BY
+        pn.createdate DESC,
+        pg.id ASC,
+        p.patientcode
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+        <include refid="selectPeispatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getListData" resultType="com.center.medical.reception.bean.vo.ListDataVo">
+        SELECT
+        i.id,
+        i.examfeeitem_name as examfeeitemName,
+        i.sfxmsrm,
+        i.examfeeitem_code as examfeeitemCode,
+        i.dydfz,
+        i.tjlx,
+        i.dyddybs,
+        i.depart_name as departName,
+        i.cx,
+        i.xb,
+        i.unitprice,
+        p.print_name as xsdyfl,
+        w.NAME as idCooporg,
+        CASE
+        WHEN i.is_public = 1 THEN
+        '公共' ELSE b.fzx
+        END as fzx,
+        i.examfeeitem_codex as examfeeitemCodex,
+        i.zk,
+        i.suiteprice,
+        i.txjg,
+        i.wbjg,
+        i.ydjg,
+        i.nbj,
+        i.materialprice,
+        i.costprice,
+        i.coopprice,
+        y.NAME as yblx,
+        i.dlbs,
+        f.NAME as fylx,
+        i.examfeeitem_nameprn as examfeeitemNameprn,
+        i.bgdybs,
+        i.xh,
+        i.bs,
+        i.jccs,
+        i.jcyy,
+        i.id_depart as idDepart,
+        i.is_ban as isBan
+        FROM
+        md_items i
+        LEFT JOIN sys_branch b ON b.id = i.fzx_ids
+        LEFT JOIN md_wsjg w ON w.id = i.id_cooporg
+        LEFT JOIN md_yblx y ON y.id = i.id_labtype
+        LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        LEFT JOIN md_fylx f ON f.id = i.fylx
+        <where>
+            i.is_delete = 0
+            <if test="param.key!=null and param.key!=''">
+                AND I.sfxmsrm like concat('%',#{param.key},'%')
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_items_and_fzx iaf
+                WHERE
+                iaf.items_id = i.id
+                AND iaf.fzx_id =#{param.cid})
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 团检退项匹配最小套餐 -->
+    <select id="compareMinTcContent" resultType="string">
+        SELECT group_concat(DISTINCT i.examfeeitem_name )
+        FROM md_createcombo cc
+                 LEFT JOIN md_comboanditem cai ON cc.id = cai.tcid
+                 LEFT JOIN md_items i ON cai.sfxmid = i.id
+        WHERE cc.jhys IN (#{strharm})
+          AND cc.zytjlb = #{zytjlb}
+          AND cai.sfxmid IN (#{strids})
+          AND cc.is_delete = 0
+          AND cai.is_delete = 0
+          AND i.is_delete = 0
+    </select>
+
+
+</mapper>
+

@@ -1,0 +1,1159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrPeispatientMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 通过分组id获取体检者 -->
+    <select id="getByGroupId" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            ID_ORGRESERVATIONGROUP = #{groupId}
+            AND F_REGISTERED = 0
+            AND ( F_PAUSED IS NULL OR F_PAUSED = 0 )
+            AND (PATIENTCODE IS NOT NULL or PATIENTCODE != '')
+        </where>
+    </select>
+
+
+
+    <!-- 通过分组id获取体检者 -->
+    <select id="getUnRegistered" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            1 = 1
+            AND F_REGISTERED <![CDATA[ <> ]]> 1
+            AND F_PAUSED <![CDATA[ <> ]]> 1
+            AND ROWNUM <![CDATA[ <= ]]> 20
+        </where>
+    </select>
+
+
+
+    <!-- 通过体检号查询体检者 -->
+    <select id="getInfoByPatientCode" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            PATIENTCODE = #{oldPatientCode}
+        </where>
+    </select>
+
+
+
+
+    <!-- 查询老系统个检人员 -->
+    <select id="getImportPeople" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        select *
+        from peispatient p
+        where p.f_usecodehiden=0
+          and (f_registered is null or f_registered=0)
+          and (F_PAUSED is null or F_PAUSED=0)
+    </select>
+
+
+
+    <!-- 通过订单号查询 -->
+    <select id="getByDdh" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            NUMORGRESV = #{ddh}
+            AND (F_REGISTERED IS NULL OR F_REGISTERED = 0)
+            AND (F_PAUSED IS NULL OR F_PAUSED = 0)
+            AND (PATIENTCODE IS NOT NULL or PATIENTCODE != '')
+        </where>
+    </select>
+
+
+
+    <!-- 批量查询 -->
+    <select id="getList" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            <if test="param.orgDepart != null and param.orgDepart != ''">
+                AND org_depart = #{param.orgDepart}
+            </if>
+            <if test="param.idExamtype!=null and param.idExamtype!=''">
+                <choose>
+                    <when test="param.idExamtype == 0">
+                        AND id_examtype IN ('0','2')
+                    </when>
+                    <otherwise>
+                        AND id_examtype IN ('1','2')
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.numorgresv != null and param.numorgresv != ''">
+                AND numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.idOrg != null and param.idOrg != ''">
+                AND id_org = #{param.idOrg}
+            </if>
+            <if test="param.fRegistered != null">
+                AND f_registered = #{param.fRegistered}
+            </if>
+            <if test="param.beginTime!=null">
+                AND dateregister <![CDATA[ >= ]]> #{param.beginTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientcode != null  and param.patientcode != ''">
+                AND patientcode LIKE '%' || #{param.patientcode} || '%'
+            </if>
+            <if test="param.inputCode != null and param.inputCode != ''">
+                AND input_code LIKE '%' || #{param.inputCode} || '%'
+            </if>
+            <if test="param.idSex != null">
+                AND id_sex = #{param.idSex}
+            </if>
+            <if test="param.dateregister != null">
+                AND dateregister  <![CDATA[ < ]]> #{param.dateregister}
+            </if>
+            <if test="param.branchIds!=null">
+                AND hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 批量查询 -->
+    <select id="getByPatientCodes" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            <if test="patientCodes!=null and patientCodes.size > 0">
+                PATIENTCODE IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 项目完成情况 -->
+    <select id="findXmwcqk" resultType="com.center.medical.bean.dto.FindXmwcqkDto">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.id_org,
+            p.org_name,
+            p.org_depart,
+            p.id_marriage,
+            wmsys.wm_concat(pi.id_examfeeitem) AS idExamfeeitem,
+            wmsys.wm_concat(pi.examfeeitem_name) AS examFeeItemName,
+            p.medicaldate,
+            p.jktjzt,
+            p.f_readytofinal,
+            p.f_examstarted,
+            p.dateregister,
+            r.status,
+            p.f_registered,
+            p.idcardno,
+            p.id_examtype,
+            p.insuranceno
+        FROM
+            peispatient p
+                LEFT JOIN peispatientfeeitem pi ON pi.id_patient = p.patientcode
+                AND (pi.f_examinated IS NULL OR pi.f_examinated = 0 )
+                AND (pi.change_item IS NULL OR pi.change_item = 0 )
+                LEFT JOIN report r ON r.patientcode = p.patientcode
+                AND r.disease_health = 0
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.id_org,
+            p.org_name,
+            p.org_depart,
+            p.id_marriage,
+            p.medicaldate,
+            p.jktjzt,
+            p.f_readytofinal,
+            p.f_examstarted,
+            p.dateregister,
+            r.status,
+            p.f_registered,
+            p.idcardno,
+            p.id_examtype,
+            p.insuranceno
+    </select>
+
+
+
+    <!-- 项目完成情况 -->
+    <select id="findXmcj" resultType="com.center.medical.bean.dto.FindXmcjDto">
+        select
+        pi.id_ks,
+        d.name as deptName,
+        pi.id_examfeeitem,
+        i.examfeeitem_nameprn,
+        count(
+        distinct
+        case
+        when p.id_sex = 0
+        and p.f_examstarted = 1
+        and pi.change_item = 0
+        and ( pi.sfjj is null or pi.sfjj = 0 )
+        and pi.f_giveup = 0
+        and pi.f_feecharged = 1 then
+        p.patientcode else null
+        end
+        ) AS count1,
+        count(
+        distinct
+        case
+        when p.f_examstarted = 1
+        and pi.change_item = 0
+        and ( pi.sfjj is null or pi.sfjj = 0 )
+        and pi.f_giveup = 0
+        and pi.f_feecharged = 1 then
+        p.patientcode else null
+        end
+        ) AS count2,
+        count( distinct case when p.id_sex = 0 then p.patientcode else null end ) AS count3,
+        count( distinct p.patientcode ) AS count4,
+        d.report_sort
+        from
+            peispatient p
+        inner join peispatientfeeitem pi on pi.id_patient = p.patientcode
+        inner join items i on i.id = pi.id_examfeeitem
+        left join qx_department d on d.id = pi.id_ks
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+            group by
+            pi.id_ks,
+            d.name,
+            pi.id_examfeeitem,
+            i.examfeeitem_nameprn,
+            d.report_sort
+            order by
+            d.report_sort
+    </select>
+
+
+    <!-- 项目完成情况 -->
+    <select id="findJctj" resultType="com.center.medical.bean.dto.FindJctjDto">
+        SELECT
+            d.name as deptName,
+            d.id as deptNo,
+            t.basconclusion_id,
+            t.basconclusion_name,
+            ini.c,
+            ini.d,
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.org_depart,
+            d.report_sort
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON p.patientcode = st.patientcode
+                AND ( st.is_delete IS NULL OR st.is_delete = 0 )
+                AND st.disease_health = 0
+                LEFT JOIN total_verdict t ON t.total_id = st.id
+                AND ( t.is_delete IS NULL OR t.is_delete = 0 )
+                AND t.flag = 1
+                LEFT JOIN qx_department d ON d.id = t.division_id
+                LEFT JOIN (
+                SELECT
+                    tin.division_id AS a,
+                    tin.basconclusion_name AS b,
+                    count( DISTINCT stin.patientcode ) AS c,
+                    count( DISTINCT CASE WHEN pin.id_sex = 0 THEN pin.patientcode ELSE NULL END ) AS d
+                FROM
+                    peispatient pin
+                        INNER JOIN section_total stin ON pin.patientcode = stin.patientcode
+                        AND ( stin.is_delete IS NULL OR stin.is_delete = 0 )
+                        AND stin.disease_health = 0
+                        INNER JOIN total_verdict tin ON tin.total_id = stin.id
+                        AND ( tin.is_delete IS NULL OR tin.is_delete = 0 )
+                        AND tin.flag = 1
+                WHERE
+                    <if test="patientCodes!=null">
+                        pin.patientcode IN
+                        <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                            #{patientCode}
+                        </foreach>
+                    </if>
+                GROUP BY
+                    tin.division_id,
+                    tin.basconclusion_name
+            ) ini ON ini.a = t.division_id
+                AND ini.b = t.basconclusion_name
+        WHERE
+            p.jktjzt > 0
+            <if test="patientCodes!=null">
+                AND p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+    </select>
+
+
+
+    <select id="findYangxjg" resultType="com.center.medical.bean.dto.FindYangxjgDto">
+        select p.dateregister,
+               p.id_org,
+               p.org_name,
+               p.org_depart,
+               p.patientcode,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               '' AS emptyString,
+               st.verdict,
+               st.offer
+        from
+            peispatient p
+            left join section_total st on p.patientcode = st.patientcode
+            and (st.is_delete is null or st.is_delete = 0)
+            and st.disease_health = 0
+            and p.jktjzt > 0
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="findYinxjg" resultType="com.center.medical.bean.dto.FindYinxjgDto">
+        select
+        d.name,
+        i.examfeeitem_name,
+        wmsys.wm_concat ( st.ms ) AS ms,
+        d.id,
+        i.id
+        from
+        section_result_two st
+        inner join qx_department d on d.id = st.division_id
+        inner join items i on i.id = st.charges_id
+        inner join inspect_charge ic on ic.charge_id = i.id
+        and ic.inspect_id = st.verdict_id
+        and ic.is_delete = 0
+        left join qx_cen_dep qcd on qcd.did = d.id
+        and qcd.cid = #{cid}
+        where
+        st.patientcode = #{patientCode}
+        and st.posistive = 1
+        and st.tjlx != 2
+        <if test="bhys != true">
+            and ( i.bgdybs is null or i.bgdybs = '0' )
+        </if>
+        group by
+        d.name,
+        i.examfeeitem_name,
+        d.id,
+        i.id,
+        st.patientcode,
+        ic.order_index,
+        qcd.xh,
+        i.xh
+        order by
+        qcd.xh,
+        d.id,
+        i.xh,
+        i.id,
+        ic.order_index
+    </select>
+
+
+
+    <select id="findDtjz" resultType="com.center.medical.bean.dto.FindDtjzDto">
+        select
+        p.patientcode,
+        p.medicaltype,
+        p.jhys,
+        p.id_sex,
+        p.f_registered
+        from  peispatient p
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <select id="findZybcxm" resultType="com.center.medical.bean.dto.FindZybcxmDto">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.jhgl,
+            p.jhys,
+            p.id_org,
+            p.org_name,
+            p.org_depart,
+            p.id_marriage,
+            wmsys.wm_concat( pi.id_examfeeitem ) AS idExamfeeitem,
+            wmsys.wm_concat( pi.examfeeitem_name ) AS examfeeitemName,
+            p.medicaldate,
+            p.zytjzt,
+            p.f_readytofinal,
+            p.f_examstarted,
+            NVL( bw.type_name, p.trades ) AS typeName,
+            p.dateregister,
+            p.f_registered,
+            p.dateregisternotime,
+            p.idcardno,
+            p.id_examtype,
+            p.insuranceno
+        FROM
+            peispatient p
+                LEFT JOIN base_worktype bw ON bw.id = p.worktype_id
+                LEFT JOIN peispatientfeeitem pi ON pi.id_patient = p.patientcode
+                AND ( pi.f_examinated IS NULL OR pi.f_examinated = 0 )
+                AND ( pi.change_item IS NULL OR pi.change_item = 0 )
+                AND (
+                       (
+                               (
+                                   SELECT
+                                       count( * )
+                                   FROM
+                                       comboexamitem c
+                                   WHERE
+                                       (
+                                                   p.jhys = c.harm_id
+                                               OR p.jhys LIKE c.harm_id || ',%'
+                                               OR p.jhys LIKE '%,' || c.harm_id
+                                               OR p.jhys LIKE '%,' || c.harm_id || ',%'
+                                           )
+                                     AND c.medical_type = p.medicaltype
+                                     AND c.item_id = pi.id_examfeeitem
+                               ) > 0
+                           )
+                       OR (
+                               (
+                                   SELECT
+                                       count( * )
+                                   FROM
+                                       comboexamitem c
+                                           INNER JOIN basexamltem b ON b.id = c.exam_id
+                                           INNER JOIN inspect_charge ic ON ic.inspect_id = b.id
+                                           INNER JOIN items i ON i.id = ic.charge_id
+                                           INNER JOIN qx_department q ON q.id = i.id_depart
+                                   WHERE
+                                       (
+                                                   p.jhys = c.harm_id
+                                               OR p.jhys LIKE c.harm_id || ',%'
+                                               OR p.jhys LIKE '%,' || c.harm_id
+                                               OR p.jhys LIKE '%,' || c.harm_id || ',%'
+                                           )
+                                     AND c.medical_type = p.medicaltype
+                                     AND ic.charge_id = pi.id_examfeeitem
+                                     AND q.jklx NOT IN ( 'us', 'dr', 'cr', 'ct', 'mr', 'dx' )
+                               ) > 0
+                           )
+                   )
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.jhgl,
+            p.jhys,
+            p.id_org,
+            p.org_name,
+            p.org_depart,
+            p.id_marriage,
+            p.medicaldate,
+            p.zytjzt,
+            p.f_readytofinal,
+            p.f_examstarted,
+            p.trades,
+            p.dateregister,
+            p.f_registered,
+            p.dateregisternotime,
+            bw.type_name,
+            p.idcardno,
+            p.id_examtype,
+            p.insuranceno
+
+    </select>
+
+
+
+
+
+    <select id="findRyyl" resultType="com.center.medical.bean.dto.FindRyylDto">
+        SELECT
+            p.patientcode,
+            st.posistive,
+            ( CASE WHEN a.serial_no = 3 THEN b.st ELSE a.summary_text END ) AS test,
+            a.serial_no,
+            a.occupation_summary,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.jhgl,
+            p.jhys,
+            NVL( bw.type_name, p.trades ) AS name,
+            p.idcardno
+        FROM
+            peispatient p
+                LEFT JOIN base_worktype bw ON bw.id = p.worktype_id
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN (
+                SELECT
+                    *
+                FROM
+                    (
+                        SELECT
+                            c.patientcode,
+                            zv.summary_text,
+                            z.serial_no,
+                            z.occupation_summary,
+                            row_number ( ) over ( PARTITION BY c.patientcode ORDER BY z.serial_no ASC ) AS row_num
+                        FROM
+                            comments_progessional c
+                                LEFT JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                                LEFT JOIN zy_summary z ON z.id = zv.occupation_summary
+                    ) aaa
+                WHERE
+                    row_num = 1
+            ) a ON a.patientcode = p.patientcode
+                LEFT JOIN (
+                SELECT
+                    b2.patientcode AS bc,
+                    LISTAGG ( b2.summary_text, ',' ) WITHIN GROUP ( ORDER BY b2.summary_text ) AS st
+                FROM
+                    (
+                    SELECT DISTINCT
+                    c2.patientcode,
+                    zv2.summary_text
+                    FROM
+                    comments_progessional c2
+                    LEFT JOIN zy_vs_summary zv2 ON zv2.id = c2.progessional_id
+                    LEFT JOIN zy_summary z2 ON z2.id = zv2.occupation_summary
+                    WHERE
+                    z2.serial_no = 3
+                    ) b2
+                GROUP BY
+                    b2.patientcode
+            ) b ON b.bc = p.patientcode
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+              AND p.zytjzt > 0
+              AND (
+                        a.serial_no IN ( 1, 2, 3 )
+                    OR NOT EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            peispatientfeeitem pi
+                        WHERE
+                            pi.sfjj = 1
+                          AND pi.id_patient = p.patientcode
+                          AND (
+                                (
+                                        (
+                                            SELECT
+                                                count( * )
+                                            FROM
+                                                comboexamitem c
+                                            WHERE
+                                                (
+                                                            p.jhys = c.harm_id
+                                                        OR p.jhys LIKE c.harm_id || ',%'
+                                                        OR p.jhys LIKE '%,' || c.harm_id
+                                                        OR p.jhys LIKE '%,' || c.harm_id || ',%'
+                                                    )
+                                              AND c.medical_type = p.medicaltype
+                                              AND c.item_id = pi.id_examfeeitem
+                                        ) > 0
+                                    )
+                                OR (
+                                        (
+                                            SELECT
+                                                count( * )
+                                            FROM
+                                                comboexamitem c
+                                                    INNER JOIN basexamltem b ON b.id = c.exam_id
+                                                    INNER JOIN inspect_charge ic ON ic.inspect_id = b.id
+                                                    INNER JOIN items i ON i.id = ic.charge_id
+                                                    INNER JOIN qx_department q ON q.id = i.id_depart
+                                            WHERE
+                                                (
+                                                            p.jhys = c.harm_id
+                                                        OR p.jhys LIKE c.harm_id || ',%'
+                                                        OR p.jhys LIKE '%,' || c.harm_id
+                                                        OR p.jhys LIKE '%,' || c.harm_id || ',%'
+                                                    )
+                                              AND c.medical_type = p.medicaltype
+                                              AND ic.charge_id = pi.id_examfeeitem
+                                              AND q.jklx NOT IN ( 'us', 'dr', 'cr', 'ct', 'mr', 'dx' )
+                                        ) > 0
+                                    )
+                            )
+                    )
+                )
+        </where>
+    </select>
+
+
+
+
+    <select id="findFcmx" resultType="com.center.medical.bean.dto.FindFcmxDto">
+        SELECT
+        a.occupation_diagnosis,
+        h.harm_name,
+        a.diagnosis,
+        a.summary_text,
+        count( p.id ) AS count
+        FROM
+        peispatient p
+        INNER JOIN section_total st ON st.patientcode = p.patientcode
+        AND st.is_delete = 0
+        AND st.disease_health = 1
+        INNER JOIN (
+        SELECT
+        c.patientcode,
+        zv.summary_text,
+        zv.occupation_diagnosis,
+        zv.diagnosis
+        FROM
+        comments_progessional c
+        LEFT JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        LEFT JOIN zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        WHERE
+        z.serial_no = 3
+        AND NOT EXISTS (
+        SELECT
+        1
+        FROM
+        comments_progessional c1
+        LEFT JOIN zy_vs_summary zv1 ON zv1.id = c1.progessional_id
+        AND zv1.is_delete = 0
+        LEFT JOIN zy_summary z1 ON z1.id = zv1.occupation_summary
+        AND z1.is_delete = 0
+        WHERE
+        c1.patientcode = c.patientcode
+        AND z1.serial_no <![CDATA[ < ]]> 3
+        )
+        ) a ON a.patientcode = p.patientcode
+        INNER JOIN harm h ON h.id = a.occupation_diagnosis
+        <where>
+            p.zytjzt >  0
+            <if test="patientCodes!=null">
+                and p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        a.occupation_diagnosis,
+        h.harm_name,
+        a.diagnosis,
+        a.summary_text
+    </select>
+
+
+
+    <select id="findFcqk" resultType="com.center.medical.bean.dto.FindFcqkDto">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.jhgl,
+            p.jhys,
+            nvl ( bw.type_name, p.trades ) AS name
+        FROM
+            peispatient p
+                LEFT JOIN base_worktype bw ON bw.id = p.worktype_id
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                AND z.serial_no = 3
+        <where>
+            p.zytjzt >  0
+            <if test="patientCodes!=null">
+                and p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 批量查询 -->
+    <select id="getListByinPatientno" resultType="com.center.medical.olddata.bean.model.OrPeispatient">
+        SELECT *
+        FROM PEISPATIENT
+        <where>
+            inpatientno = #{patientCode}
+        </where>
+        order by createDate
+    </select>
+
+
+
+    <select id="findListIn" resultType="com.center.medical.bean.dto.FindListInDto">
+        select st.posistive,
+               zv.summary_text,
+               z.serial_no,
+               z.occupation_summary
+        from section_total st
+                 inner join comments_progessional c on c.patientcode = st.patientcode
+                 inner join zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join zy_summary z on z.id = zv.occupation_summary
+        <where>
+            st.patientcode = #{patientCode}
+            and ROWNUM = 1
+        </where>
+        order by z.serial_no asc
+    </select>
+
+
+
+    <select id="findNumByPatientcode" resultType="Integer">
+        select count(*)
+        from comments_progessional c
+                 inner join zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 3
+        where c.patientcode = #{patientCode}
+    </select>
+
+
+
+    <select id="findJcrs" resultType="com.center.medical.bean.dto.FindJcrsDto">
+        SELECT
+            jbmc,
+            count( * ) AS count
+        FROM
+            (
+            SELECT
+            min( z.occupation_summary ) AS jbmc,
+            p.patientcode
+            FROM
+            peispatient p
+            INNER JOIN section_total st ON st.patientcode = p.patientcode
+            AND st.is_delete = 0
+            AND st.disease_health = 1
+            INNER JOIN zy_summary z ON z.id = st.summary_id
+            AND z.serial_no IN ( 3, 4, 5 )
+            INNER JOIN comments_progessional c ON c.patientcode = st.patientcode
+            INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+            AND zv.occupation_summary = z.id
+            WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+            AND p.zytjzt > 0
+            GROUP BY
+            p.patientcode
+            ) t
+        GROUP BY
+            t.jbmc UNION ALL
+        SELECT
+            o.occupation_diseast AS jbmc,
+            count( DISTINCT p.patientcode )
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = st.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                AND z.serial_no = 1
+                LEFT JOIN occupation_diseast o ON o.id = zv.occupation_diseast
+        WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+            AND p.zytjzt > 0
+        GROUP BY
+            zv.occupation_diseast,
+            o.occupation_diseast,
+            z.occupation_summary UNION ALL
+        SELECT
+            zv.diagnosis AS jbmc,
+            count( DISTINCT p.patientcode )
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                AND z.serial_no = 2
+        WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+            AND p.zytjzt > 0
+        GROUP BY
+            zv.diagnosis,
+            z.occupation_summary
+    </select>
+
+
+
+
+    <select id="findListDate" resultType="com.center.medical.bean.dto.FindListDateDto">
+        SELECT
+            zv.summary_text AS jcjl,
+            z.occupation_summary AS jbmc,
+            zv.occupation_diagnosis,
+            count( DISTINCT p.id ) AS count,
+	h.harm_name
+        FROM
+            peispatient p
+            INNER JOIN section_total st ON st.patientcode = p.patientcode
+            AND st.is_delete = 0
+            AND st.disease_health = 1
+            INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+            INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+            INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+            AND z.serial_no IN ( 3, 4, 5 )
+            INNER JOIN harm h ON h.id = zv.occupation_diagnosis
+        WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+          AND p.zytjzt > 0
+        GROUP BY
+            zv.summary_text,
+            zv.occupation_diagnosis,
+            z.occupation_summary,
+            h.harm_name UNION ALL
+        SELECT
+            zv.summary_text AS jcjl,
+            o.occupation_diseast AS jbmc,
+            zv.occupation_diagnosis,
+            count( DISTINCT p.id ),
+            h.harm_name
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                AND z.serial_no = 1
+                INNER JOIN harm h ON h.id = zv.occupation_diagnosis
+                LEFT JOIN occupation_diseast o ON o.id = zv.occupation_diseast
+        WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+          AND p.zytjzt> 0
+        GROUP BY
+            zv.occupation_diagnosis,
+            zv.occupation_diseast,
+            o.occupation_diseast,
+            zv.summary_text,
+            h.harm_name UNION ALL
+        SELECT
+            zv.summary_text AS jcjl,
+            zv.diagnosis AS jbmc,
+            zv.occupation_diagnosis,
+            count( DISTINCT p.id ),
+            h.harm_name
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                AND z.serial_no = 2
+                INNER JOIN harm h ON h.id = zv.occupation_diagnosis
+        WHERE
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+          AND p.zytjzt> 0
+        GROUP BY
+            zv.occupation_diagnosis,
+            zv.diagnosis,
+            zv.summary_text,
+            h.harm_name
+    </select>
+
+
+
+
+
+    <select id="findJcqkhz" resultType="com.center.medical.bean.dto.FindJcqkhzDto">
+        SELECT
+            zv.regimentation_note,
+            h.harm_name,
+            zv.occupation_diagnosis,
+            p.org_depart,
+            count( DISTINCT ( CASE z.serial_no WHEN 1 THEN p.id ELSE NULL END ) ) yszyb,
+            count( DISTINCT ( CASE z.serial_no WHEN 2 THEN p.id ELSE NULL END ) ) zyjjz,
+            count( DISTINCT ( CASE z.serial_no WHEN 3 THEN p.id ELSE NULL END ) ) fc,
+            count( DISTINCT ( CASE z.serial_no WHEN 4 THEN p.id ELSE NULL END ) ) qtjb,
+            count( DISTINCT ( CASE z.serial_no WHEN 5 THEN p.id ELSE NULL END ) ) wjyc,
+            h.harm_class ashclass,
+            hc.harm_class AS hcclass
+        FROM
+            peispatient p
+                INNER JOIN section_total st ON st.patientcode = p.patientcode
+                AND st.is_delete = 0
+                AND st.disease_health = 1
+                INNER JOIN comments_progessional c ON c.patientcode = p.patientcode
+                INNER JOIN zy_vs_summary zv ON zv.id = c.progessional_id
+                INNER JOIN zy_summary z ON z.id = zv.occupation_summary
+                INNER JOIN harm h ON h.id = zv.occupation_diagnosis
+                INNER JOIN zy_harm_class hc ON hc.id = h.harm_class
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+            AND p.zytjzt > 0
+        </where>
+        GROUP BY
+            p.org_depart,
+            zv.regimentation_note,
+            zv.occupation_diagnosis,
+            h.harm_name,
+            h.harm_class,
+            hc.harm_class
+    </select>
+
+
+
+
+    <!-- 获取历史数据 -->
+    <select id="getHistoryList" resultType="com.center.medical.bean.vo.PacsHistoryListVo">
+        SELECT
+        po.patientcode,
+        r.examresultdesc as description,
+        r.examresultsummary as conclusions,
+        po.dateregister as dateregister,
+        pi.examfeeitem_name as feeitemName,
+        d.name as deptName,
+        po.age,
+        (CASE WHEN po.id_sex = '0' THEN '男'
+        WHEN po.id_sex = '1' THEN '女' ELSE '' END) as sex,
+        po.patientname
+        FROM
+        peispatient po
+        INNER JOIN peispatientfeeitem pi ON pi.id_patient = po.patientcode
+        AND pi.f_examinated = 1
+        <if test="itemId!=null and itemId!=''">
+            AND pi.id_examfeeitem = #{itemId}
+        </if>
+        INNER JOIN pacs_result r ON r.patientcode = po.patientcode
+        AND r.item_id = pi.id_examfeeitem
+        INNER JOIN qx_department d ON d.id = r.dep_id
+        <if test="ksID!=null and ksID!=''">
+            AND d.id = #{ksID}
+        </if>
+        WHERE
+        (
+        <if test="ids!=null and ids.size>0">
+            po.id_patientarchive in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+            OR
+        </if>
+        po.idcardno=#{idcardno}
+        )
+        ORDER BY po.dateregister DESC
+    </select>
+
+    <!--查询推送给第三方的体检者数据-->
+    <select id="getPushData" resultType="com.center.medical.bean.dto.UserExamDataDto">
+        SELECT
+        p.patientname,
+        p.patientcode,
+        p.idcardno AS idCard,
+        p.phone,
+        p.address,
+        p.id_sex AS sex,
+        sb.fzx AS branchName,
+        co.id AS orderId,
+        p.id_org AS customerId,
+        p.org_name AS customerName,
+        p.org_depart AS orgDepart,
+        p.id_examtype AS examType,
+        p.dateregister,
+        ppp.picture AS avator,
+        CASE
+        WHEN p.f_registered = 0 THEN
+        0
+        WHEN p.f_readytofinal = 0 THEN
+        1 ELSE 2
+        END AS status
+        FROM
+        peispatient p
+        LEFT JOIN branch sb ON p.hospitalcode = sb.id
+        LEFT JOIN createorder co ON p.numorgresv = co.ddh
+        LEFT JOIN peispatient_photo ppp ON p.patientcode = ppp.patientcode
+        <where>
+            p.f_registered = 1
+            <if test="params.orderId != null and params.orderId != ''">
+                AND co.id = #{params.orderId}
+            </if>
+        </where>
+    </select>
+
+    <!--获取总检数据-->
+    <select id="getSectionTotal" resultType="com.center.medical.bean.dto.SectionTotalDto">
+        SELECT
+            disease_health AS examType,
+            summarize,
+            CASE
+                WHEN disease_health = 0 THEN
+                    offer ELSE jkoffer
+                END AS proposal,
+            verdict,
+            posistive,
+            total_time AS examTime
+        FROM
+            section_total
+        WHERE
+            is_delete = 0
+          AND patientcode = #{patientcode}
+    </select>
+
+    <!--获取每个科室的检查结果和小结-->
+    <select id="getSectionResult" resultType="com.center.medical.bean.dto.ExamItemDataDto">
+        SELECT
+            p.id,
+            p.examfeeitem_name AS itemName,
+            p.id_ks AS departmentId,
+            sd.dept_name AS department,
+            p.id_examfeeitem,
+            CASE
+                WHEN p.id_ks IN ( '163', '143', '173', '24', '171', '402848e3625a920201625ff99a3404a5' ) THEN
+                    NULL ELSE
+                    CASE
+                        WHEN ( SELECT SUM( posistive ) FROM section_result_two WHERE patientcode = #{patientcode} AND charges_id = p.id_examfeeitem ) > 0 THEN
+                            1 ELSE 0
+                        END
+                END AS positive,
+            CASE
+                WHEN p.id_ks IN ( '143', '173', '24', '171', '402848e3625a920201625ff99a3404a5' ) THEN
+                    GROUP_CONCAT( pr.examresultdesc SEPARATOR ' | ' )
+                WHEN p.id_ks IN ( '19' ) THEN
+                    GROUP_CONCAT( IFNULL( d.inspect_describe, d.sign_list ) SEPARATOR ' | ' )
+                ELSE GROUP_CONCAT( CONCAT( d.item_name, ':', IFNULL( d.inspect_describe, d.sign_list ) ) SEPARATOR ' | ' )
+                END AS result,
+            CASE
+                WHEN p.id_ks IN ( '143', '173', '24', '171', '402848e3625a920201625ff99a3404a5' ) THEN
+                    GROUP_CONCAT( pr.examresultsummary SEPARATOR ',' )
+                WHEN p.id_ks IN ( '19' ) THEN
+                    GROUP_CONCAT( d.inspect_describe SEPARATOR ',' ) ELSE srm.conclusions
+                END AS conclusion,
+            srm.audit_time AS examDate
+        FROM
+            peispatientfeeitem p
+                LEFT JOIN pacs_result pr ON p.id_patient = pr.patientcode
+                AND p.id_examfeeitem = pr.item_id
+                LEFT JOIN describe d ON p.id_patient = d.patientcode
+                AND p.id_examfeeitem = d.fee_id
+                LEFT JOIN section_result_main srm ON p.id_patient = srm.patientcode
+                AND p.id_ks = srm.dep_id
+                LEFT JOIN qx_department sd ON p.id_ks = sd.dept_no
+        WHERE
+            p.id_patient = #{patientcode}
+          AND p.f_mark_feereturn = 0
+        GROUP BY
+            p.id_examfeeitem
+    </select>
+</mapper>
+

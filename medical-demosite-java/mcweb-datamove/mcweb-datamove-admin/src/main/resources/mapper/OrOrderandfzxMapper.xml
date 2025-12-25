@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.admin.dao.OrOrderandfzxMapper">
+
+    <resultMap type="com.center.medical.datamove.admin.bean.model.Orderandfzx" id="OrderandfzxMap">
+        <id property="id" column="ID"/>
+        <result property="ddid" column="DDID"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="tbzt" column="TBZT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="bdrq" column="BDRQ"/>
+        <result property="xzzt" column="XZZT"/>
+        <result property="xzsj" column="XZSJ"/>
+        <result property="ddxzzt" column="DDXZZT"/>
+        <result property="xzxzzt" column="XZXZZT"/>
+        <result property="ycxzzt" column="YCXZZT"/>
+        <result property="kdzlzt" column="KDZLZT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrderandfzxVo">
+        select ID,
+               DDID,
+               FZXID,
+               TBZT,
+               CREATEDATE,
+               MODIFYDATE,
+               BDRQ,
+               XZZT,
+               XZSJ,
+               DDXZZT,
+               XZXZZT,
+               YCXZZT,
+               KDZLZT
+        from ORDERANDFZX
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrderandfzxMap">
+        <include refid="selectOrderandfzxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrderandfzxMap">
+        <include refid="selectOrderandfzxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

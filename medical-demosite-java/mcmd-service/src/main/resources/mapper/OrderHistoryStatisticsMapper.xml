@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.OrderHistoryStatisticsMapper">
+
+    <resultMap type="com.center.medical.bean.model.OrderHistoryStatistics" id="OrderHistoryStatisticsMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="intId" column="int_id"/>
+        <result property="year" column="year"/>
+        <result property="fzxId" column="fzx_id"/>
+        <result property="totalPaid" column="total_paid"/>
+        <result property="averageDiscountRate" column="average_discount_rate"/>
+        <result property="variableCostRate" column="variable_cost_rate"/>
+        <result property="idOrg" column="id_org"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrderHistoryStatisticsVo">
+        select id,
+               createdate,
+               modifydate,
+               int_id, year, fzx_id, total_paid, average_discount_rate, variable_cost_rate, id_org
+        from md_order_history_statistics
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrderHistoryStatisticsMap">
+        <include refid="selectOrderHistoryStatisticsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrderHistoryStatisticsMap">
+        <include refid="selectOrderHistoryStatisticsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 获取插入订单历史折扣成本率等 -->
+    <select id="insertOrderHistoryStatistics" resultType="com.center.medical.bean.model.OrderHistoryStatistics">
+        SELECT
+        NOW() AS createdate,
+        NOW() AS modifydate,
+        sc.int_id,
+        r.year,
+        b.branch_id AS fzxId,
+        SUM( r.moneyamountpaid ) AS totalPaid,
+        (CASE WHEN SUM( tc.tcysjg * r.n ) = 0 THEN NULL
+            ELSE SUM( tc.zhjg * r.n ) / SUM( tc.tcysjg * r.n ) END
+        ) AS averageDiscountRate,
+        (CASE WHEN SUM( tc.zhjg * r.n ) = 0 THEN NULL
+            ELSE SUM( tc.costprice * r.n ) / SUM( tc.zhjg * r.n )END
+        ) AS variableCostRate,
+        sc.id AS idOrg
+--         SUM( tc.costprice * r.n ) AS total_cost_price,
+--         SUM( tc.zhjg * r.n ) AS total_zhjg,
+        FROM
+        crm_sellcustomer sc
+        INNER JOIN sys_branch b ON b.is_default = 1
+        AND b.is_delete = 0
+        INNER JOIN (
+        SELECT
+        p.id_tjtc,
+        YEAR ( p.dateregister ) AS YEAR,
+        p.id_org,
+        SUM( pcm.moneyamountpaid ) AS moneyamountpaid,
+        COUNT(*) AS n
+        FROM
+        md_peispatient p
+        INNER JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        WHERE
+        p.f_registered = 1
+        AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+        AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+        GROUP BY
+        p.id_tjtc,
+        YEAR ( p.dateregister ),
+        p.id_org
+        ) r ON r.id_org = sc.id
+        INNER JOIN (
+        SELECT
+        m.id,
+        m.tcysjg,
+        m.zhjg,
+        IFNULL( SUM( i.costprice ), 0 ) AS costprice
+        FROM
+        md_createmeal m
+        INNER JOIN md_mealanditem mai ON mai.tcid = m.id
+        INNER JOIN md_items i ON i.id = mai.sfxmid
+        GROUP BY
+        m.id,
+        m.tcysjg,
+        m.zhjg UNION ALL
+        SELECT
+        m.id,
+        m.tcysjg,
+        m.zhjg,
+        IFNULL( SUM( i.costprice ), 0 ) AS costprice
+        FROM
+        md_createcombo m
+        INNER JOIN md_comboanditem mai ON mai.tcid = m.id
+        INNER JOIN md_items i ON i.id = mai.sfxmid
+        GROUP BY
+        m.id,
+        m.tcysjg,
+        m.zhjg
+        ) tc ON tc.id = r.id_tjtc
+        GROUP BY
+        sc.int_id,
+        r.YEAR,
+        b.ID,
+        sc.id
+        ORDER BY
+        r.YEAR,
+        b.ID,
+        sc.int_id
+    </select>
+
+
+
+    <!-- 老系统sql，如果当时候还没替换就要去老系统导出excel，然后再导入新系统 -->
+    <select id="getOldSql" resultType="com.center.medical.bean.model.OrderHistoryStatistics">
+        select
+        RAWTOHEX(SYS_GUID()) ID,
+        SYSDATE CREATEDATE,
+        SYSDATE MODIFYDATE,
+        sc.int_id ,
+        r.year ,
+        b.ID FZX_ID ,
+        sum(r.moneyamountpaid) TOTAL_PAID,
+        case when sum(tc.tcysjg*r.n)=0 then null else sum(tc.zhjg*r.n)/sum(tc.tcysjg*r.n) end average_discount_rate,
+        case when sum(tc.zhjg*r.n)=0 then null else sum(tc.costprice*r.n)/sum(tc.zhjg*r.n) end variable_cost_rate,
+        sum(tc.costprice*r.n),
+        sum(tc.zhjg*r.n),
+        sc.id id_org
+        from sellcustomer sc
+        inner join branch b on b.is_default=1 and b.is_delete=0
+        inner join (
+        select
+        p.id_tjtc,
+        to_char(p.dateregister,'yyyy') year,
+        p.id_org,
+        sum(pcm.moneyamountpaid) moneyamountpaid,
+        count(*) n
+        from
+        peispatient p
+        inner join peispatient_charge_main pcm on pcm.patientcode=p.patientcode
+        where
+        p.f_registered=1
+        and p.dateregister>=to_date('20210101000000','yyyymmddhh24miss')
+        and p.dateregister<![CDATA[ <= ]]>to_date('20221231235959','yyyymmddhh24miss')
+        group by
+        p.id_tjtc,
+        to_char(p.dateregister,'yyyy') ,
+        p.id_org
+        ) r on r.id_org=sc.id
+        inner join (
+        select
+        m.id,
+        m.tcysjg,
+        m.zhjg,
+        nvl(sum(i.costprice),0) costprice
+        from createmeal m
+        inner join mealanditem mai on mai.tcid=m.id
+        inner join items i on i.id=mai.sfxmid
+        group by
+        m.id,
+        m.tcysjg,
+        m.zhjg
+        union all
+        select
+        m.id,
+        m.tcysjg,
+        m.zhjg,
+        nvl(sum(i.costprice),0) costprice
+        from createcombo m
+        inner join comboanditem mai on mai.tcid=m.id
+        inner join items i on i.id=mai.sfxmid
+        group by
+        m.id,
+        m.tcysjg,
+        m.zhjg
+        )tc on tc.id=r.id_tjtc
+        group by sc.int_id,
+        r.year,
+        b.ID,
+        sc.id
+        order by
+        r.year,b.ID,sc.int_id
+    </select>
+</mapper>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ReviewMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Review" id="ReviewMap">
+        <id property="id" column="ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="dateFrom" column="DATE_FROM"/>
+        <result property="dateTo" column="DATE_TO"/>
+        <result property="callbackStation" column="CALLBACK_STATION"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="noticeOfProceedingText" column="NOTICE_OF_PROCEEDING_TEXT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="idOrg" column="ID_ORG"/>
+        <result property="reviewPdf" column="REVIEW_PDF"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReviewVo">
+        select PATIENTCODE,
+               ID,
+               DATE_FROM,
+               DATE_TO,
+               CALLBACK_STATION,
+               USER_ID,
+               NOTICE_OF_PROCEEDING_TEXT,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE,
+               ID_ORG,
+               REVIEW_PDF
+        from REVIEW
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReviewMap">
+        <include refid="selectReviewVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReviewMap">
+        <include refid="selectReviewVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

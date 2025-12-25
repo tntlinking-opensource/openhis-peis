@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.BaseWorktypeMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.BaseWorktype" id="BaseWorktypeMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="typeName" column="TYPE_NAME"/>
+        <result property="qingdaoCode" column="QINGDAO_CODE"/>
+        <result property="jinanCode" column="JINAN_CODE"/>
+        <result property="changshaCode" column="CHANGSHA_CODE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBaseWorktypeVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               TYPE_NAME,
+               QINGDAO_CODE,
+               JINAN_CODE,
+               CHANGSHA_CODE,
+               IS_DELETE
+        from BASE_WORKTYPE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="BaseWorktypeMap">
+        <include refid="selectBaseWorktypeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BaseWorktypeMap">
+        <include refid="selectBaseWorktypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

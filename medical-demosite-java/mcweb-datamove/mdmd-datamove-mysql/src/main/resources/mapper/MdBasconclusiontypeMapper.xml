@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdBasconclusiontypeMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdBasconclusiontype" id="MdBasconclusiontypeMap">
+        <id property="id" column="id"/>
+        <result property="keyconclusiontype" column="keyconclusiontype"/>
+        <result property="conclusiontypeName" column="conclusiontype_name"/>
+        <result property="conclusiontypeNameeng" column="conclusiontype_nameeng"/>
+        <result property="conclusiontypeCode" column="conclusiontype_code"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="disporder" column="disporder"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="depId" column="dep_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdBasconclusiontypeVo">
+        select id,
+               keyconclusiontype,
+               conclusiontype_name,
+               conclusiontype_nameeng,
+               conclusiontype_code,
+               input_code,
+               disporder,
+               createdate,
+               modifydate,
+               dep_id
+        from md_basconclusiontype
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdBasconclusiontypeMap">
+        <include refid="selectMdBasconclusiontypeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdBasconclusiontypeMap">
+        <include refid="selectMdBasconclusiontypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

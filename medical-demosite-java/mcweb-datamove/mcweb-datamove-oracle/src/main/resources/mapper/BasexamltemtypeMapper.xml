@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.BasexamltemtypeMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Basexamltemtype" id="BasexamltemtypeMap">
+        <id property="id" column="ID"/>
+        <result property="examitemtypekey" column="EXAMITEMTYPEKEY"/>
+        <result property="examitemtypeName" column="EXAMITEMTYPE_NAME"/>
+        <result property="examitemtypeNameeng" column="EXAMITEMTYPE_NAMEENG"/>
+        <result property="examitemtypeCode" column="EXAMITEMTYPE_CODE"/>
+        <result property="examitemtypecodex" column="EXAMITEMTYPECODEX"/>
+        <result property="idDepartment" column="ID_DEPARTMENT"/>
+        <result property="departR" column="DEPART_R"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="note" column="NOTE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBasexamltemtypeVo">
+        select ID,
+               EXAMITEMTYPEKEY,
+               EXAMITEMTYPE_NAME,
+               EXAMITEMTYPE_NAMEENG,
+               EXAMITEMTYPE_CODE,
+               EXAMITEMTYPECODEX,
+               ID_DEPARTMENT,
+               DEPART_R,
+               INPUT_CODE,
+               NOTE,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE
+        from BASEXAMLTEMTYPE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="BasexamltemtypeMap">
+        <include refid="selectBasexamltemtypeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BasexamltemtypeMap">
+        <include refid="selectBasexamltemtypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

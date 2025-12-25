@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.WzZybsMapper">
+
+    <resultMap type="com.center.medical.bean.model.WzZybs" id="WzZybsMap">
+        <id property="id" column="id"/>
+        <result property="djls" column="djls"/>
+        <result property="idPatientarchive" column="id_patientarchive"/>
+        <result property="amount" column="amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="occupationDiseast" column="occupation_diseast"/>
+        <result property="diagnosisDate" column="diagnosis_date"/>
+        <result property="diagnosisDept" column="diagnosis_dept"/>
+        <result property="diagnosisDesc" column="diagnosis_desc"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="remark" column="remark"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWzZybsVo">
+        select id,
+               djls,
+               id_patientarchive,
+               amount,
+               create_date,
+               occupation_diseast,
+               diagnosis_date,
+               diagnosis_dept,
+               diagnosis_desc,
+               db_user,
+               remark,
+               createdate,
+               modifydate,
+               create_id,
+               modify_id,
+               status
+        from md_wz_zybs
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="WzZybsMap">
+        <include refid="selectWzZybsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WzZybsMap">
+        <include refid="selectWzZybsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 通过档案号获取职业病史 -->
+    <select id="getByPatientarchiveno" resultType="com.center.medical.bean.model.WzZybs">
+        SELECT
+            w.*,
+            o.occupation_diseast AS occupationDiseastName
+        FROM
+            md_wz_zybs w
+        LEFT JOIN md_occupation_diseast o ON o.id = w.occupation_diseast
+        WHERE
+            w.id_patientarchive = #{idPatientarchive}
+    </select>
+</mapper>
+

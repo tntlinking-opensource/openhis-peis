@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.TallyDetailMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.TDPageVo">
+        SELECT prp.id,
+        vation.org_name,
+        p.patientcode,
+        p.patientname AS name,
+        prp.moneyamountpaid,
+        js.payway_name,
+        qu.user_name AS idFeecharger,
+        STR_TO_DATE(prp.moneyamountpaiddate, '%Y-%m-%d %T') AS moneyamountpaiddate,
+        prp.cardno,
+        prp.note,
+        p.doctorapply,
+        z.chargetime AS feechargetime,
+        pp.lastJlmc
+        FROM md_peis_reser_payway prp
+        LEFT JOIN md_peispatient_reservation_charge prcharge ON prp.id_charge = prcharge.id
+        LEFT JOIN md_peispatient p ON p.patientcode = prcharge.patientcode
+        LEFT JOIN md_peisorgreservation vation ON p.id_orgreservation = vation.id_org
+        INNER JOIN (
+        SELECT charge.patientcode,
+        group_concat(STR_TO_DATE(charge.feechargetime, '%Y-%m-%d %T')) chargetime
+        FROM md_peispatientcharge charge
+        INNER JOIN md_dictpayway pw ON charge.id_payway = pw.id
+        WHERE pw.payway_name = '记账'
+        AND charge.is_delete = 0
+        GROUP BY charge.patientcode
+        ) z ON z.patientcode = p.patientcode
+        LEFT JOIN md_dictpayway js ON prp.id_payway = js.id
+        LEFT JOIN sys_user qu ON prp.id_feecharger = qu.user_no
+        LEFT JOIN lateral (
+            SELECT
+                p2.doctorapply lastJlmc
+            FROM
+                md_peispatient p2
+            WHERE
+                p2.idcardno = p.idcardno
+                AND p2.f_registered = 1
+                AND p2.dateregister <![CDATA[ < ]]> p.dateregister AND p2.dateregister <![CDATA[ >= ]]> DATE_SUB( p.dateregister, INTERVAL 1 YEAR )
+                AND p2.f_usecodehiden = 1
+            ORDER BY
+                p2.dateregister DESC
+            LIMIT 1
+        ) pp ON 1 = 1
+        <where>
+            1 = 1
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.input_code LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND vation.id_org = #{param.khdwmcid}
+            </if>
+            <if test="param.startTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.doctorapply!=null and param.doctorapply!=''">
+                AND p.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+            </if>
+        </where>
+        ORDER BY prp.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 导出记帐结算明细 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.TDPageVo">
+        SELECT prp.id,
+        vation.org_name,
+        p.patientcode,
+        p.patientname AS name,
+        prp.moneyamountpaid,
+        js.payway_name,
+        qu.user_name AS idFeecharger,
+        STR_TO_DATE(prp.moneyamountpaiddate, '%Y-%m-%d %T') AS moneyamountpaiddate,
+        prp.cardno,
+        prp.note,
+        p.doctorapply,
+        z.chargetime AS feechargetime,
+        pp.lastJlmc
+        FROM md_peis_reser_payway prp
+        LEFT JOIN md_peispatient_reservation_charge prcharge ON prp.id_charge = prcharge.id
+        LEFT JOIN md_peispatient p ON p.patientcode = prcharge.patientcode
+        LEFT JOIN md_peisorgreservation vation ON p.id_orgreservation = vation.id_org
+        INNER JOIN (
+        SELECT charge.patientcode,
+        group_concat(STR_TO_DATE(charge.feechargetime, '%Y-%m-%d %T')) chargetime
+        FROM md_peispatientcharge charge
+        INNER JOIN md_dictpayway pw ON charge.id_payway = pw.id
+        WHERE pw.payway_name = '记账'
+        AND charge.is_delete = 0
+        GROUP BY charge.patientcode
+        ) z ON z.patientcode = p.patientcode
+        LEFT JOIN md_dictpayway js ON prp.id_payway = js.id
+        LEFT JOIN sys_user qu ON prp.id_feecharger = qu.user_no
+        LEFT JOIN lateral (
+            SELECT
+                p2.doctorapply lastJlmc
+            FROM
+                md_peispatient p2
+            WHERE
+                p2.idcardno = p.idcardno
+                AND p2.f_registered = 1
+                AND p2.dateregister <![CDATA[ < ]]> p.dateregister AND p2.dateregister <![CDATA[ >= ]]> DATE_SUB( p.dateregister, INTERVAL 1 YEAR )
+                AND p2.f_usecodehiden = 1
+            ORDER BY
+                p2.dateregister DESC
+            LIMIT 1
+        ) pp ON 1 = 1
+        <where>
+            1 = 1
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.input_code LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND vation.id_org = #{param.khdwmcid}
+            </if>
+            <if test="param.startTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.doctorapply!=null and param.doctorapply!=''">
+                AND p.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+            </if>
+        </where>
+        ORDER BY prp.createdate DESC
+    </select>
+</mapper>
+

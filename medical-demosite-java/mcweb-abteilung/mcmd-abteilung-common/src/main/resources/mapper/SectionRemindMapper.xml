@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SectionRemindMapper">
+
+    <resultMap type="com.center.medical.abteilung.bean.model.SectionRemind" id="SectionRemindMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="remindContent" column="remind_content"/>
+        <result property="depId" column="dep_id"/>
+        <result property="depName" column="dep_name"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="remindTime" column="remind_time"/>
+        <result property="depIds" column="dep_ids"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionRemindVo">
+        select id,
+               createdate,
+               modifydate,
+               patientcode,
+               remind_content,
+               dep_id,
+               dep_name,
+               user_id,
+               user_name,
+               remind_time,
+               dep_ids
+        from md_section_remind
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SectionRemindMap">
+        <include refid="selectSectionRemindVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionRemindMap">
+        <include refid="selectSectionRemindVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

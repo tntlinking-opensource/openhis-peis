@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdBasMergeMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdBasMerge" id="MdBasMergeMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="mergeName" column="merge_name"/>
+        <result property="suggestion" column="suggestion"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="tjjy" column="tjjy"/>
+        <result property="creater" column="creater"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdBasMergeVo">
+        select id,
+               createdate,
+               modifydate,
+               merge_name,
+               suggestion,
+               is_delete,
+               input_code,
+               tjjy,
+               creater
+        from md_bas_merge
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdBasMergeMap">
+        <include refid="selectMdBasMergeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdBasMergeMap">
+        <include refid="selectMdBasMergeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

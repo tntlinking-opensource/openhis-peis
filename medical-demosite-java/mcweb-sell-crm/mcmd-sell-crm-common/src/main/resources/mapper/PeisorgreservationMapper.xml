@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.PeisorgreservationMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Peisorgreservation" id="PeisorgreservationMap">
+        <id property="id" column="id"/>
+        <result property="idOrgreservation" column="id_orgreservation"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="datereservation" column="datereservation"/>
+        <result property="dateautoclose" column="dateautoclose"/>
+        <result property="datefinalsettled" column="datefinalsettled"/>
+        <result property="regselectable" column="regselectable"/>
+        <result property="fRegselectablepaidbyorg" column="f_regselectablepaidbyorg"/>
+        <result property="countexaminee" column="countexaminee"/>
+        <result property="countexamineereserved" column="countexamineereserved"/>
+        <result property="countexamineeregistered" column="countexamineeregistered"/>
+        <result property="countexamineefullfinished" column="countexamineefullfinished"/>
+        <result property="countexamineepartfinished" column="countexamineepartfinished"/>
+        <result property="moneyamount" column="moneyamount"/>
+        <result property="moneyamountsettled" column="moneyamountsettled"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="idFeediscounter" column="id_feediscounter"/>
+        <result property="fFinished" column="f_finished"/>
+        <result property="fFullsettled" column="f_fullsettled"/>
+        <result property="fMoneypaid" column="f_moneypaid"/>
+        <result property="address" column="address"/>
+        <result property="contact" column="contact"/>
+        <result property="idSalesperson" column="id_salesperson"/>
+        <result property="orgresvconfidentiallevel" column="orgresvconfidentiallevel"/>
+        <result property="fOrgresvhided" column="f_orgresvhided"/>
+        <result property="note" column="note"/>
+        <result property="patientcardno" column="patientcardno"/>
+        <result property="instancetag" column="instancetag"/>
+        <result property="orgtaskhiscode" column="orgtaskhiscode"/>
+        <result property="idOrgclass" column="id_orgclass"/>
+        <result property="ddh" column="ddh"/>
+        <result property="qtxz" column="qtxz"/>
+        <result property="planenddate" column="planenddate"/>
+        <result property="phone" column="phone"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="bdid" column="bdid"/>
+        <result property="fzxid" column="fzxid"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeisorgreservationVo">
+        select id,
+               id_orgreservation,
+               id_org,
+               org_name,
+               datereservation,
+               dateautoclose,
+               datefinalsettled,
+               regselectable,
+               f_regselectablepaidbyorg,
+               countexaminee,
+               countexamineereserved,
+               countexamineeregistered,
+               countexamineefullfinished,
+               countexamineepartfinished,
+               moneyamount,
+               moneyamountsettled,
+               moneyamountpaid,
+               id_feecharger,
+               id_feediscounter,
+               f_finished,
+               f_fullsettled,
+               f_moneypaid,
+               address,
+               contact,
+               id_salesperson,
+               orgresvconfidentiallevel,
+               f_orgresvhided,
+               note,
+               patientcardno,
+               instancetag,
+               orgtaskhiscode,
+               id_orgclass,
+               ddh,
+               qtxz,
+               planenddate,
+               phone,
+               createdate,
+               modifydate,
+               bdid,
+               fzxid
+        from md_peisorgreservation
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeisorgreservationMap">
+        <include refid="selectPeisorgreservationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeisorgreservationMap">
+        <include refid="selectPeisorgreservationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!--登记页面团体列表-->
+    <select id="getGroupForOrgData" resultType="com.center.medical.sellcrm.bean.vo.POSimpleVo">
+        SELECT
+        po.id,
+        po.id_org AS khdwmcid,
+        pog.id AS groupid,
+        pog.orgreservationgroupname AS groupname,
+        sc.khdwlxr,
+        sc.khdh,
+        sc.khdwzcdz AS address,
+        pog.id_examsuite AS tcid,
+        COALESCE ( cc.tjtcmc, cc.tjtcmc, cm.tjtcmc ) AS tjtcmc,
+        su.`nick_name` AS name,
+        sc.createdate AS `date`,
+        sc.khdwmc AS org_name,
+        po.ddh AS order_id,
+        COALESCE ( cc.id, 1, 0 ) AS combostate,
+        IF(pog.f_male=0 AND pog.f_female=0,2, pog.f_male) AS sysex,
+        pog.id_examtype,
+        cm.jhys,
+        co.ddh AS num,
+        COALESCE ( cc.fkfs, cc.fkfs, cm.fkfs ) AS fkfs,
+        po.id_salesperson as saleId,
+        su.user_name AS xsjl,
+        su.phonenumber AS phone,
+        co.id_inforway,
+        oac.id_examclass
+        FROM
+        md_peisorgreservationgroup pog
+        LEFT JOIN md_peisorgreservation po ON po.id = pog.id_orgreservation
+        LEFT JOIN crm_sellcustomer sc ON po.id_org = sc.id
+        LEFT JOIN md_createcombo cc ON pog.id_examsuite = cc.id
+        LEFT JOIN md_createmeal cm ON pog.id_examsuite = cm.id
+        LEFT JOIN sys_user su ON po.id_salesperson = su.user_no
+        LEFT JOIN md_createorder co ON po.ddh = co.id
+        LEFT JOIN md_orderandcombo oac ON oac.ddid = po.ddh
+        AND oac.tcid = pog.id_examsuite
+        <where>
+            ( cc.id IS NOT NULL OR cm.forbidden IS NULL )
+            AND IFNULL ( pog.is_delete, 0 ) = 0
+            AND IFNULL ( co.is_delete, 0 ) = 0
+            AND IFNULL ( sc.is_delete, 0 ) = 0
+            AND ( IFNULL ( cc.is_delete, 0 ) = 0 OR IFNULL( cm.is_delete, 0 ) = 0 )
+            AND co.spzt = 4
+            AND REGEXP_SUBSTR ( co.fzxid, #{param.branchId} ) = #{param.branchId}
+        </where>
+        <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+            AND po.id_org = #{param.khdwmcid}
+        </if>
+        <if test="param.khdwlxr!=null and param.khdwlxr!=''">
+            AND su.user_name LIKE concat('%',#{param.khdwlxr},'%')
+        </if>
+        <if test="param.phone!=null and param.phone!=''">
+            AND su.phonenumber LIKE concat('%',#{param.phone},'%')
+        </if>
+        <if test="param.tjtcmc!=null and param.tjtcmc!=''">
+            AND (cc.tjtcmc LIKE concat('%',#{param.tjtcmc},'%')
+            OR cm.tjtcmc LIKE concat('%',#{param.tjtcmc},'%'))
+        </if>
+        <if test="param.tjtcsrm!=null and param.tjtcsrm!=''">
+            AND (cc.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%')
+            OR cm.tjtcsrm LIKE concat('%',#{param.tjtcsrm},'%'))
+        </if>
+        <if test="param.numorgresv!=null and param.numorgresv!=''">
+            AND co.ddh LIKE concat('%',#{param.numorgresv},'%')
+        </if>
+        ORDER BY co.ddh DESC,sc.createdate DESC
+
+    </select>
+
+</mapper>
+

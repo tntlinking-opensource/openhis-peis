@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.machine.dao.ReportPrintMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.bean.model.Report">
+
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Report">
+
+    </select>
+
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="reportPrintList" resultType="com.center.medical.machine.bean.vo.ReportPrintListVo">
+        SELECT
+        re.id,
+        p.patientcode,
+        p.patientname,
+        p.idcardno,
+        p.phone,
+        p.org_name,
+        p.examsuite_name,
+        re.generate_date,
+        re.url_pdf,
+        (SELECT count(*) from md_sh_report WHERE patientcode = p.patientcode and is_printed = 1) as printNum,
+        (SELECT print_time FROM md_sh_report  WHERE patientcode = p.patientcode ORDER BY print_time DESC LIMIT 1) AS printTime
+        FROM
+        md_peispatient p
+        LEFT JOIN md_report re ON re.patientcode = p.patientcode
+        and re.disease_health = 0
+        LEFT JOIN md_peispatientarchive mpa ON mpa.id = p.patientarchiveno
+        <where>
+            p.f_registered = 1
+            AND p.id_examtype in (0,2)
+            AND p.jktjzt >= 7
+            AND re.url_pdf is not null
+            <choose>
+                <when test="param.phone!=null and param.phone!=''">
+                    AND (p.phone = #{param.phone} or mpa.phone = #{param.phone})
+                </when>
+                <otherwise>
+                    AND p.idcardno = #{param.idcardno}
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY p.dateregister DESC
+    </select>
+</mapper>
+

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.DeployVersionBranchMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.DeployVersionBranch" id="DeployVersionBranchMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="versionId" column="version_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isSqlUpdated" column="is_sql_updated"/>
+        <result property="isServiceUpdated" column="is_service_updated"/>
+        <result property="sqlUpdateTime" column="sql_update_time"/>
+        <result property="serviceUpdateTime" column="service_update_time"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDeployVersionBranchVo">
+        SELECT sdvb.id,
+               sdvb.createdate,
+               sdvb.modifydate,
+               sdvb.branch_id,
+               sdvb.version_id,
+               sdvb.is_delete,
+               sdvb.is_sql_updated,
+               sdvb.is_service_updated,
+               sdvb.sql_update_time,
+               sdvb.service_update_time
+        FROM sys_deploy_version_branch sdvb
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DeployVersionBranchMap">
+        <include refid="selectDeployVersionBranchVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DeployVersionBranchMap">
+        <include refid="selectDeployVersionBranchVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!--查询未更新的科室数量-->
+    <select id="selectUnUpdatedCount" resultType="int">
+        SELECT count(*)
+        FROM md_ks_ip mki
+        WHERE mki.update_type = #{updateType}
+          AND mki.is_enable_update = 1
+          AND mki.branch_id = #{branchId}
+          AND mki.STATUS = 1
+          AND NOT EXISTS (SELECT 1
+                          FROM sys_deploy_record sdr
+                          WHERE sdr.version_id = #{versionId}
+                            AND sdr.ks_ip_id = mki.id
+                            AND (
+                                      sdr.is_success = 1
+                                  OR sdr.is_manual_success = 1
+                              ))
+    </select>
+
+    <!-- 根据版本信息id查询各分中心更新状态 -->
+    <select id="selectBranchListByVersionId" resultType="com.center.medical.system.bean.model.DeployVersionBranch">
+        SELECT sdvb.id,
+               sdvb.createdate,
+               sdvb.modifydate,
+               sdvb.branch_id,
+               sdvb.version_id,
+               sdvb.is_delete,
+               sdvb.is_sql_updated,
+               sdvb.is_service_updated,
+               sdvb.sql_update_time,
+               sdvb.service_update_time,
+               b.fzx
+        FROM sys_deploy_version_branch sdvb
+                 left join sys_branch b on b.branch_id = sdvb.branch_id
+        where sdvb.is_delete = 0
+          and sdvb.version_id = #{id}
+        order by b.branch_sort, b.fzx
+    </select>
+
+    <!--查询需要更新sql语句的记录-->
+    <select id="selectSqlUpdateList" resultMap="DeployVersionBranchMap">
+        <include refid="selectDeployVersionBranchVo"/>
+        inner join sys_deploy_version sdv on sdv.id=sdvb.version_id
+        where
+        sdv.execute_time <![CDATA[ <= ]]> sysdate()
+        and sdv.update_sql is not null
+        and sdv.is_delete=0
+        and sdv.is_enable=1
+        and sdvb.is_delete=0
+        and sdvb.is_sql_updated=0
+        and sdvb.branch_id=#{branchId}
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdWzJzbMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdWzJzb" id="MdWzJzbMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="familyOfDisease" column="family_of_disease"/>
+        <result property="inputCode" column="input_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdWzJzbVo">
+        select id, createdate, modifydate, family_of_disease, input_code
+        from md_wz_jzb
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdWzJzbMap">
+        <include refid="selectMdWzJzbVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdWzJzbMap">
+        <include refid="selectMdWzJzbVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

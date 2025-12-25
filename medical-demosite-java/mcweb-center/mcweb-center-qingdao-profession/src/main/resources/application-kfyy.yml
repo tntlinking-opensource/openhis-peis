@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://XXX.XXX.XXX.XXX:3306/XXX?sessionVariables=group_concat_max_len=10000&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&tinyInt1isBit=false&transformedBitIsBoolean=false
+      username: XXX
+      password: XXX
+    secondary:
+      url: jdbc:oracle:thin:@XXX.XXX.XXX.XXX:1521:XXX
+      username: XXX
+      password: XXX
+      driver-class-name: oracle.jdbc.OracleDriver
+    druid:
+      initial-size: 10
+      max-active: 20
+  quartz:
+    auto-startup: true
+config:
+  start-date: 2024-08-22
+  end-date: 2099-12-31
+  result-path: result
+  request-url: https://XXX.XXX.XXX.XXX:1589
+  institution-code: XXX
+  institution-name: XXX医院
+  password: XXX
+  user-code: XXX
+  phyexamaddress-name: XXX
+  phyexamaddress-code: XXX
+  has-archive: false
+  report-person: XXX
+  report-person-phone: XXX-XXX
+  write-person: XXX
+  write-person-phone: XXX-XXX
+logging:
+  file:
+    path: logs
+  level:
+    root: error
+qjk:
+  open: true #是否开启
+  start-date: 2024-08-22 #上传开始时间
+  end-date: 2099-06-30 #上传截至时间
+  place: XXX医院
+  driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  url: jdbc:sqlserver://XXX.XXX.XXX.XXX:1433;DatabaseName=XXX
+  username: XXX
+  password: XXX
+jzjk:
+  open: false #是否开启
+hnjk:
+  open: false #是否开启
+wfjk: #潍坊疾控
+  open: false #是否开启
+zhongkang:
+  profile: O:/newimages
+  profileLinux: /www/nas

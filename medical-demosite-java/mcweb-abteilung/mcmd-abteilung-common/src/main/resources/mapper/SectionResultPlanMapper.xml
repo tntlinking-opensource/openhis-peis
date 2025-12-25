@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SectionResultPlanMapper">
+
+    <resultMap type="com.center.medical.abteilung.bean.model.SectionResultPlan" id="SectionResultPlanMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="depId" column="dep_id"/>
+        <result property="creater" column="creater"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="status" column="status"/>
+        <result property="errorMsg" column="error_msg"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionResultPlanVo">
+        select id,
+               createdate,
+               modifydate,
+               dep_id,
+               creater,
+               patientcode,
+               status,
+               error_msg
+        from md_section_result_plan
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.abteilung.bean.vo.SectionResultPlanVo">
+        SELECT
+            d.dept_name as depName,
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.numorgresv as ddh,
+            p.org_name,
+            p.org_depart,
+            STR_TO_DATE( p.dateregister, '%Y-%m-%d' ) as dateregister,
+            srp.creater,
+            srm.is_audit as status,
+            STR_TO_DATE( srm.audit_time, '%Y-%m-%d' ) as auditTime,
+            srm.conclusions
+        FROM
+            md_section_result_plan srp
+                INNER JOIN md_peispatient p ON p.patientcode = srp.patientcode
+                INNER JOIN sys_dept d ON d.dept_no = srp.dep_id
+                LEFT JOIN md_section_result_main srm ON srm.patientcode = srp.patientcode
+                AND srm.dep_id = srp.dep_id
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.depId!=null and param.depId!=''">
+                AND srp.dep_id = #{param.depId}
+            </if>
+            <if test="param.status!=null and param.status==1">
+                AND srm.is_audit=1
+            </if>
+            <if test="param.status!=null and param.status==0">
+                AND (srm.is_audit=0 or srm.is_audit is null)
+            </if>
+            <if test="param.doctor!=null and param.doctor!=''">
+                AND srp.creater LIKE concat('%',#{param.doctor},'%')
+            </if>
+            <if test="param.orgId!=null and param.orgId!=''">
+                AND p.id_org = #{param.orgId}
+            </if>
+        </where>
+        ORDER BY srp.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionResultPlanMap">
+        <include refid="selectSectionResultPlanVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getItemsDetail" resultType="com.center.medical.abteilung.bean.dto.ItemsDetailDto">
+        select
+            i.id iid,
+            e.id eid,
+            s.id sid,
+            c.id cid,
+            s.name,
+            s.body_detail,
+            i.examfeeitem_nameprn
+        from
+            md_peispatientfeeitem pi
+                inner join md_items i on i.id = pi.id_examfeeitem
+                inner join md_inspect_charge ic on ic.charge_id = i.id
+                and ic.is_delete = 0
+                inner join md_basexamltem e on e.id = ic.inspect_id
+                and e.is_delete = 0
+                inner join md_basexamltem_sign s on s.inspect_id = e.id
+                and s.is_default = 1
+                and s.is_delete = 0
+                left join md_basconclusion c on c.id = s.result_id
+        where
+            pi.id_patient = #{inputCode}
+          and pi.id_ks = #{ksID}
+          and pi.f_transferedhl7 is null
+          and ( pi.change_item is null or pi.change_item = 0 )
+          and ( pi.sfjj is null or pi.sfjj = 0 )
+          and ( pi.f_giveup is null or pi.f_giveup = 0 )
+        order by
+            i.id,
+            ic.order_index,
+            e.id,
+            s.orderindex,
+            s.id
+    </select>
+</mapper>
+

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mcmd-reservation-pf" />
+        <module name="mcweb-ai-common" />
+        <module name="mcmd-pacs-lis-common" />
+        <module name="mcweb-pacs-admin" />
+        <module name="mcmd-pay" />
+        <module name="mcmd-reservation-lc" />
+        <module name="app-bean" />
+        <module name="mcweb-center-admin" />
+        <module name="mcweb-outreach-lc" />
+        <module name="mcmd-message-lcadmin" />
+        <module name="app-security-common" />
+        <module name="mcweb-outreach-pf" />
+        <module name="mcweb-enterprise-api" />
+        <module name="mcmd-datascreen-admin" />
+        <module name="mcmd-finance-admin" />
+        <module name="mcmd-common" />
+        <module name="mcweb-admin" />
+        <module name="mcmd-system-common" />
+        <module name="mcweb-center-qingdao-profession" />
+        <module name="mcmd-generator" />
+        <module name="mcmd-app-common" />
+        <module name="mcmd-center-common" />
+        <module name="mcmd-message-pfadmin" />
+        <module name="mcmd-sync-pfadmin" />
+        <module name="mcmd-member-common" />
+        <module name="mcweb-platform" />
+        <module name="mcmd-sell-crm-common" />
+        <module name="mcmd-report-common" />
+        <module name="mcmd-dicom-common" />
+        <module name="mcmd-system-admin" />
+        <module name="mcmd-old-database" />
+        <module name="mcmd-outside" />
+        <module name="mcmd-screen-common" />
+        <module name="mcmd-reservation-common" />
+        <module name="mcweb-center-component" />
+        <module name="mcweb-screen-admin" />
+        <module name="mcweb-datamove-oracle" />
+        <module name="mcmd-datascreen-common" />
+        <module name="mcweb-ai-admin" />
+        <module name="mcmd-data-admin" />
+        <module name="mcmd-machine-common" />
+        <module name="mcmd-data-common" />
+        <module name="mcmd-sync-lcadmin" />
+        <module name="mcweb-dicom-admin" />
+        <module name="mcweb-report-admin" />
+        <module name="mcmd-workflow-common" />
+        <module name="mcmd-sync-common" />
+        <module name="mcmd-abteilung-common" />
+        <module name="md-outreach-common" />
+        <module name="mcmd-query-admin" />
+        <module name="mcweb-sell-crm-admin" />
+        <module name="mcmd-framework" />
+        <module name="mcweb-member-admin" />
+        <module name="mcmd-queue-common" />
+        <module name="app-security-api" />
+        <module name="app-service-common" />
+        <module name="mcmd-bean" />
+        <module name="mcmd-finance-common" />
+        <module name="mcmd-machine-admin" />
+        <module name="mcweb-pacs-lis-admin" />
+        <module name="mcweb-reception-admin" />
+        <module name="mdmd-datamove-mysql" />
+        <module name="mcmd-statistics-common" />
+        <module name="app-common" />
+        <module name="mcweb-abteilung-admin" />
+        <module name="mcmd-workflow-admin" />
+        <module name="mcmd-query-common" />
+        <module name="mcmd-quartz" />
+        <module name="mcmd-pacs-common" />
+        <module name="mcweb-queue-admin" />
+        <module name="app-api" />
+        <module name="mcweb-datamove-admin" />
+        <module name="mcmd-service" />
+        <module name="mcmd-message-common" />
+        <module name="mcmd-app-admin" />
+        <module name="mcmd-statistics-admin" />
+        <module name="mcmd-reception-common" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mcweb-pacs-admin" options="-verbose -bootclasspath &quot;C:/Program Files/Java/jdk-17.0.1/lib/rt.jar;C:/Program Files/Java/jdk-17.0.1/lib/jce.jar&quot;" />
+    </option>
+  </component>
+</project>

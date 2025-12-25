@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.DrugstoreDrugMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.DrugstoreDrug" id="DrugstoreDrugMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="drugClass" column="DRUG_CLASS"/>
+        <result property="drugName" column="DRUG_NAME"/>
+        <result property="drugStandard" column="DRUG_STANDARD"/>
+        <result property="drugPrice" column="DRUG_PRICE"/>
+        <result property="drugPlace" column="DRUG_PLACE"/>
+        <result property="drugType" column="DRUG_TYPE"/>
+        <result property="drugUnit" column="DRUG_UNIT"/>
+        <result property="retailPrice" column="RETAIL_PRICE"/>
+        <result property="costPrice" column="COST_PRICE"/>
+        <result property="stock" column="STOCK"/>
+        <result property="isForbidden" column="IS_FORBIDDEN"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDrugstoreDrugVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               DRUG_CLASS,
+               DRUG_NAME,
+               DRUG_STANDARD,
+               DRUG_PRICE,
+               DRUG_PLACE,
+               DRUG_TYPE,
+               DRUG_UNIT,
+               RETAIL_PRICE,
+               COST_PRICE,
+               STOCK,
+               IS_FORBIDDEN,
+               INPUT_CODE
+        from DRUGSTORE_DRUG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DrugstoreDrugMap">
+        <include refid="selectDrugstoreDrugVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DrugstoreDrugMap">
+        <include refid="selectDrugstoreDrugVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

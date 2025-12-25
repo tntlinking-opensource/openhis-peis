@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdStencilMaintainMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdStencilMaintain" id="MdStencilMaintainMap">
+        <id property="id" column="id"/>
+        <result property="modelName" column="model_name"/>
+        <result property="modelInputcode" column="model_inputcode"/>
+        <result property="modelType" column="model_type"/>
+        <result property="centerName" column="center_name"/>
+        <result property="centerId" column="center_id"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="depName" column="dep_name"/>
+        <result property="depId" column="dep_id"/>
+        <result property="modelUrls" column="model_urls"/>
+        <result property="suitableType" column="suitable_type"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isHead" column="is_head"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdStencilMaintainVo">
+        select id,
+               model_name,
+               model_inputcode,
+               model_type,
+               center_name,
+               center_id,
+               is_default,
+               dep_name,
+               dep_id,
+               model_urls,
+               suitable_type,
+               createdate,
+               modifydate,
+               is_delete,
+               is_head
+        from md_stencil_maintain
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdStencilMaintainMap">
+        <include refid="selectMdStencilMaintainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdStencilMaintainMap">
+        <include refid="selectMdStencilMaintainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

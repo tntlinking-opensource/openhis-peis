@@ -1,0 +1,63 @@
+package ${packageName}.service;
+
+import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.center.medical.common.utils.page.PageParam;
+    ${ClassName};
+
+/**
+ * ${functionName}Service接口
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface I${ClassName}Service extends IService<${ClassName}> {
+    /**
+     * 查询${functionName}
+     *
+     * @param ${pkColumn.javaField} ${functionName}主键
+     * @return ${functionName}
+     */
+    ${ClassName} getDetailBy${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 查询${functionName}列表
+     *
+     * @param  param 查询参数
+     * @return ${functionName}集合
+     */
+    IPage<${ClassName}> getList(PageParam<${ClassName}> page, ${ClassName}  param);
+
+    /**
+     * 新增${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    int insertNew(${ClassName} ${className});
+
+    /**
+     * 修改${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    int upById(${ClassName} ${className});
+
+    /**
+     * 批量删除${functionName}
+     *
+     * @param ${pkColumn.javaField}s 需要删除的${functionName}主键集合
+     * @return 结果
+     */
+    int delBy${pkColumn.capJavaField}s(List<${pkColumn.javaType}> ${pkColumn.javaField}s);
+
+    /**
+     * 删除${functionName}信息
+     *
+     * @param ${pkColumn.javaField} ${functionName}主键
+     * @return 结果
+     */
+    int delBy${pkColumn.capJavaField}(${pkColumn.javaType} ${pkColumn.javaField});
+}

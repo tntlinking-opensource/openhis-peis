@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.EducationMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Education" id="EducationMap">
+        <id property="id" column="ID"/>
+        <result property="keyeducation" column="KEYEDUCATION"/>
+        <result property="educationName" column="EDUCATION_NAME"/>
+        <result property="educationCode" column="EDUCATION_CODE"/>
+        <result property="educationCode2" column="EDUCATION_CODE2"/>
+        <result property="educationCode3" column="EDUCATION_CODE3"/>
+        <result property="educationCodehm" column="EDUCATION_CODEHM"/>
+        <result property="educationCodex" column="EDUCATION_CODEX"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="note" column="NOTE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectEducationVo">
+        select ID,
+               KEYEDUCATION,
+               EDUCATION_NAME,
+               EDUCATION_CODE,
+               EDUCATION_CODE2,
+               EDUCATION_CODE3,
+               EDUCATION_CODEHM,
+               EDUCATION_CODEX,
+               INPUT_CODE,
+               NOTE,
+               CREATEDATE,
+               MODIFYDATE
+        from EDUCATION
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="EducationMap">
+        <include refid="selectEducationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="EducationMap">
+        <include refid="selectEducationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

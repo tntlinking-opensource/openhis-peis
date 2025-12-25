@@ -1,0 +1,1237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.BallCheckReportMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.BallCheckReport" id="BallCheckReportMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="sampleName" column="sample_name"/>
+        <result property="comboId" column="combo_id"/>
+        <result property="sampleType" column="sample_type"/>
+        <result property="groupId" column="group_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="beginTime" column="begin_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="status" column="status"/>
+        <result property="isPrint" column="is_print"/>
+        <result property="ddh" column="ddh"/>
+        <result property="orgName" column="org_name"/>
+        <result property="idOrgreservation" column="id_orgreservation"/>
+        <result property="createId" column="create_id"/>
+        <result property="wordUrl" column="word_url"/>
+        <result property="pdfUrl" column="pdf_url"/>
+        <result property="picInspectM" column="pic_inspect_m"/>
+        <result property="picInspectW" column="pic_inspect_w"/>
+        <result property="picInspectT" column="pic_inspect_t"/>
+        <result property="picAgeColumnar" column="pic_age_columnar"/>
+        <result property="picAgePie" column="pic_age_pie"/>
+        <result property="picAgeW" column="pic_age_w"/>
+        <result property="picAgeM" column="pic_age_m"/>
+        <result property="itemTotal" column="item_total"/>
+        <result property="exceptionM" column="exception_m"/>
+        <result property="exceptionW" column="exception_w"/>
+        <result property="exceptionT" column="exception_t"/>
+        <result property="sglx" column="sglx"/>
+        <result property="scsflj" column="scsflj"/>
+        <result property="bgfx" column="bgfx"/>
+        <result property="generateName" column="generate_name"/>
+        <result property="generateDate" column="generate_date"/>
+        <result property="generateHint" column="generate_hint"/>
+        <result property="hasUnchecked" column="has_unchecked"/>
+        <result property="bcbgfx" column="bcbgfx"/>
+        <result property="scbs" column="scbs"/>
+        <result property="sex" column="sex"/>
+        <result property="createStatus" column="create_status"/>
+        <result property="configId" column="config_id"/>
+        <result property="progress" column="progress"/>
+        <result property="orgDepart" column="org_depart"/>
+        <result property="ballCheckReport" column="ball_check_report"/>
+        <result property="reason" column="reason"/>
+        <result property="fzxid" column="fzxid"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBallCheckReportVo">
+        select id,
+               patientcode,
+               disease_health,
+               sample_name,
+               combo_id,
+               sample_type,
+               group_id,
+               order_id,
+               begin_time,
+               end_time,
+               createdate,
+               modifydate,
+               status,
+               is_print,
+               ddh,
+               org_name,
+               id_orgreservation,
+               create_id,
+               word_url,
+               pdf_url,
+               pic_inspect_m,
+               pic_inspect_w,
+               pic_inspect_t,
+               pic_age_columnar,
+               pic_age_pie,
+               pic_age_w,
+               pic_age_m,
+               item_total,
+               exception_m,
+               exception_w,
+               exception_t,
+               sglx,
+               scsflj,
+               bgfx,
+               generate_name,
+               generate_date,
+               generate_hint,
+               has_unchecked,
+               bcbgfx,
+               scbs,
+               sex,
+               create_status,
+               config_id,
+               progress,
+               org_depart,
+               ball_check_report,
+               reason,
+               fzxid
+        from md_ball_check_report
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="BallCheckReportMap">
+        <include refid="selectBallCheckReportVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BallCheckReportMap">
+        <include refid="selectBallCheckReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="loadBallCheckData" resultMap="BallCheckReportMap">
+        <include refid="selectBallCheckReportVo"/>
+        <where>
+            <if test="param.orgName != null and param.orgName !=''">
+                AND org_name like concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.sampleName != null and param.sampleName !=''">
+                AND sample_name like concat('%',#{param.sampleName},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND createdate <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.flag != null">
+                AND disease_health = #{param.flag}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="loadAuditBallCheckData" resultMap="BallCheckReportMap">
+        SELECT
+        bc.id,
+        bc.disease_health,
+        bc.sample_name,
+        bc.sample_type,
+        bc.sglx,
+        bc.org_name,
+        bc.order_id,
+        bc.begin_time,
+        bc.end_time,
+        bc.STATUS,
+        bc.reason,
+        bc.is_print,
+        bc.create_status,
+        bc.word_url,
+        bc.pdf_url,
+        bc.create_status,
+        bc.group_id
+        FROM md_ball_check_report bc
+        LEFT JOIN md_createorder co ON co.ddh = bc.order_id
+        <where>
+            1 = 1
+            <if test="param.userNo != null and param.userNo !=''">
+                AND ( co.xsjlid = #{param.userNo} OR bc.create_id = #{param.userNo} )
+            </if>
+            <if test="param.orgName != null and param.orgName !=''">
+                AND bc.org_name = #{param.orgName}
+            </if>
+            <if test="param.sampleName != null and param.sampleName !=''">
+                AND bc.sample_name like concat('%',#{param.sampleName},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND bc.createDate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND bc.createDate <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.status != null and param.status !=''">
+                AND bc.status = #{param.status}
+            </if>
+            <if test="param.medicaltype != null and param.medicaltype !=''">
+                AND bc.sglx = #{param.medicaltype}
+            </if>
+            <if test="param.ddh != null and param.ddh !=''">
+                AND bc.order_id = #{param.ddh}
+            </if>
+            <if test="param.tjlx != null and param.tjlx !=''">
+                AND bc.disease_health = #{param.tjlx}
+            </if>
+            <if test="param.lowerLevelIds!=null">
+                AND co.xsjlid IN
+                <foreach collection="param.lowerLevelIds" item="lowerLevelId" open="(" close=")" separator=",">
+                    #{lowerLevelId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getFxCompletionsBySampleId" resultType="com.center.medical.bean.model.FxCompletion">
+        select * from md_fx_completion
+        <where>
+            <if test="reportId != null">
+                sample_id = #{reportId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAgeSqlZy" resultType="com.center.medical.report.bean.dto.AgeSqlZyDto">
+        select IFNULL(age,0) age,
+               count(*) AS count,
+            sum( case when sex = 0 then 1 else 0 end ) as man,
+            sum( case when sex = 1 then 1 else 0 end ) as woman
+        from
+            md_fx_completion t
+        where
+            t.sample_id = #{reportId}
+        group by
+            t.age
+        order by
+            t.age desc
+    </select>
+
+    <select id="dateanalyze_zy" resultType="com.center.medical.report.bean.dto.AnalyzeZyDto">
+        select STR_TO_DATE(p.dateregister,'%Y-%m-%d') as dateregister,
+               count(*) AS count,
+            sum( case when sex = 0 then 1 else 0 end ) AS man,
+            sum( case when sex = 1 then 1 else 0 end ) AS woman
+        from
+            md_fx_completion p
+        where
+            p.sample_id = #{reportId}
+        group by
+            STR_TO_DATE(p.dateregister,'%Y-%m-%d')
+        order by STR_TO_DATE(p.dateregister,'%Y-%m-%d') desc
+    </select>
+
+    <select id="examanalyze_zy" resultType="com.center.medical.bean.model.DanagerObject">
+        select *
+        from md_danager_object
+        where sample_id = #{reportId}
+    </select>
+
+    <select id="getPersonnelData" resultType="com.center.medical.bean.model.FxPersonnelview">
+        select * from md_fx_personnelview
+        <where>
+            sample_id = #{reportId}
+            AND summary_serialno = #{flag}
+            ORDER BY patientcode ASC
+        </where>
+    </select>
+
+    <select id="finishanalyze_zy" resultType="com.center.medical.bean.model.FxCompletion">
+        select * from md_fx_completion
+        <where>
+            sample_id = #{reportId}
+            ORDER BY patientcode ASC
+        </where>
+    </select>
+
+    <select id="getReviewData" resultType="com.center.medical.bean.model.FxReviewsituation">
+        select *
+        from md_fx_reviewsituation
+        <where>
+            sample_id = #{reportId}
+        </where>
+        ORDER BY patientcode ASC
+    </select>
+
+    <select id="findXmwcqk" resultType="com.center.medical.bean.dto.FindXmwcqkDto">
+        select
+        s.patientcode,
+        s.id,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.id_org,
+        p.org_name,
+        p.org_depart,
+        p.id_marriage,
+        group_concat(pi.id_examfeeitem separator ',') AS idExamfeeitem,
+        group_concat(pi.examfeeitem_name separator ',') AS examFeeItemName,
+        p.medicaldate,
+        p.jktjzt,
+        p.f_readytofinal,
+        p.f_examstarted,
+        p.dateregister,
+        r.status,
+        p.f_registered,
+        p.idcardno,
+        p.id_examtype,
+        p.insuranceno
+        from
+        md_ball_check_report b
+        inner join md_sample_person s on s.ball_check_id = b.id
+        left join md_peispatient p on p.patientcode = s.patientcode
+        left join md_peispatientfeeitem pi on pi.id_patient = p.patientcode
+        and ( pi.f_examinated is null or pi.f_examinated = 0 )
+        and ( pi.change_item is null or pi.change_item = 0 )
+        left join md_report r on r.patientcode = p.patientcode
+        and r.disease_health = 0
+        <if test="bhys != true ">
+            left join md_items i on i.id = pi.id_examfeeitem
+        </if>
+
+        <where>
+            <if test="id != null">
+                b.id = #{id}
+            </if>
+            <if test="bhys != true ">
+                and ( i.bgdybs is null or i.bgdybs = 0 )
+            </if>
+        </where>
+            group by
+            s.patientcode,
+            s.id,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.id_org,
+            p.org_name,
+            p.org_depart,
+            p.id_marriage,
+            p.medicaldate,
+            p.jktjzt,
+            p.f_readytofinal,
+            p.f_examstarted,
+            p.dateregister,
+            r.status,
+            p.f_registered
+
+    </select>
+
+    <select id="findXmcj" resultType="com.center.medical.bean.dto.FindXmcjDto">
+        select
+        pi.id_ks,
+        d.dept_name,
+        pi.id_examfeeitem,
+        i.examfeeitem_nameprn,
+        count(
+        distinct
+        case
+        when p.id_sex = 0
+        and p.f_examstarted = 1
+        and pi.change_item = 0
+        and ( pi.sfjj is null or pi.sfjj = 0 )
+        and pi.f_giveup = 0
+        and pi.f_feecharged = 1 then
+        p.patientcode else null
+        end
+        ) AS count1,
+        count(
+        distinct
+        case
+        when p.f_examstarted = 1
+        and pi.change_item = 0
+        and ( pi.sfjj is null or pi.sfjj = 0 )
+        and pi.f_giveup = 0
+        and pi.f_feecharged = 1 then
+        p.patientcode else null
+        end
+        ) AS count2,
+        count( distinct case when p.id_sex = 0 then p.patientcode else null end ) AS count3,
+        count( distinct p.patientcode ) AS count4,
+        d.report_sort
+        from
+        md_ball_check_report b
+        inner join md_sample_person s on s.ball_check_id = b.id
+        inner join md_peispatient p on p.patientcode = s.patientcode
+        inner join md_peispatientfeeitem pi on pi.id_patient = s.patientcode
+        inner join md_items i on i.id = pi.id_examfeeitem
+        left join sys_dept d on d.dept_no = pi.id_ks
+        <where>
+            <if test="id != null">
+                b.id = #{id}
+            </if>
+            <if test="#{bhys != true}">
+                and ( i.bgdybs is null or i.bgdybs = '0' )
+            </if>
+            and pi.f_feecharged = 1
+            and pi.change_item = 0
+            group by
+            pi.id_ks,
+            d.dept_name,
+            pi.id_examfeeitem,
+            i.examfeeitem_nameprn,
+            d.report_sort
+            order by
+            d.report_sort;
+        </where>
+    </select>
+
+    <select id="findJctj" resultType="com.center.medical.bean.dto.FindJctjDto">
+        select d.dept_name,
+               d.dept_no,
+               t.basconclusion_id,
+               t.basconclusion_name,
+               ini.c,
+               ini.d,
+               ou.e,
+               ou.f,
+               p.patientcode,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               p.org_depart,
+               d.report_sort,
+               '999' as flag
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on s.patientcode = st.patientcode
+            and (st.is_delete is null or st.is_delete = 0)
+            and st.disease_health = 0
+                 left join md_total_verdict t on t.total_id = st.id
+            and (t.is_delete is null or t.is_delete = 0)
+            and t.flag = 1
+                 left join sys_dept d on d.dept_no = t.division_id
+                 left join (
+            select tin.division_id                                                             as a,
+                   tin.basconclusion_name                                                      as b,
+                   count(distinct stin.patientcode)                                            as c,
+                   count(distinct case when pin.id_sex = 0 then pin.patientcode else null end) as d
+            from md_ball_check_report bin
+                     inner join md_sample_person sin on sin.ball_check_id = bin.id
+                     inner join md_peispatient pin on pin.patientcode = sin.patientcode
+                     inner join md_section_total stin on sin.patientcode = stin.patientcode
+                and (stin.is_delete is null or stin.is_delete = 0)
+                and stin.disease_health = 0
+                     inner join md_total_verdict tin on tin.total_id = stin.id
+                and (tin.is_delete is null or tin.is_delete = 0)
+                and tin.flag = 1
+            where bin.id = #{id}
+            group by tin.division_id,
+                     tin.basconclusion_name
+        ) ini on ini.a = t.division_id
+            and ini.b = t.basconclusion_name
+                 inner join (
+            select bo.id                                                            as q,
+                   count(so.patientcode)                                            as e,
+                   count(case when po.id_sex = 0 then so.patientcode else null end) as f
+            from md_ball_check_report bo
+                     inner join md_sample_person so on so.ball_check_id = bo.id
+                     left join md_peispatient po on po.patientcode = so.patientcode
+            group by bo.id
+        ) ou on ou.q = #{id}
+        where b.id = #{id}
+          and p.jktjzt > 0
+    </select>
+
+    <select id="findYangxjg" resultType="com.center.medical.bean.dto.FindYangxjgDto">
+        select p.dateregister,
+               p.id_org,
+               p.org_name,
+               p.org_depart,
+               p.patientcode,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               '' AS emptyString,
+               st.verdict,
+               st.offer
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 left join md_section_total st on s.patientcode = st.patientcode
+            and (st.is_delete is null or st.is_delete = 0)
+            and st.disease_health = 0
+            and p.jktjzt > 0
+        where b.id = #{id}
+    </select>
+
+    <select id="findYinxjg" resultType="com.center.medical.bean.dto.FindYinxjgDto">
+        select
+        d.dept_name,
+        i.examfeeitem_name,
+        group_concat( st.ms separator ',' ) as ms,
+        d.dept_no,
+        i.id
+        from
+        md_section_result_two st
+        inner join sys_dept d on d.dept_no = st.division_id
+        inner join md_items i on i.id = st.charges_id
+        inner join md_inspect_charge ic on ic.charge_id = i.id
+        and ic.inspect_id = st.verdict_id
+        and ic.is_delete = 0
+        left join sys_cen_dep qcd on qcd.did = d.dept_no
+        and qcd.cid = #{cid}
+        where
+        st.patientcode = #{patientCode}
+        and st.posistive = 1
+        and st.tjlx != 2
+        <if test="bhys != true">
+            and ( i.bgdybs is null or i.bgdybs = '0' )
+        </if>
+        group by
+        d.dept_name,
+        i.examfeeitem_name,
+        d.dept_no,
+        i.id,
+        st.patientcode,
+        ic.order_index,
+        qcd.xh,
+        i.xh
+        order by
+        qcd.xh,
+        d.dept_no,
+        i.xh,
+        i.id,
+        ic.order_index
+    </select>
+
+    <select id="findDtjz" resultType="com.center.medical.bean.dto.FindDtjzDto">
+        select
+            s.patientcode,
+            p.medicaltype,
+            p.jhys,
+            p.id_sex,
+            p.f_registered
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 left join md_peispatient p on p.patientcode = s.patientcode
+        where b.id = #{id}
+    </select>
+
+    <select id="findUniqueResult" resultType="Object">
+        select group_concat(b.a separator ',')
+        from (
+                 select distinct i.examfeeitem_nameprn as a
+                 from md_comboexamitem cei
+                          inner join md_items i on i.id = cei.item_id
+                 where cei.harm_id = #{jhys}
+                   and cei.medical_type = #{sglx}
+             ) b
+    </select>
+
+    <select id="findZybcxm" resultType="com.center.medical.bean.dto.FindZybcxmDto">
+        select s.patientcode,
+               s.id,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               p.jhgl,
+               p.jhys,
+               p.id_org,
+               p.org_name,
+               p.org_depart,
+               p.id_marriage,
+               group_concat(pi.id_examfeeitem)   AS idExamfeeitem,
+               group_concat(pi.examfeeitem_name) AS examfeeitemName,
+               p.medicaldate,
+               p.zytjzt,
+               p.f_readytofinal,
+               p.f_examstarted,
+               IFNULL(bw.type_name, p.trades)    AS typeName,
+               p.dateregister,
+               p.f_registered,
+               p.dateregisternotime,
+               p.idcardno,
+               p.id_examtype,
+               p.insuranceno
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 left join md_base_worktype bw on bw.id = p.worktype_id
+                 left join md_peispatientfeeitem pi on pi.id_patient = p.patientcode
+            and (pi.f_examinated is null or pi.f_examinated = 0)
+            and (pi.change_item is null or pi.change_item = 0)
+            and (((
+                      select count(*)
+                      from md_comboexamitem c
+                      where (
+                              p.jhys = c.harm_id
+                              or p.jhys like CONCAT(c.harm_id , ',%')
+                              or p.jhys like CONCAT('%,' , c.harm_id)
+                              or p.jhys like CONCAT('%,' , c.harm_id , ',%')
+                          )
+                        and c.medical_type = p.medicaltype
+                        and c.item_id = pi.id_examfeeitem
+                  ) > 0
+                     )
+                or ((
+                        select count(*)
+                        from md_comboexamitem c
+                                 inner join md_basexamltem b on b.id = c.exam_id
+                                 inner join md_inspect_charge ic on ic.inspect_id = b.id
+                                 inner join md_items i on i.id = ic.charge_id
+                                 inner join sys_dept q on q.dept_no = i.id_depart
+                        where (
+                                p.jhys = c.harm_id
+                                or p.jhys like CONCAT(c.harm_id , ',%')
+                                or p.jhys like CONCAT('%,' , c.harm_id)
+                                or p.jhys like CONCAT('%,' , c.harm_id , ',%')
+                            )
+                          and c.medical_type = p.medicaltype
+                          and ic.charge_id = pi.id_examfeeitem
+                          and q.jklx not in ('us', 'dr', 'cr', 'ct', 'mr', 'dx')) > 0
+                     ))
+        where b.id = #{id}
+        group by s.patientcode,
+                 s.id,
+                 p.patientname,
+                 p.id_sex,
+                 p.age,
+                 p.jhgl,
+                 p.jhys,
+                 p.id_org,
+                 p.org_name,
+                 p.org_depart,
+                 p.id_marriage,
+                 p.medicaldate,
+                 p.zytjzt,
+                 p.f_readytofinal,
+                 p.f_examstarted,
+                 p.trades,
+                 p.dateregister,
+                 p.f_registered,
+                 p.dateregisternotime,
+                 bw.type_name;
+    </select>
+
+    <select id="findRyyl" resultType="com.center.medical.bean.dto.FindRyylDto">
+        SELECT p.patientcode,
+               st.posistive,
+               (CASE WHEN a.serial_no = 3 THEN b.st ELSE a.summary_text END) AS test,
+               a.serial_no,
+               a.occupation_summary,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               p.jhgl,
+               p.jhys,
+               IFNULL(bw.type_name, p.trades) AS name,
+               p.idcardno
+        FROM md_ball_check_report b
+                 INNER JOIN md_sample_person s ON s.ball_check_id = b.id
+                 INNER JOIN md_peispatient p ON p.patientcode = s.patientcode
+                 LEFT JOIN md_base_worktype bw ON bw.id = p.worktype_id
+                 INNER JOIN md_section_total st ON st.patientcode = s.patientcode
+            AND st.is_delete = 0
+            AND st.disease_health = 1
+                 INNER JOIN (
+            SELECT *
+            FROM (
+                     SELECT c.patientcode,
+                            zv.summary_text,
+                            z.serial_no,
+                            z.occupation_summary,
+                            row_number() over ( PARTITION BY c.patientcode ORDER BY z.serial_no ASC ) AS row_num
+                     FROM md_comments_progessional c
+                              LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                              LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+                 ) AS aaa
+            WHERE row_num = 1
+        ) a ON a.patientcode = s.patientcode
+                 LEFT JOIN (
+            SELECT b2.patientcode                                                      bc,
+                   group_concat(b2.summary_text ORDER BY b2.summary_text SEPARATOR '') st
+            FROM (
+                     SELECT DISTINCT c2.patientcode,
+                                     zv2.summary_text
+                     FROM md_comments_progessional c2
+                              LEFT JOIN md_zy_vs_summary zv2 ON zv2.id = c2.progessional_id
+                              LEFT JOIN md_zy_summary z2 ON z2.id = zv2.occupation_summary
+                     WHERE z2.serial_no = 3
+                 ) b2
+            GROUP BY b2.patientcode
+        ) b ON b.bc = s.patientcode
+        WHERE b.id = #{id}
+          AND p.zytjzt > 0
+          AND (
+                a.serial_no IN (1, 2, 3)
+                OR NOT EXISTS(
+                    SELECT 1
+                    FROM md_peispatientfeeitem pi
+                    WHERE pi.sfjj = 1
+                      AND pi.id_patient = p.patientcode
+                      AND (((
+                                SELECT count(*)
+                                FROM md_comboexamitem c
+                                WHERE (
+                                        p.jhys = c.harm_id
+                                        OR p.jhys LIKE CONCAT(c.harm_id , ',%')
+                                        OR p.jhys LIKE CONCAT('%,' , c.harm_id)
+                                        OR p.jhys LIKE CONCAT('%,' , c.harm_id , ',%')
+                                    )
+                                  AND c.medical_type = p.medicaltype
+                                  AND c.item_id = pi.id_examfeeitem
+                            ) > 0
+                               )
+                        OR ((
+                                SELECT count(*)
+                                FROM md_comboexamitem c
+                                         INNER JOIN md_basexamltem b ON b.id = c.exam_id
+                                         INNER JOIN md_inspect_charge ic ON ic.inspect_id = b.id
+                                         INNER JOIN md_items i ON i.id = ic.charge_id
+                                         INNER JOIN sys_dept q ON q.dept_no = i.id_depart
+                                WHERE (
+                                        p.jhys = c.harm_id
+                                        OR p.jhys LIKE CONCAT(c.harm_id , ',%')
+                                        OR p.jhys LIKE CONCAT('%,' , c.harm_id)
+                                        OR p.jhys LIKE CONCAT('%,' , c.harm_id , ',%')
+                                    )
+                                  AND c.medical_type = p.medicaltype
+                                  AND ic.charge_id = pi.id_examfeeitem
+                                  AND q.jklx NOT IN ('us', 'dr', 'cr', 'ct', 'mr', 'dx')) > 0
+                               )
+                        )
+                )
+            )
+    </select>
+
+    <select id="findFcmx" resultType="com.center.medical.bean.dto.FindFcmxDto">
+        select a.occupation_diagnosis,
+               h.harm_name,
+               a.diagnosis,
+               a.summary_text,
+               count(p.id) AS count
+        from
+            md_sample_person s
+            inner join md_peispatient p
+        on p.patientcode = s.patientcode
+            inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+            inner join (
+            select
+            c.patientcode,
+            zv.summary_text,
+            zv.occupation_diagnosis,
+            zv.diagnosis
+            from
+            md_comments_progessional c
+            left join md_zy_vs_summary zv on zv.id = c.progessional_id
+            and zv.is_delete = 0
+            left join md_zy_summary z on z.id = zv.occupation_summary
+            and z.is_delete = 0
+            where
+            z.serial_no = 3
+            and not exists (
+            select
+            1
+            from
+            md_comments_progessional c1
+            left join md_zy_vs_summary zv1 on zv1.id = c1.progessional_id
+            and zv1.is_delete = 0
+            left join md_zy_summary z1 on z1.id = zv1.occupation_summary
+            and z1.is_delete = 0
+            where
+            c1.patientcode = c.patientcode
+            and z1.serial_no <![CDATA[ < ]]> 3
+            )
+            ) a on a.patientcode = s.patientcode
+            inner join md_harm h on h.id = a.occupation_diagnosis
+        where
+            s.ball_check_id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by
+            a.occupation_diagnosis,
+            h.harm_name,
+            a.diagnosis,
+            a.summary_text
+    </select>
+
+    <select id="findFcqk" resultType="com.center.medical.bean.dto.FindFcqkDto">
+        select p.patientcode,
+               p.patientname,
+               p.id_sex,
+               p.age,
+               p.jhgl,
+               p.jhys,
+               IFNULL(bw.type_name, p.trades) AS name
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 left join md_base_worktype bw on bw.id = p.worktype_id
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 3
+        where b.id = #{id}
+          and p.zytjzt > 0
+    </select>
+
+    <select id="findJcqkhz" resultType="com.center.medical.bean.dto.FindJcqkhzDto">
+        select zv.regimentation_note,
+               h.harm_name,
+               zv.occupation_diagnosis,
+               p.org_depart,
+               count(
+                       distinct (case z.serial_no when 1 then s.id else null end)) yszyb,
+               count(
+                       distinct (case z.serial_no when 2 then s.id else null end)) zyjjz,
+               count(
+                       distinct (case z.serial_no when 3 then s.id else null end)) fc,
+               count(
+                       distinct (case z.serial_no when 4 then s.id else null end)) qtjb,
+               count(
+                       distinct (case z.serial_no when 5 then s.id else null end)) wjyc,
+               h.harm_class                                                        ashclass,
+               hc.harm_class as                                                    hcclass
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+                 inner join md_harm h on h.id = zv.occupation_diagnosis
+                 inner join md_zy_harm_class hc on hc.id = h.harm_class
+        where b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by p.org_depart,
+                 zv.regimentation_note,
+                 zv.occupation_diagnosis,
+                 h.harm_name,
+                 h.harm_class,
+                 hc.harm_class;
+    </select>
+
+    <select id="findListDate" resultType="com.center.medical.bean.dto.FindListDateDto">
+        select zv.summary_text      as jcjl,
+               z.occupation_summary as jbmc,
+               zv.occupation_diagnosis,
+               count(distinct s.id) as count,
+            h.harm_name
+        from
+            md_ball_check_report b
+            inner join md_sample_person s
+        on s.ball_check_id = b.id
+            inner join md_peispatient p on p.patientcode = s.patientcode
+            inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+            inner join md_comments_progessional c on c.patientcode = s.patientcode
+            inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+            inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no in ( 3, 4, 5 )
+            inner join md_harm h on h.id = zv.occupation_diagnosis
+        where
+            b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by
+            zv.summary_text,
+            zv.occupation_diagnosis,
+            z.occupation_summary,
+            h.harm_name
+        union all
+        select zv.summary_text      as jcjl,
+               o.occupation_diseast as jbmc,
+               zv.occupation_diagnosis,
+               count(distinct s.id),
+               h.harm_name
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 1
+                 inner join md_harm h on h.id = zv.occupation_diagnosis
+                 left join md_occupation_diseast o on o.id = zv.occupation_diseast
+        where b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by zv.occupation_diagnosis,
+                 zv.occupation_diseast,
+                 o.occupation_diseast,
+                 zv.summary_text,
+                 h.harm_name
+        union all
+        select zv.summary_text as jcjl,
+               zv.diagnosis    as jbmc,
+               zv.occupation_diagnosis,
+               count(distinct s.id),
+               h.harm_name
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 2
+                 inner join md_harm h on h.id = zv.occupation_diagnosis
+        where b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by zv.occupation_diagnosis,
+                 zv.diagnosis,
+                 zv.summary_text,
+                 h.harm_name
+    </select>
+
+    <select id="findJcrs" resultType="com.center.medical.bean.dto.FindJcrsDto">
+        select jbmc,
+               count(*) as count
+        from
+            (
+            select
+            min( z.occupation_summary ) as jbmc,
+            p.patientcode
+            from
+            md_ball_check_report b
+            inner join md_sample_person s on s.ball_check_id = b.id
+            inner join md_peispatient p on p.patientcode = s.patientcode
+            inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+            inner join md_zy_summary z on z.id = st.summary_id
+            and z.serial_no in ( 3, 4, 5 )
+            inner join md_comments_progessional c on c.patientcode = st.patientcode
+            inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+            and zv.occupation_summary = z.id
+            where
+            b.id = #{id}
+            and p.zytjzt <![CDATA[ > ]]> 0
+            group by
+            p.patientcode
+            ) t
+        group by
+            t.jbmc
+        union all
+        select o.occupation_diseast as jbmc,
+               count(distinct s.id)
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 1
+                 left join md_occupation_diseast o on o.id = zv.occupation_diseast
+        where b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by zv.occupation_diseast,
+                 o.occupation_diseast,
+                 z.occupation_summary
+        union all
+        select zv.diagnosis as jbmc,
+               count(distinct s.id)
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+                 inner join md_section_total st on st.patientcode = s.patientcode
+            and st.is_delete = 0
+            and st.disease_health = 1
+                 inner join md_comments_progessional c on c.patientcode = s.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 2
+        where b.id = #{id}
+          and p.zytjzt <![CDATA[ > ]]> 0
+        group by zv.diagnosis,
+                 z.occupation_summary;
+    </select>
+
+    <select id="findScrs" resultType="Integer">
+        select count(*)
+        from md_ball_check_report b
+                 inner join md_sample_person s on s.ball_check_id = b.id
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+            and p.f_registered = 1
+        where b.id = #{id}
+    </select>
+
+    <select id="findNumByPatientcode" resultType="Integer">
+        select count(*)
+        from md_comments_progessional c
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+            and z.serial_no = 3
+        where c.patientcode = #{patientcode}
+    </select>
+
+    <select id="findListIn" resultType="com.center.medical.bean.dto.FindListInDto">
+        select st.posistive,
+               zv.summary_text,
+               z.serial_no,
+               z.occupation_summary
+        from md_section_total st
+                 inner join md_comments_progessional c on c.patientcode = st.patientcode
+                 inner join md_zy_vs_summary zv on zv.id = c.progessional_id
+                 inner join md_zy_summary z on z.id = zv.occupation_summary
+        where 1 = 1
+          and st.patientcode = #{patientcode}
+        order by z.serial_no asc
+        limit 1
+    </select>
+
+    <delete id="deleteFxCompletion">
+        delete from md_fx_completion
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteDanagerObject">
+        delete from md_danager_object
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxPersonnelview">
+        delete from md_fx_personnelview
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxReviewsituation">
+        delete from md_fx_reviewsituation
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxItemscheck">
+        delete from md_fx_itemscheck
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxDetection">
+        delete from md_fx_detection
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxPositive">
+        delete from md_fx_positive
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxNegative">
+        delete from md_fx_negative
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxDetectionzy">
+        delete from md_fx_detectionzy
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxSummary">
+        delete from md_fx_summary
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxReviewInfo">
+        delete from md_fx_review_info
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteFxHarm">
+        delete from md_fx_harm
+        <where>
+            <if test="ballIds != null">
+                sample_id IN
+                <foreach collection="ballIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
+
+    <!--导出阴性和阳性结果接口-->
+    <select id="exportData" resultType="com.center.medical.report.bean.vo.RAExportDataVo">
+        SELECT fp.patientcode,
+               fp.patientname,
+               fp.sex,
+               fp.age,
+               fp.org_name,
+               fp.org_depart,
+               fp.dateregister,
+               fp.positive_result,
+               fp.verdict,
+               fp.offer
+        FROM md_fx_positive fp
+        WHERE fp.sample_id = #{reportId}
+        UNION ALL
+        SELECT fn.patientcode,
+               fn.patientname,
+               fn.sex,
+               fn.age,
+               fn.org_name,
+               fn.org_depart,
+               fn.dateregister,
+               fn.positive_result,
+               fn.verdict,
+               fn.offer
+        FROM md_fx_negative fn
+        WHERE fn.sample_id = #{reportId}
+    </select>
+
+
+    <!--导出职业团检样本数据-->
+    <select id="export" resultType="com.center.medical.report.bean.vo.GHExportDataVo">
+        SELECT
+        id,
+        patientcode,
+        f_examstarted,
+        f_finalexamed,
+        patientname,
+        id_sex,
+        age,
+        org_name,
+        org_depart
+        FROM
+        md_peispatient
+        WHERE
+        id IN
+        <foreach collection="patientIds" item="patientId" open="(" close=")" separator=",">
+            #{patientId}
+        </foreach>
+    </select>
+
+
+    <!--查询老系统数据-->
+    <select id="oldExport" resultType="com.center.medical.report.bean.vo.GHExportDataVo">
+        SELECT
+        id,
+        patientcode,
+        f_examstarted,
+        f_finalexamed,
+        patientname,
+        id_sex,
+        age,
+        org_name,
+        org_depart
+        FROM
+        peispatient
+        WHERE
+        id IN
+        <foreach collection="patientIds" item="patientId" open="(" close=")" separator=",">
+            #{patientId}
+        </foreach>
+    </select>
+
+
+
+    <select id="findJctjEF" resultType="com.center.medical.bean.dto.FindJctjDto">
+        select bo.id                                                            as q,
+               count(so.patientcode)                                            as e,
+               count(case when po.id_sex = 0 then so.patientcode else null end) as f
+        from md_ball_check_report bo
+                 inner join md_sample_person so on so.ball_check_id = bo.id
+                 left join md_peispatient po on po.patientcode = so.patientcode
+        <where>
+            bo.id = #{id}
+        </where>
+    </select>
+</mapper>
+

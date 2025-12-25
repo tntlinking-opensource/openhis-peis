@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdCardPaywayMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdCardPayway" id="MdCardPaywayMap">
+        <id property="id" column="id"/>
+        <result property="idCharge" column="id_charge"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="moneyamountpaiddate" column="moneyamountpaiddate"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="idPayway" column="id_payway"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="note" column="note"/>
+        <result property="cardno" column="cardno"/>
+        <result property="isCharged" column="is_charged"/>
+        <result property="processId" column="process_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdCardPaywayVo">
+        select id,
+               id_charge,
+               moneyamountpaid,
+               moneyamountpaiddate,
+               id_feecharger,
+               id_payway,
+               createdate,
+               modifydate,
+               note,
+               cardno,
+               is_charged,
+               process_id
+        from md_card_payway
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdCardPaywayMap">
+        <include refid="selectMdCardPaywayVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdCardPaywayMap">
+        <include refid="selectMdCardPaywayVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

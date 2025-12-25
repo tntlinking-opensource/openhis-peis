@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.KdCustomerMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.KdCustomer" id="KdCustomerMap">
+        <id property="accountNo" column="account_no"/>
+        <result property="accountName" column="account_name"/>
+        <result property="useStatusId" column="use_status_id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="ctDate" column="ct_date"/>
+        <result property="ltDate" column="lt_date"/>
+        <result property="centerorgname" column="centerorgname"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdCustomerVo">
+        select account_no, account_name, use_status_id, branch_id, ct_date, lt_date, centerorgname
+        from kd_customer
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdCustomerMap">
+        <include refid="selectKdCustomerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdCustomerMap">
+        <include refid="selectKdCustomerVo"/>
+        <where>
+            accountNo = #{id}
+        </where>
+    </select>
+
+</mapper>
+

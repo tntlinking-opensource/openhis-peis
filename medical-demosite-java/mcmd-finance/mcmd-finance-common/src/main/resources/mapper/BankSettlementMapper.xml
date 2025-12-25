@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.BankSettlementMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.BSPageVo">
+        SELECT
+        remitter,
+        income,
+        STR_TO_DATE ( transdate, '%Y-%m-%d' ) AS transDate,
+        transactionnumber,
+        sum( kr.moneyamountpaid ) AS jsje,
+        count( kr.id ) AS isJs,
+        group_concat( DISTINCT IFNULL ( u.user_name, kr.id_feecharger )) AS xsjl,
+        count( CASE WHEN kr.is_audit = '1' THEN kr.id ELSE NULL END ) AS isSh,
+        STR_TO_DATE ( max( kr.createdate ), '%Y-%m-%d %T' ) AS jssj,
+        STR_TO_DATE ( max( kr.auditdate ), '%Y-%m-%d %T' ) AS shsj
+        FROM
+        kd_remittance r
+        LEFT JOIN kd_reser kr ON kr.id_remitter = r.transactionnumber
+        LEFT JOIN sys_user u ON u.user_no = kr.id_feecharger
+        <where>
+            1 = 1
+            <if test="param.remitter!=null and param.remitter!=''">
+                AND remitter LIKE concat('%',#{param.remitter},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND transdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND transdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.money!=null and param.money!=''">
+                AND FORMAT(r.income, 10) = FORMAT(#{param.money}, 10)
+            </if>
+            <if test="param.branchIds!=null">
+                AND r.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY remitter,income,transdate,transactionnumber
+        <trim prefix="HAVING" suffixOverrides="AND">
+            <if test="param.isSh!=null">
+                <if test="param.isSh == 1">
+                    count(case when kr.IS_AUDIT='1' then kr.id else null end)>0
+                </if>
+                <if test="param.isSh == 0">
+                    count(case when kr.IS_AUDIT='1' then kr.id else null end)=0
+                </if>
+            </if>
+
+            <if test="param.isJs!=null">
+                <if test="param.isJs == 1">
+                    count(kr.id) > 0
+                </if>
+                <if test="param.isJs == 0">
+                    count(kr.id) = 0
+                </if>
+            </if>
+        </trim>
+        ORDER BY transdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoByNum" resultType="com.center.medical.finance.bean.model.KdRemittance">
+        SELECT remitter,
+               income,
+               STR_TO_DATE(transdate, '%Y-%m-%d %T') AS transdate,
+               transactionnumber,
+               branch_id
+        FROM kd_remittance
+        WHERE transactionnumber = #{num}
+    </select>
+
+
+    <!-- 导出统收 -->
+    <select id="exportBankRefund" resultType="com.center.medical.finance.bean.vo.BankRefundVo">
+        SELECT ky.account_name,
+        kr.customername,
+        kr.id_customer,
+        kr.moneyamountpaid,
+        qu.user_name,
+        kr.is_audit,
+        kr.is_update,
+        kr.note
+        FROM kd_reser kr
+        LEFT JOIN kd_payway ky ON ky.account_no = kr.id_remittanceway
+        LEFT JOIN sys_user qu ON qu.user_no = kr.id_feecharger
+        LEFT JOIN kd_remittance ke ON ke.transactionnumber = kr.id_remitter
+        <where>
+            1 = 1
+            <if test="param.reserWay!=null and param.reserWay!=''">
+                AND ky.account_name = #{param.reserWay}
+            </if>
+            <if test="param.startTime!=null">
+                AND ke.transdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND ke.transdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND is_audit = '1'
+        </where>
+        ORDER BY qu.user_name
+    </select>
+
+
+    <!-- 获取一笔银行流水相关的详细记账结算 -->
+    <select id="getReserBillingData" resultType="com.center.medical.finance.bean.model.KdReser">
+        SELECT kr.id,
+               kr.id_remittanceway,
+               kr.customername,
+               kr.id_customer,
+               kr.moneyamountpaid,
+               kr.id_feecharger,
+               kr.id_creator,
+               kr.createdate,
+               kr.modifydate,
+               kr.note,
+               kr.auditdate,
+               kr.id_audit,
+               kr.is_update,
+               kr.is_audit,
+               kr.id_change,
+               kp.account_name AS payWayName,
+               IFNULL(u.user_name, kr.id_feecharger) AS xsjl,
+               u2.user_name AS creatorName,
+               u3.user_name AS changeName,
+               u4.user_name AS auditName
+        FROM kd_reser kr
+                 LEFT JOIN sys_user u ON u.user_no = kr.id_feecharger
+                 left join kd_payway kp on kp.account_no = kr.id_remittanceway
+                 LEFT JOIN sys_user u2 ON u2.user_no = kr.id_creator
+                 LEFT JOIN sys_user u3 ON u3.user_no = kr.id_change
+                 LEFT JOIN sys_user u4 ON u4.user_no = kr.id_audit
+        WHERE 1 = 1
+          AND id_remitter = #{num}
+    </select>
+
+
+    <!-- 团检-统收 获取结算名字 -->
+    <select id="getNameNumber1" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT license_name AS name,
+        int_id AS id
+        FROM crm_sellcustomer
+        WHERE license_name IS NOT NULL
+        AND khzt = '1'
+        AND is_delete = 0
+        <if test="key!=null and key!=''">
+            AND khdwmc LIKE concat('%',#{key},'%')
+        </if>
+        ORDER BY int_id
+    </select>
+
+    <!-- 团检-统收 获取结算名字 -->
+    <select id="getNameNumber2" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT kingdee_company      AS name,
+               thing_kingdee_number AS id
+        FROM md_dictpayway
+        WHERE payway_name = '记账'
+          AND is_delete = 0
+    </select>
+
+    <!-- 团检-统收 获取结算名字 -->
+    <select id="getNameNumber3" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT org_name AS name,
+        org_number AS id
+        FROM kd_organization
+        WHERE 1 = 1
+        <if test="key!=null and key!=''">
+            AND org_name LIKE concat('%',#{key},'%')
+        </if>
+        ORDER BY org_number
+    </select>
+
+
+    <!-- 团检-统收 获取结算名字（id号那列） -->
+    <select id="getIdCustomer1" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT s.jindie_id AS name,
+        s.int_id AS id
+        FROM crm_sellcustomer s
+        LEFT JOIN kd_customer kc ON kc.account_name = s.license_name
+        WHERE s.license_name IS NOT NULL
+        AND s.khzt = '1'
+        AND s.is_delete = 0
+        AND kc.use_status_id = '1'
+        <if test="key!=null and key!=''">
+            AND int_id = #{key}
+        </if>
+<!--        <if test="branchId!=null and branchId!=''">-->
+<!--            AND kc.branch_id = #{branchId}-->
+<!--        </if>-->
+        ORDER BY s.int_id
+    </select>
+
+
+    <!-- 个检-记账 获取结算名字（id号那列） -->
+    <select id="getIdCustomer2" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT patientname AS name,
+        patientcode AS id
+        FROM md_peispatient
+        WHERE f_usecodehiden = 0
+        AND f_registered = 1
+        <if test="key!=null and key!=''">
+            AND patientname LIKE concat('%',#{param.key},'%')
+        </if>
+        ORDER BY patientcode
+    </select>
+
+    <!-- 充卡-银行存款 获取结算名字（id号那列） -->
+    <select id="getIdCustomer3" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT '体检卡' AS name,
+        card_no AS id
+        FROM md_card
+        WHERE 1 = 1
+        <if test="key!=null and key!=''">
+            AND card_no LIKE concat('%',#{param.key},'%')
+        </if>
+        ORDER BY card_no
+    </select>
+
+    <!-- 代收体检费-银行存款 获取结算名字（id号那列） -->
+    <select id="getIdCustomer4" resultType="com.center.medical.finance.bean.vo.NameNumberVo">
+        SELECT org_name AS name,
+        org_number AS id
+        FROM kd_organization
+        WHERE 1 = 1
+        <if test="key!=null and key!=''">
+            AND org_name LIKE concat('%',#{param.key},'%')
+        </if>
+        ORDER BY org_number
+    </select>
+
+
+
+    <!-- 获取销售经理1 -->
+    <select id="getFeeChargerData1" resultType="com.center.medical.finance.bean.vo.FeeChargerDataVo">
+        select
+            u.user_no,
+            u.user_name,
+            b.fzx
+        from
+            sys_user u
+                left join sys_branch b on b.branch_id = u.cid
+                left join md_user_saleer us on us.user_id = u.user_no
+                <if test="id!=null and id!=''">
+                    LEFT JOIN crm_sellcustomer s ON s.xsjlid = u.user_no
+                </if>
+        <where>
+            u.del_flag = 0
+            <if test="key!=null and key!=''">
+                AND u.user_name LIKE concat('%',#{key},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                AND s.int_id = #{id}
+            </if>
+            AND us.saleer_md5 IS NOT NULL
+        </where>
+        ORDER BY
+            u.user_name
+    </select>
+
+
+    <!-- 代收体检费-银行存款 -->
+    <select id="getFeeChargerData2" resultType="com.center.medical.finance.bean.vo.FeeChargerDataVo">
+        select
+            u.user_no,
+            u.user_name,
+            b.fzx
+        from
+            sys_user u
+                left join sys_branch b on b.branch_id = u.cid
+                left join md_user_saleer us on us.user_id = u.user_no
+        <where>
+            u.del_flag = 0
+            <if test="key!=null and key!=''">
+                AND u.user_name LIKE concat('%',#{key},'%')
+            </if>
+            AND us.saleer_md5 IS NOT NULL
+        </where>
+        ORDER BY
+            u.user_name
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="summaryAmount" resultType="com.center.medical.finance.bean.vo.BankAmountVo">
+        SELECT
+        sum( kr.moneyamountpaid ) AS amount
+        FROM
+        kd_remittance r
+        LEFT JOIN kd_reser kr ON kr.id_remitter = r.transactionnumber
+        LEFT JOIN sys_user u ON u.user_no = kr.id_feecharger
+        <where>
+            1 = 1
+            <if test="param.remitter!=null and param.remitter!=''">
+                AND remitter LIKE concat('%',#{param.remitter},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND transdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND transdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.money!=null and param.money!=''">
+                AND FORMAT(r.income, 10) = FORMAT(#{param.money}, 10)
+            </if>
+            <if test="param.branchIds!=null">
+                AND r.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        <trim prefix="HAVING" suffixOverrides="AND">
+            <if test="param.isSh!=null">
+                <if test="param.isSh == 1">
+                    count(case when kr.IS_AUDIT='1' then kr.id else null end)>0
+                </if>
+                <if test="param.isSh == 0">
+                    count(case when kr.IS_AUDIT='1' then kr.id else null end)=0
+                </if>
+            </if>
+
+            <if test="param.isJs!=null">
+                <if test="param.isJs == 1">
+                    count(kr.id) > 0
+                </if>
+                <if test="param.isJs == 0">
+                    count(kr.id) = 0
+                </if>
+            </if>
+        </trim>
+    </select>
+</mapper>
+

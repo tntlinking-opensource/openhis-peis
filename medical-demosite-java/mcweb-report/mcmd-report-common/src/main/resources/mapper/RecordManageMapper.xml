@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.RecordManageMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.report.bean.vo.RecordManageVo">
+        SELECT
+        archives.id,
+        min( archives.patientarchiveno ) patientarchiveno,
+        min( archives.patientname ) patientname,
+        min( archives.id_sex ) idSex,
+        min(STR_TO_DATE( archives.birthdate, '%Y-%m-%d' )) birthdate,
+        min( archives.phone ) phone,
+        min( archives.idcardno ) idcardno,
+        min( archives.id_nation ) idnation,
+        min( archives.address ) address,
+        min( archives.cultural ) cultural,
+        IFNULL( min( archives.ishmd ), 0 ) ishmd,
+        min( archives.hmdbz ) hmdbz,
+        min( archives.memberlevel ) memberlevel,
+        min(STR_TO_DATE( archives.createdate, '%Y-%m-%d %T' )) createdate,
+        count( ph.id ) examcounts,
+        min( archives.id_marriage ) idMarriage,
+        min( archives.marriage ) marriage,
+        min( archives.countreportoccupationxml ) countreportoccupationxml,
+        min( archives.patientcardno ) patientcardno,
+        sum(pcm.moneyamountpaid ) money
+        FROM(
+        SELECT *
+        FROM md_peispatientarchive archives
+        <where>
+            (
+            archives.is_delete IS NULL
+            OR archives.is_delete = 0
+            )
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND archives.patientname like concat('%',#{patientname},'%')
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND (
+                INSTR(archives.input_code,#{param.inputCode})>0
+                OR INSTR(archives.patientname,#{param.inputCode})>0
+                )
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND archives.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND archives.idcardno like concat('%',#{param.idcardno},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        LIMIT #{param.offset}, #{param.limit}
+        ) as archives
+        LEFT JOIN md_peispatient ph ON archives.patientarchiveno = ph.patientarchiveno
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = ph.patientcode
+        GROUP BY archives.id,archives.createdate
+        ORDER BY archives.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatientarchive">
+        SELECT *
+        FROM md_peispatientarchive
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取医生数据 -->
+    <select id="getDoctor" resultType="com.center.medical.report.bean.dto.GetDoctorDto">
+        SELECT
+            q.user_name,
+            q.phonenumber,
+            STR_TO_DATE(s.total_time,'%Y-%m-%d') AS totalTime
+        FROM
+            md_peispatient p
+                LEFT JOIN md_section_total s ON s.patientcode = p.patientcode
+                AND s.disease_health = 0
+                LEFT JOIN sys_user q ON s.doctor_id = q.user_no
+        WHERE
+            p.patientcode = #{patientcode}
+    </select>
+
+
+    <!-- 获取医生数据 -->
+    <select id="getDepResult1" resultType="com.center.medical.report.bean.dto.DepResult1Dto">
+        SELECT
+            q.dept_name,
+            s.conclusions AS peiC,
+            r.conclusions AS pei1C
+        FROM
+            md_section_result_main s
+                LEFT JOIN md_section_result_main r ON r.patientcode = #{patientcode_m}
+                AND r.dep_id = s.dep_id
+                INNER JOIN sys_dept q ON q.dept_no = s.dep_id
+        WHERE
+            s.patientcode = #{patientcode_p}
+    </select>
+
+
+    <!-- 获取检验科本届数据 -->
+    <select id="getTestResult" resultType="com.center.medical.report.bean.dto.TestResultDto">
+        SELECT
+            p.examfeeitem AS p,
+            p.examitem_name_r,
+            p.examitemvaluesreport AS pp,
+            p.status AS ps,
+            mm.examitemvaluesreport AS mm,
+            mm.status AS ms
+        FROM
+            md_peispatientexamitem p
+                LEFT JOIN md_peispatientexamitem mm ON mm.patientcode = #{patientcode_m}
+                AND mm.examitem_name_r = p.examitem_name_r
+        WHERE
+            p.patientcode = #{patientcode_p}
+          AND p.id_examfeeitem = #{itemid}
+        GROUP BY
+            p.examfeeitem,
+            p.examitem_name_r,
+            p.report_range,
+            mm.examitemvaluesreport,
+            p.status,
+            mm.status,
+            p.examitemvaluesreport
+    </select>
+
+
+
+    <!-- 导出对比报告 -->
+    <select id="getExportData" resultType="com.center.medical.report.bean.vo.RecordManageVo">
+        SELECT
+        archives.id,
+        min( archives.patientarchiveno ) patientarchiveno,
+        min( archives.patientname ) patientname,
+        min( archives.id_sex ) idSex,
+        min(STR_TO_DATE( archives.birthdate, '%Y-%m-%d' )) birthdate,
+        min( archives.phone ) phone,
+        min( archives.idcardno ) idcardno,
+        min( archives.id_nation ) idnation,
+        min( archives.address ) address,
+        min( archives.cultural ) cultural,
+        IFNULL( min( archives.ishmd ), 0 ) ishmd,
+        min( archives.hmdbz ) hmdbz,
+        min( archives.memberlevel ) memberlevel,
+        min(STR_TO_DATE( archives.createdate, '%Y-%m-%d %T' )) createdate,
+        count( ph.id ) examcounts,
+        min( archives.id_marriage ) idMarriage,
+        min( archives.marriage ) marriage,
+        min( archives.countreportoccupationxml ) countreportoccupationxml,
+        min( archives.patientcardno ) patientcardno,
+        sum(pcm.moneyamountpaid ) money
+        FROM
+        md_peispatientarchive archives
+        LEFT JOIN md_peispatient ph ON archives.patientarchiveno = ph.patientarchiveno
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = ph.patientcode
+        <where>
+            (
+            archives.is_delete IS NULL
+            OR archives.is_delete = 0
+            )
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND archives.patientname like concat('%',#{patientname},'%')
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND (
+                INSTR(ARCHIVES.INPUT_CODE,#{param.inputCode})>0
+                OR INSTR(ARCHIVES.PATIENTNAME,#{param.inputCode})>0
+                )
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND archives.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND archives.idcardno like concat('%',#{param.idcardno},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY archives.id,archives.createdate
+        ORDER BY archives.createdate DESC
+    </select>
+
+
+
+    <!--  三次对比报告的，上次做了也不显示 -->
+    <select id="getDepResult2" resultType="com.center.medical.report.bean.dto.DepResult2Dto">
+        SELECT
+            q.dept_name,
+            s.conclusions AS peiC,
+            r.conclusions AS pei1C,
+            t.conclusions AS pei2C
+        FROM
+            md_section_result_main s
+                LEFT JOIN md_section_result_main r ON r.patientcode = #{patientcode_s}
+                AND r.dep_id = s.dep_id
+                LEFT JOIN md_section_result_main t ON t.patientcode = #{patientcode_f}
+                AND t.dep_id = s.dep_id
+                INNER JOIN sys_dept q ON q.dept_no = s.dep_id
+        WHERE
+            s.patientcode = #{patientcode_p}
+    </select>
+
+
+    <!--  通过体检号获取检查项目 -->
+    <select id="getInspectionData2ByCode" resultType="com.center.medical.report.bean.dto.InspectionData2ByCodeDto">
+        SELECT
+            p.id_examfeeitem,
+            i.examfeeitem_nameprn
+        FROM
+            md_peispatientexamitem p
+                INNER JOIN md_items i ON i.id = p.id_examfeeitem
+        WHERE
+            p.patientcode = #{patientcode_p}
+          AND p.dep_id = '19'
+        GROUP BY
+            p.id_examfeeitem,
+            i.examfeeitem_nameprn
+    </select>
+
+
+    <!--  通过三个体检号获取检验科结果 -->
+    <select id="getInspectionData2ByThreeCode" resultType="com.center.medical.report.bean.dto.InspectionData2ByThreeDto">
+        SELECT
+            IFNULL(p.examfeeitem,'无')AS examfeeitem,
+            IFNULL(p.examitem_name_r,'无') AS examitemNameR,
+            IFNULL(p.examitemvaluesreport,'无') AS examitemvaluesreportP,
+            IFNULL(p.status,'无') AS statusP,
+            IFNULL(mm.examitemvaluesreport,'无') AS examitemvaluesreportS,
+            IFNULL(mm.status,'无') AS statusS,
+            IFNULL(gg.examitemvaluesreport,'无') AS examitemvaluesreportF,
+            IFNULL(gg.status,'无') AS statusF
+        FROM
+            md_peispatientexamitem p
+                LEFT JOIN md_peispatientexamitem mm ON mm.patientcode = #{patientcode_s}
+                AND mm.examitem_name_r = p.examitem_name_r
+                LEFT JOIN md_peispatientexamitem gg ON gg.patientcode = #{patientcode_f}
+                AND gg.examitem_name_r = p.examitem_name_r
+        WHERE
+            p.patientcode = #{patientcode_p}
+          AND p.id_examfeeitem = #{itemId}
+        GROUP BY
+            p.examfeeitem,
+            p.examitem_name_r,
+            p.report_range,
+            mm.examitemvaluesreport,
+            p.status,
+            mm.status,
+            p.examitemvaluesreport,
+            gg.examitemvaluesreport,
+            gg.status
+    </select>
+
+
+    <!--  获取检查项目 -->
+    <select id="getInspectionData" resultType="com.center.medical.report.bean.dto.IDItemIdsDto">
+        SELECT
+            p.id_examfeeitem,
+            i.examfeeitem_nameprn
+        FROM
+            md_peispatientexamitem p
+                INNER JOIN md_items i ON i.id = p.id_examfeeitem
+        WHERE
+            p.patientcode = #{patientcode_p}
+          AND p.dep_id = '19'
+        GROUP BY
+            p.id_examfeeitem,
+            i.examfeeitem_nameprn
+    </select>
+
+
+    <!--  通过两个个体检号获取检验科结果 -->
+    <select id="getTwoCodeInspect" resultType="com.center.medical.report.bean.dto.InspectionData2ByThreeDto">
+        SELECT
+            IFNULL(p.examfeeitem,'无')AS examfeeitem,
+            IFNULL(p.examitem_name_r,'无') AS examitemNameR,
+            IFNULL(p.examitemvaluesreport,'无') AS examitemvaluesreportP,
+            IFNULL(p.status,'无') AS statusP,
+            IFNULL(mm.examitemvaluesreport,'无') AS examitemvaluesreportS,
+            IFNULL(mm.status,'无') AS statusS
+        FROM
+            md_peispatientexamitem p
+                LEFT JOIN md_peispatientexamitem mm ON mm.patientcode = #{patientcode_m}
+                AND mm.examitem_name_r = p.examitem_name_r
+        WHERE
+            p.patientcode = #{patientcode_p}
+          AND p.id_examfeeitem = #{itemId}
+        GROUP BY
+            p.examfeeitem,
+            p.examitem_name_r,
+            p.report_range,
+            mm.examitemvaluesreport,
+            p.status,
+            mm.status,
+            p.examitemvaluesreport
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getMemberTotal" resultType="java.lang.Long">
+        SELECT
+        count(*)
+        FROM md_peispatientarchive archives
+        <where>
+            (
+            archives.is_delete IS NULL
+            OR archives.is_delete = 0
+            )
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND archives.patientname like concat('%',#{patientname},'%')
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND (
+                INSTR(archives.input_code,#{param.inputCode})>0
+                OR INSTR(archives.patientname,#{param.inputCode})>0
+                )
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND archives.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND archives.idcardno like concat('%',#{param.idcardno},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND STR_TO_DATE(archives.createdate,'%Y-%m-%d') <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+</mapper>
+

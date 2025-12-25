@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.KdDepartmentMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.KdDepartment" id="KdDepartmentMap">
+        <id property="accountNo" column="account_no"/>
+        <result property="accountName" column="account_name"/>
+        <result property="useStatusId" column="use_status_id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="ctDate" column="ct_date"/>
+        <result property="ltDate" column="lt_date"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdDepartmentVo">
+        select account_no, account_name, use_status_id, branch_id, ct_date, lt_date
+        from kd_department
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdDepartmentMap">
+        <include refid="selectKdDepartmentVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdDepartmentMap">
+        <include refid="selectKdDepartmentVo"/>
+        <where>
+            accountNo = #{id}
+        </where>
+    </select>
+
+</mapper>
+

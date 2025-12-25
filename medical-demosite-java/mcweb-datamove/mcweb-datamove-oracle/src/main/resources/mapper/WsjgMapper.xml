@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.WsjgMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Wsjg" id="WsjgMap">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="srm" column="SRM"/>
+        <result property="addr" column="ADDR"/>
+        <result property="phone" column="PHONE"/>
+        <result property="lxr" column="LXR"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWsjgVo">
+        select ID,
+               NAME,
+               SRM,
+               ADDR,
+               PHONE,
+               LXR,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE
+        from WSJG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WsjgMap">
+        <include refid="selectWsjgVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WsjgMap">
+        <include refid="selectWsjgVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

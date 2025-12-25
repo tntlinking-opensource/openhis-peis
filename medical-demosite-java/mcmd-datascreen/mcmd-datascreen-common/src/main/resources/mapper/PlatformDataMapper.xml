@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datascreen.dao.PlatformDataMapper">
+    <select id="selectTotalNumber" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            md_peispatient p
+        INNER JOIN sys_branch b ON b.branch_id=p.hospitalcode AND b.is_show=1
+        WHERE
+            p.f_registered = 1
+        <if test="param.startTime!=null ">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null ">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.branchId!=null" >
+            AND p.hospitalcode=#{param.branchId}
+        </if>
+        <if test="fUsecodehiden!=null">
+            AND p.f_usecodehiden=#{fUsecodehiden}
+        </if>
+    </select>
+    <select id="selectTotalAmount" resultType="double">
+        SELECT
+            ifnull(sum(pc.moneyamountpaid),0)
+        FROM
+            md_peispatientcharge pc
+        INNER JOIN md_peispatient p on p.patientcode=pc.patientcode
+        <if test="param.branchId!=null || fUsecodehiden!=null">
+            <if test="param.branchId!=null" >
+                AND p.hospitalcode=#{param.branchId}
+            </if>
+            <if test="fUsecodehiden!=null">
+                AND p.f_usecodehiden=#{fUsecodehiden}
+            </if>
+        </if>
+        INNER JOIN sys_branch b ON b.branch_id=p.hospitalcode AND b.is_show=1
+        WHERE
+            pc.f_feecharged = 1
+        <if test="param.startTime!=null ">
+            AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null ">
+            AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+    </select>
+    <select id="selectDiscountRate" resultType="java.lang.Double" >
+        SELECT
+            ifnull(sum(pi.factprice),0.0)/sum(pi.price)
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p on p.patientcode=pi.id_patient
+        <if test="param.branchId!=null || fUsecodehiden!=null">
+            <if test="param.branchId!=null" >
+                AND p.hospitalcode=#{param.branchId}
+            </if>
+            <if test="fUsecodehiden!=null">
+                AND p.f_usecodehiden=#{fUsecodehiden}
+            </if>
+        </if>
+        INNER JOIN sys_branch b ON b.branch_id=p.hospitalcode AND b.is_show=1
+        WHERE
+            pi.f_feecharged = 1
+        AND pi.feechargetime BETWEEN #{param.startTime} AND #{param.endTime}
+    </select>
+    <select id="selectNumberList" resultType="com.center.medical.datascreen.bean.vo.PlatformDataNumberListVo" >
+        SELECT
+            b.fzx,
+            count(p.id) number,
+            ifnull(sum(pcm.moneyamountpaid), 0) amount
+        FROM
+            sys_branch b
+        LEFT JOIN md_peispatient p ON p.hospitalcode = b.branch_id
+            AND p.f_registered = 1
+            AND p.dateregister BETWEEN #{param.startTime}
+            AND #{param.endTime}
+            AND p.f_usecodehiden = #{fUsecodehiden}
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        WHERE
+            b.is_show = 1
+        GROUP BY
+            b.fzx
+        ORDER BY
+            b.branch_sort
+    </select>
+    <select id="selectNumberPage" resultType="com.center.medical.datascreen.bean.vo.PlatformDataNumberPageVo" >
+        SELECT
+            b.fzx,
+            count(p.id) number,
+            ifnull(sum(pcm.moneyamountpaid), 0) amount,
+            b.branch_id
+        FROM
+            sys_branch b
+        LEFT JOIN md_peispatient p ON p.hospitalcode = b.branch_id
+            AND p.f_registered = 1
+            AND p.dateregister BETWEEN #{param.startTime}
+            AND #{param.endTime}
+            AND p.f_usecodehiden = #{fUsecodehiden}
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        WHERE
+            b.is_show = 1
+        GROUP BY
+            b.fzx
+        ORDER BY
+            b.branch_sort
+    </select>
+    <select id="selectGroupPatientList" resultType="com.center.medical.datascreen.bean.dto.PlatformDataGroupPatientListDto" >
+        SELECT
+            p.examsuite_name,
+            p.org_name,
+            p.patientname,
+            pcm.moneyamountpaid amount,
+            p.doctorapply,
+            p.patientcode
+        FROM
+            md_peispatient p
+        INNER JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        WHERE
+            p.f_registered = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        <if test="fUsecodehiden!=null">
+            AND p.f_usecodehiden = #{fUsecodehiden}
+        </if>
+        AND p.hospitalcode = #{param.branchId}
+        ORDER BY
+            p.dateregister DESC
+    </select>
+    <select id="selectPersonPatientPage" resultType="com.center.medical.datascreen.bean.dto.PlatformDataPersonPatientPageDto" >
+        SELECT
+            p.examsuite_name,
+            p.patientname,
+            pcm.moneyamountpaid amount,
+            p.doctorapply,
+            p.patientcode
+        FROM
+            md_peispatient p
+        INNER JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        WHERE
+            p.f_registered = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.f_usecodehiden = 0
+        AND p.hospitalcode = #{param.branchId}
+        ORDER BY
+            p.dateregister DESC
+    </select>
+    <select id="selectPaywayNamesByPatientcode" resultType="java.lang.String" >
+        SELECT
+            GROUP_CONCAT(
+                DISTINCT w.payway_name
+                ORDER BY
+                    w.seq SEPARATOR ','
+            )
+        FROM
+            md_peispatientcharge pc
+        INNER JOIN md_dictpayway w ON w.id = pc.id_payway
+        WHERE
+            pc.patientcode = #{patientcode}
+    </select>
+    <select id="selectDiscountRateByPatientcode" resultType="java.lang.Double" >
+        SELECT
+            ifnull(sum(pi.factprice),0.0)/sum(pi.price)
+        FROM
+            md_peispatientfeeitem pi
+        WHERE
+            pi.f_feecharged = 1
+        AND pi.id_patient=#{patientcode}
+    </select>
+    <select id="selectMealList" resultType="com.center.medical.datascreen.bean.vo.PlatformDataSelectMealListVo" >
+        SELECT
+            p.examsuite_name,
+            count(*) sales
+        FROM
+            md_peispatient p
+        WHERE
+            p.f_registered = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.examsuite_name is not null
+        AND p.examsuite_name !=''
+        AND p.id_tjtc is not null
+        AND p.id_tjtc!=''
+        <if test="param.branchId!=null">
+            AND p.hospitalcode=#{param.branchId}
+        </if>
+        GROUP BY
+            p.id_tjtc,
+            p.examsuite_name
+        ORDER BY
+            count(*) DESC
+        LIMIT 10
+    </select>
+    <select id="selectMealPage" resultType="com.center.medical.datascreen.bean.dto.PlatformDataSelectMealPageDto" >
+        SELECT
+            p.examsuite_name,
+            count(*) sales,
+            p.id_tjtc id
+        FROM
+            md_peispatient p
+        WHERE
+            p.f_registered = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.examsuite_name is not null
+        AND p.examsuite_name !=''
+        AND p.id_tjtc is not null
+        AND p.id_tjtc!=''
+        <if test="param.branchId!=null">
+            AND p.hospitalcode=#{param.branchId}
+        </if>
+        GROUP BY
+            p.id_tjtc,
+            p.examsuite_name
+        ORDER BY
+            count(*) DESC
+    </select>
+    <select id="selectItemsList" resultType="com.center.medical.datascreen.bean.dto.PlatformDataSelectItemsListDto" >
+        SELECT
+            bc.type_name NAME,
+            count(*) number,
+            ifnull(sum(pi.factprice), 0.0) amount
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        INNER JOIN md_business_cat bc ON bc.type_id = i.bs_cat_id
+        WHERE
+            pi.f_feecharged = 1
+        AND pi.feechargetime BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND bc.type_id IN
+            <foreach collection="param.ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        GROUP BY
+            bc.type_name,
+            bc.seq
+    </select>
+</mapper>

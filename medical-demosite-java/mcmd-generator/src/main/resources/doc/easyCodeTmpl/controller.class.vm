@@ -1,0 +1,123 @@
+##导入宏定义
+$!define
+
+##设置表后缀（宏定义）
+#setTableSuffix("Controller")
+
+##保存文件（宏定义）
+#save("/controller", "Controller.java")
+
+##包路径（宏定义）
+#setPackageSuffix("controller")
+
+##定义服务名
+#set($serviceName = $!tool.append($!tool.firstLowerCase($!tableInfo.name), "Service"))
+#set($entityName = $!tool.firstLowerCase($!tableInfo.name))
+##定义实体对象名
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import annotation.com.center.medical.common.Log;
+import controller.core.com.center.medical.common.BaseController;
+import domain.core.com.center.medical.common.R;
+import enums.com.center.medical.common.BusinessType;
+import page.utils.com.center.medical.common.PageParam;
+import page.utils.com.center.medical.common.PageParamSimple;
+import $!{tableInfo.savePackageName}.bean.model.$!tableInfo.name;
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+##表注释（宏定义）
+#tableComment("表控制层")
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@Api(tags = "$!tableInfo.comment")
+@RequestMapping("$!tool.firstLowerCase($!tableInfo.name)")
+public class $!{tableName} extends BaseController {
+	/**
+	* 服务对象
+	*/
+	private final $!{tableInfo.name}Service $!{serviceName};
+    private final MapperFacade mapperFacade;
+
+	/**
+	* 分页查询所有数据
+	*
+	* @param pageParamSimple 分页参数
+	* @param $!entityName 查询条件
+	* @return 所有数据
+	*/
+	@GetMapping("/page")
+	//@PreAuthorize("@ss.hasPermi('::list')")
+	@ApiOperation(value = "分页查询", notes = "分页查询$!{tableInfo.comment}")
+	public R<IPage<$!tableInfo.name>> getPage(PageParamSimple pageParamSimple, $!tableInfo.name $!entityName) {
+		PageParam<$!tableInfo.name> page = mapperFacade.map(pageParamSimple, PageParam.class);
+		return R.ok(this.$!{serviceName}.getPage(page, $!entityName));
+	}
+
+	/**
+	* 通过主键查询单条数据
+	*
+	* @param $!tableInfo.pkColumn.get(0).name 主键
+	* @return 单条数据
+	*/
+	@GetMapping("{$!tableInfo.pkColumn.get(0).name}")
+	//@PreAuthorize("@ss.hasPermi('::info')")
+	@ApiOperation(value = "详情", notes = "根据$!tableInfo.pkColumn.get(0).name查$!{tableInfo.comment}详情")
+    @ApiImplicitParam(name = "$!tableInfo.pkColumn.get(0).name", value = "要查询的对象的主键{$!tableInfo.pkColumn.get(0).name}")
+	public R<$!tableInfo.name> selectOne(@PathVariable $!tableInfo.pkColumn.get(0).shortType $!tableInfo.pkColumn.get(0).name) {
+		return R.ok(this.$!{serviceName}.getInfoById($!tableInfo.pkColumn.get(0).name));
+	}
+
+	/**
+	* 新增数据
+	*
+	* @param $!entityName 实体对象
+	* @return 新增结果
+	*/
+	@PostMapping
+	//@PreAuthorize("@ss.hasPermi('::add')")
+	@ApiOperation(value = "添加", notes = "添加$!{tableInfo.comment}")
+	@Log(title = "$!{tableInfo.comment}", businessType = BusinessType.INSERT)
+	@ApiOperationSupport(ignoreParameters = {"$!entityName.$!tableInfo.pkColumn.get(0).name"})
+	public R insert(@RequestBody $!tableInfo.name $!entityName) {
+		return R.toResult(this.$!{serviceName}.save($!entityName));
+	}
+
+	/**
+	* 修改数据
+	*
+	* @param $!entityName 实体对象
+	* @return 修改结果
+	*/
+	@PutMapping
+	//@PreAuthorize("@ss.hasPermi('::edit')")
+	@ApiOperation(value = "更新", notes = "更新$!{tableInfo.comment}")
+	@Log(title = "$!{tableInfo.comment}", businessType = BusinessType.UPDATE)
+	public R update(@RequestBody $!tableInfo.name $!entityName) {
+		return R.toResult(this.$!{serviceName}.updateById($!entityName));
+	}
+
+	/**
+	* 删除数据
+	*
+	* @param $!{tableInfo.pkColumn.get(0).name}s 删除的对象主键{$!tableInfo.pkColumn.get(0).name}集合，多个以英文逗号（,）隔开
+	* @return 删除结果
+	*/
+	@DeleteMapping("/{ids}")
+	//@PreAuthorize("@ss.hasPermi('::remove')")
+	@ApiOperation(value = "删除", notes = "删除$!{tableInfo.comment}")
+	@Log(title = "$!{tableInfo.comment}", businessType = BusinessType.DELETE)
+    @ApiImplicitParam(name = "ids", value = "要删除的对象主键{$!tableInfo.pkColumn.get(0).name}集合，多个以英文逗号（,）隔开")
+	public R delete(@PathVariable List<$!tableInfo.pkColumn.get(0).shortType> $!{tableInfo.pkColumn.get(0).name}s) {
+		return R.toResult(this.$!{serviceName}.removeByIds($!{tableInfo.pkColumn.get(0).name}s));
+	}
+}

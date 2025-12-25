@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppDoctorBranchMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppDoctorBranch" id="AppDoctorBranchMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="doctorId" column="DOCTOR_ID"/>
+        <result property="branchId" column="BRANCH_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppDoctorBranchVo">
+        select ID, CREATEDATE, MODIFYDATE, DOCTOR_ID, BRANCH_ID
+        from APP_DOCTOR_BRANCH
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppDoctorBranchMap">
+        <include refid="selectAppDoctorBranchVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppDoctorBranchMap">
+        <include refid="selectAppDoctorBranchVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

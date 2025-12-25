@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ZyOccupationOrgMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ZyOccupationOrg" id="ZyOccupationOrgMap">
+        <id property="orgCode" column="ORG_CODE"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="orgOtherName" column="ORG_OTHER_NAME"/>
+        <result property="orgInfo" column="ORG_INFO"/>
+        <result property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectZyOccupationOrgVo">
+        select ORG_CODE,
+               ORG_NAME,
+               ORG_OTHER_NAME,
+               ORG_INFO,
+               ID,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE,
+               INPUT_CODE
+        from ZY_OCCUPATION_ORG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ZyOccupationOrgMap">
+        <include refid="selectZyOccupationOrgVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ZyOccupationOrgMap">
+        <include refid="selectZyOccupationOrgVo"/>
+        <where>
+            orgCode = #{id}
+        </where>
+    </select>
+
+</mapper>
+

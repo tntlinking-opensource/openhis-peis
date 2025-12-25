@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.OrderPlanMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.OrderPlan" id="OrderPlanMap">
+        <id property="id" column="id"/>
+        <result property="orderTypeId" column="order_type_id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="salesId" column="sales_id"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="ddId" column="dd_id"/>
+        <result property="yearFlag" column="year_flag"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="content" column="content"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="socialCreditCode" column="social_credit_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrderPlanVo">
+        select id,
+               order_type_id,
+               branch_id,
+               sales_id,
+               status,
+               createdate,
+               modifydate,
+               dd_id,
+               year_flag,
+               dept_id,
+               content,
+               is_delete,
+               social_credit_code
+        from crm_order_plan
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrderPlanMap">
+        <include refid="selectOrderPlanVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrderPlanMap">
+        <include refid="selectOrderPlanVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

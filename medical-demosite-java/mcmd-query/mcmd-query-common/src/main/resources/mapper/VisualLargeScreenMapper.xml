@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.query.dao.VisualLargeScreenMapper">
+
+    <!-- 体检中心概况 -->
+    <select id="getOverViewDto" resultType="com.center.medical.query.bean.dto.OverViewDto">
+        SELECT
+            sum(IFNULL( prc.moneyamountpaid, 0 )) AS turnover,
+            (sum(IFNULL( prc.moneyamountpaid, 0 ))/ sum(IFNULL( pi.price, 0 ))) AS discountRate,
+            count( DISTINCT p.patientcode ) AS totalCount
+        FROM
+            md_peispatient p
+                LEFT JOIN md_peispatient_charge_main prc ON p.patientcode = prc.patientcode
+                LEFT JOIN (
+                SELECT
+                    pi.id_patient,
+                    sum( pi.price ) price
+                FROM
+                    md_peispatientfeeitem pi
+                WHERE
+                    pi.change_item = 0
+                  AND pi.f_feecharged = 1
+                GROUP BY
+                    pi.id_patient
+            ) pi ON pi.id_patient = p.patientcode
+        <where>
+            p.f_registered = 1
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+</mapper>
+

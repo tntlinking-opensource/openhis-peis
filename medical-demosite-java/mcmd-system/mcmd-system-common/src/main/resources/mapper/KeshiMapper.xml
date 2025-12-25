@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.KeshiMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.Keshi" id="DeptMap">
+        <id property="deptId" column="dept_id"/>
+        <result property="deptNo" column="dept_no"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="ancestors" column="ancestors"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="description" column="description"/>
+        <result property="isFunction" column="is_function"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="ksType" column="ks_type"/>
+        <result property="sjbggs" column="sjbggs"/>
+        <result property="jcdd" column="jcdd"/>
+        <result property="jklx" column="jklx"/>
+        <result property="ksh" column="ksh"/>
+        <result property="imgpath" column="imgpath"/>
+        <result property="reportPathHealth" column="report_path_health"/>
+        <result property="reportPathDisease" column="report_path_disease"/>
+        <result property="addPicBefore" column="add_pic_before"/>
+        <result property="reportSort" column="report_sort"/>
+        <result property="dydXh" column="dyd_xh"/>
+        <result property="dydMemo" column="dyd_memo"/>
+        <result property="kingdeeAccountNo" column="kingdee_account_no"/>
+        <result property="greyImgpath" column="grey_imgpath"/>
+        <result property="isShowapp" column="is_showapp"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="leader" column="leader"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDeptVo">
+        select dept_id,
+               dept_no,
+               parent_id,
+               ancestors,
+               dept_name,
+               description,
+               is_function,
+               input_code,
+               ks_type,
+               sjbggs,
+               jcdd,
+               jklx,
+               ksh,
+               imgpath,
+               report_path_health,
+               report_path_disease,
+               add_pic_before,
+               report_sort,
+               dyd_xh,
+               dyd_memo,
+               kingdee_account_no,
+               grey_imgpath,
+               is_showapp,
+               order_num,
+               leader,
+               phone,
+               email,
+               status,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from sys_dept
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.bean.vo.ListWithSrmVo">
+        select
+        dept_no AS id,
+        dept_name AS name,
+        input_code AS srm
+        from sys_dept
+        <where>
+            del_flag = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
+

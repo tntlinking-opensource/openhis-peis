@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdSshyMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdSshy" id="MdSshyMap">
+        <id property="id" column="id"/>
+        <result property="hymc" column="hymc"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSshyVo">
+        select id, hymc, createdate, modifydate
+        from md_sshy
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSshyMap">
+        <include refid="selectMdSshyVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSshyMap">
+        <include refid="selectMdSshyVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

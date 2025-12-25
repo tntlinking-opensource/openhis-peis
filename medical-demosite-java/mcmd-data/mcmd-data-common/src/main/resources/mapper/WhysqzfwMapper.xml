@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.WhysqzfwMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Whysqzfw" id="WhysqzfwMap">
+        <id property="id" column="id"/>
+        <result property="harmName" column="harm_name"/>
+        <result property="unit" column="unit"/>
+        <result property="jcName" column="jc_name"/>
+        <result property="jcId" column="jc_id"/>
+        <result property="whId" column="wh_id"/>
+        <result property="scopeUpper" column="scope_upper"/>
+        <result property="scoperFloor" column="scoper_floor"/>
+        <result property="scoperName" column="scoper_name"/>
+        <result property="scoperCode" column="scoper_code"/>
+        <result property="lisId" column="lis_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="zyorjk" column="zyorjk"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="sex" column="sex"/>
+        <result property="gscopeupper" column="gscopeupper"/>
+        <result property="gscoperfloor" column="gscoperfloor"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWhysqzfwVo">
+        select id,
+               harm_name,
+               unit,
+               jc_name,
+               jc_id,
+               wh_id,
+               scope_upper,
+               scoper_floor,
+               scoper_name,
+               scoper_code,
+               lis_id,
+               createdate,
+               modifydate,
+               is_delete,
+               zyorjk,
+               input_code,
+               sex,
+               gscopeupper,
+               gscoperfloor
+        from md_whysqzfw
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.data.bean.model.Whysqzfw">
+        select mw.id,
+        md.harm_name as harmName,
+        mw.unit,
+        mw.jc_name,
+        mw.jc_id,
+        mw.wh_id,
+        mw.scope_upper,
+        mw.scoper_floor,
+        mw.scoper_name,
+        mw.scoper_code,
+        mw.lis_id,
+        mw.createdate,
+        mw.modifydate,
+        mw.is_delete,
+        mw.zyorjk,
+        mw.input_code,
+        mw.sex,
+        mw.gscopeupper,
+        mw.gscoperfloor
+        from md_whysqzfw mw
+        left join md_harm md on mw.harm_name = md.id
+        <where>
+            mw.is_delete = 0
+            <if test="param.harmName!=null and param.harmName!=''">
+                AND mw.harm_name like concat('%',#{param.harmName},'%')
+            </if>
+            <if test="param.jcId!=null and param.jcId!=''">
+                AND mw.jc_id like concat('%',#{param.jcId},'%')
+            </if>
+        </where>
+        ORDER BY mw.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.data.bean.model.Whysqzfw">
+        select mw.id,
+        md.harm_name as harmName,
+        mw.unit,
+        mw.jc_name,
+        mw.jc_id,
+        mw.wh_id,
+        mw.scope_upper,
+        mw.scoper_floor,
+        mw.scoper_name,
+        mw.scoper_code,
+        mw.lis_id,
+        mw.createdate,
+        mw.modifydate,
+        mw.is_delete,
+        mw.zyorjk,
+        mw.input_code,
+        mw.sex,
+        mw.gscopeupper,
+        mw.gscoperfloor
+        from md_whysqzfw mw
+        left join md_harm md on mw.harm_name = md.id
+        <where>
+            mw.id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

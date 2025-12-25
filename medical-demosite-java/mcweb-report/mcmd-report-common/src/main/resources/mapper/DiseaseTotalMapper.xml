@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.DiseaseTotalMapper">
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.report.bean.vo.DtPeispatientVo">
+        SELECT
+        ps.id,
+        ps.patientcode,
+        ps.patientname,
+        ps.f_examstarted,
+        ps.f_readytofinal,
+        ps.f_finallocked,
+        ps.f_finalexamed,
+        ps.medicaldate,
+        ps.datefinalexamed,
+        ps.doctorfinal_name_r,
+        ps.dateregister,
+        ps.doctorreg,
+        ps.id_tjtc,
+        ps.examsuite_name,
+        ps.org_name,
+        ps.id_examtype,
+        ps.id_patientclass,
+        ps.patientarchiveno,
+        ps.idcardno,
+        ps.id_sex,
+        ps.age,
+        ps.jktjzt,
+        IFNULL(cm.tjtcmc,co.tjtcmc) as tjtcmc,
+        ps.id_marriage,
+        ps.zytjzt,
+        IFNULL(rp.is_total,0) as fReportprinted,
+        ps.dateregisternotime,
+        ps.patientnameencoded,
+        ps.id_guidenurse,
+        group_concat(DISTINCT u.user_name ) AS zyshys
+        FROM md_peispatient ps
+        LEFT JOIN md_createmeal cm ON ps.id_tjtc = cm.id
+        LEFT JOIN md_createcombo co ON ps.id_tjtc = co.id
+        LEFT JOIN md_report rp ON ps.patientcode = rp.patientcode
+        and rp.disease_health = 1
+        LEFT JOIN md_section_total t on t.patientcode = ps.patientcode
+        LEFT JOIN md_total_doctor td on td.total_id = t.id
+        LEFT JOIN sys_user u on u.user_no = td.user_id
+        <where>
+            ps.id_examtype IN (1, 2 ,3)
+            <if test="param.examstate!=null">
+                <if test="param.examstate==0">
+                    AND ps.f_examstarted = 1
+                </if>
+                <if test="param.examstate==1">
+                    AND ps.f_examstarted = 1 AND ps.f_readytofinal = 1
+                </if>
+                <if test="param.examstate==2">
+                    AND ps.f_examstarted = 1 AND ps.f_readytofinal = 1 AND ps.zytjzt=1
+                </if>
+                <if test="param.examstate==3">
+                    AND ps.f_examstarted = 1 AND ps.f_readytofinal = 1 AND ps.zytjzt=2
+                </if>
+                <if test="param.examstate==4">
+                    AND ps.f_examstarted = 1 AND ps.f_readytofinal = 1 AND ps.zytjzt=11
+                </if>
+            </if>
+            <if test="param.zytjzt!=null">
+                AND ps.zytjzt = #{param.zytjzt}
+            </if>
+            <if test="param.idPatientclass!=null and param.idPatientclass != 4">
+                AND ps.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND ps.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND ps.org_name LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND ps.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND ps.dateregisternotime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND ps.dateregisternotime <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.startFjTime!=null">
+                AND ps.readytofinal_date <![CDATA[ >= ]]> #{param.startFjTime}
+            </if>
+            <if test="param.endFjTime!=null">
+                AND ps.readytofinal_date <![CDATA[ <= ]]> #{param.endFjTime}
+            </if>
+        </where>
+        GROUP BY ps.patientcode
+        Order by ps.dateregister DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+        SELECT * FROM md_peispatient
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getCommonListData" resultType="com.center.medical.report.bean.vo.CommonDataVo">
+        SELECT
+        d.dept_name as co1,
+        i.examfeeitem_name as co2,
+        s.examitem_name as co3,
+        g.NAME as co4,
+        b.NAME as co5,
+        m.posistive as co6,
+        m.intensive_level as co7,
+        m.is_unchecked as co8,
+        m.createdate as co9,
+        d.dept_no as co10
+        FROM
+        md_section_result_main t
+        LEFT JOIN md_section_result_two m ON t.id = m.main_id
+        LEFT JOIN sys_dept d ON d.dept_no = t.dep_id
+        LEFT JOIN md_basconclusion b ON b.id = m.basconclusion_id
+        LEFT JOIN md_items i ON i.id = m.charges_id
+        LEFT JOIN md_basexamltem s ON s.id = m.verdict_id
+        LEFT JOIN md_basexamltem_sign g ON g.id = m.nodule
+        WHERE
+        1 = 1
+        <if test="patientno!=null and patientno!=''">
+            AND t.patientcode = #{patientno}
+        </if>
+        ORDER BY
+        (case when d.dept_no = '143' then 0 else 1 end),
+        d.dept_name,
+        i.examfeeitem_name
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getVerdictData" resultType="com.center.medical.report.bean.vo.VerdictDataVo">
+        SELECT
+        d.dept_name as ver1,
+        q.user_name as ver2,
+        x.user_name as ver3,
+        u.user_name as ver4,
+        m.write_time as ver5,
+        m.audit_time as ver6,
+        m.conclusions as ver7,
+        m.id
+        FROM md_section_result_main m
+        LEFT JOIN sys_dept d ON d.dept_no = m.dep_id
+        LEFT JOIN sys_user q ON q.user_no = m.write_id
+        LEFT JOIN sys_user x ON x.user_no = m.rummager_id
+        LEFT JOIN sys_user u ON u.user_no = m.audit_id
+        <where>
+            1 = 1
+            <if test="patientno!=null and patientno!=''">
+                AND m.patientcode = #{patientno}
+            </if>
+            <if test="depid!=null and depid!=''">
+                AND m.dep_id = #{depid}
+            </if>
+        </where>
+        ORDER BY
+        d.dept_name
+    </select>
+
+
+    <!-- 如果下了复查处理意见，但没有复查项目，提示并弹出复查界面 -->
+    <select id="checkHarmTotal" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM md_comments_progessional c
+                 INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                 INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        WHERE c.patientcode = #{patientcode}
+          AND z.serial_no = 3
+    </select>
+</mapper>
+

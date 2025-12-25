@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.SelltargetMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Selltarget" id="SelltargetMap">
+        <id property="id" column="ID"/>
+        <result property="xsjlid" column="XSJLID"/>
+        <result property="year" column="YEAR"/>
+        <result property="dyjdmb" column="DYJDMB"/>
+        <result property="dejdmb" column="DEJDMB"/>
+        <result property="dsjdmb" column="DSJDMB"/>
+        <result property="dijdmb" column="DIJDMB"/>
+        <result property="qnmb" column="QNMB"/>
+        <result property="qnhke" column="QNHKE"/>
+        <result property="hkbl" column="HKBL"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="bz" column="BZ"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSelltargetVo">
+        select ID, XSJLID, YEAR, DYJDMB, DEJDMB, DSJDMB, DIJDMB, QNMB, QNHKE, HKBL, FZXID, CREATEDATE, MODIFYDATE, BZ
+        from SELLTARGET
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SelltargetMap">
+        <include refid="selectSelltargetVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SelltargetMap">
+        <include refid="selectSelltargetVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

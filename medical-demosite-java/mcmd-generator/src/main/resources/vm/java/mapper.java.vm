@@ -1,0 +1,28 @@
+package ${packageName}.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.center.medical.common.utils.page.PageParam;
+${ClassName};
+#if($table.sub)
+    ${subClassName};
+#end
+
+/**
+ * ${functionName}Mapper接口
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
+
+    /**
+     * 查询${functionName}列表
+     *
+     * @param param ${functionName}
+     * @return ${functionName}集合
+     */
+    IPage<${ClassName}> getList(PageParam<${ClassName}> page, @Param("param") ${ClassName} param);
+
+}

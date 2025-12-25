@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdDrugstorePrescribeMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdDrugstorePrescribe" id="MdDrugstorePrescribeMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="drugId" column="drug_id"/>
+        <result property="username" column="username"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="reason" column="reason"/>
+        <result property="prescribeTime" column="prescribe_time"/>
+        <result property="prescribeNum" column="prescribe_num"/>
+        <result property="transactionPrice" column="transaction_price"/>
+        <result property="isFinished" column="is_finished"/>
+        <result property="prescribeNote" column="prescribe_note"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdDrugstorePrescribeVo">
+        select id,
+               createdate,
+               modifydate,
+               drug_id,
+               username,
+               patientcode,
+               reason,
+               prescribe_time,
+               prescribe_num,
+               transaction_price,
+               is_finished,
+               prescribe_note
+        from md_drugstore_prescribe
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdDrugstorePrescribeMap">
+        <include refid="selectMdDrugstorePrescribeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdDrugstorePrescribeMap">
+        <include refid="selectMdDrugstorePrescribeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.OccupationDiseastClassMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.OccupationDiseastClass"
+               id="OccupationDiseastClassMap">
+        <id property="id" column="ID"/>
+        <result property="occupationDiseastClassCode" column="OCCUPATION_DISEAST_CLASS_CODE"/>
+        <result property="occupationDiseastClassName" column="OCCUPATION_DISEAST_CLASS_NAME"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOccupationDiseastClassVo">
+        select ID,
+               OCCUPATION_DISEAST_CLASS_CODE,
+               OCCUPATION_DISEAST_CLASS_NAME,
+               INPUT_CODE,
+               DB_USER,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE
+        from OCCUPATION_DISEAST_CLASS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OccupationDiseastClassMap">
+        <include refid="selectOccupationDiseastClassVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OccupationDiseastClassMap">
+        <include refid="selectOccupationDiseastClassVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

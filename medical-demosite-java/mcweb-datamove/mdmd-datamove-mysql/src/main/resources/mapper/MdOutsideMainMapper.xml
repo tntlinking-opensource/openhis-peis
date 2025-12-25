@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdOutsideMainMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdOutsideMain" id="MdOutsideMainMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="sendPeople" column="send_people"/>
+        <result property="sendDate" column="send_date"/>
+        <result property="backPeople" column="back_people"/>
+        <result property="backDate" column="back_date"/>
+        <result property="note" column="note"/>
+        <result property="wsjg" column="wsjg"/>
+        <result property="patientname" column="patientname"/>
+        <result property="status" column="status"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdOutsideMainVo">
+        select id,
+               patientcode,
+               createdate,
+               modifydate,
+               send_people,
+               send_date,
+               back_people,
+               back_date,
+               note,
+               wsjg,
+               patientname,
+               status,
+               is_delete
+        from md_outside_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdOutsideMainMap">
+        <include refid="selectMdOutsideMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdOutsideMainMap">
+        <include refid="selectMdOutsideMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

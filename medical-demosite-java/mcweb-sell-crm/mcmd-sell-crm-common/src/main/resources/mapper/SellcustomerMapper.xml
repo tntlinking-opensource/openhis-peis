@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.SellcustomerMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Sellcustomer" id="SellcustomerMap">
+        <id property="id" column="id"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="khdwsrm" column="khdwsrm"/>
+        <result property="khdwlxr" column="khdwlxr"/>
+        <result property="khdh" column="khdh"/>
+        <result property="frdwmc" column="frdwmc"/>
+        <result property="fddbr" column="fddbr"/>
+        <result property="yzbm" column="yzbm"/>
+        <result property="qygm" column="qygm"/>
+        <result property="qyjjlx" column="qyjjlx"/>
+        <result property="zywsfzr" column="zywsfzr"/>
+        <result property="khdwzcdz" column="khdwzcdz"/>
+        <result property="zywsgljg" column="zywsgljg"/>
+        <result property="dwjgdm" column="dwjgdm"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="zclx" column="zclx"/>
+        <result property="sshy" column="sshy"/>
+        <result property="lsgx" column="lsgx"/>
+        <result property="sjzgdw" column="sjzgdw"/>
+        <result property="sjcyrs" column="sjcyrs"/>
+        <result property="ldrs" column="ldrs"/>
+        <result property="scgrs" column="scgrs"/>
+        <result property="zybwhysrs" column="zybwhysrs"/>
+        <result property="zybwhzycss" column="zybwhzycss"/>
+        <result property="zybwhyslb" column="zybwhyslb"/>
+        <result property="zybwhys" column="zybwhys"/>
+        <result property="gylc" column="gylc"/>
+        <result property="zyyfl" column="zyyfl"/>
+        <result property="tjttlx" column="tjttlx"/>
+        <result property="zycp" column="zycp"/>
+        <result property="khsctjdwdz" column="khsctjdwdz"/>
+        <result property="bz" column="bz"/>
+        <result property="sjrq" column="sjrq"/>
+        <result property="khzt" column="khzt"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="clientid" column="clientid"/>
+        <result property="ldfpid" column="ldfpid"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="lost" column="lost"/>
+        <result property="intId" column="int_id"/>
+        <result property="briefText" column="brief_text"/>
+        <result property="socialCreditCode" column="social_credit_code"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="street" column="street"/>
+        <result property="indusTypeCode" column="indus_type_code"/>
+        <result property="economyCode" column="economy_code"/>
+        <result property="crptSizeCode" column="crpt_size_code"/>
+        <result property="workForce" column="work_force"/>
+        <result property="holdCardMan" column="hold_card_man"/>
+        <result property="workmanNum" column="workman_num"/>
+        <result property="workmistressNum" column="workmistress_num"/>
+        <result property="workArea" column="work_area"/>
+        <result property="registerFund" column="register_fund"/>
+        <result property="safetyPrincipal" column="safety_principal"/>
+        <result property="buildDate" column="build_date"/>
+        <result property="linkman1" column="linkman1"/>
+        <result property="position1" column="position1"/>
+        <result property="linkphone1" column="linkphone1"/>
+        <result property="linkman2" column="linkman2"/>
+        <result property="position2" column="position2"/>
+        <result property="linkphone2" column="linkphone2"/>
+        <result property="safeposition" column="safeposition"/>
+        <result property="safephone" column="safephone"/>
+        <result property="subjeConn" column="subje_conn"/>
+        <result property="enrolAddress" column="enrol_address"/>
+        <result property="enrolPostalcode" column="enrol_postalcode"/>
+        <result property="occManaOffice" column="occ_mana_office"/>
+        <result property="jinanStatus" column="jinan_status"/>
+        <result property="jinanMsg" column="jinan_msg"/>
+        <result property="indusTypeCode1" column="indus_type_code1"/>
+        <result property="indusTypeCode2" column="indus_type_code2"/>
+        <result property="indusTypeCode3" column="indus_type_code3"/>
+        <result property="phone" column="phone"/>
+        <result property="rauSocialCreditCode" column="rau_social_credit_code"/>
+        <result property="rauEconomyCode" column="rau_economy_code"/>
+        <result property="rauIndusTypeCode1" column="rau_indus_type_code1"/>
+        <result property="rauIndusTypeCode2" column="rau_indus_type_code2"/>
+        <result property="rauIndusTypeCode3" column="rau_indus_type_code3"/>
+        <result property="rauIndusTypeCode" column="rau_indus_type_code"/>
+        <result property="rauQygm" column="rau_qygm"/>
+        <result property="rauProvince" column="rau_province"/>
+        <result property="rauCity" column="rau_city"/>
+        <result property="rauDistrict" column="rau_district"/>
+        <result property="rauStreet" column="rau_street"/>
+        <result property="unitarea" column="unitarea"/>
+        <result property="rauKhdwmc" column="rau_khdwmc"/>
+        <result property="rauUnitarea" column="rau_unitarea"/>
+        <result property="licenseName" column="license_name"/>
+        <result property="jindieId" column="jindie_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSellcustomerVo">
+        select id,
+               khdwmc,
+               khdwsrm,
+               khdwlxr,
+               khdh,
+               frdwmc,
+               fddbr,
+               yzbm,
+               qygm,
+               qyjjlx,
+               zywsfzr,
+               khdwzcdz,
+               zywsgljg,
+               dwjgdm,
+               xsjl,
+               zclx,
+               sshy,
+               lsgx,
+               sjzgdw,
+               sjcyrs,
+               ldrs,
+               scgrs,
+               zybwhysrs,
+               zybwhzycss,
+               zybwhyslb,
+               zybwhys,
+               gylc,
+               zyyfl,
+               tjttlx,
+               zycp,
+               khsctjdwdz,
+               bz,
+               sjrq,
+               khzt,
+               is_delete,
+               clientid,
+               ldfpid,
+               xsjlid,
+               fzxid,
+               createdate,
+               modifydate,
+               lost,
+               int_id,
+               brief_text,
+               social_credit_code,
+               province,
+               city,
+               district,
+               street,
+               indus_type_code,
+               economy_code,
+               crpt_size_code,
+               work_force,
+               hold_card_man,
+               workman_num,
+               workmistress_num,
+               work_area,
+               register_fund,
+               safety_principal,
+               build_date,
+               linkman1,
+               position1,
+               linkphone1,
+               linkman2,
+               position2,
+               linkphone2,
+               safeposition,
+               safephone,
+               subje_conn,
+               enrol_address,
+               enrol_postalcode,
+               occ_mana_office,
+               jinan_status,
+               jinan_msg,
+               indus_type_code1,
+               indus_type_code2,
+               indus_type_code3,
+               phone,
+               rau_social_credit_code,
+               rau_economy_code,
+               rau_indus_type_code1,
+               rau_indus_type_code2,
+               rau_indus_type_code3,
+               rau_indus_type_code,
+               rau_qygm,
+               rau_province,
+               rau_city,
+               rau_district,
+               rau_street,
+               unitarea,
+               rau_khdwmc,
+               rau_unitarea,
+               license_name,
+               jindie_id
+        from crm_sellcustomer sc
+    </sql>
+
+    <!-- 分页查询客户列表数据 -->
+    <select id="getPage" resultType="com.center.medical.sellcrm.bean.model.Sellcustomer">
+        SELECT
+        sc.id,
+        sc.khdwmc,
+        sc.khdwsrm,
+        sc.dwjgdm,
+        sc.indus_type_code,
+        IF(sc.indus_type_code IS NULL, sc.indus_type_code, bi.industry_name) AS sshy,
+        sc.khdwlxr,
+        sc.khdh,
+        sc.xsjl,
+        sc.khdwzcdz,
+        sc.bz,
+        khzt,
+        int_id,
+        jinan_status,
+        jinan_msg,
+        count(sp.id) as wjgs,
+        wu.user_name
+        FROM
+        crm_sellcustomer sc
+        LEFT JOIN md_base_industry bi ON sc.indus_type_code=bi.industry_code
+        LEFT JOIN md_savefilepath sp ON sp.ggid = sc.id
+        LEFT JOIN ws_user wu on wu.customer_id = sc.id
+        <where>
+            sc.is_delete = 0
+            <if test="param.khzt!=null">
+                AND sc.khzt =#{param.khzt}
+            </if>
+            <if test="param.khzt==null">
+                AND sc.khzt != 2
+            </if>
+            <if test="param.branchIds!=null">
+                AND sc.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id LIKE concat('%',#{param.intId},'%')
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND sc.xsjlid =#{param.xsjlid}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND sc.xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.khdwsrm!=null and param.khdwsrm!=''">
+                AND sc.khdwsrm LIKE concat('%',#{param.khdwsrm},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND sc.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.lowerLevelIds!=null">
+                AND sc.xsjlid IN
+                <foreach collection="param.lowerLevelIds" item="lowerLevelId" open="(" close=")" separator=",">
+                    #{lowerLevelId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY sc.id
+        ORDER BY sc.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SellcustomerMap">
+        <include refid="selectSellcustomerVo"/>
+        <where>
+            is_delete = 0
+            AND id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 团体名称下拉 -->
+    <select id="getOrgs" resultType="com.center.medical.sellcrm.bean.vo.GetOrgsVo">
+        SELECT DISTINCT
+        s.khdwmc,
+        s.khdwsrm,
+        s.id
+        FROM
+        crm_sellcustomer s
+        <where>
+            s.is_delete = 0
+            AND s.khzt != 2
+            <if test="key!=null and key!=''">
+                AND ( s.khdwsrm LIKE concat('%',#{key},'%')
+                OR s.khdwmc LIKE concat('%',#{key},'%'))
+            </if>
+        </where>
+        GROUP BY
+        s.khdwmc,s.int_id
+        ORDER BY
+        s.khdwsrm
+        limit 100
+    </select>
+
+
+    <!-- 获取所有的客户 -->
+    <select id="getAllOrg" resultType="com.center.medical.sellcrm.bean.vo.AllOrgVo">
+        SELECT
+        id,
+        khdwmc,
+        khdwsrm,
+        xsjl
+        FROM
+        crm_sellcustomer
+        <where>
+            is_delete = 0
+            <if test="key!=null and key!=''">
+                AND ( khdwsrm LIKE concat('%',#{key},'%')
+                OR khdwmc LIKE concat('%',#{key},'%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取自己分中心下的公司下拉 -->
+    <select id="getFzxOrg" resultType="com.center.medical.sellcrm.bean.vo.AllOrgVo">
+        SELECT
+        id,
+        khdwmc,
+        khdwsrm,
+        xsjl
+        FROM
+        crm_sellcustomer
+        <where>
+            is_delete = 0
+            AND khzt = 1
+            AND fzxid = #{fzxId}
+            <if test="key!=null and key!=''">
+                AND ( khdwsrm LIKE concat('%',#{key},'%')
+                OR khdwmc LIKE concat('%',#{key},'%'))
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 获取自己分中心下的公司下拉 -->
+    <select id="getJzOrg" resultType="com.center.medical.sellcrm.bean.vo.JzOrgVo">
+        SELECT
+        id,
+        khdwmc AS jzdw
+        FROM
+        crm_sellcustomer
+        <where>
+            is_delete = 0
+            <if test="key!=null and key!=''">
+                AND ( khdwsrm LIKE concat('%',#{key},'%')
+                OR khdwmc LIKE concat('%',#{key},'%'))
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 分页查询正式客户 -->
+    <select id="getFormalPage" resultType="com.center.medical.sellcrm.bean.vo.FormalPageVo">
+        SELECT s.khdwmc,
+        s.khdwsrm,
+        o.xsjl,
+        f.bdrq,
+        s.int_id
+        FROM md_createorder o
+        INNER JOIN md_orderandfzx f ON o.id = f.ddid
+        INNER JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        WHERE NOT EXISTS(
+        SELECT *
+        FROM md_createorder o2
+        WHERE o2.khdwmcid = o.khdwmcid
+        AND o2.createdate > o.createdate)
+        <if test="param.startTime!=null">
+            AND f.bdrq <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND f.bdrq <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.khdwmc !=null and param.khdwmc!=''">
+            AND s.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+        </if>
+        <if test="param.khdwsrm !=null and param.khdwsrm!=''">
+            AND s.khdwsrm LIKE concat('%',#{param.khdwsrm},'%')
+        </if>
+        <if test="param.xsjl !=null and param.xsjl!=''">
+            AND o.xsjl LIKE concat('%',#{param.xsjl},'%')
+        </if>
+        <if test="param.orgId !=null and param.orgId!=''">
+            AND s.int_id = #{param.orgId}
+        </if>
+        <if test="param.branchIds!=null and param.branchIds.size > 0">
+            AND f.fzxid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        ORDER BY s.int_id
+    </select>
+
+
+    <!-- 导出正式客户 -->
+    <select id="getExportData" resultType="com.center.medical.sellcrm.bean.vo.FormalPageVo">
+        SELECT s.khdwmc,
+        s.khdwsrm,
+        o.xsjl,
+        f.bdrq,
+        s.int_id
+        FROM md_createorder o
+        INNER JOIN md_orderandfzx f ON o.id = f.ddid
+        INNER JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        WHERE NOT EXISTS(
+        SELECT *
+        FROM md_createorder o2
+        WHERE o2.khdwmcid = o.khdwmcid
+        AND o2.createdate > o.createdate)
+        <if test="param.startTime!=null">
+            AND f.bdrq <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND f.bdrq <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.khdwmc !=null and param.khdwmc!=''">
+            AND s.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+        </if>
+        <if test="param.khdwsrm !=null and param.khdwsrm!=''">
+            AND s.khdwsrm LIKE concat('%',#{param.khdwsrm},'%')
+        </if>
+        <if test="param.xsjl !=null and param.xsjl!=''">
+            AND o.xsjl LIKE concat('%',#{param.xsjl},'%')
+        </if>
+        <if test="param.orgId !=null and param.orgId!=''">
+            AND s.int_id = #{param.orgId}
+        </if>
+        <if test="param.branchIds!=null and param.branchIds.size > 0">
+            AND f.fzxid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        ORDER BY s.int_id
+    </select>
+
+
+    <!-- 获取当前登录用户分中心下正式客户管理信息 -->
+    <select id="getListDatas" resultType="com.center.medical.sellcrm.bean.vo.SCListVo">
+        SELECT
+        id,
+        khdwmc,
+        khdwsrm,
+        xsjl
+        FROM crm_sellcustomer
+        <where>
+            fzxid = #{cId}
+            AND khzt = 1
+            AND is_delete = 0
+            <if test="key!=null and key!=''">
+                AND ( khdwsrm LIKE concat('%',#{key},'%')
+                OR khdwmc LIKE concat('%',#{key},'%'))
+            </if>
+        </where>
+    </select>
+</mapper>
+

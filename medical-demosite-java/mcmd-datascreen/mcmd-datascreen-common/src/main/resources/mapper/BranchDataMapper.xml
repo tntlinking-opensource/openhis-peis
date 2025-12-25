@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datascreen.dao.BranchDataMapper">
+    <select id="selectDeptCount" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            sys_cen_dep cd
+        INNER JOIN sys_dept d ON d.dept_no = cd.did
+        WHERE
+            cd.cid = #{branchId}
+        AND d.is_function = 1
+        AND d. STATUS = '0'
+        AND d.del_flag = '0'
+    </select>
+    <select id="selectItemList" resultType="com.center.medical.datascreen.bean.vo.DatascreenBaseListVo">
+        SELECT
+            pi.examfeeitem_name name,
+            count(*) value
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        WHERE
+            p.hospitalcode = #{param.branchId}
+        AND pi.f_feecharged = 1
+        AND pi.change_item = 0
+        AND pi.feechargetime BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        GROUP BY
+            pi.examfeeitem_name
+        ORDER BY
+            count(*) DESC
+        LIMIT 10
+    </select>
+    <select id="selectReservationCount" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            md_reservation r
+        WHERE
+            r.is_delete = 0
+        AND r. STATUS IN (2, 3)
+        AND r.branch_id = #{param.branchId}
+        AND r.reservation_date BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        <if test="fUsecodehiden!=null" >
+            AND r.f_usecodehiden = #{fUsecodehiden}
+        </if>
+        <if test="levelId!=null" >
+            AND r.level_id = #{levelId}
+        </if>
+    </select>
+    <select id="selectCountByHandlingOpinion" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            md_peispatient p
+        INNER JOIN md_COMMENTS_PROGESSIONAL C ON C.PATIENTCODE = P.PATIENTCODE
+        INNER JOIN md_ZY_VS_SUMMARY ZV ON ZV.ID = C.PROGESSIONAL_ID
+        INNER JOIN md_ZY_SUMMARY Z ON Z.ID = ZV.OCCUPATION_SUMMARY
+        AND Z.SERIAL_NO = #{serialNo}
+        WHERE
+            p.hospitalcode = #{param.branchId}
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.zytjzt > 0
+    </select>
+    <select id="selectHighRiskCount" resultType="int">
+        SELECT
+            count(DISTINCT rc.patientcode)
+        FROM
+            md_riskclientcon rc
+        INNER JOIN md_riskclient r ON r.id = rc.riskid
+        WHERE
+            rc.wjzjb = 1
+        AND r.cid = #{param.branchId}
+        AND r.tirq BETWEEN #{param.startTime}
+        AND #{param.endTime}
+    </select>
+    <select id="selectCriticalValueRate" resultType="java.lang.Double">
+        SELECT
+            count(
+                CASE
+                WHEN r.reportstatus = 1 THEN
+                    1
+                ELSE
+                    NULL
+                END
+            ) / count(*)
+        FROM
+            md_riskclient r
+        WHERE
+            r.cid = #{param.branchId}
+        AND r.tirq BETWEEN #{param.startTime}
+        AND #{param.endTime}
+    </select>
+    <select id="selectFollowUpRate" resultType="java.lang.Double">
+        SELECT
+            count(
+                CASE
+                WHEN s.visit_result IS NOT NULL THEN
+                    1
+                ELSE
+                    NULL
+                END
+            ) / count(*)
+        FROM
+            md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+        AND s.personcode = p.patientcode
+        AND s.division_receptionist = 1
+        WHERE
+            p.f_registered = 1
+        AND (
+            s.appraise_result IS NULL
+            OR s.appraise_result != '1'
+        )
+        AND p.hospitalcode = #{param.branchId}
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.f_usecodehiden=#{fUsecodehiden}
+    </select>
+    <select id="selectSatisfactionRate" resultType="java.lang.Double">
+        SELECT
+            ifnull(
+                sum(
+                    CASE
+                    WHEN s.appraise_result = '1' THEN
+                        5
+                    WHEN s.appraise_result = '2' THEN
+                        4
+                    WHEN s.appraise_result = '3' THEN
+                        3
+                    WHEN s.appraise_result = '4' THEN
+                        1
+                    ELSE
+                        2
+                    END
+                ),
+                0
+            ) / count(*) / 5
+        FROM
+            md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+            AND s.personcode = p.patientcode
+            AND s.division_receptionist = 1
+        WHERE
+            p.f_registered = 1
+        AND p.hospitalcode = #{param.branchId}
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+    </select>
+    <select id="selectAddItemNumber" resultType="int">
+        SELECT
+            count(DISTINCT pi.id_patient)
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        WHERE
+            pi.f_feecharged = 1
+        AND pi.sfjx = 1
+        AND p.hospitalcode = #{param.branchId}
+        AND pi.feechargetime BETWEEN #{param.startTime}
+        AND #{param.endTime}
+    </select>
+    <select id="selectAddItemAmount" resultType="double">
+        SELECT
+            ifnull(sum(pi.factprice), 0)
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        WHERE
+            pi.f_feecharged = 1
+        AND pi.sfjx = 1
+        AND p.hospitalcode = #{param.branchId}
+        AND pi.feechargetime BETWEEN #{param.startTime}
+        AND #{param.endTime}
+    </select>
+    <select id="selectAddItemPage" resultType="com.center.medical.datascreen.bean.vo.BranchDataSelectAddItemPageVo">
+        SELECT
+            CASE
+                <if test="param.startTime1!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1} THEN
+                    DATE_FORMAT(#{param.startTime1}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime2!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}  THEN
+                    DATE_FORMAT(#{param.startTime2}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime3!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3} THEN
+                    DATE_FORMAT(#{param.startTime3}, '%Y-%d-%m')
+                </if>
+            END start_date,
+             CASE
+                <if test="param.startTime1!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1} THEN
+                    DATE_FORMAT(#{param.endTime1}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime2!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}  THEN
+                    DATE_FORMAT(#{param.endTime2}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime3!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3} THEN
+                    DATE_FORMAT(#{param.endTime3}, '%Y-%d-%m')
+                </if>
+            END end_date,
+             u.user_name,
+             sum(pi.price) total_price,
+             sum(pi.factprice) total_factprice
+            FROM
+                md_peispatientfeeitem pi
+            INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+            INNER JOIN sys_user u ON u.user_no = pi.jxys
+            WHERE
+                pi.sfjx = 1
+            AND pi.f_feecharged = 1
+            AND p.hospitalcode = #{param.branchId}
+            AND (
+                (
+                    pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1}
+                )
+                OR (
+                    pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}
+                )
+                OR (
+                    pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3}
+                )
+            )
+            GROUP BY
+                u.user_name,
+                CASE
+                <if test="param.startTime1!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1} THEN
+                    DATE_FORMAT(#{param.startTime1}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime2!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}  THEN
+                    DATE_FORMAT(#{param.startTime2}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime3!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3} THEN
+                    DATE_FORMAT(#{param.startTime3}, '%Y-%d-%m')
+                </if>
+            END,
+               CASE
+                <if test="param.startTime1!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1} THEN
+                    DATE_FORMAT(#{param.endTime1}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime2!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}  THEN
+                    DATE_FORMAT(#{param.endTime2}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime3!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3} THEN
+                    DATE_FORMAT(#{param.endTime3}, '%Y-%d-%m')
+                </if>
+            END
+            ORDER BY
+                u.user_name,
+                CASE
+                <if test="param.startTime1!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime1}
+                    AND #{param.endTime1} THEN
+                    DATE_FORMAT(#{param.startTime1}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime2!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime2}
+                    AND #{param.endTime2}  THEN
+                    DATE_FORMAT(#{param.startTime2}, '%Y-%d-%m')
+                </if>
+                <if test="param.startTime3!=null">
+                    WHEN pi.feechargetime BETWEEN #{param.startTime3}
+                    AND #{param.endTime3} THEN
+                    DATE_FORMAT(#{param.startTime3}, '%Y-%d-%m')
+                </if>
+            END DESC
+    </select>
+    <select id="selectDeptList" resultType="com.center.medical.datascreen.bean.vo.BranchDataSelectDeptListVo">
+        SELECT
+            d.dept_name,
+            d.imgpath,
+            count(*) number
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        INNER JOIN sys_dept d ON d.dept_no = pi.id_ks
+        WHERE
+            pi.f_examinated = 1
+        AND d.is_function = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.hospitalcode = #{param.branchId}
+        GROUP BY
+            d.dept_name,
+            d.imgpath
+        ORDER BY
+            d.order_num
+    </select>
+    <select id="selectOpenedDeptCount" resultType="com.center.medical.datascreen.bean.vo.BranchDataSelectDeptVo">
+        SELECT
+            count(DISTINCT d.dept_no) count,
+            count(*) number
+        FROM
+            md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        INNER JOIN sys_dept d ON d.dept_no = pi.id_ks
+        WHERE
+            pi.f_examinated = 1
+        AND d.is_function = 1
+        AND p.dateregister BETWEEN #{param.startTime}
+        AND #{param.endTime}
+        AND p.hospitalcode = #{param.branchId}
+    </select>
+</mapper>

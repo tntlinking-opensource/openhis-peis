@@ -1,0 +1,1145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.ItemsMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Items" id="ItemsMap">
+        <id property="id" column="id"/>
+        <result property="basexamltemId" column="basexamltem_id"/>
+        <result property="sysmanmark" column="sysmanmark"/>
+        <result property="keyexamfeeitem" column="keyexamfeeitem"/>
+        <result property="examfeeitemName" column="examfeeitem_name"/>
+        <result property="examfeeitemNameabr" column="examfeeitem_nameabr"/>
+        <result property="examfeeitemNameprn" column="examfeeitem_nameprn"/>
+        <result property="examfeeitemNameeng" column="examfeeitem_nameeng"/>
+        <result property="examfeeitemNameengabr" column="examfeeitem_nameengabr"/>
+        <result property="examfeeitemCode" column="examfeeitem_code"/>
+        <result property="examfeeitemCode2" column="examfeeitem_code2"/>
+        <result property="examfeeitemCode3" column="examfeeitem_code3"/>
+        <result property="examfeeitemCodehm" column="examfeeitem_codehm"/>
+        <result property="examfeeitemCodex" column="examfeeitem_codex"/>
+        <result property="examfeeitemFeecode" column="examfeeitem_feecode"/>
+        <result property="examfeeitemFeecodesub" column="examfeeitem_feecodesub"/>
+        <result property="examfeeitemPricecode" column="examfeeitem_pricecode"/>
+        <result property="examfeeitemPricecodesub" column="examfeeitem_pricecodesub"/>
+        <result property="examfeeitemHisname" column="examfeeitem_hisname"/>
+        <result property="examfeeitemClass" column="examfeeitem_class"/>
+        <result property="idReportitem" column="id_reportitem"/>
+        <result property="xXxdm" column="x_xxdm"/>
+        <result property="fDiscountdisabled" column="f_discountdisabled"/>
+        <result property="fMaxoffpercentlimited" column="f_maxoffpercentlimited"/>
+        <result property="maxoffpercent" column="maxoffpercent"/>
+        <result property="unitprice" column="unitprice"/>
+        <result property="suiteprice" column="suiteprice"/>
+        <result property="specialprice" column="specialprice"/>
+        <result property="foreignprice" column="foreignprice"/>
+        <result property="preferprice" column="preferprice"/>
+        <result property="innerprice" column="innerprice"/>
+        <result property="materialprice" column="materialprice"/>
+        <result property="costprice" column="costprice"/>
+        <result property="coopprice" column="coopprice"/>
+        <result property="idCooporg" column="id_cooporg"/>
+        <result property="exampoint" column="exampoint"/>
+        <result property="xDepartcode" column="x_departcode"/>
+        <result property="idDepart" column="id_depart"/>
+        <result property="departName" column="depart_name"/>
+        <result property="xYbdm" column="x_ybdm"/>
+        <result property="idGuidesheetgroup" column="id_guidesheetgroup"/>
+        <result property="idGuidesheetgroupsub" column="id_guidesheetgroupsub"/>
+        <result property="guidesheetgroupset" column="guidesheetgroupset"/>
+        <result property="guidesheetgroupsetdisporder" column="guidesheetgroupsetdisporder"/>
+        <result property="idLabtype" column="id_labtype"/>
+        <result property="labtypeR" column="labtype_r"/>
+        <result property="labtypeSub" column="labtype_sub"/>
+        <result property="guidesheelabtypeset" column="guidesheelabtypeset"/>
+        <result property="guidesheelabtypesetdisporder" column="guidesheelabtypesetdisporder"/>
+        <result property="hisopendepartname" column="hisopendepartname"/>
+        <result property="hisopendepartcode" column="hisopendepartcode"/>
+        <result property="hisexecdepartname" column="hisexecdepartname"/>
+        <result property="hisexecdepartcode" column="hisexecdepartcode"/>
+        <result property="hisexecworkgroupname" column="hisexecworkgroupname"/>
+        <result property="hisexecworkgroupcode" column="hisexecworkgroupcode"/>
+        <result property="hisexecworkstationname" column="hisexecworkstationname"/>
+        <result property="hisexecworkstationcode" column="hisexecworkstationcode"/>
+        <result property="hisexecworkbenchname" column="hisexecworkbenchname"/>
+        <result property="hisexecworkbenchcode" column="hisexecworkbenchcode"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="inputcodeb" column="inputcodeb"/>
+        <result property="inputcodec" column="inputcodec"/>
+        <result property="inputcoded" column="inputcoded"/>
+        <result property="inputcodee" column="inputcodee"/>
+        <result property="fReportalone" column="f_reportalone"/>
+        <result property="fMale" column="f_male"/>
+        <result property="fFemale" column="f_female"/>
+        <result property="fAlert" column="f_alert"/>
+        <result property="warningmsg" column="warningmsg"/>
+        <result property="fAutovip" column="f_autovip"/>
+        <result property="fNonexam" column="f_nonexam"/>
+        <result property="fIsdrug" column="f_isdrug"/>
+        <result property="fIsforask" column="f_isforask"/>
+        <result property="fHideinguidesheet" column="f_hideinguidesheet"/>
+        <result property="breakfastorder" column="breakfastorder"/>
+        <result property="fDisabled" column="f_disabled"/>
+        <result property="fInvisible" column="f_invisible"/>
+        <result property="disporder" column="disporder"/>
+        <result property="note" column="note"/>
+        <result property="idClassoffeeitem" column="id_classoffeeitem"/>
+        <result property="idClassofreceipt" column="id_classofreceipt"/>
+        <result property="idClassofaccount" column="id_classofaccount"/>
+        <result property="idFeeitemclass2" column="id_feeitemclass2"/>
+        <result property="idFeeitemclass3" column="id_feeitemclass3"/>
+        <result property="lookupwarning" column="lookupwarning"/>
+        <result property="guidesheetcode" column="guidesheetcode"/>
+        <result property="limitedinexamplaceidlist" column="limitedinexamplaceidlist"/>
+        <result property="fQtysettable" column="f_qtysettable"/>
+        <result property="fDoctorbyfeeitem" column="f_doctorbyfeeitem"/>
+        <result property="fDosplitting" column="f_dosplitting"/>
+        <result property="specification" column="specification"/>
+        <result property="measureunit" column="measureunit"/>
+        <result property="numpricelistneeded" column="numpricelistneeded"/>
+        <result property="numpricelistincomplete" column="numpricelistincomplete"/>
+        <result property="numusedfordeveloper" column="numusedfordeveloper"/>
+        <result property="fDontupdate" column="f_dontupdate"/>
+        <result property="fDontupdatepricedetail" column="f_dontupdatepricedetail"/>
+        <result property="fComparereport" column="f_comparereport"/>
+        <result property="fGuidesheetbackupsingleitem" column="f_guidesheetbackupsingleitem"/>
+        <result property="dtLastautoinsert" column="dt_lastautoinsert"/>
+        <result property="dtLastautoupdate" column="dt_lastautoupdate"/>
+        <result property="dtLastautoupdatedetail" column="dt_lastautoupdatedetail"/>
+        <result property="jz" column="jz"/>
+        <result property="sfxmsrm" column="sfxmsrm"/>
+        <result property="xmdymc" column="xmdymc"/>
+        <result property="dydfz" column="dydfz"/>
+        <result property="xh" column="xh"/>
+        <result property="dyddybs" column="dyddybs"/>
+        <result property="zk" column="zk"/>
+        <result property="txjg" column="txjg"/>
+        <result property="wbjg" column="wbjg"/>
+        <result property="ydjg" column="ydjg"/>
+        <result property="nbj" column="nbj"/>
+        <result property="zybm" column="zybm"/>
+        <result property="yblx" column="yblx"/>
+        <result property="dlbs" column="dlbs"/>
+        <result property="yblxmc" column="yblxmc"/>
+        <result property="fylx" column="fylx"/>
+        <result property="jcyy" column="jcyy"/>
+        <result property="cx" column="cx"/>
+        <result property="yblxid" column="yblxid"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="xb" column="xb"/>
+        <result property="bs" column="bs"/>
+        <result property="bz" column="bz"/>
+        <result property="bgdybs" column="bgdybs"/>
+        <result property="xsdyfl" column="xsdyfl"/>
+        <result property="ldrq" column="ldrq"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="reviewMatters" column="review_matters"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="jccs" column="jccs"/>
+        <result property="examfeeitemid" column="examfeeitemid"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+        <result property="preUpperLimit" column="pre_upper_limit"/>
+        <result property="isBan" column="is_ban"/>
+        <result property="barcodeCount" column="barcode_count"/>
+        <result property="barcodeName" column="barcode_name"/>
+        <result property="groupOrder" column="group_order"/>
+        <result property="bsCatId" column="bs_cat_id"/>
+        <result property="specimenTypeCode" column="specimen_type_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectItemsVo">
+        select id,
+               basexamltem_id,
+               sysmanmark,
+               keyexamfeeitem,
+               examfeeitem_name,
+               examfeeitem_nameabr,
+               examfeeitem_nameprn,
+               examfeeitem_nameeng,
+               examfeeitem_nameengabr,
+               examfeeitem_code,
+               examfeeitem_code2,
+               examfeeitem_code3,
+               examfeeitem_codehm,
+               examfeeitem_codex,
+               examfeeitem_feecode,
+               examfeeitem_feecodesub,
+               examfeeitem_pricecode,
+               examfeeitem_pricecodesub,
+               examfeeitem_hisname,
+               examfeeitem_class,
+               id_reportitem,
+               x_xxdm,
+               f_discountdisabled,
+               f_maxoffpercentlimited,
+               maxoffpercent,
+               unitprice,
+               suiteprice,
+               specialprice,
+               foreignprice,
+               preferprice,
+               innerprice,
+               materialprice,
+               costprice,
+               coopprice,
+               id_cooporg,
+               exampoint,
+               x_departcode,
+               id_depart,
+               depart_name,
+               x_ybdm,
+               id_guidesheetgroup,
+               id_guidesheetgroupsub,
+               guidesheetgroupset,
+               guidesheetgroupsetdisporder,
+               id_labtype,
+               labtype_r,
+               labtype_sub,
+               guidesheelabtypeset,
+               guidesheelabtypesetdisporder,
+               hisopendepartname,
+               hisopendepartcode,
+               hisexecdepartname,
+               hisexecdepartcode,
+               hisexecworkgroupname,
+               hisexecworkgroupcode,
+               hisexecworkstationname,
+               hisexecworkstationcode,
+               hisexecworkbenchname,
+               hisexecworkbenchcode,
+               input_code,
+               inputcodeb,
+               inputcodec,
+               inputcoded,
+               inputcodee,
+               f_reportalone,
+               f_male,
+               f_female,
+               f_alert,
+               warningmsg,
+               f_autovip,
+               f_nonexam,
+               f_isdrug,
+               f_isforask,
+               f_hideinguidesheet,
+               breakfastorder,
+               f_disabled,
+               f_invisible,
+               disporder,
+               note,
+               id_classoffeeitem,
+               id_classofreceipt,
+               id_classofaccount,
+               id_feeitemclass2,
+               id_feeitemclass3,
+               lookupwarning,
+               guidesheetcode,
+               limitedinexamplaceidlist,
+               f_qtysettable,
+               f_doctorbyfeeitem,
+               f_dosplitting,
+               specification,
+               measureunit,
+               numpricelistneeded,
+               numpricelistincomplete,
+               numusedfordeveloper,
+               f_dontupdate,
+               f_dontupdatepricedetail,
+               f_comparereport,
+               f_guidesheetbackupsingleitem,
+               dt_lastautoinsert,
+               dt_lastautoupdate,
+               dt_lastautoupdatedetail,
+               jz,
+               sfxmsrm,
+               xmdymc,
+               dydfz,
+               xh,
+               dyddybs,
+               zk,
+               txjg,
+               wbjg,
+               ydjg,
+               nbj,
+               zybm,
+               yblx,
+               dlbs,
+               yblxmc,
+               fylx,
+               jcyy,
+               cx,
+               yblxid,
+               tjlx,
+               xb,
+               bs,
+               bz,
+               bgdybs,
+               xsdyfl,
+               ldrq,
+               createdate,
+               modifydate,
+               review_matters,
+               is_delete,
+               jccs,
+               examfeeitemid,
+               is_public,
+               fzx_ids,
+               pre_upper_limit,
+               is_ban,
+               barcode_count,
+               barcode_name,
+               group_order,
+               bs_cat_id,
+               specimen_type_code
+        from md_items
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.data.bean.model.Items">
+        SELECT i.id,
+        i.examfeeitem_name,
+        i.sfxmsrm,
+        i.examfeeitem_code,
+        i.dydfz,
+        i.tjlx,
+        i.dyddybs,
+        i.depart_name,
+        i.cx,
+        i.xb,
+        i.unitprice,
+        <if test="param.flag!=null and param.flag!=''">
+            <choose>
+                <when test="param.flag == 'unitprice'">
+                    i.unitprice AS jg,
+                </when>
+                <otherwise>
+                    i.coopprice AS jg,
+                </otherwise>
+            </choose>
+        </if>
+        p.print_name as xsdyfl,
+        w.`name` as idCooporg,
+        IFNULL(b.fzx,'公共') as fzx,
+        i.examfeeitem_codex,
+        i.zk,
+        i.suiteprice,
+        i.txjg,
+        i.wbjg,
+        i.ydjg,
+        i.nbj,
+        i.materialprice,
+        i.costprice,
+        i.coopprice,
+        y.`name` as yblx,
+        i.dlbs,
+        f.`name` as fylx,
+        i.examfeeitem_nameprn,
+        i.bgdybs,
+        i.xh,
+        i.bs,
+        i.jccs,
+        i.jcyy,
+        i.id_depart,
+        i.is_ban
+        FROM md_items i
+        LEFT JOIN sys_branch b ON b.id = i.fzx_ids
+        LEFT JOIN md_wsjg w ON w.id = i.id_cooporg
+        LEFT JOIN md_yblx y ON y.id = i.id_labtype
+        LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        LEFT JOIN md_fylx f ON f.id = i.fylx
+        <where>
+            i.is_delete = 0
+            <choose>
+                <when test="param.isNull != null and param.isNull == 0">
+                    <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                        AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+                    </if>
+                    <if test="param.isAdmin==0">
+                        AND (i.is_public = 1 OR
+                        EXISTS(SELECT 1 FROM md_items_and_fzx iaf WHERE iaf.items_id=i.id AND
+                        iaf.fzx_id=#{param.cId}))
+                    </if>
+                    <if test="param.idLabtype!=null and param.idLabtype!=''">
+                        AND i.id_labtype = #{param.idLabtype}
+                    </if>
+                    <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                        AND i.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+                    </if>
+                    <if test="param.examfeeitemCode!=null and param.examfeeitemCode!=''">
+                        AND i.examfeeitem_code LIKE concat('%',#{param.examfeeitemCode},'%')
+                    </if>
+                    <if test="param.idDepart!=null and param.idDepart!=''">
+                        AND i.id_depart = #{param.idDepart}
+                    </if>
+                    <if test="param.thiredTj!=null">
+                        <choose>
+                            <when test="param.thiredTj == 2">
+                                AND i.tjlx IN('0','1','2')
+                            </when>
+                            <when test="param.thiredTj == 0">
+                                AND i.tjlx IN('0','2')
+                            </when>
+                            <when test="param.thiredTj == 1">
+                                AND i.tjlx = '1'
+                            </when>
+                        </choose>
+                    </if>
+                    <if test="param.tjlx!=null">
+                        AND i.tjlx = #{param.tjlx}
+                    </if>
+                    <if test="param.forMale!=null">
+                        AND i.xb = #{param.forMale}
+                    </if>
+                    <if test="param.thiredSex!=null">
+                        <if test="param.thiredSex == 0 or param.thiredSex == 1">
+                            AND i.xb IN (#{param.thiredSex},'2')
+                        </if>
+                    </if>
+                    <if test="param.minPrice!=null">
+                        AND i.unitprice <![CDATA[ >= ]]> #{param.minPrice}
+                    </if>
+                    <if test="param.maxPrice!=null">
+                        AND i.unitprice <![CDATA[ < ]]> #{param.maxPrice}
+                    </if>
+                    <if test="param.isBan!=null">
+                        AND i.is_ban = #{param.isBan}
+                    </if>
+                </when>
+                <otherwise>
+                    AND i.is_ban = 0
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY i.modifydate DESC,
+        i.examfeeitem_name
+    </select>
+
+    <select id="getItemsData" resultType="com.center.medical.data.bean.vo.ItemsDataVO">
+        SELECT i.id,
+        i.examfeeitem_name AS sfxmmc,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        <if test="param.flag!=null and param.flag!=''">
+            <choose>
+                <when test="param.flag == 'unitprice'">
+                    i.unitprice AS jg,
+                </when>
+                <otherwise>
+                    i.coopprice AS jg,
+                </otherwise>
+            </choose>
+        </if>
+        i.bz,
+        i.tjlx,
+        i.depart_name AS ssks,
+        i.id_depart
+        FROM md_items i
+        <where>
+            i.is_delete = 0
+            <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+            </if>
+            <if test="param.tjlx!=null and param.tjlx==0">
+                AND i.tjlx IN('0','2')
+            </if>
+            <if test="param.tjlx!=null and param.tjlx==1">
+                AND i.tjlx IN('1','2')
+            </if>
+            <if test="param.thiredTj!=null">
+                <choose>
+                    <when test="param.thiredTj == 2">
+                        AND i.tjlx IN('0','1','2')
+                    </when>
+                    <when test="param.thiredTj == 0">
+                        AND i.tjlx IN('0','2')
+                    </when>
+                    <when test="param.thiredTj == 1">
+                        AND i.tjlx = '1'
+                    </when>
+                </choose>
+            </if>
+            <if test="param.thiredSex!=null">
+                <if test="param.thiredSex == 0 or param.thiredSex == 1">
+                    AND i.xb IN (#{param.thiredSex},'2')
+                </if>
+            </if>
+            <if test="param.isBan!=null">
+                AND i.is_ban = #{param.isBan}
+            </if>
+            <if test="param.forMale!=null and param.forMale==0">
+                AND i.xb IN(0,2)
+            </if>
+            <if test="param.forMale!=null and param.forMale==1">
+                AND i.xb IN(1,2)
+            </if>
+            <if test="param.forMale!=null and param.forMale==2">
+                AND i.xb = 2
+            </if>
+            <if test="param.minPrice!=null">
+                AND i.unitprice <![CDATA[ >= ]]> #{param.minPrice}
+            </if>
+            <if test="param.maxPrice!=null">
+                AND i.unitprice <![CDATA[ < ]]> #{param.maxPrice}
+            </if>
+            <if test="param.branchIds!=null">
+                <foreach collection="param.branchIds" item="brandId">
+                    AND (i.is_public = 1 OR
+                    EXISTS(SELECT 1 FROM md_items_and_fzx iaf WHERE iaf.items_id=i.id AND iaf.fzx_id=#{brandId})
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.data.bean.model.Items">
+        select mi.*,
+        mp.print_name AS xsdyflName,
+        mf.name AS fylxName,
+        w.name AS wsjgName,
+        bc.type_name AS bsCatName,
+        spt.specimen_name as specimenTypeName
+        from md_items mi
+        LEFT JOIN md_printtype mp ON mp.id = mi.xsdyfl
+        LEFT JOIN md_fylx mf ON mf.id = mi.fylx
+        LEFT JOIN md_wsjg w ON w.id = mi.id_cooporg
+        LEFT JOIN md_business_cat bc ON bc.type_id = mi.bs_cat_id
+        LEFT JOIN md_specimen_type spt ON spt.code = mi.specimen_type_code
+        <where>
+            mi.id = #{id}
+            And mi.is_delete = 0
+        </where>
+    </select>
+
+    <!-- list页面双击获取收费项目信息-->
+    <select id="getItemsByTcId" resultType="com.center.medical.data.bean.vo.ItemsDataVO">
+        SELECT mi.sfbx,
+               p.print_name       AS printType,
+               mi.price,
+               mi.item_group,
+               mi.group_type,
+               i.id,
+               i.examfeeitem_name AS sfxmmc,
+               i.sfxmsrm,
+               i.xb,
+               i.jcyy,
+               i.unitprice        AS jg,
+               i.bz,
+               i.depart_name      AS ssks,
+               i.tjlx
+        FROM md_mealanditem mi
+                 INNER JOIN md_items i ON i.id = mi.sfxmid
+                 LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+                 LEFT JOIN sys_dept d ON d.dept_no = i.id_depart
+        WHERE mi.tcid = #{tcId}
+        ORDER BY mi.item_sort
+    </select>
+
+    <select id="getItemVoPage" resultType="com.center.medical.data.bean.vo.ItemsVo">
+        SELECT i.id,
+        i.examfeeitem_name AS sfxmmc,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice AS jg,
+        i.bz,
+        i.tjlx,
+        i.depart_name AS ssks,
+        i.id_depart,
+        i.jccs AS sycstj,
+        i.f_discountdisabled,
+        pt.print_name AS xsdyfl,
+        pt.shunxu AS dysx,
+        i.costprice
+        FROM md_items i
+        LEFT JOIN md_printtype pt ON pt.id = i.xsdyfl
+        LEFT JOIN md_items_and_fzx iaf ON iaf.items_id = i.id
+        <where>
+            i.is_delete = 0
+            AND (i.is_ban IS NULL OR i.is_ban = 0)
+            <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+            </if>
+            <if test="param.tjlx!=null and param.tjlx == 0">
+                AND i.tjlx IN('0','2')
+            </if>
+            <if test="param.tjlx!=null and param.tjlx == 1">
+                AND i.tjlx IN('1','2')
+            </if>
+            <if test="param.forMale!=null and param.forMale == 0">
+                AND i.xb IN(0,2)
+            </if>
+            <if test="param.forMale!=null and param.forMale == 1">
+                AND i.xb IN(1,2)
+            </if>
+            <if test="param.forMale!=null and param.forMale == 2">
+                AND i.xb = 2
+            </if>
+            <if test="param.branchIds!=null">
+                AND iaf.fzx_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" separator="," close=")">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.addItem!=null and param.addItem == 1">
+                AND i.unitprice>0
+            </if>
+        </where>
+        GROUP BY i.id,
+        i.examfeeitem_name,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice,
+        i.bz,
+        i.tjlx,
+        i.depart_name,
+        i.id_depart,
+        i.jccs,
+        i.f_discountdisabled,
+        pt.print_name,
+        pt.shunxu,
+        i.costprice
+    </select>
+
+
+    <!--根据patientCode和ksId获取-->
+    <select id="selectWords" resultType="com.center.medical.data.bean.model.Items">
+        select
+        e.id eId,
+        i.id,
+        i.examfeeitem_name
+        from
+        md_peispatientfeeitem f
+        inner join md_items i on i.id = f.id_examfeeitem
+        inner join md_inspect_charge c on c.charge_id = i.id
+        and c.is_delete = 0
+        inner join md_basexamltem e on e.id = c.inspect_id
+        <where>
+            1 = 1
+            <if test="patientCode!=null and patientCode!=''">
+                and f.id_patient = #{patientCode}
+            </if>
+            <if test="ksId!=null and ksId!=''">
+                and f.id_ks = #{ksId}
+            </if>
+            and f.id_ks = #{ksId}
+            and f.f_feecharged = 1
+            and f.f_giveup = 0
+            and ( f.sfjj is null or f.sfjj = 0 )
+            and f.change_item = 0
+        </where>
+    </select>
+
+
+    <!--获取所有职业必检选检项目-->
+    <select id="getProItems" resultType="com.center.medical.data.bean.model.Items">
+        SELECT DISTINCT
+        i.id,
+        i.examfeeitem_name,
+        i.review_matters
+        FROM
+        md_items i
+        INNER JOIN md_comboexamitem cei ON cei.item_id = i.id
+        <where>
+            1 = 1
+            <if test="medicaltype!=null and medicaltype!=''">
+                AND cei.medical_type = #{medicaltype}
+            </if>
+            <if test="jhys!=null">
+                AND cei.harm_id IN
+                <foreach collection="jhys" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!--获取所有职业必检选检项目-->
+    <select id="getSfxm" resultType="com.center.medical.data.bean.vo.GetSfxmVo">
+        SELECT
+        i.id,
+        i.examfeeitem_name AS sfxmmc,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice AS jg,
+        i.bz,
+        i.tjlx,
+        i.depart_name AS ssks,
+        i.id_depart AS idKs,
+        i.jccs AS sycstj,
+        i.f_discountdisabled,
+        pt.print_name AS xsdyfl,
+        pt.shunxu AS dysx,
+        i.costprice
+        FROM
+        md_items i
+        LEFT JOIN md_printtype pt ON pt.id = i.xsdyfl
+        LEFT JOIN md_items_and_fzx iaf ON iaf.items_id = i.id
+        <where>
+            i.is_delete = 0
+            AND (i.is_ban IS NULL
+            OR i.is_ban = 0)
+            <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                AND i.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+            </if>
+            <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+            </if>
+            <if test="param.syxb!=null and param.syxb!=''">
+                <choose>
+                    <when test="param.syxb == 0">
+                        AND i.xb IN ('0','2')
+                    </when>
+                    <when test="param.syxb == 1">
+                        AND i.xb IN ('1','2')
+                    </when>
+                    <when test="param.syxb == 2">
+                        AND i.xb ='2'
+                    </when>
+                </choose>
+            </if>
+            <if test="param.tjlx!=null and param.tjlx!=''">
+                <choose>
+                    <when test="param.tjlx == 0">
+                        AND i.tjlx IN ('0','2')
+                    </when>
+                    <when test="param.tjlx == 1">
+                        AND i.tjlx = #{param.tjlx}
+                    </when>
+                    <when test="param.tjlx == 2">
+                        AND i.tjlx IN ('0','1','2')
+                    </when>
+                </choose>
+            </if>
+
+            <if test="param.fzxid!=null">
+                AND iaf.fzx_id IN
+                <foreach collection="param.fzxid" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="param.addItem!=null and param.addItem == 1">
+                AND i.unitprice <![CDATA[ > ]]> 0
+            </if>
+        </where>
+        GROUP BY
+        i.id,
+        i.examfeeitem_name,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice,
+        i.bz,
+        i.tjlx,
+        i.depart_name,
+        i.id_depart,
+        i.jccs,
+        i.f_discountdisabled,
+        pt.print_name,
+        pt.shunxu,
+        i.costprice
+    </select>
+
+
+    <!--按性别 职业体检类型  接害因素 获取最小套餐收费项目 ID 价格-->
+    <select id="getComboData" resultType="com.center.medical.data.bean.dto.ComboDataDto">
+        SELECT
+        i.id,
+        i.unitprice,
+        i.f_discountdisabled
+        FROM
+        md_items i
+        INNER JOIN md_comboanditem ci ON ci.sfxmid = i.id
+        INNER JOIN md_createcombo c ON c.id = ci.tcid
+        <where>
+            c.zytjlb = #{zytjlb}
+            <if test="jhys!=null and jhys!=''">
+                AND c.jhys IN(#{jhys})
+            </if>
+            <if test="syxb!=null and syxb!=''">
+                <choose>
+                    <when test="syxb == 0">
+                        AND c.syxb IN('0','2')
+                    </when>
+                    <when test="syxb == 1">
+                        AND c.syxb IN('1','2')
+                    </when>
+                    <when test="syxb == 2">
+                        AND c.syxb ='2'
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+
+    <!--推荐收费项目-查看套餐下的检查项目-->
+    <select id="getItemsDataByTcId" resultType="com.center.medical.data.bean.vo.ItemsByTcVo">
+        SELECT i.costprice,
+               i.id,
+               i.id               AS sfxmid,
+               i.examfeeitem_name AS sfxmmc,
+               i.sfxmsrm,
+               i.xb,
+               i.jcyy,
+               i.unitprice        AS jg,
+               i.bz,
+               i.tjlx,
+               i.depart_name      AS ssks,
+               i.id_depart        AS idKs,
+               i.jccs             AS sycstj,
+               i.f_discountdisabled,
+               p.print_name       AS xsdyfl,
+               p.shunxu           AS dysx
+        FROM md_comboanditem ci
+                 LEFT JOIN md_items i ON ci.sfxmid = i.id
+                 LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        WHERE ci.is_delete = 0
+          AND ci.tcid = #{tcId}
+        GROUP BY i.id
+    </select>
+
+
+    <!--推荐收费项目-查看套餐下的检查项目-->
+    <select id="getAllItemsData" resultType="com.center.medical.data.bean.vo.AllItemsVo">
+        SELECT id,
+        examfeeitem_name
+        FROM md_items
+        <where>
+            is_delete = 0
+            <if test="key!=null and key!=''">
+                AND sfxmsrm LIKE concat('%',#{key},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!--推荐收费项目-查看套餐下的检查项目-->
+    <select id="getShowData" resultType="com.center.medical.data.bean.vo.GetShowVo">
+        SELECT
+        i.id,
+        i.examfeeitem_name AS sfxmmc,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice AS jg,
+        i.bz,
+        i.tjlx,
+        i.depart_name AS ssks
+        FROM
+        md_items i
+        <where>
+            i.is_delete = 0
+            and (i.is_ban IS NULL or i.is_ban = 0)
+            <if test="param.key!=null and param.key!=''">
+                AND sfxmsrm LIKE concat('%',#{param.key},'%')
+            </if>
+
+            <if test="param.syxb!=null ">
+                <if test="param.syxb == 0 ">
+                    AND i.xb <![CDATA[ <> ]]> '1'
+                </if>
+                <if test="param.syxb == 1 ">
+                    AND i.xb <![CDATA[ <> ]]> '0'
+                </if>
+                <if test="param.syxb == 2 ">
+                    AND i.xb = '2'
+                </if>
+            </if>
+
+            <if test="param.tjlx!=null ">
+                <if test="param.tjlx == 0 ">
+                    AND i.tjlx IN('0','2')
+                </if>
+                <if test="param.tjlx == 1 ">
+                    AND i.tjlx IN('1','2')
+                </if>
+            </if>
+            <if test="param.fzxid!=null">
+                AND exists (
+                select
+                1
+                from
+                md_items_and_fzx iaf
+                where
+                iaf.items_id = i.id
+                and iaf.fzx_id IN
+                <foreach collection="param.fzxid" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+                )
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportData" resultType="com.center.medical.data.bean.model.Items">
+        SELECT i.id,
+        i.examfeeitem_name,
+        i.sfxmsrm,
+        i.examfeeitem_code,
+        i.dydfz,
+        i.tjlx,
+        i.dyddybs,
+        i.depart_name,
+        i.cx,
+        i.xb,
+        i.unitprice,
+        <if test="param.flag!=null and param.flag!=''">
+            <choose>
+                <when test="param.flag == 'unitprice'">
+                    i.unitprice AS jg,
+                </when>
+                <otherwise>
+                    i.coopprice AS jg,
+                </otherwise>
+            </choose>
+        </if>
+        p.print_name as xsdyfl,
+        w.`name` as idCooporg,
+        IFNULL(b.fzx,'公共') as fzx,
+        i.examfeeitem_codex,
+        i.zk,
+        i.suiteprice,
+        i.txjg,
+        i.wbjg,
+        i.ydjg,
+        i.nbj,
+        i.materialprice,
+        i.costprice,
+        i.coopprice,
+        y.`name` as yblx,
+        i.dlbs,
+        f.`name` as fylx,
+        i.examfeeitem_nameprn,
+        i.bgdybs,
+        i.xh,
+        i.bs,
+        i.jccs,
+        i.jcyy,
+        i.id_depart,
+        i.is_ban
+        FROM md_items i
+        LEFT JOIN sys_branch b ON b.id = i.fzx_ids
+        LEFT JOIN md_wsjg w ON w.id = i.id_cooporg
+        LEFT JOIN md_yblx y ON y.id = i.id_labtype
+        LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        LEFT JOIN md_fylx f ON f.id = i.fylx
+        <where>
+            i.is_delete = 0
+            <choose>
+                <when test="param != null">
+                    <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                        AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+                    </if>
+                    <if test="param.isAdmin==0">
+                        AND (i.is_public = 1 OR
+                        EXISTS(SELECT 1 FROM md_items_and_fzx iaf WHERE iaf.items_id=i.id AND
+                        iaf.fzx_id=#{param.cId})
+                    </if>
+                    <if test="param.idLabtype!=null and param.idLabtype!=''">
+                        AND i.id_labtype = #{param.idLabtype}
+                    </if>
+                    <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                        AND i.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+                    </if>
+                    <if test="param.examfeeitemCode!=null and param.examfeeitemCode!=''">
+                        AND i.examfeeitem_code LIKE concat('%',#{param.examfeeitemCode},'%')
+                    </if>
+                    <if test="param.idDepart!=null and param.idDepart!=''">
+                        AND i.id_depart = #{param.idDepart}
+                    </if>
+                    <if test="param.thiredTj!=null">
+                        <choose>
+                            <when test="param.thiredTj == 2">
+                                AND i.tjlx IN('0','1','2')
+                            </when>
+                            <when test="param.thiredTj == 0">
+                                AND i.tjlx IN('0','2')
+                            </when>
+                            <when test="param.thiredTj == 1">
+                                AND i.tjlx = '1'
+                            </when>
+                        </choose>
+                    </if>
+                    <if test="param.tjlx!=null">
+                        AND i.tjlx = #{param.tjlx}
+                    </if>
+                    <if test="param.forMale!=null">
+                        AND i.xb = #{param.forMale}
+                    </if>
+
+                    <if test="param.thiredSex!=null">
+                        <if test="param.thiredSex == 0 or param.thiredSex == 1">
+                            AND (I.XB = #{param.thiredSex} OR I.XB='2')
+                        </if>
+                    </if>
+                    <if test="param.minPrice!=null">
+                        AND i.unitprice <![CDATA[ >= ]]> #{param.minPrice}
+                    </if>
+                    <if test="param.maxPrice!=null">
+                        AND i.unitprice <![CDATA[ < ]]> #{param.maxPrice}
+                    </if>
+                    <if test="param.isBan!=null">
+                        <choose>
+                            <when test="param.isBan == 0">
+                                AND (i.is_ban IS NULL OR i.is_ban = 0)
+                            </when>
+                            <when test="param.isBan == 1">
+                                AND i.is_ban = 1
+                            </when>
+                        </choose>
+                    </if>
+                </when>
+                <otherwise>
+                    AND (i.is_ban IS NULL OR i.is_ban = 0)
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY i.modifydate DESC,
+        i.examfeeitem_name
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportAllData" resultType="com.center.medical.data.bean.vo.ItemsExportAllVo">
+        SELECT i.id,
+        i.examfeeitem_name,
+        i.sfxmsrm,
+        i.examfeeitem_code,
+        i.dydfz,
+        i.tjlx,
+        i.dyddybs,
+        i.depart_name,
+        i.cx,
+        i.xb,
+        i.unitprice,
+        p.print_name as xsdyfl,
+        w.`name` as idCooporg,
+        ifnull(i.examfeeitem_codex,0) as examfeeitemCodex,
+        ifnull(i.is_ban,0) as isBan,
+        i.zk,
+        i.suiteprice,
+        i.txjg,
+        i.wbjg,
+        i.ydjg,
+        i.nbj,
+        i.coopprice,
+        y.`name` as yblx,
+        i.dlbs,
+        f.`name` as fylx,
+        i.examfeeitem_nameprn,
+        i.bgdybs,
+        i.xh,
+        i.bs,
+        i.jccs,
+        i.jcyy
+        FROM md_items i
+        LEFT JOIN md_wsjg w ON w.id = i.id_cooporg
+        LEFT JOIN md_yblx y ON y.id = i.id_labtype
+        LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        LEFT JOIN md_fylx f ON f.id = i.fylx
+        <where>
+            i.is_delete = 0
+            <choose>
+                <when test="param != null">
+                    <if test="param.sfxmsrm!=null and param.sfxmsrm!=''">
+                        AND i.sfxmsrm LIKE concat('%',#{param.sfxmsrm},'%')
+                    </if>
+                    <if test="param.isAdmin==0">
+                        AND (i.is_public = 1 OR
+                        EXISTS(SELECT 1 FROM md_items_and_fzx iaf WHERE iaf.items_id=i.id AND
+                        iaf.fzx_id=#{param.cId})
+                    </if>
+                    <if test="param.idLabtype!=null and param.idLabtype!=''">
+                        AND i.id_labtype = #{param.idLabtype}
+                    </if>
+                    <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                        AND i.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+                    </if>
+                    <if test="param.examfeeitemCode!=null and param.examfeeitemCode!=''">
+                        AND i.examfeeitem_code LIKE concat('%',#{param.examfeeitemCode},'%')
+                    </if>
+                    <if test="param.idDepart!=null and param.idDepart!=''">
+                        AND i.id_depart = #{param.idDepart}
+                    </if>
+                    <if test="param.thiredTj!=null">
+                        <choose>
+                            <when test="param.thiredTj == 2">
+                                AND i.tjlx IN('0','1','2')
+                            </when>
+                            <when test="param.thiredTj == 0">
+                                AND i.tjlx IN('0','2')
+                            </when>
+                            <when test="param.thiredTj == 1">
+                                AND i.tjlx = '1'
+                            </when>
+                        </choose>
+                    </if>
+                    <if test="param.tjlx!=null">
+                        AND i.tjlx = #{param.tjlx}
+                    </if>
+                    <if test="param.forMale!=null">
+                        AND i.xb = #{param.forMale}
+                    </if>
+
+                    <if test="param.thiredSex!=null">
+                        <if test="param.thiredSex == 0 or param.thiredSex == 1">
+                            AND (I.XB = #{param.thiredSex} OR I.XB='2')
+                        </if>
+                    </if>
+                    <if test="param.minPrice!=null">
+                        AND i.unitprice <![CDATA[ >= ]]> #{param.minPrice}
+                    </if>
+                    <if test="param.maxPrice!=null">
+                        AND i.unitprice <![CDATA[ < ]]> #{param.maxPrice}
+                    </if>
+                    <if test="param.isBan!=null">
+                        <choose>
+                            <when test="param.isBan == 0">
+                                AND (i.is_ban IS NULL OR i.is_ban = 0)
+                            </when>
+                            <when test="param.isBan == 1">
+                                AND i.is_ban = 1
+                            </when>
+                        </choose>
+                    </if>
+                </when>
+                <otherwise>
+                    AND (i.is_ban IS NULL OR i.is_ban = 0)
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY i.modifydate DESC,
+        i.examfeeitem_name
+    </select>
+
+
+
+
+    <!-- 通过收费项目id和分中心id查询数量 -->
+    <select id="countByIdAndFzx" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            md_items i
+                left join md_items_and_fzx iaf on iaf.items_id = i.id
+        <where>
+            i.id = #{id}
+            <if test="fzxIds!=null">
+                and iaf.fzx_id in
+                <foreach collection="fzxIds" item="fzxId" open="(" close=")" separator=",">
+                    #{fzxId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
+

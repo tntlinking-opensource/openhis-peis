@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.BranchMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Branch" id="BranchMap">
+        <id property="id" column="ID"/>
+        <result property="fzx" column="FZX"/>
+        <result property="jm" column="JM"/>
+        <result property="srm" column="SRM"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="pid" column="PID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="isDefault" column="IS_DEFAULT"/>
+        <result property="branchType" column="BRANCH_TYPE"/>
+        <result property="fPayOnline" column="F_PAY_ONLINE"/>
+        <result property="lng" column="LNG"/>
+        <result property="lat" column="LAT"/>
+        <result property="tel" column="TEL"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="province" column="PROVINCE"/>
+        <result property="city" column="CITY"/>
+        <result property="area" column="AREA"/>
+        <result property="inspectInfo" column="INSPECT_INFO"/>
+        <result property="noInfo" column="NO_INFO"/>
+        <result property="pics" column="PICS"/>
+        <result property="introduce" column="INTRODUCE"/>
+        <result property="qtInfo" column="QT_INFO"/>
+        <result property="picture" column="PICTURE"/>
+        <result property="hospitalSubId" column="HOSPITAL_SUB_ID"/>
+        <result property="pyjm" column="PYJM"/>
+        <result property="isShow" column="IS_SHOW"/>
+        <result property="startTime2" column="START_TIME2"/>
+        <result property="endTime2" column="END_TIME2"/>
+        <result property="reservationPeriod" column="RESERVATION_PERIOD"/>
+        <result property="centerorgname" column="CENTERORGNAME"/>
+        <result property="isWechatApp" column="IS_WECHAT_APP"/>
+        <result property="queueUrl" column="QUEUE_URL"/>
+        <result property="latGcj" column="LAT_GCJ"/>
+        <result property="lngGcj" column="LNG_GCJ"/>
+        <result property="branchSort" column="BRANCH_SORT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBranchVo">
+        select ID,
+               FZX,
+               JM,
+               SRM,
+               CREATEDATE,
+               MODIFYDATE,
+               PID,
+               IS_DELETE,
+               ADDRESS,
+               IS_DEFAULT,
+               BRANCH_TYPE,
+               F_PAY_ONLINE,
+               LNG,
+               LAT,
+               TEL,
+               START_TIME,
+               END_TIME,
+               PROVINCE,
+               CITY,
+               AREA,
+               INSPECT_INFO,
+               NO_INFO,
+               PICS,
+               INTRODUCE,
+               QT_INFO,
+               PICTURE,
+               HOSPITAL_SUB_ID,
+               PYJM,
+               IS_SHOW,
+               START_TIME2,
+               END_TIME2,
+               RESERVATION_PERIOD,
+               CENTERORGNAME,
+               IS_WECHAT_APP,
+               QUEUE_URL,
+               LAT_GCJ,
+               LNG_GCJ,
+               BRANCH_SORT
+        from BRANCH
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="BranchMap">
+        <include refid="selectBranchVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BranchMap">
+        <include refid="selectBranchVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

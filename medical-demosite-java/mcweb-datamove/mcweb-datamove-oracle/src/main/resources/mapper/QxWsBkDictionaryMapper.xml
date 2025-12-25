@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxWsBkDictionaryMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxWsBkDictionary" id="QxWsBkDictionaryMap">
+        <id property="id" column="ID"/>
+        <result property="flg" column="FLG"/>
+        <result property="issystem" column="ISSYSTEM"/>
+        <result property="name" column="NAME"/>
+        <result property="type" column="TYPE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxWsBkDictionaryVo">
+        select ID, FLG, ISSYSTEM, NAME, TYPE, CREATEDATE, MODIFYDATE
+        from QX_WS_BK_DICTIONARY
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxWsBkDictionaryMap">
+        <include refid="selectQxWsBkDictionaryVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxWsBkDictionaryMap">
+        <include refid="selectQxWsBkDictionaryVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

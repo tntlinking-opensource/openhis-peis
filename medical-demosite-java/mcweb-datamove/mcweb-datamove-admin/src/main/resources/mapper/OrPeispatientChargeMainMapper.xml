@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.admin.dao.OrPeispatientChargeMainMapper">
+
+    <resultMap type="com.center.medical.datamove.admin.bean.model.PeispatientChargeMain"
+               id="PeispatientChargeMainMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="note" column="NOTE"/>
+        <result property="moneyamount" column="MONEYAMOUNT"/>
+        <result property="moneyamountpaid" column="MONEYAMOUNTPAID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="version" column="VERSION"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientChargeMainVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               NOTE,
+               MONEYAMOUNT,
+               MONEYAMOUNTPAID,
+               PATIENTCODE,
+               VERSION
+        from PEISPATIENT_CHARGE_MAIN
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeispatientChargeMainMap">
+        <include refid="selectPeispatientChargeMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientChargeMainMap">
+        <include refid="selectPeispatientChargeMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

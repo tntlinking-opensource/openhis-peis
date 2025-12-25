@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.WzZysMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.WzZys" id="WzZysMap">
+        <id property="id" column="ID"/>
+        <result property="djls" column="DJLS"/>
+        <result property="idPatientarchive" column="ID_PATIENTARCHIVE"/>
+        <result property="amount" column="AMOUNT"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="startDate" column="START_DATE"/>
+        <result property="stopDate" column="STOP_DATE"/>
+        <result property="dept" column="DEPT"/>
+        <result property="branch" column="BRANCH"/>
+        <result property="typeOfWork" column="TYPE_OF_WORK"/>
+        <result property="occupationHarm" column="OCCUPATION_HARM"/>
+        <result property="localeTestAmount" column="LOCALE_TEST_AMOUNT"/>
+        <result property="defendManage" column="DEFEND_MANAGE"/>
+        <result property="occupationBargain" column="OCCUPATION_BARGAIN"/>
+        <result property="occupationDefend" column="OCCUPATION_DEFEND"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="remark" column="REMARK"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="deptId" column="DEPT_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWzZysVo">
+        select DJLS,
+               ID_PATIENTARCHIVE,
+               AMOUNT,
+               ID,
+               CREATE_DATE,
+               START_DATE,
+               STOP_DATE,
+               DEPT,
+               BRANCH,
+               TYPE_OF_WORK,
+               OCCUPATION_HARM,
+               LOCALE_TEST_AMOUNT,
+               DEFEND_MANAGE,
+               OCCUPATION_BARGAIN,
+               OCCUPATION_DEFEND,
+               DB_USER,
+               REMARK,
+               CREATEDATE,
+               MODIFYDATE,
+               CREATE_ID,
+               MODIFY_ID,
+               DEPT_ID
+        from WZ_ZYS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WzZysMap">
+        <include refid="selectWzZysVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WzZysMap">
+        <include refid="selectWzZysVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.InvoiceRequestMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.IRPageVo">
+        SELECT r.id,
+        sb.fzx,
+        r.order_id,
+        r.tj_type,
+        r.id_receipttype,
+        rt.receipt_type_name AS idReceipttypeName,
+        r.receiptsheetno,
+        r.fptt,
+        r.receiptcorenumber,
+        r.application_time AS applicationTime,
+        r.id_remitter,
+        r.remittime AS remittime,
+        r.id_returner,
+        r.returntime AS returntime,
+        r.note,
+        r.ttyy,
+        r.status,
+        s.khdwmc,
+        r.unaudit_note,
+        r.unaudit_name,
+        STR_TO_DATE(r.unaudit_date, '%Y-%m-%d %T') AS unauditDate,
+        r.proposer,
+        o.xsjl,
+        r.id_return_applyer,
+        STR_TO_DATE(r.return_apply_time, '%Y-%m-%d %T') AS returnApplyTime,
+        r.first_receiptsheetno,
+        r.return_auditer,
+        STR_TO_DATE(r.return_audit_time, '%Y-%m-%d %T') AS returnAuditTime,
+        r.uapprove AS shName,
+        STR_TO_DATE(r.uapprovedate, '%Y-%m-%d %T') AS shTime
+        FROM md_peisorgreservationreceipt r
+        LEFT JOIN md_createorder o ON o.ddh = r.order_id
+        LEFT JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        LEFT JOIN md_receipt_type rt ON rt.id = r.id_receipttype
+        LEFT JOIN sys_branch sb ON r.fzxid = sb.branch_id
+        <where>
+            r.is_delete = 0
+            <if test="param.userName!=null and param.userName!=''">
+                AND o.xsjl = #{param.userName}
+            </if>
+            <if test="param.orderId!=null and param.orderId!=''">
+                AND o.khdwmcid = #{param.orderId}
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                AND r.status = #{param.status}
+            </if>
+            <if test="param.tjType!=null and param.tjType!=''">
+                AND r.tj_type = #{param.tjType}
+            </if>
+            <if test="param.fptt!=null and param.fptt!=''">
+                AND r.fptt LIKE concat('%',#{param.fptt},'%')
+            </if>
+            <if test="param.flag!=null and param.flag!=''">
+                <if test="param.ssxsjl!=null and param.ssxsjl!=''">
+                    AND o.xsjl LIKE concat('%',#{param.ssxsjl},'%')
+                </if>
+            </if>
+            <if test="param.ssddh!=null and param.ssddh!=''">
+                AND r.order_id LIKE concat('%',#{param.ssddh},'%')
+            </if>
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND r.fzxid = #{param.fzxid}
+            </if>
+            <if test="param.receiptcorenumber!=null and param.receiptcorenumber!=''">
+                AND r.receiptcorenumber = #{param.receiptcorenumber}
+            </if>
+        </where>
+        ORDER BY r.application_time DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.sellcrm.bean.model.Peisorgreservationreceipt">
+        SELECT r.*,
+               sb.fzx,
+               o.ddjg
+        FROM md_peisorgreservationreceipt r
+                 LEFT JOIN md_createorder o ON o.ddh = r.order_id
+                 LEFT JOIN sys_branch sb ON r.fzxid = sb.branch_id
+        WHERE r.id = #{id}
+    </select>
+
+
+    <!-- 发票导出 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.IRPageVo">
+        SELECT r.id,
+        sb.fzx,
+        r.order_id,
+        r.tj_type,
+        r.id_receipttype,
+        rt.receipt_type_name AS idReceipttypeName,
+        r.receiptsheetno,
+        r.fptt,
+        r.receiptcorenumber,
+        r.application_time AS applicationTime,
+        r.id_remitter,
+        r.remittime AS remittime,
+        r.id_returner,
+        r.returntime AS returntime,
+        r.note,
+        r.ttyy,
+        r.status,
+        s.khdwmc,
+        r.unaudit_note,
+        r.unaudit_name,
+        r.unaudit_date AS unauditDate,
+        r.proposer,
+        o.xsjl,
+        r.id_return_applyer,
+        r.return_apply_time AS returnApplyTime,
+        r.first_receiptsheetno,
+        r.return_auditer,
+        r.return_audit_time AS returnAuditTime,
+        r.uapprove AS shName,
+        r.uapprovedate AS shTime
+        FROM md_peisorgreservationreceipt r
+        LEFT JOIN md_createorder o ON o.ddh = r.order_id
+        LEFT JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        LEFT JOIN md_receipt_type rt ON rt.id = r.id_receipttype
+        LEFT JOIN sys_branch sb ON r.fzxid = sb.branch_id
+        <where>
+            r.is_delete = 0
+            <if test="param.userName!=null and param.userName!=''">
+                AND o.xsjl = #{param.userName}
+            </if>
+            <if test="param.orderId!=null and param.orderId!=''">
+                AND o.khdwmcid = #{param.orderId}
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                AND r.status = #{param.status}
+            </if>
+            <if test="param.tjType!=null and param.tjType!=''">
+                AND r.tj_type = #{param.tjType}
+            </if>
+            <if test="param.fptt!=null and param.fptt!=''">
+                AND r.fptt LIKE concat('%',#{param.fptt},'%')
+            </if>
+            <if test="param.flag!=null and param.flag!=''">
+                <if test="param.ssxsjl!=null and param.ssxsjl!=''">
+                    AND o.xsjl LIKE concat('%',#{param.ssxsjl},'%')
+                </if>
+            </if>
+            <if test="param.ssddh!=null and param.ssddh!=''">
+                AND r.order_id LIKE concat('%',#{param.ssddh},'%')
+            </if>
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND r.fzxid=#{param.fzxid}
+            </if>
+            <if test="param.receiptcorenumber!=null and param.receiptcorenumber!=''">
+                AND r.receiptcorenumber = #{param.receiptcorenumber}
+            </if>
+        </where>
+        ORDER BY r.application_time DESC
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getBarData" resultType="java.lang.String">
+        SELECT count(*)
+        FROM md_peisorgreservationreceipt
+        WHERE STATUS = #{status}
+          AND (is_delete = 0 OR is_delete IS NULL)
+          AND application_time <![CDATA[ >= ]]> #{param.startTime}
+          AND application_time <![CDATA[ <= ]]> #{param.endTime}
+    </select>
+</mapper>
+

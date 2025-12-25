@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ZyHarmClassMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ZyHarmClass" id="ZyHarmClassMap">
+        <id property="id" column="ID"/>
+        <result property="harId" column="HAR_ID"/>
+        <result property="harmClassCode" column="HARM_CLASS_CODE"/>
+        <result property="harmClass" column="HARM_CLASS"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="name" column="NAME"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="note" column="NOTE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectZyHarmClassVo">
+        select ID,
+               HAR_ID,
+               HARM_CLASS_CODE,
+               HARM_CLASS,
+               INPUT_CODE,
+               DB_USER,
+               NAME,
+               CREATEDATE,
+               MODIFYDATE,
+               NOTE,
+               IS_DELETE
+        from ZY_HARM_CLASS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ZyHarmClassMap">
+        <include refid="selectZyHarmClassVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ZyHarmClassMap">
+        <include refid="selectZyHarmClassVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

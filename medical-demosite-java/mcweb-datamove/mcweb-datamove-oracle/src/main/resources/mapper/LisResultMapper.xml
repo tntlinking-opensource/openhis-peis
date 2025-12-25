@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.LisResultMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.LisResult" id="LisResultMap">
+        <id property="id" column="ID"/>
+        <result property="modifyDate" column="MODIFY_DATE"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="sources" column="SOURCES"/>
+        <result property="examTime" column="EXAM_TIME"/>
+        <result property="samplingTime" column="SAMPLING_TIME"/>
+        <result property="inspectionTime" column="INSPECTION_TIME"/>
+        <result property="reportDate" column="REPORT_DATE"/>
+        <result property="examinerNumber" column="EXAMINER_NUMBER"/>
+        <result property="examinerName" column="EXAMINER_NAME"/>
+        <result property="examinerSex" column="EXAMINER_SEX"/>
+        <result property="examinerAge" column="EXAMINER_AGE"/>
+        <result property="examinerBirthday" column="EXAMINER_BIRTHDAY"/>
+        <result property="interfaceCode" column="INTERFACE_CODE"/>
+        <result property="inspectionPurpose" column="INSPECTION_PURPOSE"/>
+        <result property="instrumentCode" column="INSTRUMENT_CODE"/>
+        <result property="sampleNumber" column="SAMPLE_NUMBER"/>
+        <result property="itemCode" column="ITEM_CODE"/>
+        <result property="xid" column="XID"/>
+        <result property="reportItemName" column="REPORT_ITEM_NAME"/>
+        <result property="value" column="VALUE"/>
+        <result property="reference" column="REFERENCE"/>
+        <result property="maxReference" column="MAX_REFERENCE"/>
+        <result property="minReference" column="MIN_REFERENCE"/>
+        <result property="unit" column="UNIT"/>
+        <result property="flag" column="FLAG"/>
+        <result property="departmentCode" column="DEPARTMENT_CODE"/>
+        <result property="suggestion" column="SUGGESTION"/>
+        <result property="supportingSuggestions" column="SUPPORTING_SUGGESTIONS"/>
+        <result property="diagnosis" column="DIAGNOSIS"/>
+        <result property="sampleType" column="SAMPLE_TYPE"/>
+        <result property="remark" column="REMARK"/>
+        <result property="doctorCode" column="DOCTOR_CODE"/>
+        <result property="doctorName" column="DOCTOR_NAME"/>
+        <result property="reviewCode" column="REVIEW_CODE"/>
+        <result property="reviewName" column="REVIEW_NAME"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectLisResultVo">
+        select MODIFY_DATE,
+               ID,
+               CREATE_DATE,
+               SOURCES,
+               EXAM_TIME,
+               SAMPLING_TIME,
+               INSPECTION_TIME,
+               REPORT_DATE,
+               EXAMINER_NUMBER,
+               EXAMINER_NAME,
+               EXAMINER_SEX,
+               EXAMINER_AGE,
+               EXAMINER_BIRTHDAY,
+               INTERFACE_CODE,
+               INSPECTION_PURPOSE,
+               INSTRUMENT_CODE,
+               SAMPLE_NUMBER,
+               ITEM_CODE,
+               XID,
+               REPORT_ITEM_NAME,
+               VALUE,
+               REFERENCE,
+               MAX_REFERENCE,
+               MIN_REFERENCE,
+               UNIT,
+               FLAG,
+               DEPARTMENT_CODE,
+               SUGGESTION,
+               SUPPORTING_SUGGESTIONS,
+               DIAGNOSIS,
+               SAMPLE_TYPE,
+               REMARK,
+               DOCTOR_CODE,
+               DOCTOR_NAME,
+               REVIEW_CODE,
+               REVIEW_NAME
+        from LIS_RESULT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="LisResultMap">
+        <include refid="selectLisResultVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="LisResultMap">
+        <include refid="selectLisResultVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

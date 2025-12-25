@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.ElectronicReportMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientarchiveVo">
+        select id,
+               id_patientarchive,
+               patientarchiveno,
+               patientcardno,
+               idcardno,
+               patientname,
+               input_code,
+               id_sex,
+               sex,
+               age,
+               agebasedate,
+               birthdate,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               phone,
+               id_education,
+               education,
+               id_occupation,
+               occupation,
+               id_resarea,
+               resarea,
+               dateregister,
+               note,
+               ishmd,
+               hmdbz,
+               restatus,
+               yjgzbj,
+               memberlevel,
+               createdate,
+               modifydate,
+               cultural,
+               is_org,
+               membercreate,
+               khjl,
+               jf,
+               fzx,
+               dw,
+               is_delete,
+               countreportoccupationxml,
+               is_main,
+               source,
+               old_card
+        from md_peispatientarchive
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.member.bean.vo.ElReportVo">
+        SELECT
+        a.id,
+        a.patientarchiveno,
+        a.patientname,
+        a.id_sex,
+        a.age,
+        a.phone,
+        a.id_marriage,
+        a.address,
+        a.resarea,
+        STR_TO_DATE( a.birthdate, '%Y-%m-%d' ) AS birthdate,
+        pt.patient_name AS patientclass,
+        -- app.user_id AS appId,
+        a.idcardno
+        FROM
+        md_peispatientarchive a
+        LEFT JOIN md_patienttype pt ON pt.id = a.memberlevel
+        -- LEFT JOIN app_user app ON app.da_id = a.id
+        <where>
+            (a.is_delete is null or a.is_delete = 0)
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND EXISTS(SELECT 1 FROM md_peispatient p
+                WHERE p.patientcode like concat('%',#{param.patientcode},'%')
+                AND p.patientarchiveno = a.patientarchiveno)
+            </if>
+            <if test="param.idcardno!=null and param.idcardno!=''">
+                AND a.idcardno like concat('%',#{param.idcardno},'%')
+            </if>
+        </where>
+        ORDER BY a.createdate DESC,a.patientname
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatientarchive">
+        <include refid="selectPeispatientarchiveVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 档案下体检者明细数据 -->
+    <select id="getEleInfoListData" resultType="com.center.medical.member.bean.vo.EleInfoListVo">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.phone,
+            p.idcardno,
+            p.address
+        FROM
+            md_peispatient p
+        WHERE
+            p.patientarchiveno = #{patientarchiveno}
+        ORDER BY
+            p.patientcode DESC
+    </select>
+
+</mapper>
+

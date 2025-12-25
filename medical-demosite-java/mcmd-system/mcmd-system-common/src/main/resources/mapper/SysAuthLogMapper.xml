@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.SysAuthLogMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.SysAuthLog" id="SysAuthLogMap">
+        <id property="id" column="id"/>
+        <result property="institutionId" column="institution_id"/>
+        <result property="authType" column="auth_type"/>
+        <result property="authCode" column="auth_code"/>
+        <result property="authValue" column="auth_value"/>
+        <result property="remark" column="remark"/>
+        <result property="startTime" column="start_time"/>
+        <result property="expiredTime" column="expired_time"/>
+        <result property="version" column="version"/>
+        <result property="canUse" column="can_use"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysAuthLogVo">
+        select id,
+               institution_id,
+               auth_type,
+               auth_code,
+               auth_value,
+               remark,
+               start_time,
+               expired_time,
+               version,
+               can_use,
+               status,
+               createdate,
+               modifydate
+        from sys_auth_log
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysAuthLogMap">
+        <include refid="selectSysAuthLogVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysAuthLogMap">
+        <include refid="selectSysAuthLogVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

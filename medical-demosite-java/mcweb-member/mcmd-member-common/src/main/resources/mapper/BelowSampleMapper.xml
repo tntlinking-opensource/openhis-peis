@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.BelowSampleMapper">
+
+    <resultMap type="com.center.medical.member.bean.model.VisitMain" id="VisitMainMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="isInspect" column="is_inspect"/>
+        <result property="inspectTime" column="inspect_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isInspected" column="is_inspected"/>
+        <result property="type" column="type"/>
+        <result property="note" column="note"/>
+        <result property="belowquestion" column="belowquestion"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectVisitMainVo">
+        select id,
+               patientcode,
+               is_inspect,
+               inspect_time,
+               createdate,
+               modifydate,
+               is_inspected,
+               type,
+               note,
+               belowquestion,
+               is_delete,
+               id_examfeeitem
+        from md_visit_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.member.bean.vo.BelowSampleVo">
+        SELECT
+        a.cou AS count,
+        a.id,
+        a.patientcode,
+        a.patientname,
+        a.id_sex,
+        a.dateregister,
+        a.phone,
+        a.visit_id,
+        a.visit_time,
+        a.memo,
+        a.createdate,
+        a.note,
+        a.again AS noticeAgain,
+        a.id_examtype,
+        a.jktjzt,
+        a.zytjzt
+        FROM
+        (
+        SELECT
+        count( t.patientcode ) cou,
+        max( t.id ) id,
+        max( t.patientcode ) patientcode,
+        max( p.patientname ) patientname,
+        max( p.id_sex ) id_sex,
+        max( p.dateregister ) dateregister,
+        max( p.phone ) phone,
+        max( f.visit_id ) visit_id,
+        str_to_date( max( f.visit_time ), '%Y-%m-%d %T' ) visit_time,
+        max( f.memo ) memo,
+        max( t.createdate ) createdate,
+        max( t.note ) note,
+        max( f.notice_again ) again,
+        max( t.belowquestion ) belowquestion,
+        max( p.id_examtype ) id_examtype,
+        max( p.jktjzt ) jktjzt,
+        max( p.zytjzt ) zytjzt
+        FROM
+        md_visit_main t
+        LEFT JOIN md_peispatient p ON p.patientcode = t.patientcode
+        LEFT JOIN md_fail_total_visit f ON f.personcode = t.patientcode
+        LEFT JOIN md_peispatientarchive pe ON pe.patientarchiveno = p.patientarchiveno
+        <where>
+            t.type = 2
+            AND t.is_delete = 0
+            <if test="param.useCodeHiden!=null and param.useCodeHiden!=''">
+                AND p.f_useCodeHiden = #{param.useCodeHiden}
+            </if>
+        </where>
+        group by t.patientcode) a
+        <where>
+            a.patientcode IS NOT NULL
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND a.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.startDate!=null">
+                AND a.dateregister <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND a.dateregister <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.belowquestion!=null and param.belowquestion!=''">
+                AND a.belowquestion like concat('%',#{param.belowquestion},'%')
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                <choose>
+                    <when test="param.status == 1">
+                        AND (
+                        ( a.id_examtype IN ( '0', '2' ) AND a.jktjzt IS NOT NULL )
+                        OR ( a.id_examtype IN ( '1', '3' ) AND a.zytjzt IS NOT NULL )
+                        )
+                    </when>
+                    <otherwise>
+                        AND (
+                        ( a.id_examtype IN ( '0', '2' ) AND a.jktjzt IS NULL )
+                        OR ( a.id_examtype IN ( '1', '3' ) AND a.zytjzt IS NULL )
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY a.createdate desc
+    </select>
+
+    <!--导出Excel-->
+    <select id="export" resultType="com.center.medical.member.bean.vo.BelowSampleVo">
+        SELECT
+        a.cou AS count,
+        a.id,
+        a.patientcode,
+        a.patientname,
+        a.id_sex,
+        a.dateregister,
+        a.phone,
+        a.visit_id,
+        a.visit_time,
+        a.memo,
+        a.createdate,
+        a.note,
+        a.again AS noticeAgain,
+        a.id_examtype,
+        a.jktjzt,
+        a.zytjzt
+        FROM
+        (
+        SELECT
+        count( t.patientcode ) cou,
+        max( t.id ) id,
+        max( t.patientcode ) patientcode,
+        max( p.patientname ) patientname,
+        max( p.id_sex ) id_sex,
+        max( p.dateregister ) dateregister,
+        max( p.phone ) phone,
+        max( f.visit_id ) visit_id,
+        str_to_date( max( f.visit_time ), '%Y-%m-%d %T' ) visit_time,
+        max( f.memo ) memo,
+        max( t.createdate ) createdate,
+        max( t.note ) note,
+        max( f.notice_again ) again,
+        max( t.belowquestion ) belowquestion,
+        max( p.id_examtype ) id_examtype,
+        max( p.jktjzt ) jktjzt,
+        max( p.zytjzt ) zytjzt
+        FROM
+        md_visit_main t
+        LEFT JOIN md_peispatient p ON p.patientcode = t.patientcode
+        LEFT JOIN md_fail_total_visit f ON f.personcode = t.patientcode
+        LEFT JOIN md_peispatientarchive pe ON pe.patientarchiveno = p.patientarchiveno
+        <where>
+            t.type = 2
+            AND t.is_delete = 0
+            <if test="param.useCodeHiden!=null and param.useCodeHiden!=''">
+                AND p.f_useCodeHiden = #{param.useCodeHiden}
+            </if>
+        </where>
+        group by t.patientcode) a
+        <where>
+            a.patientcode IS NOT NULL
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND a.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND a.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND a.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.startDate!=null">
+                AND a.dateregister <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND a.dateregister <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.belowquestion!=null and param.belowquestion!=''">
+                AND a.belowquestion like concat('%',#{param.belowquestion},'%')
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                <choose>
+                    <when test="'1'.equals(param.status)">
+                        AND (
+                        ( a.id_examtype IN ( '0', '2' ) AND a.jktjzt IS NOT NULL )
+                        OR ( a.id_examtype IN ( '1', '3' ) AND a.zytjzt IS NOT NULL )
+                        )
+                    </when>
+                    <otherwise>
+                        AND (
+                        ( a.id_examtype IN ( '0', '2' ) AND a.jktjzt IS NULL )
+                        OR ( a.id_examtype IN ( '1', '3' ) AND a.zytjzt IS NULL )
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY a.createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.member.bean.vo.BelowSampleEditVo">
+        SELECT
+            t.id,
+            p.patientname,
+            p.id_sex,
+            p.patientcode,
+            p.phone,
+            p.dateregister,
+            count( t.patientcode ) count,
+            t.belowquestion,
+            f.visit_time,
+            f.notice_again,
+            f.memo
+        FROM
+            md_visit_main t
+        LEFT JOIN md_peispatient p ON p.patientcode = t.patientcode
+        LEFT JOIN md_fail_total_visit f ON f.personcode = t.patientcode
+        <where>
+            t.id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.LeadertargetMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Leadertarget" id="LeadertargetMap">
+        <id property="id" column="ID"/>
+        <result property="xsjlid" column="XSJLID"/>
+        <result property="year" column="YEAR"/>
+        <result property="dyjdmb" column="DYJDMB"/>
+        <result property="dejdmb" column="DEJDMB"/>
+        <result property="dsjdmb" column="DSJDMB"/>
+        <result property="dijdmb" column="DIJDMB"/>
+        <result property="ndmb" column="NDMB"/>
+        <result property="bz" column="BZ"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectLeadertargetVo">
+        select ID, XSJLID, YEAR, DYJDMB, DEJDMB, DSJDMB, DIJDMB, NDMB, BZ, FZXID, CREATEDATE, MODIFYDATE
+        from LEADERTARGET
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="LeadertargetMap">
+        <include refid="selectLeadertargetVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="LeadertargetMap">
+        <include refid="selectLeadertargetVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

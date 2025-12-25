@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.appadmin.dao.AppArticleTypeMapper">
+
+    <resultMap type="com.center.medical.appadmin.bean.model.AppArticleType" id="AppArticleTypeMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="note" column="note"/>
+        <result property="seq" column="seq"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppArticleTypeVo">
+        select id, name, is_delete, createdate, modifydate, note, seq
+        from md_app_article_type
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppArticleTypeMap">
+        <include refid="selectAppArticleTypeVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.name!=null and param.name!=''">
+                AND name like concat('%',#{param.name},'%')
+            </if>
+        </where>
+        order by seq
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppArticleTypeMap">
+        <include refid="selectAppArticleTypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取类型 -->
+    <select id="getTypeList" resultType="com.center.medical.appadmin.bean.vo.GetTypeListVo">
+        select id, name
+        from md_app_article_type
+        <where>
+            is_delete = 0
+            <if test="name!=null and name!=''">
+                AND name like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by seq
+    </select>
+</mapper>
+

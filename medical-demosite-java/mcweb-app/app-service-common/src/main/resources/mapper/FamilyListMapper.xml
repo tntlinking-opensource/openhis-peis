@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.app.dao.FamilyListMapper">
+
+    <resultMap type="com.center.medical.app.bean.model.FamilyList" id="FamilyListMap">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="patientname" column="patientname"/>
+        <result property="idcardno" column="idcardno"/>
+        <result property="idSex" column="id_sex"/>
+        <result property="age" column="age"/>
+        <result property="countreportoccupationxml" column="countreportoccupationxml"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="fromOnline" column="from_online"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFamilyListVo">
+        select id,
+               user_id,
+               patientname,
+               idcardno,
+               id_sex,
+               age,
+               countreportoccupationxml,
+               create_time,
+               update_time,
+               from_online
+        from md_family_list
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FamilyListMap">
+        <include refid="selectFamilyListVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FamilyListMap">
+        <include refid="selectFamilyListVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

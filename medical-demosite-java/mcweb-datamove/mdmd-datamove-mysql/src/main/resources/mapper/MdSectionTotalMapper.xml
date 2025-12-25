@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdSectionTotalMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdSectionTotal" id="MdSectionTotalMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="totalTime" column="total_time"/>
+        <result property="writeId" column="write_id"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="summarize" column="summarize"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="offer" column="offer"/>
+        <result property="verdict" column="verdict"/>
+        <result property="posistive" column="posistive"/>
+        <result property="jkoffer" column="jkoffer"/>
+        <result property="scbs" column="scbs"/>
+        <result property="reportConclusions" column="report_conclusions"/>
+        <result property="summaryId" column="summary_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSectionTotalVo">
+        select id,
+               patientcode,
+               createdate,
+               modifydate,
+               doctor_id,
+               total_time,
+               write_id,
+               write_time,
+               summarize,
+               disease_health,
+               is_delete,
+               offer,
+               verdict,
+               posistive,
+               jkoffer,
+               scbs,
+               report_conclusions,
+               summary_id
+        from md_section_total
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSectionTotalMap">
+        <include refid="selectMdSectionTotalVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSectionTotalMap">
+        <include refid="selectMdSectionTotalVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdElectroAudiometerMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdElectroAudiometer" id="MdElectroAudiometerMap">
+        <id property="id" column="id"/>
+        <result property="depId" column="dep_id"/>
+        <result property="idExamtype" column="id_examtype"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="boneLeft250" column="bone_left250"/>
+        <result property="airLeft125" column="air_left125"/>
+        <result property="airRight125" column="air_right125"/>
+        <result property="boneRight250" column="bone_right250"/>
+        <result property="boneLeft4000" column="bone_left4000"/>
+        <result property="boneRight4000" column="bone_right4000"/>
+        <result property="boneLeft2000" column="bone_left2000"/>
+        <result property="boneRight2000" column="bone_right2000"/>
+        <result property="boneLeft1000" column="bone_left1000"/>
+        <result property="boneRight1000" column="bone_right1000"/>
+        <result property="boneLeft500" column="bone_left500"/>
+        <result property="boneRight500" column="bone_right500"/>
+        <result property="airLeft250" column="air_left250"/>
+        <result property="airRight250" column="air_right250"/>
+        <result property="airLeft500" column="air_left500"/>
+        <result property="airRight500" column="air_right500"/>
+        <result property="airLeft1000" column="air_left1000"/>
+        <result property="airRight1000" column="air_right1000"/>
+        <result property="airLeft2000" column="air_left2000"/>
+        <result property="airRight2000" column="air_right2000"/>
+        <result property="airLeft4000" column="air_left4000"/>
+        <result property="airRight4000" column="air_right4000"/>
+        <result property="airLeft8000" column="air_left8000"/>
+        <result property="airRight8000" column="air_right8000"/>
+        <result property="airLeft3000" column="air_left3000"/>
+        <result property="airRight3000" column="air_right3000"/>
+        <result property="airLeft6000" column="air_left6000"/>
+        <result property="describe" column="describe"/>
+        <result property="testResult" column="test_result"/>
+        <result property="boneLeft3000" column="bone_left3000"/>
+        <result property="airRight6000" column="air_right6000"/>
+        <result property="boneRight3000" column="bone_right3000"/>
+        <result property="airImgPath" column="air_img_path"/>
+        <result property="boneImgPath" column="bone_img_path"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="boneLeft6000" column="bone_left6000"/>
+        <result property="boneRight6000" column="bone_right6000"/>
+        <result property="boneLeft8000" column="bone_left8000"/>
+        <result property="boneRight8000" column="bone_right8000"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdElectroAudiometerVo">
+        select id,
+               dep_id,
+               id_examtype,
+               patientcode,
+               createdate,
+               modifydate,
+               bone_left250,
+               air_left125,
+               air_right125,
+               bone_right250,
+               bone_left4000,
+               bone_right4000,
+               bone_left2000,
+               bone_right2000,
+               bone_left1000,
+               bone_right1000,
+               bone_left500,
+               bone_right500,
+               air_left250,
+               air_right250,
+               air_left500,
+               air_right500,
+               air_left1000,
+               air_right1000,
+               air_left2000,
+               air_right2000,
+               air_left4000,
+               air_right4000,
+               air_left8000,
+               air_right8000,
+               air_left3000,
+               air_right3000,
+               air_left6000, describe, test_result, bone_left3000, air_right6000, bone_right3000, air_img_path, bone_img_path, short_code, bone_left6000, bone_right6000, bone_left8000, bone_right8000
+        from md_electro_audiometer
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdElectroAudiometerMap">
+        <include refid="selectMdElectroAudiometerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdElectroAudiometerMap">
+        <include refid="selectMdElectroAudiometerVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

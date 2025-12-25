@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.appadmin.dao.BsSettlementMapper">
+
+    <resultMap type="com.center.medical.appadmin.bean.model.BsSettlement" id="BsSettlementMap">
+        <id property="settlementId" column="settlement_id"/>
+        <result property="payNo" column="pay_no"/>
+        <result property="bizPayNo" column="biz_pay_no"/>
+        <result property="orderId" column="order_id"/>
+        <result property="bizOrderNo" column="biz_order_no"/>
+        <result property="payType" column="pay_type"/>
+        <result property="payTypeName" column="pay_type_name"/>
+        <result property="payScore" column="pay_score"/>
+        <result property="payAmount" column="pay_amount"/>
+        <result property="isClearing" column="is_clearing"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="clearingTime" column="clearing_time"/>
+        <result property="callbackTime" column="callback_time"/>
+        <result property="version" column="version"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="changeAmountVersion" column="change_amount_version"/>
+        <result property="orderOrigin" column="order_origin"/>
+        <result property="fzxId" column="fzx_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBsSettlementVo">
+        select settlement_id,
+               pay_no,
+               biz_pay_no,
+               order_id,
+               biz_order_no,
+               pay_type,
+               pay_type_name,
+               pay_score,
+               pay_amount,
+               is_clearing,
+               user_id,
+               create_time,
+               clearing_time,
+               callback_time,
+               version,
+               pay_status,
+               change_amount_version,
+               order_origin,
+               fzx_id
+        from md_bs_settlement
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.appadmin.bean.vo.BsSettlementVo">
+        select mbs.settlement_id,
+               mbs.biz_pay_no,
+               mbs.order_id,
+               mbs.biz_order_no,
+               mbs.pay_type,
+               mbs.pay_type_name,
+               mbs.pay_score,
+               mbs.pay_amount,
+               mbs.is_clearing,
+               mbs.user_id,
+               u.user_mobile,
+               mbs.create_time,
+               mbs.clearing_time,
+               mbs.callback_time,
+               mbs.pay_status,
+               mbs.order_origin,
+               mbs.fzx_id,
+               sb.fzx
+        from md_bs_settlement mbs
+        inner join md_user u on u.user_id = mbs.user_id
+        inner join md_sys_branch sb on sb.branch_id = mbs.fzx_id
+        <where>
+            mbs.pay_status = 1
+            <if test="param.fzxId!=null and param.fzxId!=''">
+                AND mbs.fzx_id = #{param.fzxId}
+            </if>
+            <if test="param.bizOrderNo!=null and param.bizOrderNo!=''">
+                AND mbs.biz_order_no like concat('%',#{param.bizOrderNo},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND mbs.create_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND mbs.create_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.userMobile!=null and param.userMobile!=''">
+                AND u.user_mobile like concat('%',#{param.userMobile},'%')
+            </if>
+        </where>
+        order by mbs.create_time desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BsSettlementMap">
+        <include refid="selectBsSettlementVo"/>
+        <where>
+            settlement_id = #{id}
+        </where>
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getTotal" resultType="com.center.medical.appadmin.bean.vo.BSGetTotalVo">
+        select
+            sum(mbs.pay_score) as payScore,
+            sum(mbs.pay_amount) as payAmount
+        from md_bs_settlement mbs
+        inner join md_user u on u.user_id = mbs.user_id
+        <where>
+            mbs.pay_status = 1
+            and mbs.is_clearing = 0
+            <if test="param.fzxId!=null and param.fzxId!=''">
+                AND mbs.fzx_id = #{param.fzxId}
+            </if>
+            <if test="param.bizOrderNo!=null and param.bizOrderNo!=''">
+                AND mbs.biz_order_no like concat('%',#{param.bizOrderNo},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND mbs.create_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND mbs.create_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.userMobile!=null and param.userMobile!=''">
+                AND u.user_mobile like concat('%',#{param.userMobile},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
+

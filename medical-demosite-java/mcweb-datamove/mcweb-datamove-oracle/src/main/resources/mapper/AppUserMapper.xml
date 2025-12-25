@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppUserMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppUser" id="AppUserMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="name" column="NAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="idcard" column="IDCARD"/>
+        <result property="provinceId" column="PROVINCE_ID"/>
+        <result property="cityId" column="CITY_ID"/>
+        <result property="countyId" column="COUNTY_ID"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="birthday" column="BIRTHDAY"/>
+        <result property="idMarriage" column="ID_MARRIAGE"/>
+        <result property="cid" column="CID"/>
+        <result property="devicetype" column="DEVICETYPE"/>
+        <result property="tel" column="TEL"/>
+        <result property="daId" column="DA_ID"/>
+        <result property="picture" column="PICTURE"/>
+        <result property="openid" column="OPENID"/>
+        <result property="sessionKey" column="SESSION_KEY"/>
+        <result property="unionid" column="UNIONID"/>
+        <result property="nickName" column="NICK_NAME"/>
+        <result property="gender" column="GENDER"/>
+        <result property="avatarUrl" column="AVATAR_URL"/>
+        <result property="country" column="COUNTRY"/>
+        <result property="city" column="CITY"/>
+        <result property="province" column="PROVINCE"/>
+        <result property="lastLoginTime" column="LAST_LOGIN_TIME"/>
+        <result property="regtime" column="REGTIME"/>
+        <result property="regtype" column="REGTYPE"/>
+        <result property="lastlogintype" column="LASTLOGINTYPE"/>
+        <result property="money" column="MONEY"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppUserVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               PASSWORD,
+               NAME,
+               SEX,
+               IDCARD,
+               PROVINCE_ID,
+               CITY_ID,
+               COUNTY_ID,
+               ADDRESS,
+               BIRTHDAY,
+               ID_MARRIAGE,
+               CID,
+               DEVICETYPE,
+               TEL,
+               DA_ID,
+               PICTURE,
+               OPENID,
+               SESSION_KEY,
+               UNIONID,
+               NICK_NAME,
+               GENDER,
+               AVATAR_URL,
+               COUNTRY,
+               CITY,
+               PROVINCE,
+               LAST_LOGIN_TIME,
+               REGTIME,
+               REGTYPE,
+               LASTLOGINTYPE,
+               MONEY
+        from APP_USER
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppUserMap">
+        <include refid="selectAppUserVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppUserMap">
+        <include refid="selectAppUserVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mcweb-pacs</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-dicom-common</artifactId>
+    <description>dicom业务模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-core</artifactId>
+            <version>5.29.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/dcm4che-core-5.29.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-net</artifactId>
+            <version>5.29.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/dcm4che-net-5.29.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-dict</artifactId>
+            <version>5.29.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/dcm4che-dict-5.29.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-image</artifactId>
+            <version>5.29.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/dcm4che-image-5.29.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-imageio</artifactId>
+            <version>5.29.2</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/dcm4che-imageio-5.29.2.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+</project>

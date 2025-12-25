@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.ZyFhcsGrClassMapper">
+
+    <resultMap type="com.center.medical.bean.model.ZyFhcsGrClass" id="ZyFhcsGrClassMap">
+        <id property="id" column="id"/>
+        <result property="defendIndividualClassCode" column="defend_individual_class_code"/>
+        <result property="defendIndividualClass" column="defend_individual_class"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectZyFhcsGrClassVo">
+        select id,
+               defend_individual_class_code,
+               defend_individual_class,
+               input_code,
+               db_user,
+               createdate,
+               modifydate,
+               is_delete
+        from md_zy_fhcs_gr_class
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="ZyFhcsGrClassMap">
+        <include refid="selectZyFhcsGrClassVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ZyFhcsGrClassMap">
+        <include refid="selectZyFhcsGrClassVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

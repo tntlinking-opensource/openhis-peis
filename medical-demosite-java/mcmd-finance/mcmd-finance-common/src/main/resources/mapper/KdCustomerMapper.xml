@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.KdCustomerMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.KdCustomer" id="KdCustomerMap">
+        <id property="accountNo" column="account_no"/>
+        <result property="accountName" column="account_name"/>
+        <result property="useStatusId" column="use_status_id"/>
+        <result property="ctDate" column="ct_date"/>
+        <result property="ltDate" column="lt_date"/>
+        <result property="centerorgname" column="centerorgname"/>
+        <result property="branchId" column="branch_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdCustomerVo">
+        select account_no, account_name, use_status_id, ct_date, lt_date, centerorgname, branch_id
+        from kd_customer
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdCustomerMap">
+        <include refid="selectKdCustomerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdCustomerMap">
+        <include refid="selectKdCustomerVo"/>
+        <where>
+            account_no = #{id}
+        </where>
+    </select>
+
+    <!-- 获取金蝶客户 -->
+    <select id="getKingdeeCustomerData" resultType="com.center.medical.finance.bean.vo.KdCustomerVo">
+        select account_no as kingdeeAccountNo,
+               account_name as kingdeeAccountName,
+               centerorgname as centerOrgName,
+               CASE use_status_id WHEN 0 THEN '禁用' WHEN 1 THEN '开启' ELSE '' END AS kingdeeUseStatus
+        from kd_customer
+        <where>
+            1 = 1
+            <if test="key!=null and key!=''">
+                AND account_name LIKE concat('%',#{key},'%')
+            </if>
+            AND use_status_id in (0,1)
+        </where>
+    </select>
+
+
+    <!-- 获取上传金蝶星空云数据 -->
+    <select id="getKingdeeUploadData" resultType="com.center.medical.finance.bean.dto.KingdeeUploadDataDto">
+        SELECT
+        p.patientcode,
+        p.dateregister,
+        sb.centerorgname,
+        p.f_usecodehiden,
+        IFNULL(NULLIF(p.org_name, ''), p.patientname) AS orgName,
+        1 AS countNum,
+        p.doctorapply,
+        pc.moneyamountpaid,
+        pc.id_payway,
+        dp.payway_name as payway,
+        0 as isjz,
+        (SELECT
+        ifnull(sum(pi.factprice),0.0)/sum(pi.price)
+        FROM
+        md_peispatientfeeitem pi
+        WHERE
+        pi.f_feecharged = 1
+        AND pi.id_patient = p.patientcode) as zkl
+        FROM
+        md_peispatientcharge pc
+        LEFT JOIN md_peispatient p ON pc.patientcode = p.patientcode
+        LEFT JOIN sys_branch sb ON p.hospitalcode = sb.branch_id
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_dictpayway dp on dp.id = pc.id_payway
+        <where>
+            pc.f_feecharged = 1
+            AND pc.moneyamountpaid != 0
+            AND p.dateregister >= '2025-09-01 00:00:00'
+            <if test="param.startTime!=null">
+                and pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                and pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.centerorgname!=null and param.centerorgname!=''">
+                AND sb.centerorgname = #{param.centerorgname}
+            </if>
+        </where>
+        union all
+        SELECT
+        p.patientcode,
+        p.dateregister,
+        sb.centerorgname,
+        p.f_usecodehiden,
+        IFNULL( NULLIF( p.org_name, '' ), p.patientname ) AS orgName,
+        1 AS countNum,
+        p.doctorapply,
+        prp.moneyamountpaid,
+        prp.id_payway,
+        pay.payway_name,
+        1 as isjz,
+        (SELECT
+        ifnull(sum(pi.factprice),0.0)/sum(pi.price)
+        FROM
+        md_peispatientfeeitem pi
+        WHERE
+        pi.f_feecharged = 1
+        AND pi.id_patient = p.patientcode) as zkl
+        FROM
+        md_peispatient_reservation_charge prc
+        LEFT JOIN md_peis_reser_payway prp ON prc.id = prp.id_charge
+        LEFT JOIN md_dictpayway pay ON prp.id_payway = pay.id
+        LEFT JOIN md_peispatient p ON prc.patientcode = p.patientcode
+        LEFT JOIN sys_branch sb ON p.hospitalcode = sb.branch_id
+        <where>
+            prp.id_payway IS NOT NULL
+            AND p.f_registered = 1
+            AND prp.moneyamountpaid != 0
+            <if test="param.startTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.centerorgname!=null and param.centerorgname!=''">
+                AND sb.centerorgname = #{param.centerorgname}
+            </if>
+        </where>
+    </select>
+
+
+
+    <!-- 获取收款数据 -->
+    <select id="getReceivePaymentData" resultType="com.center.medical.finance.bean.dto.ReceivePaymentDto">
+        SELECT
+            r.fid,
+            r.remitter,
+            kr.moneyamountpaid,
+            kr.id_remittanceway,
+            IFNULL( u.user_name, kr.id_feecharger ) AS xsjl,
+            kp.account_name AS payWayName
+        FROM
+            kd_remittance r
+                INNER JOIN kd_reser kr ON kr.id_remitter = r.transactionnumber
+                LEFT JOIN sys_user u ON u.user_no = kr.id_feecharger
+                LEFT join kd_payway kp on kp.account_no = kr.id_remittanceway
+        <where>
+            kr.is_audit = '1'
+            <if test="param.startTime!=null">
+                AND r.transdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.transdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY r.fid DESC
+    </select>
+</mapper>
+

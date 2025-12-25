@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.center.medical.app.dao.NotifyTemplateMapper">
+
+    <resultMap id="notifyTemplateMap" type="com.center.medical.app.bean.model.NotifyTemplate">
+        <id column="template_id" property="templateId"/>
+        <result column="send_type" property="sendType"/>
+        <result column="message" property="message"/>
+        <result column="template_code" property="templateCode"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="tagNotifyMap" type="com.center.medical.app.bean.model.NotifyTemplate">
+        <id column="template_id" property="templateId"/>
+        <result column="send_type" property="sendType"/>
+        <result column="message" property="message"/>
+        <result column="template_code" property="templateCode"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="tagParams" javaType="list" ofType="com.center.medical.app.bean.param.UserTagParam">
+            <result property="tagId" column="tag_id"/>
+            <result property="tagName" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="pageTagNotify" resultMap="tagNotifyMap">
+        select ut.`tag_name`, ut.user_tag_id as tag_id, nt.*
+        from (
+                 SELECT *
+                 FROM md_notify_template t
+                 WHERE t.send_type = 0
+                   AND t.STATUS = 1
+                 order by t.create_time desc
+                     LIMIT #{adapter.begin}, #{adapter.size}
+             ) nt
+                 LEFT JOIN md_notify_template_tag tt ON nt.`template_id` = tt.`template_id`
+                 LEFT JOIN md_user_tag ut ON ut.`user_tag_id` = tt.`user_tag_id`
+    </select>
+
+    <select id="countTagNotify" resultType="long">
+        SELECT count(*)
+        FROM md_notify_template t
+        WHERE t.send_type = 0
+          AND t.STATUS = 1
+    </select>
+    <select id="getInfoById" resultMap="tagNotifyMap">
+        SELECT nt.template_id,
+               nt.send_type,
+               nt.message,
+               nt.template_code,
+               nt.create_time,
+               ntt.user_tag_id AS tag_id
+        FROM md_notify_template nt
+                 LEFT JOIN md_notify_template_tag ntt ON nt.`template_id` = ntt.`template_id`
+        WHERE nt.`template_id` = #{templateId}
+    </select>
+</mapper>

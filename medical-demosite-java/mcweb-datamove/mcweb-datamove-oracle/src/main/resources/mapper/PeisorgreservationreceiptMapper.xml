@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PeisorgreservationreceiptMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Peisorgreservationreceipt"
+               id="PeisorgreservationreceiptMap">
+        <id property="id" column="ID"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="factprice" column="FACTPRICE"/>
+        <result property="idReceipttype" column="ID_RECEIPTTYPE"/>
+        <result property="fRemitted" column="F_REMITTED"/>
+        <result property="idRemitter" column="ID_REMITTER"/>
+        <result property="remittime" column="REMITTIME"/>
+        <result property="receiptsheetno" column="RECEIPTSHEETNO"/>
+        <result property="fReturned" column="F_RETURNED"/>
+        <result property="idReturner" column="ID_RETURNER"/>
+        <result property="returntime" column="RETURNTIME"/>
+        <result property="idOrgbranch" column="ID_ORGBRANCH"/>
+        <result property="receiptOrgName" column="RECEIPT_ORG_NAME"/>
+        <result property="note" column="NOTE"/>
+        <result property="receiptcoredate" column="RECEIPTCOREDATE"/>
+        <result property="receiptcorenumber" column="RECEIPTCORENUMBER"/>
+        <result property="status" column="STATUS"/>
+        <result property="tjType" column="TJ_TYPE"/>
+        <result property="fptt" column="FPTT"/>
+        <result property="ttyy" column="TTYY"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="proposer" column="PROPOSER"/>
+        <result property="applicationTime" column="APPLICATION_TIME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="unauditNote" column="UNAUDIT_NOTE"/>
+        <result property="unauditName" column="UNAUDIT_NAME"/>
+        <result property="unauditDate" column="UNAUDIT_DATE"/>
+        <result property="returnAuditTime" column="RETURN_AUDIT_TIME"/>
+        <result property="returnAuditer" column="RETURN_AUDITER"/>
+        <result property="firstReceiptsheetno" column="FIRST_RECEIPTSHEETNO"/>
+        <result property="returnApplyTime" column="RETURN_APPLY_TIME"/>
+        <result property="idReturnApplyer" column="ID_RETURN_APPLYER"/>
+        <result property="uapprove" column="UAPPROVE"/>
+        <result property="uapprovedate" column="UAPPROVEDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeisorgreservationreceiptVo">
+        select ID,
+               ORDER_ID,
+               FACTPRICE,
+               ID_RECEIPTTYPE,
+               F_REMITTED,
+               ID_REMITTER,
+               REMITTIME,
+               RECEIPTSHEETNO,
+               F_RETURNED,
+               ID_RETURNER,
+               RETURNTIME,
+               ID_ORGBRANCH,
+               RECEIPT_ORG_NAME,
+               NOTE,
+               RECEIPTCOREDATE,
+               RECEIPTCORENUMBER,
+               STATUS,
+               TJ_TYPE,
+               FPTT,
+               TTYY,
+               PATIENTCODE,
+               CREATEDATE,
+               MODIFYDATE,
+               PROPOSER,
+               APPLICATION_TIME,
+               IS_DELETE,
+               UNAUDIT_NOTE,
+               UNAUDIT_NAME,
+               UNAUDIT_DATE,
+               RETURN_AUDIT_TIME,
+               RETURN_AUDITER,
+               FIRST_RECEIPTSHEETNO,
+               RETURN_APPLY_TIME,
+               ID_RETURN_APPLYER,
+               UAPPROVE,
+               UAPPROVEDATE
+        from PEISORGRESERVATIONRECEIPT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeisorgreservationreceiptMap">
+        <include refid="selectPeisorgreservationreceiptVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeisorgreservationreceiptMap">
+        <include refid="selectPeisorgreservationreceiptVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPeissortexamMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPeissortexam" id="MdPeissortexamMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="groupId" column="group_id"/>
+        <result property="sortDate" column="sort_date"/>
+        <result property="orderId" column="order_id"/>
+        <result property="sortNum" column="sort_num"/>
+        <result property="tcid" column="tcid"/>
+        <result property="am" column="am"/>
+        <result property="pm" column="pm"/>
+        <result property="creator" column="creator"/>
+        <result property="bz" column="bz"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPeissortexamVo">
+        select id,
+               createdate,
+               modifydate,
+               group_id,
+               sort_date,
+               order_id,
+               sort_num,
+               tcid,
+               am,
+               pm,
+               creator,
+               bz
+        from md_peissortexam
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPeissortexamMap">
+        <include refid="selectMdPeissortexamVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPeissortexamMap">
+        <include refid="selectMdPeissortexamVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

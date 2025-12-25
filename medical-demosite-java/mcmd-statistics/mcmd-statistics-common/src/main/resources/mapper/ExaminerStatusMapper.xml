@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.ExaminerStatusMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.ExaminerStatusVo">
+        SELECT
+            STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS dateregister,
+            sum( CASE WHEN p.f_registered = 1 THEN 1 ELSE 0 END ) AS date3,
+            sum( CASE WHEN pcm.moneyamountpaid > 0 THEN 1 ELSE 0 END ) AS date4,
+            sum( CASE WHEN p.f_readytofinal = 1 THEN 1 ELSE 0 END ) AS date5,
+            sum( CASE WHEN p.f_finalexamed = 1 THEN 1 ELSE 0 END ) AS date6,
+            sum( CASE WHEN EXISTS ( SELECT 1 FROM md_report r WHERE r.patientcode = p.patientcode AND r.is_total = 1 ) THEN
+                 1 ELSE 0 END) AS date7,
+            sum( CASE WHEN p.jktjzt = 11 OR p.zytjzt = 11 THEN 1 ELSE 0 END ) AS date8,
+            sum( CASE WHEN p.f_closed = 1 THEN 1 ELSE 0 END ) AS date9,
+            0 AS date10
+        FROM
+            md_peispatient p
+                LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+        </where>
+        GROUP BY
+        STR_TO_DATE(P.DATEREGISTER,'%Y-%m-%d')
+        ORDER BY
+        STR_TO_DATE(P.DATEREGISTER,'%Y-%m-%d') DESC
+    </select>
+
+
+    <!-- 导出体检者状态统计 -->
+    <select id="exportData" resultType="com.center.medical.statistics.bean.vo.ExaminerStatusVo">
+        SELECT
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS dateregister,
+        sum( CASE WHEN p.f_registered = 1 THEN 1 ELSE 0 END ) AS date3,
+        sum( CASE WHEN pcm.moneyamountpaid > 0 THEN 1 ELSE 0 END ) AS date4,
+        sum( CASE WHEN p.f_readytofinal = 1 THEN 1 ELSE 0 END ) AS date5,
+        sum( CASE WHEN p.f_finalexamed = 1 THEN 1 ELSE 0 END ) AS date6,
+        sum( CASE WHEN EXISTS ( SELECT 1 FROM md_report r WHERE r.patientcode = p.patientcode AND r.is_total = 1 ) THEN
+        1 ELSE 0 END) AS date7,
+        sum( CASE WHEN p.jktjzt = 11 OR p.zytjzt = 11 THEN 1 ELSE 0 END ) AS date8,
+        sum( CASE WHEN p.f_closed = 1 THEN 1 ELSE 0 END ) AS date9,
+        0 AS date10
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+        </where>
+        GROUP BY
+        STR_TO_DATE(P.DATEREGISTER,'%Y-%m-%d')
+        ORDER BY
+        STR_TO_DATE(P.DATEREGISTER,'%Y-%m-%d') DESC
+    </select>
+
+</mapper>
+

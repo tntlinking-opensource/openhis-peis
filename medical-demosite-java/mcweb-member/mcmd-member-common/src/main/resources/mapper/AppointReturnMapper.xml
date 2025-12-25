@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.AppointReturnMapper">
+
+    <resultMap type="com.center.medical.bean.model.AdvanceVisitWrite" id="AdvanceVisitWriteMap">
+        <id property="id" column="id"/>
+        <result property="isInspect" column="is_inspect"/>
+        <result property="inspectTime" column="inspect_time"/>
+        <result property="visitId" column="visit_id"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="memo" column="memo"/>
+        <result property="patientarchivenoId" column="patientarchiveno_id"/>
+        <result property="isInspected" column="is_inspected"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAdvanceVisitWriteVo">
+		select id, is_inspect, inspect_time, visit_id, visit_time, memo, patientarchiveno_id, is_inspected, createdate, modifydate		from md_advance_visit_write
+	</sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.member.bean.vo.AppointReturnVo">
+        SELECT
+            av.id,
+            p.patientname,
+            p.id_sex,
+            round(DATEDIFF(now(),p.birthdate)/365,0) AS age,
+            p.dw,
+            p.phone,
+            STR_TO_DATE ( av.inspect_time, '%Y-%m-%d %H:%i' ) AS inspectTime,
+            av.visit_id,
+            STR_TO_DATE ( av.visit_time, '%Y-%m-%d %H:%i' ) AS visitTime,
+            av.memo,
+            ad.is_inspect isinspects,
+            STR_TO_DATE ( ad.inspect_time, '%Y-%m-%d' ) AS inspectTimes,
+            ad.visit_id visitids,
+            STR_TO_DATE ( ad.visit_time, '%Y-%m-%d %H:%i' ) AS visitTimes,
+            ad.memo memos
+        FROM
+            md_advance_visit_write av
+            INNER JOIN md_peispatientarchive p ON p.id = av.patientarchiveno_id
+            LEFT JOIN md_advance_visit ad ON ad.vm_id = av.id
+        <where>
+            av.is_inspect=0
+            AND av.is_inspected=1
+            <if test="param.startDate!=null">
+                AND av.inspect_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND av.inspect_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.isInspects!=null and param.isInspects!=''">
+                AND ad.is_inspect = #{param.isInspects}
+            </if>
+        </where>
+        ORDER BY ad.is_inspect DESC,ad.inspect_time DESC
+    </select>
+
+    <!--导出Excel-->
+    <select id="export" resultType="com.center.medical.member.bean.vo.AppointReturnVo">
+        SELECT
+        av.id,
+        p.patientname,
+        p.id_sex,
+        round(DATEDIFF(now(),p.birthdate)/365,0) AS age,
+        p.dw,
+        p.phone,
+        STR_TO_DATE ( av.inspect_time, '%Y-%m-%d %H:%i' ) AS inspectTime,
+        av.visit_id,
+        STR_TO_DATE ( av.visit_time, '%Y-%m-%d %H:%i' ) AS visitTime,
+        av.memo,
+        ad.is_inspect isinspects,
+        STR_TO_DATE ( ad.inspect_time, '%Y-%m-%d' ) AS inspectTimes,
+        ad.visit_id visitids,
+        STR_TO_DATE ( ad.visit_time, '%Y-%m-%d %H:%i' ) AS visitTimes,
+        ad.memo memos
+        FROM
+        md_advance_visit_write av
+        INNER JOIN md_peispatientarchive p ON p.id = av.patientarchiveno_id
+        LEFT JOIN md_advance_visit ad ON ad.vm_id = av.id
+        <where>
+            av.is_inspect=0
+            AND av.is_inspected=1
+            <if test="param.startDate!=null">
+                AND av.inspect_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND av.inspect_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.isInspects!=null and param.isInspects!=''">
+                AND ad.is_inspect = #{param.isInspects}
+            </if>
+        </where>
+        ORDER BY ad.is_inspect DESC,ad.inspect_time DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.AdvanceVisitWrite">
+        SELECT
+            av.id,
+            av.inspect_time,
+            av.is_inspect,
+            av.visit_id,
+            av.visit_time,
+            av.memo,
+            av.patientarchiveno_id,
+            av.is_inspected,
+            av.createdate,
+            av.modifydate,
+            ad.memo AS memos,
+            STR_TO_DATE ( ad.inspect_time, '%Y-%m-%d' ) AS inspectTimes,
+            ad.is_inspect AS isinspects
+        FROM
+            md_advance_visit_write av
+        LEFT JOIN md_advance_visit ad ON ad.vm_id = av.id
+        <where>
+            av.id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.ReportMapper">
+
+    <resultMap type="com.center.medical.bean.model.Report" id="ReportMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="isPrintMessage" column="is_print_message"/>
+        <result property="urlWord" column="url_word"/>
+        <result property="urlPdf" column="url_pdf"/>
+        <result property="status" column="status"/>
+        <result property="isTotal" column="is_total"/>
+        <result property="printMan" column="print_man"/>
+        <result property="printId" column="print_id"/>
+        <result property="printTime" column="print_time"/>
+        <result property="createNum" column="create_num"/>
+        <result property="printNum" column="print_num"/>
+        <result property="firstId" column="first_id"/>
+        <result property="firstMan" column="first_man"/>
+        <result property="firstTime" column="first_time"/>
+        <result property="firstReason" column="first_reason"/>
+        <result property="secondId" column="second_id"/>
+        <result property="secondMan" column="second_man"/>
+        <result property="secondTime" column="second_time"/>
+        <result property="secondReason" column="second_reason"/>
+        <result property="lastId" column="last_id"/>
+        <result property="lastMan" column="last_man"/>
+        <result property="lastTime" column="last_time"/>
+        <result property="lastReason" column="last_reason"/>
+        <result property="joinPersonId" column="join_person_id"/>
+        <result property="joinPersonMan" column="join_person_man"/>
+        <result property="joinTime" column="join_time"/>
+        <result property="revPersonId" column="rev_person_id"/>
+        <result property="revPersonMan" column="rev_person_man"/>
+        <result property="revTime" column="rev_time"/>
+        <result property="grantId" column="grant_id"/>
+        <result property="chestNum" column="chest_num"/>
+        <result property="notificationResult" column="notification_result"/>
+        <result property="getterId" column="getter_id"/>
+        <result property="getterPhone" column="getter_phone"/>
+        <result property="getterName" column="getter_name"/>
+        <result property="issueId" column="issue_id"/>
+        <result property="returnId" column="return_id"/>
+        <result property="getTime" column="get_time"/>
+        <result property="returnTime" column="return_time"/>
+        <result property="expressId" column="express_id"/>
+        <result property="expressNum" column="express_num"/>
+        <result property="patientname" column="patientname"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="dateregister" column="dateregister"/>
+        <result property="phone" column="phone"/>
+        <result property="idOpendoctor" column="id_opendoctor"/>
+        <result property="doctorapply" column="doctorapply"/>
+        <result property="idDoctorfinal" column="id_doctorfinal"/>
+        <result property="doctorfinalNameR" column="doctorfinal_name_r"/>
+        <result property="datefinalexamed" column="datefinalexamed"/>
+        <result property="numorgresv" column="numorgresv"/>
+        <result property="tbbz" column="tbbz"/>
+        <result property="notifyDate" column="notify_date"/>
+        <result property="notifyMemo" column="notify_memo"/>
+        <result property="generateName" column="generate_name"/>
+        <result property="generateHint" column="generate_hint"/>
+        <result property="generateDate" column="generate_date"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="configId" column="config_id"/>
+        <result property="isNuclein" column="is_nuclein"/>
+        <result property="noticer" column="noticer"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReportVo">
+        select id,
+               patientcode,
+               createdate,
+               modifydate,
+               disease_health,
+               is_print_message,
+               url_word,
+               url_pdf,
+               status,
+               is_total,
+               print_man,
+               print_id,
+               print_time,
+               create_num,
+               print_num,
+               first_id,
+               first_man,
+               first_time,
+               first_reason,
+               second_id,
+               second_man,
+               second_time,
+               second_reason,
+               last_id,
+               last_man,
+               last_time,
+               last_reason,
+               join_person_id,
+               join_person_man,
+               join_time,
+               rev_person_id,
+               rev_person_man,
+               rev_time,
+               grant_id,
+               chest_num,
+               notification_result,
+               getter_id,
+               getter_phone,
+               getter_name,
+               issue_id,
+               return_id,
+               get_time,
+               return_time,
+               express_id,
+               express_num,
+               patientname,
+               sex,
+               age,
+               id_org,
+               org_name,
+               dateregister,
+               phone,
+               id_opendoctor,
+               doctorapply,
+               id_doctorfinal,
+               doctorfinal_name_r,
+               datefinalexamed,
+               numorgresv,
+               tbbz,
+               notify_date,
+               notify_memo,
+               generate_name,
+               generate_hint,
+               generate_date,
+               short_code,
+               config_id,
+               is_nuclein,
+               noticer
+        from md_report
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReportMap">
+        <include refid="selectReportVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReportMap">
+        <include refid="selectReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 分页查询体检报告待领提醒-->
+    <select id="getReportRemindPage" resultType="com.center.medical.report.bean.vo.ReportRemindVo">
+        SELECT
+        r.id,
+        r.patientcode,
+        r.patientname,
+        r.sex AS idSex,
+        r.phone,
+        r.org_name,
+        r.chest_num,
+        r.join_person_man,
+        r.join_time,
+        r.`status`,
+        r.dateregister
+        FROM
+        md_report r
+        <if test="!param.jueceManage">
+            <if test="param.branchIds!=null">
+                INNER JOIN md_peispatient p ON p.patientcode=r.patientcode AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                INNER JOIN crm_sellcustomer s ON s.id=r.id_org AND s.xsjlid=#{param.xsjlid}
+            </if>
+        </if>
+        <where>
+            r.`status` = 9
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND r.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND r.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND r.org_name LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND r.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND bo.join_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND bo.join_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY r.join_time DESC
+    </select>
+
+    <select id="getInfoByPatientcode" resultMap="ReportMap">
+        <include refid="selectReportVo"/>
+        <where>
+            patientcode = #{patientcode}
+            AND disease_health = #{diseaseHealth}
+        </where>
+    </select>
+
+
+    <!-- 分页查询职业报告交接-->
+    <select id="getPaPage" resultType="com.center.medical.bean.model.Report">
+        SELECT
+        r.id,
+        r.status,
+        r.patientcode,
+        r.patientname,
+        r.sex,
+        r.age,
+        r.org_name,
+        r.join_person_man,
+        r.rev_person_man,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d %T' ) as revTime,
+        r.chest_num,
+        r.grant_id,
+        r.dateregister,
+        r.phone,
+        r.doctorapply,
+        r.numorgresv,
+        r.datefinalexamed,
+        r.doctorfinal_name_r,
+        r.print_time,
+        r.print_man,
+        r.first_man,
+        r.first_time,
+        r.second_man,
+        r.second_time,
+        r.last_man,
+        r.last_time,
+        u.input_code as userInputCode
+        FROM
+        md_report r
+        INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+        LEFT JOIN crm_sellcustomer s ON s.id = r.id_org
+        LEFT JOIN sys_user u ON u.user_no = r.join_person_id
+        <where>
+            1 = 1
+            <if test="param.diseaseHealth!=null and param.diseaseHealth !=''">
+                and r.disease_health = #{param.diseaseHealth}
+            </if>
+            <if test="param.isHandover!=null and param.isNotHandover !=''">
+                <choose>
+                    <when test="param.isHandover == 'false' and param.isNotHandover == 'true'">
+                        AND r.status = 7
+                    </when>
+                    <when test="param.isHandover == 'true' and param.isNotHandover == 'false'">
+                        AND r.status >= 9
+                    </when>
+                    <otherwise>
+                        AND (r.status = 7 OR r.status >= 9)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                and r.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND (
+                r.org_name LIKE concat('%',#{param.numorgresv},'%')
+                OR s.khdwsrm LIKE concat('%',#{param.numorgresv},'%')
+                )
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                <choose>
+                    <when test="param.status == 9">
+                        and r.status >= 9
+                    </when>
+                    <otherwise>
+                        and r.status = 7
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                and (
+                r.patientname like concat('%',#{param.name},'%')
+                or p.input_code like concat('%',#{param.name},'%')
+                )
+            </if>
+            <if test="param.startTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.rev_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.joinPersonId!=null and param.joinPersonId!=''">
+                AND u.input_code LIKE concat('%',#{param.joinPersonId},'%')
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND r.id_opendoctor=#{param.xsjlid}
+            </if>
+            <if test="param.flag != null and param.flag=='true'">
+                AND (r.status=7 or r.status>=9)
+            </if>
+            <if test="param.grantId != null and param.grantId!=''">
+                AND r.grant_id = #{param.grantId}
+            </if>
+        </where>
+        ORDER BY
+        R.STATUS,
+        R.REV_TIME DESC,
+        R.PATIENTCODE
+    </select>
+
+
+    <!-- 不分页查询职业报告交接导出数据-->
+    <select id="getPaList" resultType="com.center.medical.bean.model.Report">
+        SELECT
+        r.id,
+        r.status,
+        r.patientcode,
+        r.patientname,
+        r.sex,
+        r.age,
+        r.org_name,
+        r.join_person_man,
+        r.rev_person_man,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d %T' ) as revTime,
+        r.chest_num,
+        r.grant_id,
+        r.dateregister,
+        r.phone,
+        r.doctorapply,
+        r.numorgresv,
+        r.datefinalexamed,
+        r.doctorfinal_name_r,
+        r.print_time,
+        r.print_man,
+        r.first_man,
+        r.first_time,
+        r.second_man,
+        r.second_time,
+        r.last_man,
+        r.last_time,
+        u.input_code as userInputCode,
+        m.method_name
+        FROM
+        md_report r
+        INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+        LEFT JOIN crm_sellcustomer s ON s.id = r.id_org
+        LEFT JOIN sys_user u ON u.user_no = r.join_person_id
+        LEFT JOIN md_notificationmethod m ON r.grant_id = m.id
+        <where>
+            1 = 1
+            <if test="param.diseaseHealth!=null and param.diseaseHealth !=''">
+                and r.disease_health = #{param.diseaseHealth}
+            </if>
+            <if test="param.isHandover!=null and param.isNotHandover !=''">
+                <choose>
+                    <when test="param.isHandover == 'false' and param.isNotHandover == 'true'">
+                        AND r.status = 7
+                    </when>
+                    <when test="param.isHandover == 'true' and param.isNotHandover == 'false'">
+                        AND r.status >= 9
+                    </when>
+                    <otherwise>
+                        AND (r.status = 7 OR r.status >= 9)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                and r.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND (
+                r.org_name LIKE concat('%',#{param.numorgresv},'%')
+                OR s.khdwsrm LIKE concat('%',#{param.numorgresv},'%')
+                )
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                <choose>
+                    <when test="param.status == 9">
+                        and r.status >= 9
+                    </when>
+                    <otherwise>
+                        and r.status = 7
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                and (
+                r.patientname like concat('%',#{param.name},'%')
+                or p.input_code like concat('%',#{param.name},'%')
+                )
+            </if>
+            <if test="param.startTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.rev_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.joinPersonId!=null and param.joinPersonId!=''">
+                AND u.input_code LIKE concat('%',#{param.joinPersonId},'%')
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND r.id_opendoctor=#{param.xsjlid}
+            </if>
+            <if test="param.flag != null and param.flag=='true'">
+                AND (r.status=7 or r.status>=9)
+            </if>
+            <if test="param.grantId != null and param.grantId!=''">
+                AND r.grant_id = #{param.grantId}
+            </if>
+        </where>
+        ORDER BY
+        R.STATUS,
+        R.REV_TIME DESC,
+        R.PATIENTCODE
+    </select>
+
+
+    <!-- 查询报告交接统计数据-->
+    <select id="exportStatistics" resultType="com.center.medical.report.bean.model.ExportStatistics">
+        SELECT
+        '已交接' as status,
+        r.org_name,
+        count( CASE WHEN m.method_name = '团检发' OR m.method_name = '危急值团发' THEN 1 ELSE NULL END ) orgcount,
+        count( CASE WHEN m.method_name != '团检发' AND m.method_name != '危急值团发' THEN 1 ELSE NULL END ) personalcount,
+        r.join_person_man,
+        r.rev_person_man,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d' ) as revTime,
+        r.chest_num,
+        p.doctorapply,
+        m.method_name
+        FROM
+        md_report r
+        INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+        LEFT JOIN md_notificationmethod m ON m.id = r.grant_id
+        <where>
+            r.disease_health = #{healthdisease}
+            AND r.STATUS >= 9
+            <if test="param.startTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY
+        r.org_name,
+        r.join_person_man,
+        r.rev_person_man,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d' ),
+        r.chest_num,
+        p.doctorapply,
+        m.method_name
+        ORDER BY
+        r.org_name,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d' ),
+        m.method_name,
+        r.join_person_man
+    </select>
+
+
+    <!-- 查询折线图数据-->
+    <select id="getChartData" resultType="com.center.medical.report.bean.dto.ChartDataDto">
+        SELECT STR_TO_DATE(r.last_time, '%Y-%m-%d')                as lastTime,
+               count(CASE WHEN r.STATUS >= 9 THEN 1 ELSE NULL END) as status9,
+               count(CASE WHEN r.STATUS = 7 THEN 1 ELSE NULL END)  as status7
+        FROM md_report r
+                 INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+        WHERE (r.STATUS = 7 OR r.STATUS >= 9)
+          AND r.disease_health = #{diseaseHealth}
+          AND STR_TO_DATE(r.last_time, '%Y-%m-%d') >= (#{time})
+        GROUP BY STR_TO_DATE(r.last_time, '%Y-%m-%d')
+        ORDER BY STR_TO_DATE(r.last_time, '%Y-%m-%d') DESC
+    </select>
+
+
+    <!-- 职业报告领取通知分页查询-->
+    <select id="getReceiveReportData" resultType="com.center.medical.report.bean.vo.PhoneInformVo">
+        SELECT
+        r.id,
+        r.patientcode,
+        r.patientname,
+        pt.phone,
+        r.sex,
+        r.age,
+        r.status,
+        r.notification_result,
+        r.chest_num,
+        n.method_name,
+        STR_TO_DATE ( r.dateregister, '%Y-%m-%d %T' ) as dateregister,
+        STR_TO_DATE ( r.rev_time, '%Y-%m-%d %T' ) as revTime,
+        r.org_name,
+        r.express_num,
+        r.express_id,
+        r.getter_name,
+        STR_TO_DATE ( r.get_time, '%Y-%m-%d %T' ) as getTime,
+        r.getter_phone,
+        r.numorgresv,
+        r.notify_memo,
+        STR_TO_DATE ( r.notify_date, '%Y-%m-%d %T' ) as notifyDate,
+        s.notify_result,
+        STR_TO_DATE ( pt.dateregister, '%Y-%m-%d %T' ) as PtDateregister,
+        pt.doctorapply,
+        ffr.user_name as issueId,
+        pt.org_name as khdwmc,
+        pt.org_depart,
+        r.join_person_man,
+        r.rev_time as joinTime,
+        pt.note,
+        r.sign_url
+        FROM
+        md_report r
+        LEFT JOIN md_notificationmethod n ON n.id = r.grant_id
+        LEFT JOIN (
+        SELECT
+        *
+        FROM
+        md_sms_record sin2
+        WHERE
+        NOT EXISTS (
+        SELECT
+        1
+        FROM
+        md_sms_record sin1
+        WHERE
+        sin1.patientcode = sin2.patientcode
+        AND sin1.notify_type = sin2.notify_type
+        AND sin1.createdate > sin2.createdate
+        )) s ON s.patientcode = r.patientcode
+        AND s.notify_type = #{param.notifyType}
+        INNER JOIN md_peispatient pt ON pt.patientcode = r.patientcode
+        LEFT JOIN sys_user ffr ON ffr.user_no = r.issue_id
+        <where>
+            1 = 1
+            <if test="param.occupationSummary!=null and param.occupationSummary!=''">
+                AND (
+                SELECT
+                min( b.rn )
+                FROM
+                (
+                SELECT
+                row_number() over ( PARTITION BY c.patientcode ORDER BY z.sort ) rn,
+                z.serial_no,
+                c.patientcode
+                FROM
+                md_comments_progessional c
+                LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                AND zv.is_delete = 0
+                LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+                AND z.is_delete = 0
+                ) b
+                WHERE
+                b.serial_no = #{param.occupationSummary}
+                AND b.patientcode = pt.patientcode
+                ) = 1
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND r.numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND (r.patientname like concat(#{param.name},'%')
+                OR pt.input_code like concat(#{param.name},'%'))
+            </if>
+            <if test="param.startTime!=null">
+                AND r.get_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.get_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startRevTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startRevTime}
+            </if>
+            <if test="param.endRevTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.endRevTime}
+            </if>
+
+            <if test="param.phone!=null and param.phone!=''">
+                AND pt.phone like concat('%',#{param.phone},'%')
+            </if>
+
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND pt.id_org = #{param.idOrg}
+            </if>
+
+            <if test="param.getterName!=null and param.getterName!=''">
+                AND r.getter_name like concat('%',#{param.getterName},'%')
+            </if>
+            <if test="param.issueId!=null and param.issueId!=''">
+                AND r.issue_id = #{param.issueId}
+            </if>
+
+            <if test="param.notificationResult!=null and param.notificationResult!=''">
+                AND r.notification_result = #{param.notificationResult}
+            </if>
+            <if test="param.noticeStatus!=null and param.noticeStatus!=''">
+                <choose>
+                    <when test="param.noticeStatus == 1">
+                        and r.status > 9
+                    </when>
+                    <otherwise>
+                        and r.status = 9
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.receiveStatus!=null and param.receiveStatus!=''">
+                <choose>
+                    <when test="param.receiveStatus == 1">
+                        AND r.status = 11
+                    </when>
+                    <otherwise>
+                        AND r.status > 8 AND r.status <![CDATA[ < ]]> 11
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.chestNum!=null and param.chestNum!=''">
+                AND r.chest_num LIKE concat('%',#{param.chestNum},'%')
+            </if>
+            <if test="param.startAge!=null and param.startAge!=''">
+                AND r.age <![CDATA[ >= ]]> #{param.startAge}
+            </if>
+            <if test="param.endAge!=null and param.endAge!=''">
+                AND r.age <![CDATA[ <= ]]> #{param.endAge}
+            </if>
+            <if test="param.grantId!=null and param.grantId!=''">
+                AND r.grant_id = #{param.grantId}
+            </if>
+            <if test="param.orgDepart!=null and param.orgDepart!=''">
+                AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+            </if>
+
+            <if test="type!=null and type == 0">
+                AND n.is_send_notice = '1'
+                AND r.status <![CDATA[ < ]]> 11
+            </if>
+            AND r.status > 8
+            AND r.disease_health = #{diseasehealth}
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND pt.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        group by r.patientcode
+        <choose>
+            <when test="param.sort!=null and param.sort!=''">
+                <if test="param.sort == 'revTime'">
+                    ORDER BY r.rev_time DESC
+                </if>
+                <if test="param.sort == 'dateregister'">
+                    ORDER BY pt.dateregister DESC
+                </if>
+            </when>
+            <otherwise>
+                ORDER BY r.status,r.dateregister DESC,r.notification_result ASC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!-- 获取职业报告领取通知导出数据不分页-->
+    <select id="exportNoticeReport" resultType="com.center.medical.report.bean.vo.PhoneInformVo">
+        SELECT
+        r.patientcode,
+        r.patientname,
+        r.status,
+        r.sex,
+        r.age,
+        r.org_name,
+        r.phone,
+        r.notification_result,
+        s.notify_result,
+        r.notify_memo,
+        r.chest_num,
+        n.method_name,
+        STR_TO_DATE ( r.dateregister, '%Y-%m-%d %T' ) as dateregister,
+        STR_TO_DATE ( r.notify_date, '%Y-%m-%d %T' ) as notifyDate,
+        STR_TO_DATE ( r.rev_time, '%Y-%m-%d %T' ) as revTime,
+        pt.org_name as khdwmc,
+        pt.doctorapply
+        FROM
+        md_report r
+        LEFT JOIN md_notificationmethod n ON n.id = r.grant_id
+        LEFT JOIN (
+        SELECT
+        *
+        FROM
+        md_sms_record sin2
+        WHERE
+        NOT EXISTS (
+        SELECT
+        1
+        FROM
+        md_sms_record sin1
+        WHERE
+        sin1.patientcode = sin2.patientcode
+        AND sin1.notify_type = sin2.notify_type
+        AND sin1.createdate > sin2.createdate
+        )) s ON s.patientcode = r.patientcode
+        AND s.notify_type = #{diseasehealth}
+        INNER JOIN md_peispatient pt ON pt.patientcode = r.patientcode
+        LEFT JOIN sys_user ffr ON ffr.user_no = r.issue_id
+        <where>
+            1 = 1
+            <if test="param.occupationSummary!=null and param.occupationSummary!=''">
+                AND (
+                SELECT
+                min( b.rn )
+                FROM
+                (
+                SELECT
+                row_number() over ( PARTITION BY c.patientcode ORDER BY z.sort ) rn,
+                z.serial_no,
+                c.patientcode
+                FROM
+                md_comments_progessional c
+                LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                AND zv.is_delete = 0
+                LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+                AND z.is_delete = 0
+                ) b
+                WHERE
+                b.serial_no = #{param.occupationsummary}
+                AND b.patientcode = pt.patientcode
+                ) = 1
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND r.patientname like concat(#{param.name},'%')
+                OR pt.input_code like concat(#{param.name},'%')
+            </if>
+            <if test="param.startRevTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startRevTime}
+            </if>
+            <if test="param.endRevTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.endRevTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND pt.id_org = #{param.idOrg}
+            </if>
+            <if test="param.notificationResult!=null and param.notificationResult!=''">
+                AND r.notification_result = #{param.notificationResult}
+            </if>
+            <if test="param.noticeStatus!=null and param.noticeStatus!=''">
+                <choose>
+                    <when test="param.noticeStatus == 1">
+                        and r.status > 9
+                    </when>
+                    <otherwise>
+                        and r.status = 9
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.chestNum!=null and param.chestNum!=''">
+                AND r.chest_num LIKE concat('%',#{param.chestNum},'%')
+            </if>
+            <if test="param.startAge!=null and param.startAge!=''">
+                AND r.age <![CDATA[ >= ]]> #{param.startAge}
+            </if>
+            <if test="param.endAge!=null and param.endAge!=''">
+                AND r.age <![CDATA[ <= ]]> #{param.endAge}
+            </if>
+            AND r.status > 8
+            AND n.is_send_notice = '1'
+            AND r.status<![CDATA[ < ]]>11
+            AND r.disease_health = #{diseasehealth}
+        </where>
+        ORDER BY r.notification_result ASC,r.dateregister DESC
+    </select>
+
+
+    <!-- 获取导出职业报告领取数据-->
+    <select id="exportGetReport" resultType="com.center.medical.report.bean.dto.GetReportDto">
+        SELECT
+        r.patientcode,
+        r.patientname,
+        r.status,
+        r.sex,
+        r.age,
+        r.org_name,
+        pt.phone,
+        n.method_name ,
+        r.express_num,
+        r.express_id,
+        STR_TO_DATE( r.notify_date, '%Y-%m-%d %T' ) as notifyDate,
+        r.notify_memo,
+        r.getter_name,
+        STR_TO_DATE ( r.get_time, '%Y-%m-%d %T' ) as getTime,
+        r.getter_phone,
+        r.numorgresv,
+        r.chest_num,
+        pt.doctorapply,
+        STR_TO_DATE ( pt.dateregister, '%Y-%m-%d %T' ) as dateregister,
+        ffr.user_name,
+        pt.org_depart,
+        r.join_person_man,
+        r.rev_time,
+        pt.note
+        FROM
+        md_report r
+        LEFT JOIN md_notificationmethod n ON n.id = r.grant_id
+        LEFT JOIN (
+        SELECT
+        *
+        FROM
+        md_sms_record sin2
+        WHERE
+        NOT EXISTS (
+        SELECT
+        1
+        FROM
+        md_sms_record sin1
+        WHERE
+        sin1.patientcode = sin2.patientcode
+        AND sin1.notify_type = sin2.notify_type
+        AND sin1.createdate > sin2.createdate
+        )) s ON s.patientcode = r.patientcode
+        AND s.notify_type = #{diseasehealth}
+        INNER JOIN md_peispatient pt ON pt.patientcode = r.patientcode
+        LEFT JOIN sys_user ffr ON ffr.user_no = r.issue_id
+        <where>
+            1 = 1
+            <if test="param.occupationSummary!=null and param.occupationSummary!=''">
+                AND (
+                SELECT
+                min( b.rn )
+                FROM
+                (
+                SELECT
+                row_number() over ( PARTITION BY c.patientcode ORDER BY z.sort ) rn,
+                z.serial_no,
+                c.patientcode
+                FROM
+                md_comments_progessional c
+                LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                AND zv.is_delete = 0
+                LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+                AND z.is_delete = 0
+                ) b
+                WHERE
+                b.serial_no = #{param.occupationsummary}
+                AND b.patientcode = pt.patientcode
+                ) = 1
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND r.numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND r.patientname like concat(#{param.name},'%')
+                OR pt.input_code like concat(#{param.name},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND r.get_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.get_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startRevTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startRevTime}
+            </if>
+            <if test="param.endRevTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.endRevTime}
+            </if>
+
+            <if test="param.phone!=null and param.phone!=''">
+                AND pt.phone like concat('%',#{param.phone},'%')
+            </if>
+
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND pt.id_org = #{param.idOrg}
+            </if>
+
+            <if test="param.getterName!=null and param.getterName!=''">
+                AND r.getter_name like concat('%',#{param.getterName},'%')
+            </if>
+            <if test="param.issueId!=null and param.issueId!=''">
+                AND r.issue_id = #{param.issueId}
+            </if>
+
+            <if test="param.notificationResult!=null and param.notificationResult!=''">
+                AND r.notification_result = #{param.notificationResult}
+            </if>
+            <if test="param.noticeStatus!=null and param.noticeStatus!=''">
+                <choose>
+                    <when test="param.noticeStatus == 1">
+                        and r.status > 9
+                    </when>
+                    <otherwise>
+                        and r.status = 9
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.receiveStatus!=null and param.receiveStatus!=''">
+                <choose>
+                    <when test="param.receiveStatus == 1">
+                        AND r.status = 11
+                    </when>
+                    <otherwise>
+                        AND r.status > 8 AND r.status <![CDATA[ < ]]> 11
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.chestNum!=null and param.chestNum!=''">
+                AND r.chest_num LIKE concat('%',#{param.chestNum},'%')
+            </if>
+            <if test="param.startAge!=null and param.startAge!=''">
+                AND r.age <![CDATA[ >= ]]> #{param.startAge}
+            </if>
+            <if test="param.endAge!=null and param.endAge!=''">
+                AND r.age <![CDATA[ <= ]]> #{param.endAge}
+            </if>
+            <if test="param.grantId!=null and param.grantId!=''">
+                AND r.grant_id = #{param.grantId}
+            </if>
+            <if test="param.orgDepart!=null and param.orgDepart!=''">
+                AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+            </if>
+            AND r.status > 8
+            AND r.disease_health = #{diseasehealth}
+        </where>
+        <if test="param.sort!=null and param.sort == 'revTime'">
+            ORDER BY r.rev_time DESC
+        </if>
+        <if test="param.sort!=null and param.sort!=''">
+            <choose>
+                <when test="param.sort == 'revTime'">
+                    ORDER BY r.rev_time DESC
+                </when>
+                <when test="param.sort == 'dateregister'">
+                    ORDER BY pt.dateregister DESC
+                </when>
+                <otherwise>
+                    ORDER BY r.status,r.notification_result ASC,r.dateregister DESC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+
+    <!-- 获取一审的数据-->
+    <select id="getFirst" resultType="com.center.medical.report.bean.vo.TotalAuditVo">
+        SELECT
+        first_man as xm,
+        count( first_id ) as sl,
+        '一审' as jd
+        FROM
+        md_report
+        <where>
+            1 = 1
+            <if test="param.name!=null and param.name!=''">
+                AND first_id = #{param.name}
+            </if>
+            <if test="param.startTime!=null">
+                AND first_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND first_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY first_id
+    </select>
+
+
+    <!-- 获取二审的数据-->
+    <select id="getSecond" resultType="com.center.medical.report.bean.vo.TotalAuditVo">
+        SELECT
+        second_man as xm,
+        count( second_id ) as sl,
+        '二审' as jd
+        FROM
+        md_report
+        <where>
+            1 = 1
+            <if test="param.name!=null and param.name!=''">
+                AND second_id = #{param.name}
+            </if>
+            <if test="param.startTime!=null">
+                AND first_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND first_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY second_id
+    </select>
+
+
+    <!-- 获取终审的数据-->
+    <select id="getLast" resultType="com.center.medical.report.bean.vo.TotalAuditVo">
+        SELECT
+        last_man as xm,
+        count( last_id ) as sl,
+        '终审' as jd
+        FROM
+        md_report
+        <where>
+            1 = 1
+            <if test="param.name!=null and param.name!=''">
+                AND last_id = #{param.name}
+            </if>
+            <if test="param.startTime!=null">
+                AND first_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND first_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY last_id
+    </select>
+
+
+    <!-- 获取终审的数据-->
+    <select id="getReportNotReleasedCount" resultType="java.lang.Long">
+        SELECT
+            count(*)
+        FROM
+            md_report
+        <where>
+            is_total = 1
+            AND STATUS <![CDATA[ <= ]]> 7
+        </where>
+    </select>
+
+
+    <!-- 获取未总检的数量(不包含疫苗)-->
+    <select id="getNotTotalInspectionCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(DISTINCT p.patientcode)
+        FROM
+        md_peispatient p
+        <where>
+            p.f_registered = 1
+            AND p.f_readytofinal = 1
+            AND p.f_finallocked IS NULL
+            AND p.id_guidenurse IS NULL
+            AND EXISTS (
+            SELECT 1
+            FROM md_peispatientfeeitem pi
+            WHERE pi.id_patient = p.patientcode
+            AND pi.id_ks <![CDATA[ <> ]]>  'ff8080817bc96399017bd2c73a0c5e96'
+            )
+        </where>
+    </select>
+
+
+    <!-- 获取报告未出数量(不包含疫苗,收费项目包含报告工本费)-->
+    <select id="getReportNotReleasedTime" resultType="java.lang.String">
+        SELECT
+        group_concat(p.patientcode)
+        FROM
+        md_peispatient p
+        <where>
+            p.f_registered = 1
+            AND p.f_paused = 0
+            AND p.dateregister >= DATE_SUB(NOW(), INTERVAL 3 DAY)
+            AND NOT EXISTS ( SELECT 1 FROM md_report r WHERE r.patientcode = p.patientcode )
+            AND NOT EXISTS (
+            SELECT 1
+            FROM md_peispatientfeeitem pi
+            WHERE pi.id_patient = p.patientcode
+            AND (
+            pi.change_item <![CDATA[ <> ]]> 0
+            OR pi.sfjj <![CDATA[ <> ]]> 0
+            OR pi.f_giveup <![CDATA[ <> ]]> 0
+            OR pi.f_transferedhl7 IS NOT NULL
+            )
+            )
+            AND EXISTS (
+            SELECT 1
+            FROM md_peispatientfeeitem pi
+            WHERE pi.id_patient = p.patientcode
+            AND pi.id_examfeeitem IN ('1015', '1067', '402848e3661acd0801668b6dc7eb7278')
+            )
+            AND TIMESTAMPDIFF(
+            HOUR,
+            p.dateregister,
+            NOW()) > #{num}
+        </where>
+    </select>
+
+
+
+    <!-- 获取报告未出数量(不包含疫苗,收费项目包含报告工本费)-->
+    <select id="getReportUrl" resultType="com.center.medical.report.bean.vo.GetReportUrlVo">
+        SELECT
+            id,
+            disease_health,
+            patientcode,
+            patientname,
+            url_pdf
+        FROM
+            md_report
+        <where>
+            patientcode = #{param.patientcode}
+            AND disease_health = #{param.dh}
+        </where>
+    </select>
+
+
+
+
+    <!-- 不分页查询职业报告交接导出数据-->
+    <select id="healthAssociateExport" resultType="com.center.medical.report.bean.dto.HealthAssociateExportDto">
+        SELECT
+        r.id,
+        r.status,
+        r.patientcode,
+        r.patientname,
+        r.sex,
+        r.age,
+        r.org_name,
+        r.join_person_man,
+        r.rev_person_man,
+        STR_TO_DATE( r.rev_time, '%Y-%m-%d %T' ) as revTime,
+        r.chest_num,
+        r.grant_id,
+        r.dateregister,
+        r.phone,
+        r.doctorapply,
+        r.numorgresv,
+        r.datefinalexamed,
+        r.doctorfinal_name_r,
+        r.print_time,
+        r.print_man,
+        r.first_man,
+        r.first_time,
+        r.second_man,
+        r.second_time,
+        r.last_man,
+        r.last_time,
+        u.input_code as userInputCode,
+        m.method_name,
+        p.phone
+        FROM
+        md_report r
+        INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+        LEFT JOIN crm_sellcustomer s ON s.id = r.id_org
+        LEFT JOIN sys_user u ON u.user_no = r.join_person_id
+        LEFT JOIN md_notificationmethod m ON r.grant_id = m.id
+        <where>
+            1 = 1
+            <if test="param.diseaseHealth!=null and param.diseaseHealth !=''">
+                and r.disease_health = #{param.diseaseHealth}
+            </if>
+            <if test="param.isHandover!=null and param.isNotHandover !=''">
+                <choose>
+                    <when test="param.isHandover == 'false' and param.isNotHandover == 'true'">
+                        AND r.status = 7
+                    </when>
+                    <when test="param.isHandover == 'true' and param.isNotHandover == 'false'">
+                        AND r.status >= 9
+                    </when>
+                    <otherwise>
+                        AND (r.status = 7 OR r.status >= 9)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                and r.patientcode = #{param.patientcode}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND (
+                r.org_name LIKE concat('%',#{param.numorgresv},'%')
+                OR s.khdwsrm LIKE concat('%',#{param.numorgresv},'%')
+                )
+            </if>
+            <if test="param.status!=null and param.status!=''">
+                <choose>
+                    <when test="param.status == 9">
+                        and r.status >= 9
+                    </when>
+                    <otherwise>
+                        and r.status = 7
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                and (
+                r.patientname like concat('%',#{param.name},'%')
+                or p.input_code like concat('%',#{param.name},'%')
+                )
+            </if>
+            <if test="param.startTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.rev_time <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.joinPersonId!=null and param.joinPersonId!=''">
+                AND u.input_code LIKE concat('%',#{param.joinPersonId},'%')
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND r.id_opendoctor=#{param.xsjlid}
+            </if>
+            <if test="param.flag != null and param.flag=='true'">
+                AND (r.status=7 or r.status>=9)
+            </if>
+            <if test="param.grantId != null and param.grantId!=''">
+                AND r.grant_id = #{param.grantId}
+            </if>
+        </where>
+        ORDER BY
+        R.STATUS,
+        R.REV_TIME DESC,
+        R.PATIENTCODE
+    </select>
+
+
+
+    <!-- 不分页查询职业报告交接导出数据-->
+    <select id="getReportAddress" resultType="java.lang.String">
+        SELECT
+            url_pdf
+        FROM
+            md_report
+        <where>
+            url_pdf is not null
+            <if test="patientcodes!=null">
+                AND patientcode IN
+                <foreach collection="patientcodes" item="patientcode" open="(" close=")" separator=",">
+                    #{patientcode}
+                </foreach>
+            </if>
+            <if test="diseaseHealth!=null">
+                AND disease_health = #{diseaseHealth}
+            </if>
+        </where>
+    </select>
+</mapper>
+

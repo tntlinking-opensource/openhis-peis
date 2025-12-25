@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.EmphasisAskSymptomMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.EmphasisAskSymptom" id="EmphasisAskSymptomMap">
+        <id property="id" column="id"/>
+        <result property="danagerId" column="danager_id"/>
+        <result property="disiaseType" column="disiase_type"/>
+        <result property="symptomId" column="symptom_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="harmname" column="harmname"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="symptomcode" column="symptomcode"/>
+        <result property="symptom" column="symptom"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectEmphasisAskSymptomVo">
+        select id,
+               danager_id,
+               disiase_type,
+               symptom_id,
+               createdate,
+               modifydate,
+               harmname,
+               is_delete,
+               symptomcode,
+               symptom
+        from md_emphasis_ask_symptom
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.data.bean.model.EmphasisAskSymptom">
+        SELECT A.ID
+             ,A.SYMPTOM
+             ,H.HARM_NAME as mdHarmName
+             ,A.SYMPTOMCODE
+             ,A.DISIASE_TYPE
+        FROM md_emphasis_ask_symptom A
+        INNER JOIN md_harm H ON H.ID=A.HARMNAME AND H.IS_DELETE=0
+        <where>
+            A.IS_DELETE = 0
+            <if test="param.symptomcode!=null and param.symptomcode!=''">
+                AND A.SYMPTOMCODE  LIKE concat('%',#{param.symptomcode},'%')
+            </if>
+            <if test="param.symptom!=null and param.symptom!=''">
+                AND A.SYMPTOM  like concat('%',#{param.symptom},'%')
+            </if>
+            <if test="param.harmname!=null and param.harmname!=''">
+                AND H.HARM_NAME like concat('%',#{param.harmname},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.data.bean.model.EmphasisAskSymptom">
+        SELECT A.*,
+               H.HARM_NAME as mdHarmName
+        FROM md_emphasis_ask_symptom A
+        INNER JOIN md_harm H ON H.ID=A.HARMNAME AND H.IS_DELETE=0
+        <where>
+            A.id = #{id}
+        </where>
+    </select>
+
+
+    <update  id="implementSql" parameterType="String">
+        #{param}
+    </update>
+
+
+
+</mapper>
+

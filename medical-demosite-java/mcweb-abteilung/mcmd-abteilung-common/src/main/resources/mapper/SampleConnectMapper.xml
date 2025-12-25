@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SampleConnectMapper">
+
+    <resultMap type="com.center.medical.abteilung.bean.model.SampleConnect" id="SampleConnectMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="deliveryTime" column="delivery_time"/>
+        <result property="deliveryName" column="delivery_name"/>
+        <result property="isQualified" column="is_qualified"/>
+        <result property="recipient" column="recipient"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="unQualifiedId" column="un_qualified_id"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="isVisit" column="is_visit"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSampleConnectVo">
+        select id,
+               createdate,
+               modifydate,
+               delivery_time,
+               delivery_name,
+               is_qualified,
+               recipient,
+               department_id,
+               un_qualified_id,
+               create_id,
+               modify_id,
+               is_visit,
+               patientcode,
+               id_examfeeitem,
+               is_delete
+        from md_sample_connect
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.abteilung.bean.vo.SampleConnectVo">
+        SELECT
+        count( t.patientcode ) as count,
+        max( t.patientcode ) as patientcode,
+        max( t.createdate ) as createdate,
+        max( t.delivery_name ) as deliveryNameId,
+        max( u.user_name ) as deliveryName,
+        max( t.delivery_time ) as deliveryTime,
+        max( pt.patientname ) as patientname,
+        max( pt.id_sex ) as idSex,
+        max( t.recipient ) as recipient
+        FROM
+        md_sample_connect t
+        LEFT JOIN md_peispatient pt ON t.patientcode = pt.patientcode
+        LEFT JOIN sys_user u ON u.user_no = t.delivery_name
+        <where>
+            <if test="param.startTime!=null">
+                AND t.delivery_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND t.delivery_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+
+        </where>
+        GROUP BY
+        t.patientcode
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SampleConnectMap">
+        <include refid="selectSampleConnectVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

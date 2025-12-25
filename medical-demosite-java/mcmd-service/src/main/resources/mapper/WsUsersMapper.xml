@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.WsUsersMapper">
+
+    <resultMap type="com.center.medical.bean.dto.WsUsers" id="WsUsersMap">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="logindate" column="logindate"/>
+        <result property="loginip" column="loginip"/>
+        <result property="useraccountnonexpired" column="useraccountnonexpired"/>
+        <result property="useraccountnonlocked" column="useraccountnonlocked"/>
+        <result property="userenabled" column="userenabled"/>
+        <result property="usercredentialsnonexpired" column="usercredentialsnonexpired"/>
+        <result property="depid" column="depid"/>
+        <result property="issystem" column="issystem"/>
+        <result property="isleader" column="isleader"/>
+        <result property="cid" column="cid"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="phone" column="phone"/>
+        <result property="isDoc" column="is_doc"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="ishelp" column="ishelp"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWsUsersVo">
+        select id,
+               username,
+               password,
+               name,
+               email,
+               createdate,
+               modifydate,
+               logindate,
+               loginip,
+               useraccountnonexpired,
+               useraccountnonlocked,
+               userenabled,
+               usercredentialsnonexpired,
+               depid,
+               issystem,
+               isleader,
+               cid,
+               is_delete,
+               input_code,
+               phone,
+               is_doc,
+               customer_id,
+               ishelp
+        from ws_users
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WsUsersMap">
+        <include refid="selectWsUsersVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WsUsersMap">
+        <include refid="selectWsUsersVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

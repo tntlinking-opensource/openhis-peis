@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.CarmanageMapper">
+
+    <resultMap type="com.center.medical.bean.model.Carmanage" id="CarmanageMap">
+        <id property="id" column="id"/>
+        <result property="carNo" column="car_no"/>
+        <result property="idDriver" column="id_driver"/>
+        <result property="idOrder" column="id_order"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="address" column="address"/>
+        <result property="outTimeStart" column="out_time_start"/>
+        <result property="outTimeEnd" column="out_time_end"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createer" column="createer"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCarmanageVo">
+        select id,
+               car_no,
+               id_driver,
+               id_order,
+               id_org,
+               org_name,
+               address,
+               out_time_start,
+               out_time_end,
+               is_delete,
+               createdate,
+               modifydate,
+               createer
+        from md_carmanage
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="CarmanageMap">
+        <include refid="selectCarmanageVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CarmanageMap">
+        <include refid="selectCarmanageVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

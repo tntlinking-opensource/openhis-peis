@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.center.medical.abteilung.dao.bmdMapper">
+
+
+
+        <!-- 数据表字段属性 -->
+        <sql id="selectSectionResultMainVo">
+            select id, dep_id, rummager_id, write_id, rummager_time, write_time, createdate, modifydate, is_audit, audit_id, audit_time, is_danager, danager_level, conclusions, is_delete, audit_name, rummager_name, patientcode, is_finish, zy_conclusions, associative_table, short_code, file_type, file_path, pacs_conclusions, zy_pacs_conclusions            from md_section_result_main
+        </sql>
+
+        <!-- 查询列表数据 -->
+        <select id="getList" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+            <include refid="selectSectionResultMainVo"/>
+        </select>
+
+                    <!-- 根据主键id获取记录详情 -->
+        <select id="getInfoById" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+            <include refid="selectSectionResultMainVo"/>
+            <where>
+                id = #{id}
+            </where>
+         </select>
+        
+    </mapper>
+

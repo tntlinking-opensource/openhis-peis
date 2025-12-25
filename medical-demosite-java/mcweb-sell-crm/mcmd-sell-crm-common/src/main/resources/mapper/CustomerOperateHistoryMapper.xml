@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.CustomerOperateHistoryMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.CustomerOperateHistory" id="CustomerOperateHistoryMap">
+        <id property="id" column="id"/>
+        <result property="operateId" column="operate_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="khdwid" column="khdwid"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="operateType" column="operate_type"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="xsjlmc" column="xsjlmc"/>
+        <result property="operateName" column="operate_name"/>
+        <result property="fprid" column="fprid"/>
+        <result property="fprmc" column="fprmc"/>
+        <result property="fromXsjlid" column="from_xsjlid"/>
+        <result property="fromXsjlname" column="from_xsjlname"/>
+        <result property="transType" column="trans_type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCustomerOperateHistoryVo">
+        select id,
+               operate_id,
+               createdate,
+               modifydate,
+               khdwid,
+               khdwmc,
+               operate_type,
+               xsjlid,
+               xsjlmc,
+               operate_name,
+               fprid,
+               fprmc,
+               from_xsjlid,
+               from_xsjlname,
+               trans_type
+        from crm_customer_operate_history
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="CustomerOperateHistoryMap">
+        SELECT
+        this_.id,
+        this_.createdate,
+        this_.modifydate,
+        this_.fprid,
+        this_.fprmc,
+        this_.from_xsjlid,
+        this_.from_xsjlname,
+        this_.khdwid,
+        this_.khdwmc,
+        this_.operate_id,
+        this_.operate_name,
+        this_.operate_type,
+        this_.trans_type,
+        this_.xsjlid,
+        this_.xsjlmc
+        FROM
+        crm_customer_operate_history this_
+        <where>
+            1 = 1
+            <if test="param.startTime != null">
+                AND this_.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime != null">
+                AND this_.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.xsjlmc!=null and param.xsjlmc!=''">
+                AND this_.xsjlmc LIKE concat('%',#{param.xsjlmc},'%')
+            </if>
+            <if test="param.operateType!=null and param.operateType!=''">
+                AND this_.operate_type LIKE concat('%',#{param.operateType},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND this_.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.operateName!=null and param.operateName!=''">
+                AND this_.operate_name LIKE concat('%',#{param.operateName},'%')
+            </if>
+            <if test="param.fprmc!=null and param.fprmc!=''">
+                AND this_.fprmc LIKE concat('%',#{param.fprmc},'%')
+            </if>
+        </where>
+        ORDER BY this_.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CustomerOperateHistoryMap">
+        <include refid="selectCustomerOperateHistoryVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

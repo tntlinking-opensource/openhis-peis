@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.PrinttypeMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Printtype" id="PrinttypeMap">
+        <id property="id" column="id"/>
+        <result property="printName" column="print_name"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="note" column="note"/>
+        <result property="seq" column="seq"/>
+        <result property="shunxu" column="shunxu"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPrinttypeVo">
+        select id,
+               print_name,
+               input_code,
+               is_delete,
+               createdate,
+               modifydate,
+               note,
+               seq,
+               shunxu
+        from md_printtype
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PrinttypeMap">
+        <include refid="selectPrinttypeVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.printName!=null and param.printName!=''">
+                AND print_name like concat('%',#{param.printName},'%')
+            </if>
+        </where>
+        ORDER BY createdate DESC
+    </select>
+
+    <!-- 根据输入码销售打印分类设置列表 -->
+    <select id="getList" resultMap="PrinttypeMap">
+        <include refid="selectPrinttypeVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+        </where>
+        ORDER BY createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PrinttypeMap">
+        <include refid="selectPrinttypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

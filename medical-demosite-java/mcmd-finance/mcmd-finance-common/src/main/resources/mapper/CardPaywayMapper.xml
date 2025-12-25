@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.CardPaywayMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.CardPayway" id="CardPaywayMap">
+        <id property="id" column="id"/>
+        <result property="idCharge" column="id_charge"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="moneyamountpaiddate" column="moneyamountpaiddate"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="idPayway" column="id_payway"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="note" column="note"/>
+        <result property="cardno" column="cardno"/>
+        <result property="isCharged" column="is_charged"/>
+        <result property="processId" column="process_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardPaywayVo">
+        select id,
+               id_charge,
+               moneyamountpaid,
+               moneyamountpaiddate,
+               id_feecharger,
+               id_payway,
+               createdate,
+               modifydate,
+               note,
+               cardno,
+               is_charged,
+               process_id
+        from md_card_payway
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="CardPaywayMap">
+        <include refid="selectCardPaywayVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CardPaywayMap">
+        <include refid="selectCardPaywayVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 根据卡办理id获取付款方式和收费员 -->
+    <select id="selectFeechargerList" resultType="com.center.medical.finance.bean.model.CardPayway">
+        SELECT cp.*,
+               u.user_name AS feechargerName,
+               pw.payway_name
+        FROM md_card_payway cp
+        LEFT JOIN sys_user u ON cp.id_feecharger = u.user_no
+        LEFT JOIN md_dictpayway pw ON cp.id_payway = pw.id
+        WHERE cp.process_id = #{processId}
+    </select>
+</mapper>
+

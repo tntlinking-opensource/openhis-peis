@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.WzTjdwxxMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.WzTjdwxx" id="WzTjdwxxMap">
+        <id property="id" column="ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="corpCode" column="CORP_CODE"/>
+        <result property="corpName" column="CORP_NAME"/>
+        <result property="corpAddress" column="CORP_ADDRESS"/>
+        <result property="post" column="POST"/>
+        <result property="economyType" column="ECONOMY_TYPE"/>
+        <result property="calling" column="CALLING"/>
+        <result property="callingSpace" column="CALLING_SPACE"/>
+        <result property="phone" column="PHONE"/>
+        <result property="fax" column="FAX"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="remark" column="REMARK"/>
+        <result property="lxr" column="LXR"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWzTjdwxxVo">
+        select ID,
+               PATIENTCODE,
+               CREATE_DATE,
+               CORP_CODE,
+               CORP_NAME,
+               CORP_ADDRESS,
+               POST,
+               ECONOMY_TYPE,
+               CALLING,
+               CALLING_SPACE,
+               PHONE,
+               FAX,
+               DB_USER,
+               REMARK,
+               LXR,
+               CREATEDATE,
+               MODIFYDATE,
+               CREATE_ID,
+               MODIFY_ID
+        from WZ_TJDWXX
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WzTjdwxxMap">
+        <include refid="selectWzTjdwxxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WzTjdwxxMap">
+        <include refid="selectWzTjdwxxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

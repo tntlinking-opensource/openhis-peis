@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.PeispatientChargeRecordMapper">
+
+    <resultMap type="com.center.medical.bean.model.PeispatientChargeRecord" id="PeispatientChargeRecordMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="method" column="method"/>
+        <result property="version" column="version"/>
+        <result property="moneyamount" column="moneyamount"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="moneyamountOld" column="moneyamount_old"/>
+        <result property="moneyamountpaidOld" column="moneyamountpaid_old"/>
+        <result property="username" column="username"/>
+        <result property="note" column="note"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientChargeRecordVo">
+        select id,
+               createdate,
+               modifydate,
+               patientcode,
+               method,
+               version,
+               moneyamount,
+               moneyamountpaid,
+               moneyamount_old,
+               moneyamountpaid_old,
+               username,
+               note
+        from md_peispatient_charge_record
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="PeispatientChargeRecordMap">
+        <include refid="selectPeispatientChargeRecordVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientChargeRecordMap">
+        <include refid="selectPeispatientChargeRecordVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrPeispatientAndFzxMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.OrPeispatientAndFzx" id="PeispatientAndFzxMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="patientId" column="PATIENT_ID"/>
+        <result property="fzxId" column="FZX_ID"/>
+        <result property="xzzt" column="XZZT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientAndFzxVo">
+        select ID, CREATEDATE, MODIFYDATE, PATIENT_ID, FZX_ID, XZZT
+        from PEISPATIENT_AND_FZX
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeispatientAndFzxMap">
+        <include refid="selectPeispatientAndFzxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientAndFzxMap">
+        <include refid="selectPeispatientAndFzxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

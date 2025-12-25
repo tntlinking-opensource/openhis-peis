@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.center.common.dao.PacsYiyingMapper">
+    <select id="selectList" resultType="com.center.medical.center.common.bean.dto.PacsYiyingDto">
+        SELECT
+            id feeitem_id,
+            examdatetime,
+            examresultdesc,
+            examresultsummary,
+            report_doctor,
+            audit_doctor
+        FROM
+            md_pacs_result_third
+        WHERE
+            patient_id in(
+                #{patientcode8},#{patientcode}
+            )
+        order by examdatetime desc
+    </select>
+</mapper>

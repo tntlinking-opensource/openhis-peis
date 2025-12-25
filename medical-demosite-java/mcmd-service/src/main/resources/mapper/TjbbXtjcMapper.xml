@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.TjbbXtjcMapper">
+
+    <resultMap type="com.center.medical.bean.model.TjbbXtjc" id="TjbbXtjcMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="xh" column="xh"/>
+        <result property="xtjc" column="xtjc"/>
+        <result property="ckfw" column="ckfw"/>
+        <result property="valueMin" column="value_min"/>
+        <result property="valueMax" column="value_max"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectTjbbXtjcVo">
+        select id,
+               patientcode,
+               xh,
+               xtjc,
+               ckfw,
+               value_min,
+               value_max,
+               create_id,
+               modify_id,
+               createdate,
+               modifydate
+        from md_tjbb_xtjc
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="TjbbXtjcMap">
+        <include refid="selectTjbbXtjcVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="TjbbXtjcMap">
+        <include refid="selectTjbbXtjcVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

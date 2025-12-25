@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdSectionResultTwoMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdSectionResultTwo" id="MdSectionResultTwoMap">
+        <id property="id" column="id"/>
+        <result property="mainId" column="main_id"/>
+        <result property="verdictId" column="verdict_id"/>
+        <result property="nodule" column="nodule"/>
+        <result property="posistive" column="posistive"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="intensiveLevel" column="intensive_level"/>
+        <result property="isUnchecked" column="is_unchecked"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="basconclusionId" column="basconclusion_id"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="chargesId" column="charges_id"/>
+        <result property="ms" column="ms"/>
+        <result property="isDanger" column="is_danger"/>
+        <result property="inputResult" column="input_result"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="shortCode" column="short_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSectionResultTwoVo">
+        select id,
+               main_id,
+               verdict_id,
+               nodule,
+               posistive,
+               createdate,
+               modifydate,
+               patientcode,
+               intensive_level,
+               is_unchecked,
+               disease_health,
+               basconclusion_id,
+               division_id,
+               is_delete,
+               charges_id,
+               ms,
+               is_danger,
+               input_result,
+               tjlx,
+               short_code
+        from md_section_result_two
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSectionResultTwoMap">
+        <include refid="selectMdSectionResultTwoVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSectionResultTwoMap">
+        <include refid="selectMdSectionResultTwoVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

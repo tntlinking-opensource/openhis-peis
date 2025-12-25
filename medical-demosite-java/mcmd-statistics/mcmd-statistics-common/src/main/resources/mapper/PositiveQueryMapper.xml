@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.PositiveQueryMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.PositiveQueryVo">
+        SELECT
+        a.patientcode,
+        a.patientname,
+        a.id_sex AS sex,
+        a.zgl,
+        a.jhgl,
+        a.trades,
+        st.posistive,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name AS org,
+        a.medicaltype,
+        a.counterreportprinted,
+        a.numorgresv AS ddh,
+        a.age,
+        a.idcardno,
+        a.phone,
+        a.dateregister,
+        a.doctorapply,
+        a.org_depart,
+        (SELECT count(*)
+        FROM (
+        SELECT 1
+        FROM md_peispatient p
+        WHERE p.zytjzt > 0
+        AND EXISTS(
+        SELECT 1
+        FROM md_peispatient p2
+        WHERE p2.inpatientno = p.inpatientno
+        AND p2.createdate  <![CDATA[ < ]]> p.createdate
+        AND p2.patientcode = a.patientcode)
+        UNION ALL
+        SELECT 1
+        FROM md_peispatient p
+        WHERE p.zytjzt > 0
+        AND p.inpatientno = a.patientcode) a) as isFinal,
+        (SELECT group_concat(i.examfeeitem_name)
+        FROM md_review r
+        INNER JOIN md_review_project rp ON rp.review_id = r.id
+        INNER JOIN md_items i ON i.id = rp.items_id
+        WHERE r.patientcode = a.patientcode
+        GROUP BY r.patientcode) as items,
+        (SELECT GROUP_CONCAT(DISTINCT harm_name)
+        FROM md_harm
+        WHERE FIND_IN_SET(id, a.jhys)
+        ) as jhys
+        FROM
+        (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.zgl,
+        p.jhgl,
+        IFNULL ( bw.type_name, p.trades ) trades,
+        p.jhys,
+        z.occupation_summary,
+        (group_concat( distinct zv.summary_text SEPARATOR ';') ) AS summary_text,
+        row_number() over ( PARTITION BY p.patientcode ORDER BY z.sort ) AS rn,
+        rank() over ( PARTITION BY p.patientcode ORDER BY z.sort ) AS rn2,
+        b.fzx,
+        p.org_name,
+        z.serial_no,
+        p.medicaltype,
+        p.counterreportprinted,
+        p.numorgresv,
+        p.age,
+        p.idcardno,
+        p.phone,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) dateregister,
+        z.id zsid,
+        p.doctorapply,
+        p.org_depart
+        FROM
+        md_peispatient p
+        LEFT JOIN md_base_worktype bw ON bw.id = p.worktype_id
+        LEFT JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_report r ON r.patientcode = p.patientcode AND r.disease_health = 1
+        LEFT JOIN md_createorder co ON p.numorgresv = co.ddh
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.medicaltype!=null and param.medicaltype!=''">
+                AND p.medicaltype = #{param.medicaltype}
+            </if>
+            <if test="param.kdxs!=null and param.kdxs!=''">
+                AND p.id_opendoctor = #{param.kdxs}
+            </if>
+            <if test="param.counterreportprinted!=null">
+                <choose>
+                    <when test="param.counterreportprinted == 0">
+                        AND (p.counterreportprinted IS NULL OR p.counterreportprinted = 0)
+                    </when>
+                    <otherwise>
+                        AND p.counterreportprinted = #{param.counterreportprinted}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.geStartTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.geStartTime}
+            </if>
+            <if test="param.geEndTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.geEndTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND ( p.id_opendoctor = #{param.userNo} or co.kdzl_name like concat('%', #{param.userName},'%'))
+            </if>
+            <if test="param.orgDepart!=null and param.orgDepart!=''">
+                AND p.org_depart like concat('%',#{param.orgDepart},'%')
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.zgl,
+        p.jhgl,
+        p.trades,
+        p.jhys,
+        z.occupation_summary,
+        z.serial_no,
+        b.fzx,
+        p.org_name,
+        p.medicaltype,
+        z.sort,
+        p.counterreportprinted,
+        p.numorgresv,
+        p.age,
+        p.idcardno,
+        p.phone,
+        p.dateregister,
+        z.id
+        ) a
+        INNER JOIN md_section_total st ON st.patientcode = a.patientcode
+        AND st.disease_health = 1
+    <where>
+        a.rn = 1
+        <if test="param.occupationSummary!=null and param.occupationSummary!=''">
+            AND a.serial_no = #{param.occupationSummary}
+        </if>
+    </where>
+        ORDER BY a.patientcode DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+
+    </select>
+
+    <!-- 是否是最后一次体检 -->
+    <select id="isFinalPatient" resultType="java.lang.String">
+        SELECT count(*)
+        FROM (
+                 SELECT 1
+                 FROM md_peispatient p
+                 WHERE p.zytjzt > 0
+                   AND EXISTS(
+                         SELECT 1
+                         FROM md_peispatient p2
+                         WHERE p2.inpatientno = p.inpatientno
+                           AND p2.createdate  <![CDATA[ < ]]> p.createdate
+                           AND p2.patientcode = #{patientcode})
+                 UNION ALL
+                 SELECT 1
+                 FROM md_peispatient p
+                 WHERE p.zytjzt > 0
+                   AND p.inpatientno = #{patientcode}) AS bbb
+    </select>
+
+
+    <!-- 查询检查项目信息 -->
+    <select id="getReviewItemNames" resultType="java.lang.String">
+        SELECT group_concat(i.examfeeitem_name)
+        FROM md_review r
+                 INNER JOIN md_review_project rp ON rp.review_id = r.id
+                 INNER JOIN md_items i ON i.id = rp.items_id
+        WHERE r.patientcode = #{patientcode}
+        GROUP BY r.patientcode
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportData" resultType="com.center.medical.statistics.bean.vo.PositiveQueryVo">
+        SELECT
+        a.patientcode,
+        a.patientname,
+        a.id_sex AS sex,
+        a.zgl,
+        a.jhgl,
+        a.trades,
+        st.posistive,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name AS org,
+        a.medicaltype,
+        a.counterreportprinted,
+        a.numorgresv AS ddh,
+        a.age,
+        a.idcardno,
+        a.phone,
+        a.dateregister,
+        a.doctorapply,
+        a.org_depart,
+        (SELECT count(*)
+        FROM (
+        SELECT 1
+        FROM md_peispatient p
+        WHERE p.zytjzt > 0
+        AND EXISTS(
+        SELECT 1
+        FROM md_peispatient p2
+        WHERE p2.inpatientno = p.inpatientno
+        AND p2.createdate  <![CDATA[ < ]]> p.createdate
+        AND p2.patientcode = a.patientcode)
+        UNION ALL
+        SELECT 1
+        FROM md_peispatient p
+        WHERE p.zytjzt > 0
+        AND p.inpatientno = a.patientcode) a) as isFinal,
+        (SELECT group_concat(i.examfeeitem_name)
+        FROM md_review r
+        INNER JOIN md_review_project rp ON rp.review_id = r.id
+        INNER JOIN md_items i ON i.id = rp.items_id
+        WHERE r.patientcode = a.patientcode
+        GROUP BY r.patientcode) as items,
+        (SELECT GROUP_CONCAT(DISTINCT harm_name)
+        FROM md_harm
+        WHERE FIND_IN_SET(id, a.jhys)
+        ) as jhys
+        FROM
+        (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.zgl,
+        p.jhgl,
+        IFNULL ( bw.type_name, p.trades ) trades,
+        p.jhys,
+        z.occupation_summary,
+        (group_concat( distinct zv.summary_text SEPARATOR ';') ) AS summary_text,
+        row_number() over ( PARTITION BY p.patientcode ORDER BY z.sort ) AS rn,
+        rank() over ( PARTITION BY p.patientcode ORDER BY z.sort ) AS rn2,
+        b.fzx,
+        p.org_name,
+        z.serial_no,
+        p.medicaltype,
+        p.counterreportprinted,
+        p.numorgresv,
+        p.age,
+        p.idcardno,
+        p.phone,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) dateregister,
+        z.id zsid,
+        p.doctorapply,
+        p.org_depart
+        FROM
+        md_peispatient p
+        LEFT JOIN md_base_worktype bw ON bw.id = p.worktype_id
+        LEFT JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_report r ON r.patientcode = p.patientcode AND r.disease_health = 1
+        LEFT JOIN md_createorder co ON p.numorgresv = co.ddh
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.medicaltype!=null and param.medicaltype!=''">
+                AND p.medicaltype = #{param.medicaltype}
+            </if>
+            <if test="param.kdxs!=null and param.kdxs!=''">
+                AND p.id_opendoctor = #{param.kdxs}
+            </if>
+            <if test="param.counterreportprinted!=null">
+                <choose>
+                    <when test="param.counterreportprinted == 0">
+                        AND (p.counterreportprinted IS NULL OR p.counterreportprinted = 0)
+                    </when>
+                    <otherwise>
+                        AND p.counterreportprinted = #{param.counterreportprinted}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.geStartTime!=null">
+                AND r.rev_time <![CDATA[ >= ]]> #{param.geStartTime}
+            </if>
+            <if test="param.geEndTime!=null">
+                AND r.rev_time <![CDATA[ <= ]]> #{param.geEndTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND ( p.id_opendoctor = #{param.userNo} or co.kdzl_name like concat('%', #{param.userName},'%'))
+            </if>
+            <if test="param.orgDepart!=null and param.orgDepart!=''">
+                AND p.org_depart like concat('%',#{param.orgDepart},'%')
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.zgl,
+        p.jhgl,
+        p.trades,
+        p.jhys,
+        z.occupation_summary,
+        z.serial_no,
+        b.fzx,
+        p.org_name,
+        p.medicaltype,
+        z.sort,
+        p.counterreportprinted,
+        p.numorgresv,
+        p.age,
+        p.idcardno,
+        p.phone,
+        p.dateregister,
+        z.id
+        ) a
+        INNER JOIN md_section_total st ON st.patientcode = a.patientcode
+        AND st.disease_health = 1
+        <where>
+            a.rn = 1
+            <if test="param.occupationSummary!=null and param.occupationSummary!=''">
+                AND a.serial_no = #{param.occupationSummary}
+            </if>
+        </where>
+        ORDER BY a.patientcode DESC
+    </select>
+</mapper>
+

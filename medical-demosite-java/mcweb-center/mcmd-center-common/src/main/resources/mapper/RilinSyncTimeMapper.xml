@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.center.common.dao.RilinSyncTimeMapper">
+
+	<!-- 查询数据库时间 -->
+	<select id="getCurrentDbTime" resultType="java.util.Date">
+		select NOW()
+	</select>
+
+	<!-- 按修改时间段，查询有体检者的日期 -->
+	<select id="selectPatientDateList" resultType="java.util.Date" >
+		SELECT
+			DATE( modifydate )
+		FROM
+			md_peispatient
+		WHERE
+			modifydate <![CDATA[ < ]]> #{endDate}
+			<if test="startDate!=null">
+			AND modifydate <![CDATA[ >= ]]> #{startDate}
+			</if>
+		GROUP BY
+			DATE ( modifydate )
+		ORDER BY
+			DATE ( modifydate )
+	</select>
+
+	<!-- 按修改时间段，查询所有体检者ID -->
+	<select id="selectPatientIdList" resultType="string" >
+		SELECT
+			id
+		FROM
+			md_peispatient
+		WHERE
+			modifydate <![CDATA[ < ]]> #{endDate}
+			<if test="startDate!=null">
+				AND modifydate <![CDATA[ >= ]]> #{startDate}
+			</if>
+	</select>
+</mapper>

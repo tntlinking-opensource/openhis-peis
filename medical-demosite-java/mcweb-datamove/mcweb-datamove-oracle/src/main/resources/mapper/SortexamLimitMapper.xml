@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.SortexamLimitMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.SortexamLimit" id="SortexamLimitMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="cid" column="CID"/>
+        <result property="sortDate" column="SORT_DATE"/>
+        <result property="vip" column="VIP"/>
+        <result property="vvip" column="VVIP"/>
+        <result property="am" column="AM"/>
+        <result property="pm" column="PM"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSortexamLimitVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               CID,
+               SORT_DATE,
+               VIP,
+               VVIP,
+               AM,
+               PM
+        from SORTEXAM_LIMIT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SortexamLimitMap">
+        <include refid="selectSortexamLimitVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SortexamLimitMap">
+        <include refid="selectSortexamLimitVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

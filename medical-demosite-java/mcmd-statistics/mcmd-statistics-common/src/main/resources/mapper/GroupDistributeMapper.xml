@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.GroupDistributeMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.GroupDistributeVo">
+        SELECT
+            co.id,
+            s.khdwmc,
+            ( co.nxtjrs + co.vxtjrs ) AS sl,
+            co.ddmc
+        FROM
+            md_createorder co
+                LEFT JOIN crm_sellcustomer s ON s.id = co.khdwmcid
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND co.jhjqc <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND co.jhjqc <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+
+
+</mapper>
+

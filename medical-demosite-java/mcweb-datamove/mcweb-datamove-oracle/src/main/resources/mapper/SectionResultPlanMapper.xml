@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.SectionResultPlanMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.SectionResultPlan" id="SectionResultPlanMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="creater" column="CREATER"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="status" column="STATUS"/>
+        <result property="errorMsg" column="ERROR_MSG"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionResultPlanVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               DEP_ID,
+               CREATER,
+               PATIENTCODE,
+               STATUS,
+               ERROR_MSG
+        from SECTION_RESULT_PLAN
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SectionResultPlanMap">
+        <include refid="selectSectionResultPlanVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionResultPlanMap">
+        <include refid="selectSectionResultPlanVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

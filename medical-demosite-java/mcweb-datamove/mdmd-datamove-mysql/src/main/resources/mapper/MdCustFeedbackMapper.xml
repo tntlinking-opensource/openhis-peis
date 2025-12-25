@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdCustFeedbackMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdCustFeedback" id="MdCustFeedbackMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="contact" column="contact"/>
+        <result property="phone" column="phone"/>
+        <result property="detail" column="detail"/>
+        <result property="faultdate" column="faultdate"/>
+        <result property="submited" column="submited"/>
+        <result property="state" column="state"/>
+        <result property="submitDate" column="submit_date"/>
+        <result property="submitId" column="submit_id"/>
+        <result property="submitName" column="submit_name"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdCustFeedbackVo">
+        select id,
+               createdate,
+               modifydate,
+               name,
+               type,
+               contact,
+               phone,
+               detail,
+               faultdate,
+               submited,
+               state,
+               submit_date,
+               submit_id,
+               submit_name
+        from md_cust_feedback
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdCustFeedbackMap">
+        <include refid="selectMdCustFeedbackVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdCustFeedbackMap">
+        <include refid="selectMdCustFeedbackVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

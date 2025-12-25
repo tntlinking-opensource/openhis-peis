@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.workflow.dao.WorkflowMapper">
+
+    <resultMap type="com.center.medical.workflow.bean.model.Workflow" id="WorkflowMap">
+        <id property="id" column="id"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="flowName" column="flow_name"/>
+        <result property="typeFlag" column="type_flag"/>
+        <result property="remark" column="remark"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="creator" column="creator"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="modifier" column="modifier"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWorkflowVo">
+        select id,
+               fzxid,
+               flow_name,
+               type_flag,
+               remark,
+               status,
+               createdate,
+               creator,
+               modifydate,
+               modifier
+        from md_workflow
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.workflow.bean.vo.WorkflowVo">
+        SELECT wf.id,
+        sb.fzx,
+        wf.flow_name,
+        wft.type_name,
+        wf.remark,
+        wf.status,
+        wf.createdate,
+        wf.creator,
+        wf.modifydate,
+        wf.modifier
+        FROM md_workflow wf
+        LEFT JOIN sys_branch sb ON wf.fzxid = sb.branch_id
+        LEFT JOIN md_workflow_type wft ON wf.type_flag = wft.type_flag
+        <where>
+            <if test="param.status!=null">
+                AND wf.status = #{param.status}
+            </if>
+            <if test="param.startTime!=null">
+                AND wf.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND wf.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND wf.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.flowName!=null and param.flowName!=''">
+                AND wf.flow_name LIKE concat('%',#{param.flowName},'%')
+            </if>
+            <if test="param.typeFlag!=null and param.typeFlag!=''">
+                AND wft.type_flag = #{param.typeFlag}
+            </if>
+        </where>
+        order by sb.branch_id,wf.createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WorkflowMap">
+        SELECT wf.id,
+        wf.fzxid,
+        sb.fzx,
+        wf.flow_name,
+        wf.type_flag,
+        wft.type_name,
+        wf.remark,
+        wf.status,
+        wf.createdate,
+        wf.creator,
+        wf.modifydate,
+        wf.modifier
+        FROM md_workflow wf
+        LEFT JOIN sys_branch sb ON wf.fzxid = sb.branch_id
+        LEFT JOIN md_workflow_type wft ON wf.type_flag = wft.type_flag
+        <where>
+            wf.id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.ZyFhclGrMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.ZyFhclGr" id="MdZyFhclGrMap">
+        <id property="id" column="id"/>
+        <result property="defendIndividualCode" column="defend_individual_code"/>
+        <result property="defendIndividual" column="defend_individual"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="defendIndividualClass" column="defend_individual_class"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="grId" column="gr_id"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdZyFhclGrVo">
+        select id,
+               defend_individual_code,
+               defend_individual,
+               input_code,
+               db_user,
+               defend_individual_class,
+               createdate,
+               modifydate,
+               gr_id,
+               is_delete
+        from md_zy_fhcl_gr
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.data.bean.vo.ZyFhclGrPageVo">
+        SELECT
+        zfg.id,
+        zfg.defend_individual_code,
+        zfg.defend_individual,
+        zfg.input_code,
+        zfgc.defend_individual_class
+        FROM
+        md_zy_fhcl_gr zfg
+        LEFT JOIN md_zy_fhcs_gr_class zfgc on zfgc.id = zfg.defend_individual_class
+        <where>
+            zfg.is_delete = 0
+            <if test="param.defendIndividual!=null and param.defendIndividual!=''">
+                AND zfg.defend_individual LIKE concat('%',#{param.defendIndividual},'%')
+            </if>
+            <if test="param.defendIndividualClass!=null and param.defendIndividualClass!=''">
+                AND zfgc.defend_individual_class LIKE concat('%',#{param.defendIndividualClass},'%')
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND zfg.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+        </where>
+            order by zfg.createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdZyFhclGrMap">
+        <include refid="selectMdZyFhclGrVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取防护用品分类 -->
+    <select id="getAllPersonalType" resultType="com.center.medical.data.bean.vo.AllPersonalTypeVo">
+        SELECT
+            id,
+            defend_individual_class,
+            input_code
+        FROM
+            md_zy_fhcs_gr_class
+        <where>
+            is_delete = 0
+            <if test="inputCode!=null and inputCode!=''">
+                AND input_code LIKE concat('%',#{inputCode},'%')
+            </if>
+        </where>
+    </select>
+
+
+
+    <!-- 获取防护用品 -->
+    <select id="getProtectiveEquipment" resultType="com.center.medical.data.bean.vo.ProtectiveEquipmentVo">
+        SELECT
+            id,
+            defend_individual,
+            input_code
+        FROM
+            md_zy_fhcl_gr
+        <where>
+            is_delete = 0
+            <if test="inputCode!=null and inputCode!=''">
+                AND input_code LIKE concat('%',#{inputCode},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
+

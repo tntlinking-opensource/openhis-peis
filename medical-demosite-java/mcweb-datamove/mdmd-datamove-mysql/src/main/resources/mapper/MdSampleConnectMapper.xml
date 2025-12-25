@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdSampleConnectMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdSampleConnect" id="MdSampleConnectMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="deliveryTime" column="delivery_time"/>
+        <result property="deliveryName" column="delivery_name"/>
+        <result property="isQualified" column="is_qualified"/>
+        <result property="recipient" column="recipient"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="unQualifiedId" column="un_qualified_id"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="isVisit" column="is_visit"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSampleConnectVo">
+        select id,
+               createdate,
+               modifydate,
+               delivery_time,
+               delivery_name,
+               is_qualified,
+               recipient,
+               department_id,
+               un_qualified_id,
+               create_id,
+               modify_id,
+               is_visit,
+               patientcode,
+               id_examfeeitem,
+               is_delete
+        from md_sample_connect
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSampleConnectMap">
+        <include refid="selectMdSampleConnectVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSampleConnectMap">
+        <include refid="selectMdSampleConnectVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

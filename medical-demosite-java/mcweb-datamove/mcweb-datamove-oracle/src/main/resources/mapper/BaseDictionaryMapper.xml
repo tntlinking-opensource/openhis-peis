@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.BaseDictionaryMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.BaseDictionary" id="BaseDictionaryMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="dictionaryType" column="DICTIONARY_TYPE"/>
+        <result property="dictionaryCode" column="DICTIONARY_CODE"/>
+        <result property="dictionaryName" column="DICTIONARY_NAME"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="medicalCode" column="MEDICAL_CODE"/>
+        <result property="shandongCode" column="SHANDONG_CODE"/>
+        <result property="qingdaoCode" column="QINGDAO_CODE"/>
+        <result property="changshaCode" column="CHANGSHA_CODE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBaseDictionaryVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               DICTIONARY_TYPE,
+               DICTIONARY_CODE,
+               DICTIONARY_NAME,
+               IS_DELETE,
+               MEDICAL_CODE,
+               SHANDONG_CODE,
+               QINGDAO_CODE,
+               CHANGSHA_CODE
+        from BASE_DICTIONARY
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="BaseDictionaryMap">
+        <include refid="selectBaseDictionaryVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BaseDictionaryMap">
+        <include refid="selectBaseDictionaryVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.SysVersionDeployMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.SysVersionDeploy" id="SysVersionDeployMap">
+        <id property="id" column="id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="versionId" column="version_id"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="svsId" column="svs_id"/>
+        <result property="serviceName" column="service_name"/>
+        <result property="sqlFile" column="sql_file"/>
+        <result property="sqlStatus" column="sql_status"/>
+        <result property="sqlRemark" column="sql_remark"/>
+        <result property="sqlUpdateTime" column="sql_update_time"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileStatus" column="file_status"/>
+        <result property="fileRemark" column="file_remark"/>
+        <result property="fileUpdateTime" column="file_update_time"/>
+        <result property="otherFile" column="other_file"/>
+        <result property="executeTime" column="execute_time"/>
+        <result property="status" column="status"/>
+        <result property="isManual" column="is_manual"/>
+        <result property="remark" column="remark"/>
+        <result property="message" column="message"/>
+        <result property="executer" column="executer"/>
+        <result property="manualExecuteTime" column="manual_execute_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysVersionDeployVo">
+        select id,
+               branch_id,
+               version_id,
+               ip_address,
+               svs_id,
+               service_name,
+               sql_file,
+               sql_status,
+               sql_remark,
+               sql_update_time,
+               file_path,
+               file_status,
+               file_remark,
+               file_update_time,
+               other_file,
+               execute_time,
+               status,
+               is_manual,
+               remark,
+               message,
+               executer,
+               manual_execute_time,
+               createdate,
+               modifydate
+        from sys_version_deploy
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysVersionDeployMap">
+        <include refid="selectSysVersionDeployVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysVersionDeployMap">
+        <include refid="selectSysVersionDeployVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

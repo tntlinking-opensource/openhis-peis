@@ -1,0 +1,1687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.ChargeQueryMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientVo">
+        select id,
+               id_orgpatient,
+               id_cis,
+               patientarchiveno,
+               patientcode,
+               patientbizno,
+               idcardno,
+               numorgresv,
+               patientname,
+               input_code,
+               id_orgreservationgroup,
+               id_orgreservation,
+               id_org,
+               org_name,
+               org_depart,
+               have_private,
+               id_payway,
+               payway,
+               personpricelimit,
+               id_sex,
+               birthdate,
+               age,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               id_informway,
+               id_opendoctor,
+               email,
+               phone,
+               id_patientclass,
+               id_resarea,
+               resarea,
+               f_isforprepare,
+               f_isforreserve,
+               f_registered,
+               dateregister,
+               guidancenote,
+               id_doctorreg,
+               doctorreg,
+               id_examtype,
+               id_examsuite,
+               examsuite_name,
+               examsuite_alias,
+               id_doctorapply,
+               doctorapply,
+               f_guidanceprinted,
+               f_examstarted,
+               f_readytofinal,
+               f_paused,
+               f_finallocked,
+               f_finalexamed,
+               id_doctorfinal,
+               doctorfinal_name_r,
+               datefinalexamed,
+               f_closed,
+               dateclosed,
+               note,
+               knowledge,
+               timingstartedat,
+               hospitalcode,
+               id_examplace,
+               parsedassignedsuiteandfi,
+               parsedassignedgroupandfi,
+               parsedsuiteandfi,
+               parsedsuiteandfilab,
+               id_guidenurse,
+               patientnameencoded,
+               patientcodehiden,
+               f_wordprinted,
+               guidancenote2,
+               f_usecodehiden,
+               id_patientclass3,
+               dateregisternotime,
+               counterreportprinted,
+               f_isrecheck,
+               f_settlenone,
+               dateguidancereturned,
+               f_outpatient,
+               patientnamereceipt,
+               patientnamepinyin,
+               statusofhm,
+               instancetag,
+               inpatientno,
+               insuranceno,
+               countreportxml,
+               countreportcompare,
+               countreportoccupation,
+               countreportoccupationpdf,
+               countreportoccupationxml,
+               scbs,
+               id_tjtc,
+               jzdw,
+               jzdwr,
+               spr,
+               tjr,
+               lqfs,
+               yzbm,
+               yjaddress,
+               qtxz,
+               is_hmdb,
+               is_hmd,
+               isjj,
+               zgl,
+               jhgl,
+               jhys,
+               jktjzt,
+               zytjzt,
+               tmyd,
+               medicaldate,
+               trades,
+               cjjgsfyhf,
+               bhgybsfyhf,
+               yxjgsfyhf,
+               medicaltype,
+               prepayment,
+               tcprice,
+               createdate,
+               modifydate,
+               cultural,
+               workno,
+               work_date,
+               harm_date,
+               disease_print_num,
+               health_print_num,
+               readytofinal_date,
+               guide_signle_count,
+               short_code,
+               is_noticed,
+               review_pdf,
+               contraindicated_pdf,
+               disease_pdf,
+               ts_limit,
+               checkout_date,
+               checkout_status,
+               worktype_id,
+               id_examclass,
+               original_trade,
+               `status`
+        from md_peispatient
+    </sql>
+
+    <!-- 每日客服报表统计 -->
+    <select id="getList" resultType="com.center.medical.reception.bean.vo.CQListVo">
+        SELECT * FROM (
+        SELECT
+        min( t.patientcode ) patientcode,
+        min( t.patientname ) patientname,
+        STR_TO_DATE ( min( y.feechargetime ), '%Y-%m-%d %T' ) feechargetime,
+        min( d.payway_name ) idPayway,
+        min( u.user_name ) idFeecharger,
+        min( y.moneyamountpaid ) moneyamountpaid,
+        min( p.orgreservationgroupname ) idOrgreservationgroup,
+        min( t.org_name ) orgName,
+        y.cardno tjk,
+        y.cardno cardno,
+        min(IFNULL ( c.tjtcmc, cm.tjtcmc )) examsuiteName,
+        min( y.note ) note,
+        min( t.id_examtype ) idExamtype,
+        min( t.doctorapply ) doctorapply,
+        min( t.phone ) phone,
+        min( ms.int_id ) intId,
+        min( t.timingstartedat ) timingstartedat
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientcharge y ON t.patientcode = y.patientcode
+        LEFT JOIN md_createcombo c ON t.id_tjtc = c.id
+        LEFT JOIN md_createmeal cm ON t.id_tjtc = cm.id
+        LEFT JOIN md_dictpayway d ON y.id_payway = d.id
+        LEFT JOIN md_peisorgreservationgroup p ON t.id_orgreservationgroup = p.id
+        LEFT JOIN crm_sellcustomer ms ON ms.id = t.id_org
+        LEFT JOIN sys_user u ON u.user_no = y.id_feecharger
+        <where>
+            1 = 1
+            AND y.id IS NOT NULL
+            AND (
+            y.is_delete = 0
+            <if test="param.idFeecharger!=null and param.idFeecharger!=''">
+                AND u.input_code like concat('%',#{param.idFeecharger},'%')
+            </if>
+            <if test="param.idPayway!=null and param.idPayway!=''">
+                AND y.id_payway = #{param.idPayway}
+            </if>
+            <choose>
+                <when test="param.containTongShou!=null and param.containTongShou!=''">
+                    <choose>
+                        <when test="param.containTongShou == 1">
+                            OR d.payway_name = '统收')
+                        </when>
+                        <otherwise>
+                            AND d.payway_name <![CDATA[ <> ]]> '统收')
+                        </otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    AND d.payway_name <![CDATA[ <> ]]>  '统收')
+                </otherwise>
+            </choose>
+            <if test="param.idExamtype!=null and param.idExamtype!=''">
+                AND t.id_examtype = #{param.idExamtype}
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND ms.khdwsrm like concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.input_code like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND t.id_orgreservationgroup = #{param.idOrgreservationgroup}
+            </if>
+            <if test="param.startTime!=null">
+                AND y.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND y.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY y.id, y.createdate ,y.cardno
+        ORDER BY y.createdate DESC
+        ) a ORDER BY idPayway,patientcode,feechargetime
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+        <include refid="selectPeispatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 查询导出数据 -->
+    <select id="exportData" resultType="com.center.medical.reception.bean.vo.CQListVo">
+        SELECT * FROM (
+        SELECT
+        min( t.patientcode ) patientcode,
+        min( t.patientname ) patientname,
+        STR_TO_DATE ( min( y.feechargetime ), '%Y-%m-%d %T' ) feechargetime,
+        min( d.payway_name ) idPayway,
+        min( u.user_name ) idFeecharger,
+        min( y.moneyamountpaid ) moneyamountpaid,
+        min( p.orgreservationgroupname ) idOrgreservationgroup,
+        min( t.org_name ) orgName,
+        y.cardno cardno,
+        min(IFNULL ( c.tjtcmc, cm.tjtcmc )) examsuiteName,
+        min( y.note ) note,
+        min( t.id_examtype ) idExamtype,
+        min( t.doctorapply ) doctorapply,
+        min( t.phone ) phone,
+        min( ms.int_id ) intId,
+        min( t.timingstartedat ) timingstartedat,
+        y.cardno tjk,
+        co.xsjl
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientcharge y ON t.patientcode = y.patientcode
+        LEFT JOIN md_createcombo c ON t.id_tjtc = c.id
+        LEFT JOIN md_createmeal cm ON t.id_tjtc = cm.id
+        LEFT JOIN md_dictpayway d ON y.id_payway = d.id
+        LEFT JOIN md_peisorgreservationgroup p ON t.id_orgreservationgroup = p.id
+        LEFT JOIN crm_sellcustomer ms ON ms.id = t.id_org
+        LEFT JOIN sys_user u ON u.user_no = y.id_feecharger
+        LEFT JOIN md_createorder co on co.ddh = t.numorgresv
+        <where>
+            1 = 1
+            AND y.id IS NOT NULL
+            AND (y.note NOT LIKE '%老系统%' OR y.note = '' OR y.note IS NULL)
+            AND (
+            y.is_delete = 0
+            <if test="param.idFeecharger!=null and param.idFeecharger!=''">
+                AND u.input_code like concat('%',#{param.idFeecharger},'%')
+            </if>
+            <if test="param.idPayway!=null and param.idPayway!=''">
+                AND y.id_payway = #{param.idPayway}
+            </if>
+            <choose>
+                <when test="param.containTongShou!=null and param.containTongShou!=''">
+                    <choose>
+                        <when test="param.containTongShou == 1">
+                            OR d.payway_name = '统收')
+                        </when>
+                        <otherwise>
+                            AND d.payway_name <![CDATA[ <> ]]> '统收')
+                        </otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    AND d.payway_name <![CDATA[ <> ]]>  '统收')
+                </otherwise>
+            </choose>
+            <if test="param.idExamtype!=null and param.idExamtype!=''">
+                AND t.id_examtype = #{param.idExamtype}
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND ms.khdwsrm like concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.input_code like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND t.id_orgreservationgroup = #{param.idOrgreservationgroup}
+            </if>
+            <if test="param.startTime!=null">
+                AND y.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND y.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY y.id, y.createdate ,y.cardno
+        ORDER BY y.createdate DESC
+        ) a ORDER BY idPayway,patientcode,feechargetime
+    </select>
+
+
+    <!-- 今日费用结算情况 -->
+    <select id="getBackInfoData" resultType="com.center.medical.reception.bean.vo.BackInfoDataVo">
+        SELECT
+        p.patientcode,
+        p.patientname,
+        STR_TO_DATE( p.dateregister, '%Y-%m-%d %T' ) dateregister,
+        a.fp moneyamountpaid,
+        pcm.moneyamountpaid totalss,
+        (
+        CASE
+
+        WHEN EXISTS (
+        SELECT
+        1
+        FROM
+        md_peispatientfeeitem pi2
+        WHERE
+        pi2.id_patient = p.patientcode
+        AND pi2.change_item = 1
+        AND ( pi2.f_mark_feereturn IS NULL OR pi2.f_mark_feereturn = 0 )) THEN
+        '存在未退费项目' ELSE '优惠总价不等于实收'
+        END
+        ) memo,
+        qu.user_name kdys,
+        b.user_name djy
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN ( SELECT pi.id_patient, sum( pi.factprice ) fp FROM md_peispatientfeeitem pi WHERE pi.change_item = 0
+        GROUP BY pi.id_patient ) a ON a.id_patient = p.patientcode
+        LEFT JOIN sys_user qu ON qu.user_no = p.id_opendoctor
+        LEFT JOIN ( SELECT user_no, user_name FROM sys_user WHERE del_flag = 0 ) b ON b.user_no = p.id_doctorreg
+        <where>
+            p.f_registered = 1
+            AND (
+            pcm.moneyamountpaid != a.fp
+            OR EXISTS (
+            SELECT
+            1
+            FROM
+            md_peispatientfeeitem pi2
+            WHERE
+            pi2.id_patient = p.patientcode
+            AND pi2.change_item = 1
+            AND ( pi2.f_mark_feereturn IS NULL OR pi2.f_mark_feereturn = 0 )))
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+        </where>
+        ORDER BY p.patientcode
+    </select>
+
+
+    <!-- 每日记账报表统计 -->
+    <select id="getEveryDayJZDataList" resultType="com.center.medical.reception.bean.vo.EveryDayJZVo">
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        md.payway_name AS idPayWay,
+        pr.moneyamountpaid AS moneyamountpaid,
+        CASE
+        WHEN prc.jzje > 0 THEN
+        0 ELSE 0
+        END AS jzje,
+        prc.id_feecharger,
+        prc.note,
+        u.user_name AS xs,
+        p.jzdwr,
+        p.jzdw,
+        p.spr,
+        pr.createdate
+        FROM
+        md_peis_reser_payway pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.id_charge = prc.id
+        LEFT JOIN md_peispatient p ON p.patientcode = prc.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway md ON pr.id_payway = md.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        md.payway_name AS idPayWay,
+        CASE
+        WHEN prc.moneyamountpaid > 0 THEN
+        0 ELSE 0
+        END AS moneyamountpaid,
+        pr.moneyamountpaid AS jzje,
+        prc.id_feecharger,
+        prc.note,
+        u.user_name AS xs,
+        p.jzdwr,
+        p.jzdw,
+        p.spr,
+        pr.createdate
+        FROM
+        md_peispatientcharge pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.patientcode = prc.patientcode
+        LEFT JOIN md_peispatient p ON p.patientcode = pr.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway md ON prc.id_payway = md.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND PR.id_payway='4'
+        </where>
+    </select>
+
+
+    <!-- 每日自助机通联明细 -->
+    <select id="getTonglianDataList" resultType="com.center.medical.reception.bean.vo.TonglianDataVo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        sc.int_id,
+        sc.khdwmc AS orgName,
+        pc.patientcode,
+        p.patientname,
+        pw.payway_name AS idPayway,
+        pc.tx_trade_no AS cardno,
+        pc.moneyamountpaid,
+        charger.user_name as idFeecharger,
+        STR_TO_DATE( pc.feechargetime, '%Y-%m-%d %T' ) feechargetime,
+        p.id_examtype,
+        p.examsuite_name,
+        p.doctorapply
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.id_feecharger
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.f_feecharged = 1
+            AND pc.id_payway in (22,25)
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.fIsreturn!=null">
+                <choose>
+                    <when test="param.fIsreturn == 1">
+                        and pc.f_isreturn = 1
+                    </when>
+                    <otherwise>
+                        and (pc.f_isreturn = 0 or pc.f_isreturn is null)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        sc.int_id,
+        sc.khdwmc,
+        pc.patientcode,
+        p.patientname,
+        '通联支付（扫码支付）' payway_name,
+        pc.transaction_no tx_trade_no,
+        pc.paid_price moneyamountpaid,
+        charger.user_name,
+        STR_TO_DATE( pc.chage_time, '%Y-%m-%d %T' ) feechargetime,
+        p.id_examtype,
+        p.examsuite_name,
+        p.doctorapply
+        FROM
+        md_peispatient_charge_other pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.charge_id
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.pay_status = 1
+            <if test="param.startTime!=null">
+                AND pc.chage_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.chage_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        )T
+        ORDER BY t.feechargetime DESC
+    </select>
+
+
+    <!-- 导出每日自助通联明细 -->
+    <select id="exportTongLianData" resultType="com.center.medical.reception.bean.vo.TonglianDataVo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        sc.int_id,
+        sc.khdwmc AS orgName,
+        pc.patientcode,
+        p.patientname,
+        pw.payway_name AS idPayway,
+        pc.tx_trade_no AS cardno,
+        pc.moneyamountpaid,
+        charger.user_name as idFeecharger,
+        STR_TO_DATE( pc.feechargetime, '%Y-%m-%d %T' ) feechargetime,
+        p.id_examtype,
+        p.examsuite_name,
+        p.doctorapply
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.id_feecharger
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.f_feecharged = 1
+            AND pc.id_payway in (22,25)
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.fIsreturn!=null">
+                <choose>
+                    <when test="param.fIsreturn == 1">
+                        and pc.f_isreturn = 1
+                    </when>
+                    <otherwise>
+                        and (pc.f_isreturn = 0 or pc.f_isreturn is null)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        sc.int_id,
+        sc.khdwmc,
+        pc.patientcode,
+        p.patientname,
+        '通联支付（扫码支付）' payway_name,
+        pc.transaction_no tx_trade_no,
+        pc.paid_price moneyamountpaid,
+        charger.user_name,
+        STR_TO_DATE( pc.chage_time, '%Y-%m-%d %T' ) feechargetime,
+        p.id_examtype,
+        p.examsuite_name,
+        p.doctorapply
+        FROM
+        md_peispatient_charge_other pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.charge_id
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.pay_status = 1
+            <if test="param.startTime!=null">
+                AND pc.chage_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.chage_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        )T
+        ORDER BY t.feechargetime DESC
+    </select>
+
+
+    <!-- 当日所有检查实收费用统计导出数据 -->
+    <select id="getSummaryData" resultType="com.center.medical.reception.bean.vo.SummaryDataVo">
+        SELECT
+        pw.payway_name,
+        sum( CASE WHEN p.f_usecodehiden = 0 THEN pc.moneyamountpaid ELSE 0 END ) gejian,
+        sum( CASE WHEN p.f_usecodehiden = 1 THEN pc.moneyamountpaid ELSE 0 END ) tuanti,
+        sum( pc.moneyamountpaid ) heji
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        <where>
+            pc.f_feecharged = 1
+            AND pc.id_payway in (22,25)
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.fIsreturn!=null">
+                <choose>
+                    <when test="param.fIsreturn == 1">
+                        and pc.f_isreturn = 1
+                    </when>
+                    <otherwise>
+                        and (pc.f_isreturn = 0 or pc.f_isreturn is null)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        GROUP BY pw.payway_name
+    </select>
+
+
+    <!-- 当日所有检查统收的统计 -->
+    <select id="getEveryDayToTongDataSql" resultType="com.center.medical.reception.bean.dto.EDToTongDto">
+        SELECT
+        ms.khdwmc AS orgName,
+        sum(IFNULL ( pcharge.moneyamountpaid, 0 )) AS paid,
+        u.user_name AS name,
+        ms.int_id AS intId
+        FROM md_peisorgreservation vation
+        LEFT JOIN md_peispatient p ON vation.id = p.id_orgreservation
+        LEFT JOIN md_peispatientcharge pcharge ON p.patientcode = pcharge.patientcode
+        INNER JOIN crm_sellcustomer ms ON ms.id = vation.id_org
+        LEFT JOIN sys_user u ON ms.xsjlid = u.user_no
+        WHERE 1 = 1
+        AND pcharge.id_payway = '5'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND ms.khdwsrm LIKE concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.startTime!=null">
+            AND pcharge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pcharge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY ms.khdwmc, u.user_name, ms.int_id
+        ORDER BY ms.int_id
+    </select>
+
+
+    <!-- 查询总金额 -->
+    <select id="getRtotal" resultType="java.math.BigDecimal">
+        SELECT SUM(PAID) FROM (
+        SELECT
+        ms.khdwmc AS orgName,
+        sum(IFNULL ( pcharge.moneyamountpaid, 0 )) AS paid,
+        u.user_name AS name,
+        ms.int_id AS intId
+        FROM md_peisorgreservation vation
+        LEFT JOIN md_peispatient p ON vation.id = p.id_orgreservation
+        LEFT JOIN md_peispatientcharge pcharge ON p.patientcode = pcharge.patientcode
+        INNER JOIN crm_sellcustomer ms ON ms.id = vation.id_org
+        LEFT JOIN sys_user u ON ms.xsjlid = u.user_no
+        WHERE 1 = 1
+        AND pcharge.id_payway = '5'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND ms.khdwsrm LIKE concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.startTime!=null">
+            AND pcharge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pcharge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY ms.khdwmc, u.user_name, ms.int_id
+        ORDER BY ms.int_id
+        ) t
+    </select>
+
+
+    <!-- 当日所有检查实收的费用统计 -->
+    <select id="getEveryDayToPayWayData" resultType="com.center.medical.reception.bean.dto.ToPayWayDto">
+        SELECT
+        w.payway_name AS paywayName,
+        IFNULL( a.tuan, 0 ) org,
+        IFNULL( a.geren, 0 ) pers,
+        IFNULL( b.tuantj, 0 ) orgjs,
+        IFNULL( b.gerentj, 0 ) perjs,
+        IFNULL( a.yimiao, 0 ) yimiao
+        FROM
+        md_dictpayway w
+        LEFT JOIN (
+        SELECT
+        min( dict.payway_name ) paywayname,
+        sum( CASE WHEN p.f_usecodehiden = 1 THEN pcharge.moneyamountpaid ELSE 0 END ) tuan,
+        sum( CASE WHEN p.f_usecodehiden = 1 THEN 0 ELSE IFNULL ( pcharge.moneyamountpaid, 0 ) END ) geren,
+        min( dict.seq ) plsx,
+        sum( CASE WHEN EXISTS (
+        SELECT
+        1
+        FROM
+        md_peispatientfeeitem pei_t
+        INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+        INNER JOIN md_peispatientcharge pc on pc.patientcode = pei_t.id_patient
+        WHERE
+        pei_t.id_patient = p.patientcode
+        AND pei_t.change_item = 0
+        AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+        ) THEN
+        pcharge.moneyamountpaid ELSE 0
+        END
+        ) yimiao
+        FROM
+        md_dictpayway dict
+        LEFT JOIN md_peispatientcharge pcharge ON dict.id = pcharge.id_payway
+        LEFT JOIN md_peispatient p ON pcharge.patientcode = p.patientcode
+        WHERE
+        p.patientcode IS NOT NULL
+        AND pcharge.is_delete = 0
+        AND (pcharge.note NOT LIKE '%老系统%' OR pcharge.note = '' OR pcharge.note IS NULL)
+        <if test="param.startTime!=null">
+            AND pcharge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pcharge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY
+        dict.id,
+        dict.createdate
+        ) a ON w.payway_name = a.paywayname
+        LEFT JOIN (
+        SELECT
+        IFNULL ( sum( CASE WHEN p.f_usecodehiden = 0 THEN prp.moneyamountpaid ELSE 0 END ), 0 ) gerentj,
+        IFNULL ( sum( CASE WHEN p.f_usecodehiden = 1 THEN prp.moneyamountpaid ELSE 0 END ), 0 ) tuantj,
+        pay.payway_name
+        FROM
+        md_peispatient_reservation_charge prc
+        LEFT JOIN md_peis_reser_payway prp ON prc.id = prp.id_charge
+        LEFT JOIN md_dictpayway pay ON prp.id_payway = pay.id
+        LEFT JOIN md_peispatient p ON prc.patientcode = p.patientcode
+        WHERE
+        prp.id_payway IS NOT NULL
+        <if test="param.startTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY
+        pay.payway_name
+        ) b ON b.payway_name = w.payway_name
+        WHERE
+        ( b.payway_name IS NOT NULL OR a.paywayname IS NOT NULL )
+        ORDER BY
+        a.plsx
+    </select>
+
+
+    <!-- 当日所有检查实收的费用统计 -->
+    <select id="getEveryDayToPayWaySize" resultType="java.math.BigDecimal">
+        SELECT
+        IFNULL ( sum( tuan ), 0 )+ IFNULL ( sum( geren ), 0 )+ IFNULL ( sum( tuantj ), 0 )+ IFNULL ( sum( gerentj ), 0 )
+        FROM
+        (
+        SELECT
+        w.payway_name,
+        IFNULL ( a.tuan, 0 ) tuan,
+        IFNULL ( a.geren, 0 ) geren,
+        IFNULL ( b.tuantj, 0 ) tuantj,
+        IFNULL ( b.gerentj, 0 ) gerentj,
+        IFNULL ( a.yimiao, 0 ) yimiao
+        FROM
+        md_dictpayway w
+        LEFT JOIN (
+        SELECT
+        min( dict.payway_name ) paywayname,
+        sum( CASE WHEN p.f_usecodehiden = 1 THEN pcharge.moneyamountpaid ELSE 0 END ) tuan,
+        sum( CASE WHEN p.f_usecodehiden = 1 THEN 0 ELSE IFNULL ( pcharge.moneyamountpaid, 0 ) END ) geren,
+        min( dict.seq ) plsx,
+        sum( CASE WHEN EXISTS (
+        SELECT
+        1
+        FROM
+        md_peispatientfeeitem pei_t
+        INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+        WHERE
+        pei_t.id_patient = p.patientcode
+        AND pei_t.change_item = 0
+        AND pei_t.f_feecharged = 1
+        AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+        ) THEN
+        pcharge.moneyamountpaid ELSE 0
+        END
+        ) yimiao
+        FROM
+        md_dictpayway dict
+        LEFT JOIN md_peispatientcharge pcharge ON dict.id = pcharge.id_payway
+        LEFT JOIN md_peispatient p ON pcharge.patientcode = p.patientcode
+        WHERE
+        p.patientcode IS NOT NULL
+        AND pcharge.is_delete = 0
+        AND (pcharge.note NOT LIKE '%老系统%' OR pcharge.note = '' OR pcharge.note IS NULL)
+        <if test="param.startTime!=null">
+            AND pcharge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pcharge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY
+        dict.id,
+        dict.createdate
+        ) a ON w.payway_name = a.paywayname
+        LEFT JOIN (
+        SELECT
+        IFNULL ( sum( CASE WHEN p.f_usecodehiden = 0 THEN prp.moneyamountpaid ELSE 0 END ), 0 ) gerentj,
+        IFNULL ( sum( CASE WHEN p.f_usecodehiden = 1 THEN prp.moneyamountpaid ELSE 0 END ), 0 ) tuantj,
+        pay.payway_name
+        FROM
+        md_peispatient_reservation_charge prc
+        LEFT JOIN md_peis_reser_payway prp ON prc.id = prp.id_charge
+        LEFT JOIN md_dictpayway pay ON prp.id_payway = pay.id
+        LEFT JOIN md_peispatient p ON prc.patientcode = p.patientcode
+        WHERE
+        prp.id_payway IS NOT NULL
+        <if test="param.startTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY
+        pay.payway_name
+        ) b ON b.payway_name = w.payway_name
+        WHERE
+        ( b.payway_name IS NOT NULL OR a.paywayname IS NOT NULL )
+        ORDER BY
+        a.plsx
+        ) t
+    </select>
+
+    <!-- 当日所有检查实收的费用统计 -->
+    <select id="getFeiTongPayData" resultType="com.center.medical.reception.bean.vo.FeiTongPayVo">
+        SELECT
+        STR_TO_DATE( pc.feechargetime, '%Y-%m-%d %T' ) AS sfrq,
+        s.int_id AS dwid,
+        s.khdwmc AS dwmc,
+        sum( pc.moneyamountpaid ) AS je,
+        u.user_name AS xsjl
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        AND p.f_usecodehiden = 1
+        LEFT JOIN crm_sellcustomer s ON s.id = p.id_org
+        LEFT JOIN md_peisorgreservation v ON v.id = p.id_orgreservation
+        LEFT JOIN sys_user u ON u.user_no = v.id_salesperson
+        WHERE
+        pc.f_feecharged = 1
+        AND pc.id_payway <![CDATA[ <> ]]> '5'
+        AND pc.is_delete = 0
+        AND pw.f_hideondailyreport = 1
+        <if test="param.startTime!=null">
+            AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY
+        STR_TO_DATE ( pc.feechargetime, '%Y-%m-%d' ),
+        s.int_id,
+        s.khdwmc,
+        u.user_name
+        ORDER BY
+        STR_TO_DATE ( pc.feechargetime, '%Y-%m-%d' ) DESC,
+        s.int_id,
+        u.user_name
+    </select>
+
+    <!-- 当日团体非统收汇总sql -->
+    <select id="getFeiTongPayDataSummarySql" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(pc.moneyamountpaid), 0)
+        FROM md_peispatientcharge pc
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        AND p.f_usecodehiden = 1
+        LEFT JOIN crm_sellcustomer s ON s.id = p.id_org
+        LEFT JOIN md_peisorgreservation v ON v.id = p.id_orgreservation
+        LEFT JOIN sys_user u ON u.user_no = v.id_salesperson
+        WHERE pc.f_feecharged = 1
+        AND pc.id_payway != '5'
+        AND pc.is_delete = 0
+        AND pw.f_hideondailyreport = 1
+        <if test="param.startTime!=null">
+            AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+    </select>
+
+
+    <!-- 获取数据 -->
+    <select id="getListData" resultType="com.center.medical.reception.bean.vo.CQListDataVo">
+        SELECT * FROM (
+        SELECT * FROM (
+        SELECT min(t.patientcode) AS patientcode,
+        min(t.patientname) AS patientname,
+        STR_TO_DATE(min(y.feechargetime), '%Y-%m-%d %T') AS feechargetime,
+        min(d.payway_name) AS idPayway,
+        min(u.user_name) AS idFeecharger,
+        min(y.moneyamountpaid) AS moneyamountpaid,
+        min(p.orgreservationgroupname) AS idOrgreservationgroup,
+        min(t.org_name) AS orgName,
+        (y.cardno) AS tjk,
+        min(IFNULL(c.tjtcmc, cm.tjtcmc)) AS examsuiteName,
+        min(y.note) AS note,
+        min(t.id_examtype) AS idExamtype,
+        min(t.doctorapply) AS doctorapply,
+        min(t.phone) AS phone,
+        min(csc.int_id) AS intId,
+        min(t.timingstartedat) AS timingstartedat,
+        (y.cardno) AS cardno
+        FROM md_peispatient t
+        INNER JOIN md_peispatientcharge y ON t.patientcode = y.patientcode
+        LEFT JOIN md_createcombo c ON t.id_tjtc = c.id
+        LEFT JOIN md_createmeal cm ON t.id_tjtc = cm.id
+        LEFT JOIN md_dictpayway d ON y.id_payway = d.id
+        LEFT JOIN md_peisorgreservationgroup p ON t.id_orgreservationgroup = p.id
+        LEFT JOIN crm_sellcustomer csc ON csc.id = t.id_org
+        LEFT JOIN sys_user u ON u.user_no = y.id_feecharger
+        <where>
+            1 = 1
+            AND y.id IS NOT NULL
+            AND ( y.note NOT LIKE '%老系统%' OR y.note = '' OR y.note IS NULL )
+            AND ( y.is_delete = 0
+            <if test="param.idFeecharger!=null and param.idFeecharger!=''">
+                AND u.input_code LIKE concat('%',#{param.idFeecharger},'%')
+            </if>
+            <if test="param.idPayway!=null and param.idPayway!=''">
+                AND y.id_payway = #{param.idPayway}
+            </if>
+
+            <choose>
+                <when test="param.containTongShou != null">
+                    <choose>
+                        <when test="param.containTongShou == 1">
+                            OR d.payway_name = '统收')
+                        </when>
+                        <otherwise>
+                            AND d.payway_name <![CDATA[ <> ]]> '统收')
+                        </otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    AND d.payway_name <![CDATA[ <> ]]> '统收')
+                </otherwise>
+            </choose>
+
+            <if test="param.idExamtype!=null and param.idExamtype!=''">
+                AND t.id_examtype = #{param.idExamtype}
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND csc.khdwsrm LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.input_code LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND t.id_orgreservationgroup LIKE concat('%',#{param.idOrgreservationgroup},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND y.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND y.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY y.id, y.createdate ,y.cardno
+        ORDER BY y.createdate DESC
+        ) a
+        ) b ORDER BY idPayway,patientcode,feechargetime
+    </select>
+
+
+    <!-- 导出(疫苗费用) -->
+    <select id="exportVaccine" resultType="com.center.medical.reception.bean.vo.ExportVaccineVo">
+        SELECT * FROM (
+        SELECT * FROM (
+        SELECT
+        min( t.patientcode ) patientcode,
+        min( t.patientname ) patientname,
+        STR_TO_DATE ( min( y.feechargetime ), '%Y-%m-%d %T' ) feechargetime,
+        min( d.payway_name ) paywayName,
+        min( u.user_name ) name,
+        min( y.moneyamountpaid ) moneyamountpaid,
+        min( p.orgreservationgroupname ) orgreservationgroupname,
+        min( t.org_name ) org_name,
+        ( y.cardno ) AS cardno,
+        min( IFNULL( c.tjtcmc, cm.tjtcmc )) tjtcmc,
+        min( y.note ) note,
+        min( t.id_examtype ) idExamtype,
+        min( t.doctorapply ) doctorapply,
+        min( t.phone ) phone,
+        min( sc.int_id ) intId,
+        min( t.f_usecodehiden ) fUsecodehiden
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientcharge y ON t.patientcode = y.patientcode
+        LEFT JOIN md_createcombo c ON t.id_tjtc = c.id
+        LEFT JOIN md_createmeal cm ON t.id_tjtc = cm.id
+        LEFT JOIN md_dictpayway d ON y.id_payway = d.id
+        LEFT JOIN md_peisorgreservationgroup p ON t.id_orgreservationgroup = p.id
+        LEFT JOIN crm_sellcustomer sc ON sc.id = t.id_org
+        LEFT JOIN sys_user u ON u.user_no = y.id_feecharger
+        <where>
+            1 = 1
+            AND y.id IS NOT NULL
+            AND ( y.is_delete = 0
+            <if test="param.idFeecharger!=null and param.idFeecharger!=''">
+                AND u.input_code LIKE concat('%',#{param.idFeecharger},'%')
+            </if>
+            <if test="param.idPayway!=null and param.idPayway!=''">
+                AND y.id_payway LIKE concat('%',#{param.idPayway},'%')
+            </if>
+            <choose>
+                <when test="param.containTongShou!=null">
+                    <choose>
+                        <when test="param.containTongShou == 1">
+                            OR d.payway_name = '统收')
+                        </when>
+                        <otherwise>
+                            AND d.payway_name <![CDATA[ <> ]]> '统收')
+                        </otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    AND d.payway_name <![CDATA[ <> ]]> '统收')
+                </otherwise>
+            </choose>
+            <if test="param.idExamtype!=null">
+                AND t.id_examtype = #{param.idExamtype}
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND sc.khdwsrm LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.input_code LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND t.id_orgreservationgroup = #{param.idOrgreservationgroup}
+            </if>
+            -- AND d.vaccine = '1'
+            AND t.f_usecodehiden = #{param.fUsecodehiden}
+            <if test="param.startTime!=null">
+                AND y.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND y.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND t.patientcode NOT IN (
+            SELECT
+            t.patientcode
+            FROM
+            md_peispatientfeeitem pei_t
+            INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+            WHERE
+            pei_t.id_patient = t.patientcode
+            AND pei_t.change_item = 0
+            AND pei_t.f_feecharged = 1
+            AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            )
+        </where>
+        GROUP BY y.id, y.createdate ,y.cardno
+        ORDER BY y.createdate DESC
+        ) aaa
+        ) bbb
+        ORDER BY paywayName,patientcode,feechargetime
+    </select>
+
+
+    <!-- 疫苗实收费用统计数据 -->
+    <select id="getVaccineSql" resultType="com.center.medical.reception.bean.vo.ExportVaccineVo">
+        SELECT
+        feechargetime,patientname,orgName,moneyamountpaid,paywayName,patientcode,name
+        FROM
+        (
+        SELECT
+        STR_TO_DATE(pi.feechargetime, '%Y-%m-%d %T' ) feechargetime,
+        p.patientname patientname,
+        i.examfeeitem_name orgName,
+        pi.factprice moneyamountpaid,
+        group_concat( DISTINCT pw.payway_name ) paywayName,
+        p.patientcode patientcode,
+        u.user_name name
+        FROM
+        md_peispatient p
+        INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = p.patientcode
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        INNER JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        INNER JOIN sys_user u ON u.user_no = pi.id_feecharger
+        <where>
+            i.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            AND pi.f_feecharged = 1
+            <if test="param.startTime!=null">
+                AND pi.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pi.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY p.dateregister,p.patientname,i.examfeeitem_name,pi.factprice,
+        p.patientcode,pi.feechargetime,u.user_name
+        union all
+        SELECT
+        STR_TO_DATE( pi.dt_delayedtill, '%Y-%m-%d %T' ) feechargetime,
+        p.patientname patientname,
+        i.examfeeitem_name orgName,
+        pi.factprice moneyamountpaid,
+        group_concat( DISTINCT pw.payway_name ) paywayName,
+        p.patientcode patientcode,
+        u.user_name name
+        FROM
+        md_peispatient p
+        INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = p.patientcode
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        INNER JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        INNER JOIN sys_user u ON u.user_no = pi.id_feecharger
+        <where>
+            i.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            AND pi.f_mark_feereturn = 1
+            <if test="param.startTime!=null">
+                AND pi.dt_delayedtill <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pi.dt_delayedtill <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY
+        p.dateregister,
+        p.patientname,
+        i.examfeeitem_name,
+        pi.factprice,
+        p.patientcode,
+        pi.dt_delayedtill,
+        u.user_name
+        ) aaa
+        ORDER BY feechargetime DESC,patientcode DESC
+    </select>
+
+    <!-- 导出(疫苗名单) -->
+    <select id="exportVaccineName" resultType="com.center.medical.reception.bean.vo.ExportVaccineNameVo">
+        SELECT pe.id_patient patientcode,
+               p.patientname,
+               pc.moneyamountpaid as factprice,
+               p.doctorapply,
+               d.payway_name,
+               p.dateregister,
+               pc.feechargetime,
+               pe.examfeeitem_name
+        FROM md_peispatientfeeitem pe
+                 LEFT JOIN md_peispatient p ON p.patientcode = pe.id_patient
+                 LEFT JOIN md_peispatientcharge pc ON pc.patientcode = pe.id_patient
+                 LEFT JOIN md_dictpayway d ON d.id = pc.id_payway
+        WHERE pe.id_ks = 'ff8080817bc96399017bd2c73a0c5e96'
+          AND p.f_registered = '1'
+        ORDER BY p.dateregister
+    </select>
+
+
+    <!-- 导出(金蝶名单) -->
+    <select id="exportKingdeeName" resultType="com.center.medical.reception.bean.vo.ExportKingdeeNameVo">
+        SELECT
+            cs.jindie_id,
+            cs.khdwmc,
+            cs.int_id,
+            cs.xsjl,
+            qu.user_name,
+            s.account_no
+        FROM
+            crm_sellcustomer cs
+                LEFT JOIN sys_user qu ON qu.user_no = xsjlid
+                LEFT JOIN md_user_saleer us ON us.user_id = xsjlid
+                LEFT JOIN kd_saleer s ON us.saleer_md5 = s.md5
+        <where>
+           jindie_id IS NOT NULL
+            <if test="param.branchId!=null and param.branchId!=''">
+                AND EXISTS (
+                    SELECT
+                    1
+                    FROM
+                    md_createorder co
+                    LEFT JOIN md_orderandfzx oaf on oaf.ddid = co.id
+                    WHERE
+                    co.khdwmcid = cs.id
+                    AND oaf.fzxid = #{param.branchId}
+                )
+            </if>
+        </where>
+        ORDER BY
+            int_id
+    </select>
+
+
+    <!-- 导出Excel(记账报表) -->
+    <select id="exportEveryDay" resultType="com.center.medical.reception.bean.vo.ExportEveryDayVo">
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        dp.payway_name,
+        pr.moneyamountpaid AS moneyamountpaid,
+        (CASE WHEN prc.jzje > 0 THEN 0 ELSE 0 END )AS jzje,
+        prc.id_feecharger,
+        prc.note,
+        u.user_name,
+        p.jzdwr,
+        p.jzdw,
+        p.spr,
+        pr.createdate
+        FROM
+        md_peis_reser_payway pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.id_charge = prc.id
+        LEFT JOIN md_peispatient p ON p.patientcode = prc.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway dp ON pr.id_payway = dp.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        dp.payway_name,
+        (CASE WHEN prc.moneyamountpaid > 0 THEN 0 ELSE 0 END )AS moneyamountpaid,
+        pr.moneyamountpaid AS jzje,
+        prc.id_feecharger,
+        prc.note,
+        u.user_name,
+        p.jzdwr,
+        p.jzdw,
+        p.spr,
+        pr.createdate
+        FROM
+        md_peispatientcharge pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.patientcode = prc.patientcode
+        LEFT JOIN md_peispatient p ON p.patientcode = pr.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway dp ON prc.id_payway = dp.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND pr.id_payway = '4'
+        </where>
+    </select>
+
+
+    <!-- 获取结算金额 -->
+    <select id="getJzjsSql" resultType="com.center.medical.reception.bean.dto.JzjsSqlDto">
+        SELECT IFNULL(sum(CASE WHEN p.f_usecodehiden = 0 THEN prp.moneyamountpaid ELSE 0 END), 0) gr,
+        IFNULL(sum(CASE WHEN p.f_usecodehiden = 1 THEN prp.moneyamountpaid ELSE 0 END), 0) tt
+        FROM md_peispatient_reservation_charge prc
+        INNER JOIN md_peis_reser_payway prp ON prc.id = prp.id_charge
+        INNER JOIN md_peispatient p ON p.patientcode = prc.patientcode
+        WHERE prp.id_payway IS NOT NULL
+        AND p.patientcode IN (
+        SELECT patientcode
+        FROM (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        sum( pr.moneyamountpaid ) AS jzje,
+        p.jzdwr,
+        p.jzdw,
+        p.note
+        FROM
+        md_peispatientcharge pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.patientcode = prc.patientcode
+        LEFT JOIN md_peispatient p ON p.patientcode = prc.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway d ON prc.id_payway = d.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND pr.id_payway = '4'
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.jzdwr,
+        p.jzdw,
+        p.note
+        ) as aaaaaa
+        )
+        <if test="param.startTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+
+    </select>
+
+
+    <!-- 查询记账sql -->
+    <select id="getJzSql" resultType="com.center.medical.reception.bean.dto.JzSqlDto">
+        SELECT
+        p.patientcode,
+        p.patientname,
+        sum( pr.moneyamountpaid ) AS jzje,
+        p.jzdwr,
+        p.jzdw,
+        p.note
+        FROM
+        md_peispatientcharge pr
+        LEFT JOIN md_peispatient_reservation_charge prc ON pr.patientcode = prc.patientcode
+        LEFT JOIN md_peispatient p ON p.patientcode = prc.patientcode
+        LEFT JOIN crm_sellcustomer s ON p.id_org = s.id
+        LEFT JOIN sys_user u ON s.xsjlid = u.user_no
+        LEFT JOIN md_dictpayway d ON prc.id_payway = d.id
+        <where>
+            1 = 1
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND s.id = #{param.khdwmcid}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND pr.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pr.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND pr.id_payway = '4'
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.jzdwr,
+        p.jzdw,
+        p.note
+    </select>
+
+
+    <!-- 收费日报-结算明细导出 -->
+    <select id="getEveryDayBillingData" resultType="com.center.medical.reception.bean.dto.EveryDayBillingDataDto">
+        SELECT prc.patientcode,
+        p.patientname,
+        IFNULL(sum(prp.moneyamountpaid), 0) moneyamountpaid,
+        GROUP_CONCAT(pay.payway_name SEPARATOR '、') paywayName,
+        GROUP_CONCAT(STR_TO_DATE(prp.moneyamountpaiddate, '%Y-%m-%d') SEPARATOR '、') moneyamountpaiddate
+        FROM md_peispatient_reservation_charge prc
+        LEFT JOIN md_peis_reser_payway prp ON prc.id = prp.id_charge
+        LEFT JOIN md_dictpayway pay ON prp.id_payway = pay.id
+        LEFT JOIN md_peispatient p ON prc.patientcode = p.patientcode
+        <where>
+            prp.id_payway IS NOT NULL
+            <if test="param.startTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND prp.moneyamountpaiddate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY
+        prc.patientcode,
+        p.patientname
+        ORDER BY
+        max( prp.moneyamountpaiddate ) DESC
+    </select>
+
+
+    <!-- 当日团体非统收汇总sql -->
+    <select id="getFeiTongPayDataSql" resultType="com.center.medical.reception.bean.dto.FeiTongPayDataDto">
+        SELECT STR_TO_DATE(pc.feechargetime, '%Y-%m-%d') as feechargetime,
+        s.int_id,
+        s.khdwmc,
+        sum(pc.moneyamountpaid) as moneyamountpaid,
+        u.user_name
+        FROM md_peispatientcharge pc
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        AND p.f_usecodehiden = 1
+        LEFT JOIN crm_sellcustomer s ON s.id = p.id_org
+        LEFT JOIN md_peisorgreservation v ON v.id = p.id_orgreservation
+        LEFT JOIN sys_user u ON u.user_no = v.id_salesperson
+        <where>
+            pc.f_feecharged = 1
+            AND pc.id_payway != '5'
+            AND pc.is_delete = 0
+            AND pw.f_hideondailyreport = 1
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY
+        STR_TO_DATE ( pc.feechargetime, '%Y-%m-%d' ),
+        s.int_id,
+        s.khdwmc,
+        u.user_name
+        ORDER BY
+        STR_TO_DATE ( pc.feechargetime, '%Y-%m-%d' ) DESC,
+        s.int_id,
+        u.user_name
+    </select>
+
+
+    <!-- 每日自助机通联明细 -->
+    <select id="getTongLianLimit" resultType="java.lang.String">
+        SELECT
+        sum(moneyamountpaid) AS moneyamountpaid
+        FROM
+        (
+        SELECT
+        sum(pc.moneyamountpaid) as moneyamountpaid
+        FROM
+        md_peispatientcharge pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.id_feecharger
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        INNER JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.f_feecharged = 1
+            AND pc.id_payway in (22,25)
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.fIsreturn!=null">
+                <choose>
+                    <when test="param.fIsreturn == 1">
+                        and pc.f_isreturn = 1
+                    </when>
+                    <otherwise>
+                        and (pc.f_isreturn = 0 or pc.f_isreturn is null)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+        sum(pc.paid_price) as moneyamountpaid
+        FROM
+        md_peispatient_charge_other pc
+        INNER JOIN sys_user charger ON charger.user_no = pc.charge_id
+        INNER JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            pc.pay_status = 1
+            <if test="param.startTime!=null">
+                AND pc.chage_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.chage_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        )T
+
+    </select>
+
+
+
+    <!-- 每日疫苗收费统计 -->
+    <select id="getVaccinum" resultType="com.center.medical.reception.bean.vo.GetVaccinumVo">
+        SELECT
+        pc.id,
+        b.fzx,
+        p.patientname,
+        pw.payway_name,
+        pc.cardno,
+        pc.moneyamountpaid,
+        u.user_name,
+        pf.examfeeitem_name,
+        p.doctorreg,
+        p.patientcode
+        FROM
+        md_peispatientcharge pc
+        LEFT JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        AND p.f_registered = 1
+        LEFT JOIN md_peispatientfeeitem pf ON p.patientcode = pf.id_patient
+        AND pf.id_ks = 'ff8080817bc96399017bd2c73a0c5e96'
+        LEFT JOIN sys_branch b on b.branch_id = p.hospitalcode
+        LEFT JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        LEFT JOIN sys_user u ON u.user_no = pc.id_feecharger
+        <where>
+            pc.is_delete = 0
+            AND pc.f_feecharged = 1
+            AND pf.change_item = 0
+            AND pf.f_feecharged = 1
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND p.doctorreg like concat('%',#{param.xsjl},'%')
+            </if>
+        </where>
+        GROUP BY
+        pc.id
+        ORDER BY
+        pc.feechargetime DESC
+    </select>
+
+
+    <!-- 每日疫苗收费统计 -->
+    <select id="exportVaccinum" resultType="com.center.medical.reception.bean.vo.GetVaccinumVo">
+        SELECT
+        pc.id,
+        b.fzx,
+        p.patientname,
+        pw.payway_name,
+        pc.cardno,
+        pc.moneyamountpaid,
+        u.user_name,
+        pf.examfeeitem_name,
+        p.doctorreg,
+        p.patientcode
+        FROM
+        md_peispatientcharge pc
+        LEFT JOIN md_peispatient p ON p.patientcode = pc.patientcode
+        AND p.f_registered = 1
+        LEFT JOIN md_peispatientfeeitem pf ON p.patientcode = pf.id_patient
+        AND pf.id_ks = 'ff8080817bc96399017bd2c73a0c5e96'
+        LEFT JOIN sys_branch b on b.branch_id = p.hospitalcode
+        LEFT JOIN md_dictpayway pw ON pw.id = pc.id_payway
+        LEFT JOIN sys_user u ON u.user_no = pc.id_feecharger
+        <where>
+            pc.is_delete = 0
+            AND pc.f_feecharged = 1
+            AND pf.change_item = 0
+            AND pf.f_feecharged = 1
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.startTime!=null">
+                AND pc.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND pc.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND p.doctorreg like concat('%',#{param.xsjl},'%')
+            </if>
+        </where>
+        GROUP BY
+        pc.id
+        ORDER BY
+        pc.feechargetime DESC
+    </select>
+</mapper>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mcmd-reservation</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-reservation-lc</artifactId>
+    <packaging>jar</packaging>
+    <description>体检中心端预约模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-reservation-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

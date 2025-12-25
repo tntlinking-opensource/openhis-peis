@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.DictpaywayMapper">
+
+    <resultMap type="com.center.medical.bean.model.Dictpayway" id="DictpaywayMap">
+        <id property="id" column="id"/>
+        <result property="paywayName" column="payway_name"/>
+        <result property="paywayCode" column="payway_code"/>
+        <result property="fReturntocash" column="f_returntocash"/>
+        <result property="idReceipttypeOrg" column="id_receipttype_org"/>
+        <result property="idReceipttypePerson" column="id_receipttype_person"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="note" column="note"/>
+        <result property="fHideondailyreport" column="f_hideondailyreport"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isChange" column="is_change"/>
+        <result property="thingKingdeePaywayname" column="thing_kingdee_paywayname"/>
+        <result property="thingKingdeeUseStatus" column="thing_kingdee_use_status"/>
+        <result property="groupKingdeeNumber" column="group_kingdee_number"/>
+        <result property="groupKingdeePaywayname" column="group_kingdee_paywayname"/>
+        <result property="groupKingdeeUseStatus" column="group_kingdee_use_status"/>
+        <result property="posKingdeeNumber" column="pos_kingdee_number"/>
+        <result property="posKingdeePaywayname" column="pos_kingdee_paywayname"/>
+        <result property="posKingdeeUseStatus" column="pos_kingdee_use_status"/>
+        <result property="kingdeeCompany" column="kingdee_company"/>
+        <result property="kingdeeSaleer" column="kingdee_saleer"/>
+        <result property="thingKingdeeNumber" column="thing_kingdee_number"/>
+        <result property="vaccine" column="vaccine"/>
+        <result property="payConfig" column="pay_config"/>
+        <result property="usableIn" column="usable_in"/>
+        <result property="seq" column="seq"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDictpaywayVo">
+        select payway_name,
+               payway_code,
+               f_returntocash,
+               id_receipttype_org,
+               id_receipttype_person,
+               input_code,
+               note,
+               f_hideondailyreport,
+               id,
+               createdate,
+               modifydate,
+               is_delete,
+               is_change,
+               thing_kingdee_paywayname,
+               thing_kingdee_use_status,
+               group_kingdee_number,
+               group_kingdee_paywayname,
+               group_kingdee_use_status,
+               pos_kingdee_number,
+               pos_kingdee_paywayname,
+               pos_kingdee_use_status,
+               kingdee_company,
+               kingdee_saleer,
+               thing_kingdee_number,
+               vaccine,
+               pay_config,
+               usable_in,
+               seq,
+               status
+        from md_dictpayway
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="DictpaywayMap">
+        <include refid="selectDictpaywayVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DictpaywayMap">
+        <include refid="selectDictpaywayVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

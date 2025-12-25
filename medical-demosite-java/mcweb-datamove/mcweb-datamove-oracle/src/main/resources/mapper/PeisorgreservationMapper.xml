@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PeisorgreservationMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Peisorgreservation" id="PeisorgreservationMap">
+        <id property="id" column="ID"/>
+        <result property="idOrgreservation" column="ID_ORGRESERVATION"/>
+        <result property="idOrg" column="ID_ORG"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="datereservation" column="DATERESERVATION"/>
+        <result property="dateautoclose" column="DATEAUTOCLOSE"/>
+        <result property="datefinalsettled" column="DATEFINALSETTLED"/>
+        <result property="regselectable" column="REGSELECTABLE"/>
+        <result property="fRegselectablepaidbyorg" column="F_REGSELECTABLEPAIDBYORG"/>
+        <result property="countexaminee" column="COUNTEXAMINEE"/>
+        <result property="countexamineereserved" column="COUNTEXAMINEERESERVED"/>
+        <result property="countexamineeregistered" column="COUNTEXAMINEEREGISTERED"/>
+        <result property="countexamineefullfinished" column="COUNTEXAMINEEFULLFINISHED"/>
+        <result property="countexamineepartfinished" column="COUNTEXAMINEEPARTFINISHED"/>
+        <result property="moneyamount" column="MONEYAMOUNT"/>
+        <result property="moneyamountsettled" column="MONEYAMOUNTSETTLED"/>
+        <result property="moneyamountpaid" column="MONEYAMOUNTPAID"/>
+        <result property="idFeecharger" column="ID_FEECHARGER"/>
+        <result property="idFeediscounter" column="ID_FEEDISCOUNTER"/>
+        <result property="fFinished" column="F_FINISHED"/>
+        <result property="fFullsettled" column="F_FULLSETTLED"/>
+        <result property="fMoneypaid" column="F_MONEYPAID"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="contact" column="CONTACT"/>
+        <result property="idSalesperson" column="ID_SALESPERSON"/>
+        <result property="orgresvconfidentiallevel" column="ORGRESVCONFIDENTIALLEVEL"/>
+        <result property="fOrgresvhided" column="F_ORGRESVHIDED"/>
+        <result property="note" column="NOTE"/>
+        <result property="patientcardno" column="PATIENTCARDNO"/>
+        <result property="instancetag" column="INSTANCETAG"/>
+        <result property="orgtaskhiscode" column="ORGTASKHISCODE"/>
+        <result property="idOrgclass" column="ID_ORGCLASS"/>
+        <result property="ddh" column="DDH"/>
+        <result property="qtxz" column="QTXZ"/>
+        <result property="planenddate" column="PLANENDDATE"/>
+        <result property="phone" column="PHONE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="bdid" column="BDID"/>
+        <result property="fzxid" column="FZXID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeisorgreservationVo">
+        select ID_ORGRESERVATION,
+               ID_ORG,
+               ORG_NAME,
+               DATERESERVATION,
+               DATEAUTOCLOSE,
+               DATEFINALSETTLED,
+               REGSELECTABLE,
+               F_REGSELECTABLEPAIDBYORG,
+               COUNTEXAMINEE,
+               COUNTEXAMINEERESERVED,
+               COUNTEXAMINEEREGISTERED,
+               COUNTEXAMINEEFULLFINISHED,
+               COUNTEXAMINEEPARTFINISHED,
+               MONEYAMOUNT,
+               MONEYAMOUNTSETTLED,
+               MONEYAMOUNTPAID,
+               ID_FEECHARGER,
+               ID_FEEDISCOUNTER,
+               F_FINISHED,
+               F_FULLSETTLED,
+               F_MONEYPAID,
+               ADDRESS,
+               CONTACT,
+               ID_SALESPERSON,
+               ORGRESVCONFIDENTIALLEVEL,
+               F_ORGRESVHIDED,
+               NOTE,
+               PATIENTCARDNO,
+               INSTANCETAG,
+               ORGTASKHISCODE,
+               ID_ORGCLASS,
+               DDH,
+               QTXZ,
+               PLANENDDATE,
+               PHONE,
+               CREATEDATE,
+               MODIFYDATE,
+               ID,
+               BDID,
+               FZXID
+        from PEISORGRESERVATION
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeisorgreservationMap">
+        <include refid="selectPeisorgreservationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeisorgreservationMap">
+        <include refid="selectPeisorgreservationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

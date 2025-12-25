@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.workflow.dao.WorkflowCaseItemMapper">
+
+    <resultMap type="com.center.medical.workflow.bean.model.WorkflowCaseItem" id="WorkflowCaseItemMap">
+        <id property="itemId" column="item_id"/>
+        <result property="caseId" column="case_id"/>
+        <result property="itemName" column="item_name"/>
+        <result property="userNo" column="user_no"/>
+        <result property="userName" column="user_name"/>
+        <result property="level" column="level"/>
+        <result property="levelFlag" column="level_flag"/>
+        <result property="notifyType" column="notify_type"/>
+        <result property="remark" column="remark"/>
+        <result property="notifyStatus" column="notify_status"/>
+        <result property="status" column="status"/>
+        <result property="notifyTime" column="notify_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWorkflowCaseItemVo">
+        select item_id,
+               case_id,
+               item_name,
+               user_no,
+               user_name,
+               level,
+               level_flag,
+               notify_type,
+               remark,
+               notify_status,
+               status,
+               notify_time,
+               createdate,
+               modifydate
+        from md_workflow_case_item
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WorkflowCaseItemMap">
+        <include refid="selectWorkflowCaseItemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WorkflowCaseItemMap">
+        <include refid="selectWorkflowCaseItemVo"/>
+        <where>
+            item_id = #{id}
+        </where>
+    </select>
+
+    <!-- 根据工实例ID获取节点列表-->
+    <select id="getListByCaseId" resultType="com.center.medical.workflow.bean.model.WorkflowCaseItem">
+        select
+            wc.item_id,
+            wc.case_id,
+            wc.item_name,
+            wc.user_no,
+            wc.user_name,
+            wc.level,
+            wc.level_flag,
+            wc.notify_type,
+            wc.remark,
+            wc.notify_status,
+            wc.status,
+            wc.notify_time,
+            wc.createdate,
+            wc.modifydate,
+            (case when sr.user_id is not null then 1 else 0 end) isTotal
+        from md_workflow_case_item wc
+        inner join sys_user u on u.user_no = wc.user_no
+        left join sys_user_role sr ON sr.user_id = u.user_id
+        and sr.role_id = 125
+        <where>
+            wc.case_id = #{caseId}
+        </where>
+        ORDER BY wc.level
+    </select>
+
+</mapper>
+

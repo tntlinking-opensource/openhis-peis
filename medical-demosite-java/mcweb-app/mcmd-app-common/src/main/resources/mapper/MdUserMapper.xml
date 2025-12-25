@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.appadmin.dao.MdUserMapper">
+
+    <resultMap type="com.center.medical.appadmin.bean.model.MdUser" id="MdUserMap">
+        <id property="userId" column="user_id"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="userMail" column="user_mail"/>
+        <result property="loginPassword" column="login_password"/>
+        <result property="payPassword" column="pay_password"/>
+        <result property="userName" column="user_name"/>
+        <result property="userMobile" column="user_mobile"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="userRegtime" column="user_regtime"/>
+        <result property="userRegip" column="user_regip"/>
+        <result property="userMemo" column="user_memo"/>
+        <result property="sex" column="sex"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="pic" column="pic"/>
+        <result property="status" column="status"/>
+        <result property="level" column="level"/>
+        <result property="vipEndTime" column="vip_end_time"/>
+        <result property="levelType" column="level_type"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="area" column="area"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="areaId" column="area_id"/>
+        <result property="tags" column="tags"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdUserVo">
+        select user_id,
+               nick_name,
+               real_name,
+               user_mail,
+               login_password,
+               pay_password,
+               user_name,
+               user_mobile,
+               modify_time,
+               user_regtime,
+               user_regip,
+               user_memo,
+               sex,
+               birth_date,
+               pic,
+               status,
+               level,
+               vip_end_time,
+               level_type,
+               province,
+               city,
+               area,
+               province_id,
+               city_id,
+               area_id,
+               tags
+        from md_user
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.appadmin.bean.vo.AppUserVo">
+        select user_id,
+               nick_name,
+               pic,
+               user_regtime,
+               user_mobile
+        from md_user
+        <where>
+            <if test="param.userMobile!=null and param.userMobile!=''">
+                AND user_mobile like concat('%',#{param.userMobile},'%')
+            </if>
+            <if test="param.nickName!=null and param.nickName!=''">
+                AND nick_name like concat('%',#{param.nickName},'%')
+            </if>
+        </where>
+        order by user_regtime desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdUserMap">
+        <include refid="selectMdUserVo"/>
+        <where>
+            userId = #{id}
+        </where>
+    </select>
+
+
+
+    <!-- 获取手机号对应的最后体检日期 -->
+    <select id="getLastTime" resultType="com.center.medical.appadmin.bean.dto.GetLastTimeDto">
+        SELECT
+            pa.phone as userMobile,
+            max(p.dateregister) as lastTime,
+            count(p.id) as number
+        FROM
+            md_peispatientarchive pa
+                left join md_peispatient p on pa.patientarchiveno = p.patientarchiveno
+        <where>
+            p.f_registered = 1
+            <if test="phones!=null">
+                AND pa.phone IN
+                <foreach collection="phones" item="phone" open="(" close=")" separator=",">
+                    #{phone}
+                </foreach>
+            </if>
+        </where>
+        group by pa.phone
+    </select>
+</mapper>
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.CustomercommunicateMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Customercommunicate" id="CustomercommunicateMap">
+        <id property="id" column="id"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="khlxdh" column="khlxdh"/>
+        <result property="sctjksrq" column="sctjksrq"/>
+        <result property="gtjg" column="gtjg"/>
+        <result property="gtrq" column="gtrq"/>
+        <result property="xcgtrq" column="xcgtrq"/>
+        <result property="bcgtfs" column="bcgtfs"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="bz" column="bz"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCustomercommunicateVo">
+        select id,
+               khdwmc,
+               khlxdh,
+               sctjksrq,
+               gtjg,
+               gtrq,
+               xcgtrq,
+               bcgtfs,
+               xsjl,
+               bz,
+               xsjlid,
+               fzxid,
+               createdate,
+               modifydate
+        from crm_customercommunicate
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CustomercommunicateMap">
+        SELECT
+            this_.id,
+            this_.createdate,
+            this_.modifydate,
+            this_.bcgtfs,
+            this_.bz,
+            this_.fzxid,
+            this_.gtjg,
+            this_.gtrq,
+            this_.khdwmc,
+            this_.khlxdh,
+            this_.sctjksrq,
+            this_.xcgtrq,
+            this_.xsjl,
+            this_.xsjlid
+        FROM
+            crm_customercommunicate this_
+        <where>
+            1 = 1
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND this_.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.khlxdh!=null and param.khlxdh!=''">
+                AND this_.khlxdh like concat('%',#{param.khlxdh},'%')
+            </if>
+            <if test="param.gtrq!=null">
+                AND STR_TO_DATE(this_.gtrq,'%Y-%m-%d') = STR_TO_DATE(#{param.gtrq},'%Y-%m-%d')
+            </if>
+            <if test="param.xcgtrq!=null">
+                AND STR_TO_DATE(this_.xcgtrq,'%Y-%m-%d') = STR_TO_DATE(#{param.xcgtrq},'%Y-%m-%d')
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND this_.xsjl like concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND this_.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND this_.fzxid = #{param.fzxid}
+            </if>
+        </where>
+        ORDER BY this_.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CustomercommunicateMap">
+        <include refid="selectCustomercommunicateVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

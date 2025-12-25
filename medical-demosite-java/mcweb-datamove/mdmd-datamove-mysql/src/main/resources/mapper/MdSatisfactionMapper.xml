@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdSatisfactionMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdSatisfaction" id="MdSatisfactionMap">
+        <id property="id" column="id"/>
+        <result property="divisionReceptionist" column="division_receptionist"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="appraiseResult" column="appraise_result"/>
+        <result property="visitResult" column="visit_result"/>
+        <result property="appraiseTime" column="appraise_time"/>
+        <result property="personcode" column="personcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isVerySatisfy" column="is_very_satisfy"/>
+        <result property="note" column="note"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="visitPerson" column="visit_person"/>
+        <result property="visitNote" column="visit_note"/>
+        <result property="secondResult" column="second_result"/>
+        <result property="secondNote" column="second_note"/>
+        <result property="secondPerson" column="second_person"/>
+        <result property="secondTime" column="second_time"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="patientname" column="patientname"/>
+        <result property="visitText" column="visit_text"/>
+        <result property="ksDoctorId" column="ks_doctor_id"/>
+        <result property="satisfactionLevel" column="satisfaction_level"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="consultId" column="consult_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSatisfactionVo">
+        select id,
+               division_receptionist,
+               division_id,
+               doctor_id,
+               appraise_result,
+               visit_result,
+               appraise_time,
+               personcode,
+               createdate,
+               modifydate,
+               is_very_satisfy,
+               note,
+               visit_time,
+               visit_person,
+               visit_note,
+               second_result,
+               second_note,
+               second_person,
+               second_time,
+               is_delete,
+               patientname,
+               visit_text,
+               ks_doctor_id,
+               satisfaction_level,
+               source_type,
+               user_id,
+               consult_id
+        from md_satisfaction
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSatisfactionMap">
+        <include refid="selectMdSatisfactionVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSatisfactionMap">
+        <include refid="selectMdSatisfactionVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

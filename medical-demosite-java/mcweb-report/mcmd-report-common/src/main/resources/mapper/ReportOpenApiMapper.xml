@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.ReportOpenApiMapper">
+    <select id="selectPatientcodeList" resultType="string">
+        select
+            distinct c.patientcode
+        from
+            md_report_content c
+        where
+            c.report_type=5
+        <if test="param.startDate!=null">
+            and c.create_time <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            and c.create_time <![CDATA[ <= ]]> DATE_ADD(#{param.endDate}, INTERVAL 1 DAY)
+        </if>
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND exists(select 1 from md_peispatient p where p.patientcode=c.patientcode and p.org_name LIKE concat('%',#{param.orgName},'%') )
+        </if>
+        order by c.patientcode desc
+    </select>
+</mapper>

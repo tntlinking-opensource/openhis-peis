@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.EveryPhysicalMapper">
+
+
+    <sql id="a">
+        (
+        SELECT
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS ymd,
+        count(*) AS djzrs,
+        sum( CASE WHEN p.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS djgrrs,
+        sum( CASE WHEN p.f_examstarted = 1 THEN 1 ELSE 0 END ) AS kszrs,
+        sum( CASE WHEN p.f_examstarted = 1 AND p.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS ksgrrs,
+        sum( pcm.moneyamountpaid) as djzje,
+        sum( CASE WHEN p.f_examstarted = 1 THEN pcm.moneyamountpaid ELSE 0 END ) AS kszje
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm on pcm.patientcode = p.patientcode
+        WHERE
+        p.f_registered = 1
+        <if test="param.startTime!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY ymd
+        ) a
+    </sql>
+
+    <sql id="b">
+        (
+        SELECT
+        str_to_date ( s.total_time, '%Y-%m-%d' ) AS ymdb,
+        sum( CASE WHEN s.disease_health = 0 AND p1.jktjzt >= 1 THEN 1 ELSE 0 END ) AS jkzjrs,
+        sum( CASE WHEN s.disease_health = 0 AND p1.jktjzt >= 1 THEN pcm.moneyamountpaid ELSE 0 END ) AS jkzjje,
+        sum( CASE WHEN s.disease_health = 0 AND p1.jktjzt >= 1 AND p1.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS jkgrrs,
+        sum( CASE WHEN s.disease_health = 1 AND p1.zytjzt >= 1 THEN 1 ELSE 0 END ) AS zyzjrs,
+        sum( CASE WHEN s.disease_health = 1 AND p1.zytjzt >= 1 THEN pcm.moneyamountpaid ELSE 0 END ) AS zyzjje,
+        sum( CASE WHEN s.disease_health = 1 AND p1.zytjzt >= 1 AND p1.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS zygrrs
+        FROM
+        md_peispatient p1
+        INNER JOIN md_section_total s ON s.patientcode = p1.patientcode
+        LEFT JOIN md_peispatient_charge_main pcm on pcm.patientcode = p1.patientcode
+        WHERE
+        1 = 1
+        <if test="param.startTime!=null">
+            AND s.total_time <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND s.total_time <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY ymdb
+        ) b
+    </sql>
+
+    <sql id="c">
+        (
+        SELECT
+        str_to_date ( r.get_time, '%Y-%m-%d' ) AS ymdc,
+        sum( CASE WHEN r.disease_health = 0 THEN 1 ELSE 0 END ) AS jklqrs,
+        sum( CASE WHEN r.disease_health = 0 THEN pcm.moneyamountpaid ELSE 0 END ) AS jklqje,
+        sum( CASE WHEN r.disease_health = 0 AND p2.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS jkgrlqrs,
+        sum( CASE WHEN r.disease_health = 1 THEN 1 ELSE 0 END ) AS zylqrs,
+        sum( CASE WHEN r.disease_health = 1 THEN pcm.moneyamountpaid ELSE 0 END ) AS zylqje,
+        sum( CASE WHEN r.disease_health = 1 AND p2.f_usecodehiden = 0 THEN 1 ELSE 0 END ) AS zygrlqrs
+        FROM
+        md_report r
+        INNER JOIN md_peispatient p2 ON p2.patientcode = r.patientcode
+        LEFT JOIN md_peispatient_charge_main pcm on pcm.patientcode = p2.patientcode
+        WHERE
+        r.STATUS = 11
+        <if test="param.startTime!=null">
+            AND r.get_time <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND r.get_time <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        GROUP BY ymdc
+        ) c
+    </sql>
+
+
+    <sql id="d">
+        (CASE WHEN a.ymd IS NOT NULL THEN a.ymd
+            WHEN b.ymdb IS NOT NULL THEN b.ymdb ELSE c.ymdc END) AS date,
+            IFNULL(a.djzrs,0)AS registAll,
+            IFNULL(a.djzje,0)AS registAllMoney,
+            IFNULL(a.djgrrs ,0) AS regitsPersonal,
+            IFNULL((a.djzrs - a.djgrrs),0) AS regitsOrg,
+            IFNULL(a.kszrs,0) AS startAll,
+            IFNULL(a.kszje,0) AS startAllMoney,
+            IFNULL(a.ksgrrs,0) AS startPersonal,
+            IFNULL((a.kszrs - a.ksgrrs),0) AS startOrg,
+            IFNULL(b.jkzjrs ,0)AS jkzjAll,
+            IFNULL(b.jkzjje ,0)AS jkzjMoney,
+            IFNULL(b.jkgrrs ,0)AS jkzjPersonal,
+            IFNULL((b.jkzjrs - b.jkgrrs),0) AS jkzjOrg,
+            IFNULL(b.zyzjrs ,0) AS zyzjMoney,
+            IFNULL(b.zyzjje ,0) AS zyzjAll,
+            IFNULL(b.zygrrs,0) AS zyzjPersonal,
+            IFNULL((b.zyzjrs - b.zygrrs),0) AS zyzjOrg,
+            IFNULL(c.jklqrs,0) AS jklqAll,
+            IFNULL(c.jklqje,0) AS jklqMoney,
+            IFNULL(c.jkgrlqrs,0) AS jklqPersonal,
+            IFNULL((c.jklqrs - c.jkgrlqrs),0) AS jklqOrg,
+            IFNULL(c.zylqrs,0) AS zylqAll,
+            IFNULL(c.zylqje,0) AS zylqMoney,
+            IFNULL(c.zygrlqrs,0) AS zylqPersonal,
+            IFNULL((c.zylqrs - c.zygrlqrs),0) AS zylqOrg
+    </sql>
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.EveryPhysicalVo">
+        SELECT DISTINCT *
+        FROM (
+        SELECT
+            <include refid="d"></include>
+        FROM
+            <include refid="a"></include>
+        LEFT JOIN
+            <include refid="b"></include>
+            ON a.ymd = b.ymdb
+        LEFT JOIN
+            <include refid="c"></include>
+            ON a.ymd = c.ymdc
+
+        UNION
+        SELECT
+            <include refid="d"></include>
+        FROM
+            <include refid="a"></include>
+        RIGHT JOIN
+            <include refid="b"></include>
+            ON a.ymd = b.ymdb
+        LEFT JOIN
+            <include refid="c"></include>
+            ON b.ymdb = c.ymdc
+        WHERE a.ymd IS NULL
+
+        UNION
+        SELECT
+            <include refid="d"></include>
+        FROM
+            <include refid="a"></include>
+        RIGHT JOIN
+            <include refid="c"></include>
+            ON a.ymd = c.ymdc
+        LEFT JOIN
+            <include refid="b"></include>
+            ON c.ymdc = b.ymdb
+        WHERE
+            a.ymd IS NULL
+            AND b.ymdb IS NULL
+        ) AS t
+        ORDER BY date Desc
+    </select>
+
+    <!-- 导出列表数据 -->
+    <select id="exportData" resultType="com.center.medical.statistics.bean.vo.EveryPhysicalVo">
+        SELECT DISTINCT *
+        FROM (
+        SELECT
+        <include refid="d"></include>
+        FROM
+        <include refid="a"></include>
+        LEFT JOIN
+        <include refid="b"></include>
+        ON a.ymd = b.ymdb
+        LEFT JOIN
+        <include refid="c"></include>
+        ON a.ymd = c.ymdc
+
+        UNION
+        SELECT
+        <include refid="d"></include>
+        FROM
+        <include refid="a"></include>
+        RIGHT JOIN
+        <include refid="b"></include>
+        ON a.ymd = b.ymdb
+        LEFT JOIN
+        <include refid="c"></include>
+        ON b.ymdb = c.ymdc
+        WHERE a.ymd IS NULL
+
+        UNION
+        SELECT
+        <include refid="d"></include>
+        FROM
+        <include refid="a"></include>
+        RIGHT JOIN
+        <include refid="c"></include>
+        ON a.ymd = c.ymdc
+        LEFT JOIN
+        <include refid="b"></include>
+        ON c.ymdc = b.ymdb
+        WHERE
+        a.ymd IS NULL
+        AND b.ymdb IS NULL
+        ) AS t
+        ORDER BY date
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getTotal3" resultType="com.center.medical.statistics.bean.vo.EPTotalVo">
+        SELECT
+            IFNULL(sum( CASE WHEN r.disease_health = 0 THEN 1 ELSE 0 END ),0)AS jklqAll,
+            IFNULL(sum( CASE WHEN r.disease_health = 0 AND p2.f_usecodehiden = 0 THEN 1 ELSE 0 END ),0) AS jklqPersonal,
+            IFNULL(sum( CASE WHEN r.disease_health = 1 THEN 1 ELSE 0 END ),0) AS zylqAll,
+            IFNULL(sum( CASE WHEN r.disease_health = 1 AND p2.f_usecodehiden = 0 THEN 1 ELSE 0 END ),0) AS zylqPersonal
+        FROM
+            md_report r
+                INNER JOIN md_peispatient p2 ON p2.patientcode = r.patientcode
+        <where>
+            r.STATUS = 11
+            <if test="param.startTime!=null">
+                AND r.get_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.get_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getTotal1" resultType="com.center.medical.statistics.bean.vo.EPTotalVo">
+        SELECT
+        count(*) AS registAll,
+        IFNULL(sum( CASE WHEN p.f_usecodehiden = 0 THEN 1 ELSE 0 END ),0) AS regitsPersonal,
+        IFNULL(sum( CASE WHEN p.f_examstarted = 1 THEN 1 ELSE 0 END ),0) AS startAll,
+        IFNULL(sum( CASE WHEN p.f_examstarted = 1 AND p.f_usecodehiden = 0 THEN 1 ELSE 0 END ),0) AS startPersonal
+        FROM
+        md_peispatient p
+        <where>
+            p.f_registered = 1
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getTotal2" resultType="com.center.medical.statistics.bean.vo.EPTotalVo">
+        SELECT
+        IFNULL(sum( CASE WHEN s.disease_health = 0 AND p1.jktjzt >= 1 THEN 1 ELSE 0 END ),0) AS jkzjAll,
+        IFNULL(sum( CASE WHEN s.disease_health = 0 AND p1.jktjzt >= 1 AND p1.f_usecodehiden = 0 THEN 1 ELSE 0 END ) ,0)AS jkzjPersonal,
+        IFNULL(sum( CASE WHEN s.disease_health = 1 AND p1.zytjzt >= 1 THEN 1 ELSE 0 END ) ,0)AS zyzjAll,
+        IFNULL(sum( CASE WHEN s.disease_health = 1 AND p1.zytjzt >= 1 AND p1.f_usecodehiden = 0 THEN 1 ELSE 0 END ),0) AS zyzjPersonal
+        FROM
+            md_peispatient p1
+                INNER JOIN md_section_total s ON s.patientcode = p1.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND s.total_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND s.total_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+</mapper>
+

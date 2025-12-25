@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.center.medical.sellcrm.dao.RecheckePrintMapper">
+
+
+        <!-- 数据表字段属性 -->
+        <sql id="selectReviewVo">
+            select id, patientcode, date_from, date_to, callback_station, user_id, notice_of_proceeding_text, createdate, modifydate, is_delete, id_org, review_pdf            from md_review
+        </sql>
+
+        <!-- 查询列表数据 -->
+        <select id="getList" resultType="com.center.medical.sellcrm.bean.vo.RecheckePrintVo">
+            SELECT
+                m.*,
+                p.patientname,
+                p.idcardno,
+                p.id_sex,
+                p.age,
+                ms.khdwmc AS orgName
+            FROM
+                md_review m
+                    LEFT JOIN md_peispatient p ON p.patientcode = m.patientcode
+                    LEFT JOIN crm_sellcustomer ms ON ms.id = m.id_org
+            <where>
+                <if test="param.patientcode!=null and param.patientcode!=''">
+                    AND m.patientcode like concat('%',#{param.patientcode},'%')
+                </if>
+                <if test="param.startTime!=null">
+                    AND m.date_to <![CDATA[ >= ]]> #{param.startTime}
+                </if>
+                <if test="param.endTime!=null">
+                    AND m.date_to <![CDATA[ <= ]]> #{param.endTime}
+                </if>
+                <if test="param.idOrg!=null and param.idOrg!=''">
+                    AND m.id_org = #{param.idOrg}
+                </if>
+            </where>
+        </select>
+
+                <!-- 根据主键id获取记录详情 -->
+        <select id="getInfoById" resultType="com.center.medical.bean.model.Review">
+            <include refid="selectReviewVo"/>
+            <where>
+                id = #{id}
+            </where>
+        </select>
+        
+    </mapper>
+

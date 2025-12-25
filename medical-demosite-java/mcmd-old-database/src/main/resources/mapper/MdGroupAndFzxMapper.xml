@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdGroupAndFzxMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdGroupAndFzx" id="MdGroupAndFzxMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="groupId" column="group_id"/>
+        <result property="fzxId" column="fzx_id"/>
+        <result property="xzzt" column="xzzt"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdGroupAndFzxVo">
+        select id, createdate, modifydate, group_id, fzx_id, xzzt
+        from md_group_and_fzx
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdGroupAndFzxMap">
+        <include refid="selectMdGroupAndFzxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdGroupAndFzxMap">
+        <include refid="selectMdGroupAndFzxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

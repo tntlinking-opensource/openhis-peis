@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.CardMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Card" id="CardMap">
+        <id property="id" column="ID"/>
+        <result property="cardNo" column="CARD_NO"/>
+        <result property="balanceLimit" column="BALANCE_LIMIT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="sellId" column="SELL_ID"/>
+        <result property="sellTime" column="SELL_TIME"/>
+        <result property="validity" column="VALIDITY"/>
+        <result property="cardState" column="CARD_STATE"/>
+        <result property="memo" column="MEMO"/>
+        <result property="getterId" column="GETTER_ID"/>
+        <result property="getTime" column="GET_TIME"/>
+        <result property="grantId" column="GRANT_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="cardPrefix" column="CARD_PREFIX"/>
+        <result property="cardLogo" column="CARD_LOGO"/>
+        <result property="balanceJf" column="BALANCE_JF"/>
+        <result property="payId" column="PAY_ID"/>
+        <result property="skMoney" column="SK_MONEY"/>
+        <result property="isDeletea" column="IS_DELETEA"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="tel" column="TEL"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="tcId" column="TC_ID"/>
+        <result property="balanceMoney" column="BALANCE_MONEY"/>
+        <result property="tcDateregister" column="TC_DATEREGISTER"/>
+        <result property="tcPatientcode" column="TC_PATIENTCODE"/>
+        <result property="tcChecked" column="TC_CHECKED"/>
+        <result property="recheckMoney" column="RECHECK_MONEY"/>
+        <result property="sellStatus" column="SELL_STATUS"/>
+        <result property="tcPrice" column="TC_PRICE"/>
+        <result property="sellPrice" column="SELL_PRICE"/>
+        <result property="purchaser" column="PURCHASER"/>
+        <result property="phone" column="PHONE"/>
+        <result property="zk" column="ZK"/>
+        <result property="processId" column="PROCESS_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardVo">
+        select ID,
+               CARD_NO,
+               BALANCE_LIMIT,
+               CREATEDATE,
+               CREATE_ID,
+               MODIFYDATE,
+               MODIFY_ID,
+               TYPE_ID,
+               SELL_ID,
+               SELL_TIME,
+               VALIDITY,
+               CARD_STATE,
+               MEMO,
+               GETTER_ID,
+               GET_TIME,
+               GRANT_ID,
+               IS_DELETE,
+               CARD_PREFIX,
+               CARD_LOGO,
+               BALANCE_JF,
+               PAY_ID,
+               SK_MONEY,
+               IS_DELETEA,
+               PASSWORD,
+               TEL,
+               ORDER_ID,
+               TC_ID,
+               BALANCE_MONEY,
+               TC_DATEREGISTER,
+               TC_PATIENTCODE,
+               TC_CHECKED,
+               RECHECK_MONEY,
+               SELL_STATUS,
+               TC_PRICE,
+               SELL_PRICE,
+               PURCHASER,
+               PHONE,
+               ZK,
+               PROCESS_ID
+        from CARD
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CardMap">
+        <include refid="selectCardVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CardMap">
+        <include refid="selectCardVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

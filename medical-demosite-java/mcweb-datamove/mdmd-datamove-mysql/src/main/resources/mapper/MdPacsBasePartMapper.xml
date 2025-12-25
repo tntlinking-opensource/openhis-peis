@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPacsBasePartMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPacsBasePart" id="MdPacsBasePartMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="partName" column="part_name"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="partSort" column="part_sort"/>
+        <result property="pid" column="pid"/>
+        <result property="enName" column="en_name"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPacsBasePartVo">
+        select id,
+               createdate,
+               modifydate,
+               part_name,
+               input_code,
+               part_sort,
+               pid,
+               en_name
+        from md_pacs_base_part
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPacsBasePartMap">
+        <include refid="selectMdPacsBasePartVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPacsBasePartMap">
+        <include refid="selectMdPacsBasePartVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

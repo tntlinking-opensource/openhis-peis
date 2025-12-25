@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PacsItemsMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.PacsItems" id="PacsItemsMap">
+        <id property="id" column="ID"/>
+        <result property="basexamltemId" column="BASEXAMLTEM_ID"/>
+        <result property="sysmanmark" column="SYSMANMARK"/>
+        <result property="keyexamfeeitem" column="KEYEXAMFEEITEM"/>
+        <result property="examfeeitemName" column="EXAMFEEITEM_NAME"/>
+        <result property="examfeeitemNameabr" column="EXAMFEEITEM_NAMEABR"/>
+        <result property="examfeeitemNameprn" column="EXAMFEEITEM_NAMEPRN"/>
+        <result property="examfeeitemNameeng" column="EXAMFEEITEM_NAMEENG"/>
+        <result property="examfeeitemNameengabr" column="EXAMFEEITEM_NAMEENGABR"/>
+        <result property="examfeeitemCode" column="EXAMFEEITEM_CODE"/>
+        <result property="examfeeitemCode2" column="EXAMFEEITEM_CODE2"/>
+        <result property="examfeeitemCode3" column="EXAMFEEITEM_CODE3"/>
+        <result property="examfeeitemCodehm" column="EXAMFEEITEM_CODEHM"/>
+        <result property="examfeeitemCodex" column="EXAMFEEITEM_CODEX"/>
+        <result property="examfeeitemFeecode" column="EXAMFEEITEM_FEECODE"/>
+        <result property="examfeeitemFeecodesub" column="EXAMFEEITEM_FEECODESUB"/>
+        <result property="examfeeitemPricecode" column="EXAMFEEITEM_PRICECODE"/>
+        <result property="examfeeitemPricecodesub" column="EXAMFEEITEM_PRICECODESUB"/>
+        <result property="examfeeitemHisname" column="EXAMFEEITEM_HISNAME"/>
+        <result property="examfeeitemClass" column="EXAMFEEITEM_CLASS"/>
+        <result property="idReportitem" column="ID_REPORTITEM"/>
+        <result property="xXxdm" column="X_XXDM"/>
+        <result property="fDiscountdisabled" column="F_DISCOUNTDISABLED"/>
+        <result property="fMaxoffpercentlimited" column="F_MAXOFFPERCENTLIMITED"/>
+        <result property="maxoffpercent" column="MAXOFFPERCENT"/>
+        <result property="unitprice" column="UNITPRICE"/>
+        <result property="suiteprice" column="SUITEPRICE"/>
+        <result property="specialprice" column="SPECIALPRICE"/>
+        <result property="foreignprice" column="FOREIGNPRICE"/>
+        <result property="preferprice" column="PREFERPRICE"/>
+        <result property="innerprice" column="INNERPRICE"/>
+        <result property="materialprice" column="MATERIALPRICE"/>
+        <result property="costprice" column="COSTPRICE"/>
+        <result property="coopprice" column="COOPPRICE"/>
+        <result property="idCooporg" column="ID_COOPORG"/>
+        <result property="exampoint" column="EXAMPOINT"/>
+        <result property="xDepartcode" column="X_DEPARTCODE"/>
+        <result property="idDepart" column="ID_DEPART"/>
+        <result property="departName" column="DEPART_NAME"/>
+        <result property="xYbdm" column="X_YBDM"/>
+        <result property="idGuidesheetgroup" column="ID_GUIDESHEETGROUP"/>
+        <result property="idGuidesheetgroupsub" column="ID_GUIDESHEETGROUPSUB"/>
+        <result property="guidesheetgroupset" column="GUIDESHEETGROUPSET"/>
+        <result property="guidesheetgroupsetdisporder" column="GUIDESHEETGROUPSETDISPORDER"/>
+        <result property="idLabtype" column="ID_LABTYPE"/>
+        <result property="labtypeR" column="LABTYPE_R"/>
+        <result property="labtypeSub" column="LABTYPE_SUB"/>
+        <result property="guidesheelabtypeset" column="GUIDESHEELABTYPESET"/>
+        <result property="guidesheelabtypesetdisporder" column="GUIDESHEELABTYPESETDISPORDER"/>
+        <result property="hisopendepartname" column="HISOPENDEPARTNAME"/>
+        <result property="hisopendepartcode" column="HISOPENDEPARTCODE"/>
+        <result property="hisexecdepartname" column="HISEXECDEPARTNAME"/>
+        <result property="hisexecdepartcode" column="HISEXECDEPARTCODE"/>
+        <result property="hisexecworkgroupname" column="HISEXECWORKGROUPNAME"/>
+        <result property="hisexecworkgroupcode" column="HISEXECWORKGROUPCODE"/>
+        <result property="hisexecworkstationname" column="HISEXECWORKSTATIONNAME"/>
+        <result property="hisexecworkstationcode" column="HISEXECWORKSTATIONCODE"/>
+        <result property="hisexecworkbenchname" column="HISEXECWORKBENCHNAME"/>
+        <result property="hisexecworkbenchcode" column="HISEXECWORKBENCHCODE"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="inputcodeb" column="INPUTCODEB"/>
+        <result property="inputcodec" column="INPUTCODEC"/>
+        <result property="inputcoded" column="INPUTCODED"/>
+        <result property="inputcodee" column="INPUTCODEE"/>
+        <result property="fReportalone" column="F_REPORTALONE"/>
+        <result property="fMale" column="F_MALE"/>
+        <result property="fFemale" column="F_FEMALE"/>
+        <result property="fAlert" column="F_ALERT"/>
+        <result property="warningmsg" column="WARNINGMSG"/>
+        <result property="fAutovip" column="F_AUTOVIP"/>
+        <result property="fNonexam" column="F_NONEXAM"/>
+        <result property="fIsdrug" column="F_ISDRUG"/>
+        <result property="fIsforask" column="F_ISFORASK"/>
+        <result property="fHideinguidesheet" column="F_HIDEINGUIDESHEET"/>
+        <result property="breakfastorder" column="BREAKFASTORDER"/>
+        <result property="fDisabled" column="F_DISABLED"/>
+        <result property="fInvisible" column="F_INVISIBLE"/>
+        <result property="disporder" column="DISPORDER"/>
+        <result property="note" column="NOTE"/>
+        <result property="idClassoffeeitem" column="ID_CLASSOFFEEITEM"/>
+        <result property="idClassofreceipt" column="ID_CLASSOFRECEIPT"/>
+        <result property="idClassofaccount" column="ID_CLASSOFACCOUNT"/>
+        <result property="idFeeitemclass2" column="ID_FEEITEMCLASS2"/>
+        <result property="idFeeitemclass3" column="ID_FEEITEMCLASS3"/>
+        <result property="lookupwarning" column="LOOKUPWARNING"/>
+        <result property="guidesheetcode" column="GUIDESHEETCODE"/>
+        <result property="limitedinexamplaceidlist" column="LIMITEDINEXAMPLACEIDLIST"/>
+        <result property="fQtysettable" column="F_QTYSETTABLE"/>
+        <result property="fDoctorbyfeeitem" column="F_DOCTORBYFEEITEM"/>
+        <result property="fDosplitting" column="F_DOSPLITTING"/>
+        <result property="specification" column="SPECIFICATION"/>
+        <result property="measureunit" column="MEASUREUNIT"/>
+        <result property="numpricelistneeded" column="NUMPRICELISTNEEDED"/>
+        <result property="numpricelistincomplete" column="NUMPRICELISTINCOMPLETE"/>
+        <result property="numusedfordeveloper" column="NUMUSEDFORDEVELOPER"/>
+        <result property="fDontupdate" column="F_DONTUPDATE"/>
+        <result property="fDontupdatepricedetail" column="F_DONTUPDATEPRICEDETAIL"/>
+        <result property="fComparereport" column="F_COMPAREREPORT"/>
+        <result property="fGuidesheetbackupsingleitem" column="F_GUIDESHEETBACKUPSINGLEITEM"/>
+        <result property="dtLastautoinsert" column="DT_LASTAUTOINSERT"/>
+        <result property="dtLastautoupdate" column="DT_LASTAUTOUPDATE"/>
+        <result property="dtLastautoupdatedetail" column="DT_LASTAUTOUPDATEDETAIL"/>
+        <result property="jz" column="JZ"/>
+        <result property="sfxmsrm" column="SFXMSRM"/>
+        <result property="xmdymc" column="XMDYMC"/>
+        <result property="dydfz" column="DYDFZ"/>
+        <result property="xh" column="XH"/>
+        <result property="dyddybs" column="DYDDYBS"/>
+        <result property="zk" column="ZK"/>
+        <result property="txjg" column="TXJG"/>
+        <result property="wbjg" column="WBJG"/>
+        <result property="ydjg" column="YDJG"/>
+        <result property="nbj" column="NBJ"/>
+        <result property="zybm" column="ZYBM"/>
+        <result property="yblx" column="YBLX"/>
+        <result property="dlbs" column="DLBS"/>
+        <result property="yblxmc" column="YBLXMC"/>
+        <result property="fylx" column="FYLX"/>
+        <result property="jcyy" column="JCYY"/>
+        <result property="cx" column="CX"/>
+        <result property="yblxid" column="YBLXID"/>
+        <result property="tjlx" column="TJLX"/>
+        <result property="xb" column="XB"/>
+        <result property="bs" column="BS"/>
+        <result property="bz" column="BZ"/>
+        <result property="bgdybs" column="BGDYBS"/>
+        <result property="xsdyfl" column="XSDYFL"/>
+        <result property="ldrq" column="LDRQ"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="reviewMatters" column="REVIEW_MATTERS"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="jccs" column="JCCS"/>
+        <result property="examfeeitemid" column="EXAMFEEITEMID"/>
+        <result property="isPublic" column="IS_PUBLIC"/>
+        <result property="fzxIds" column="FZX_IDS"/>
+        <result property="perUpperLimit" column="PER_UPPER_LIMIT"/>
+        <result property="preUpperLimit" column="PRE_UPPER_LIMIT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPacsItemsVo">
+        select ID,
+               BASEXAMLTEM_ID,
+               SYSMANMARK,
+               KEYEXAMFEEITEM,
+               EXAMFEEITEM_NAME,
+               EXAMFEEITEM_NAMEABR,
+               EXAMFEEITEM_NAMEPRN,
+               EXAMFEEITEM_NAMEENG,
+               EXAMFEEITEM_NAMEENGABR,
+               EXAMFEEITEM_CODE,
+               EXAMFEEITEM_CODE2,
+               EXAMFEEITEM_CODE3,
+               EXAMFEEITEM_CODEHM,
+               EXAMFEEITEM_CODEX,
+               EXAMFEEITEM_FEECODE,
+               EXAMFEEITEM_FEECODESUB,
+               EXAMFEEITEM_PRICECODE,
+               EXAMFEEITEM_PRICECODESUB,
+               EXAMFEEITEM_HISNAME,
+               EXAMFEEITEM_CLASS,
+               ID_REPORTITEM,
+               X_XXDM,
+               F_DISCOUNTDISABLED,
+               F_MAXOFFPERCENTLIMITED,
+               MAXOFFPERCENT,
+               UNITPRICE,
+               SUITEPRICE,
+               SPECIALPRICE,
+               FOREIGNPRICE,
+               PREFERPRICE,
+               INNERPRICE,
+               MATERIALPRICE,
+               COSTPRICE,
+               COOPPRICE,
+               ID_COOPORG,
+               EXAMPOINT,
+               X_DEPARTCODE,
+               ID_DEPART,
+               DEPART_NAME,
+               X_YBDM,
+               ID_GUIDESHEETGROUP,
+               ID_GUIDESHEETGROUPSUB,
+               GUIDESHEETGROUPSET,
+               GUIDESHEETGROUPSETDISPORDER,
+               ID_LABTYPE,
+               LABTYPE_R,
+               LABTYPE_SUB,
+               GUIDESHEELABTYPESET,
+               GUIDESHEELABTYPESETDISPORDER,
+               HISOPENDEPARTNAME,
+               HISOPENDEPARTCODE,
+               HISEXECDEPARTNAME,
+               HISEXECDEPARTCODE,
+               HISEXECWORKGROUPNAME,
+               HISEXECWORKGROUPCODE,
+               HISEXECWORKSTATIONNAME,
+               HISEXECWORKSTATIONCODE,
+               HISEXECWORKBENCHNAME,
+               HISEXECWORKBENCHCODE,
+               INPUT_CODE,
+               INPUTCODEB,
+               INPUTCODEC,
+               INPUTCODED,
+               INPUTCODEE,
+               F_REPORTALONE,
+               F_MALE,
+               F_FEMALE,
+               F_ALERT,
+               WARNINGMSG,
+               F_AUTOVIP,
+               F_NONEXAM,
+               F_ISDRUG,
+               F_ISFORASK,
+               F_HIDEINGUIDESHEET,
+               BREAKFASTORDER,
+               F_DISABLED,
+               F_INVISIBLE,
+               DISPORDER,
+               NOTE,
+               ID_CLASSOFFEEITEM,
+               ID_CLASSOFRECEIPT,
+               ID_CLASSOFACCOUNT,
+               ID_FEEITEMCLASS2,
+               ID_FEEITEMCLASS3,
+               LOOKUPWARNING,
+               GUIDESHEETCODE,
+               LIMITEDINEXAMPLACEIDLIST,
+               F_QTYSETTABLE,
+               F_DOCTORBYFEEITEM,
+               F_DOSPLITTING,
+               SPECIFICATION,
+               MEASUREUNIT,
+               NUMPRICELISTNEEDED,
+               NUMPRICELISTINCOMPLETE,
+               NUMUSEDFORDEVELOPER,
+               F_DONTUPDATE,
+               F_DONTUPDATEPRICEDETAIL,
+               F_COMPAREREPORT,
+               F_GUIDESHEETBACKUPSINGLEITEM,
+               DT_LASTAUTOINSERT,
+               DT_LASTAUTOUPDATE,
+               DT_LASTAUTOUPDATEDETAIL,
+               JZ,
+               SFXMSRM,
+               XMDYMC,
+               DYDFZ,
+               XH,
+               DYDDYBS,
+               ZK,
+               TXJG,
+               WBJG,
+               YDJG,
+               NBJ,
+               ZYBM,
+               YBLX,
+               DLBS,
+               YBLXMC,
+               FYLX,
+               JCYY,
+               CX,
+               YBLXID,
+               TJLX,
+               XB,
+               BS,
+               BZ,
+               BGDYBS,
+               XSDYFL,
+               LDRQ,
+               CREATEDATE,
+               MODIFYDATE,
+               REVIEW_MATTERS,
+               IS_DELETE,
+               JCCS,
+               EXAMFEEITEMID,
+               IS_PUBLIC,
+               FZX_IDS,
+               PER_UPPER_LIMIT,
+               PRE_UPPER_LIMIT
+        from PACS_ITEMS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PacsItemsMap">
+        <include refid="selectPacsItemsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PacsItemsMap">
+        <include refid="selectPacsItemsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

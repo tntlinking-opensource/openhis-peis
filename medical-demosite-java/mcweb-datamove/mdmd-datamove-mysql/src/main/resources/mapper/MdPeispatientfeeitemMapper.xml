@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPeispatientfeeitemMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPeispatientfeeitem" id="MdPeispatientfeeitemMap">
+        <id property="id" column="id"/>
+        <result property="idPatientfeeitem" column="id_patientfeeitem"/>
+        <result property="idPatient" column="id_patient"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+        <result property="examfeeitemName" column="examfeeitem_name"/>
+        <result property="price" column="price"/>
+        <result property="factprice" column="factprice"/>
+        <result property="settleprice" column="settleprice"/>
+        <result property="fAddeditem" column="f_addeditem"/>
+        <result property="idPayway" column="id_payway"/>
+        <result property="fRegistered" column="f_registered"/>
+        <result property="idDoctorreg" column="id_doctorreg"/>
+        <result property="doctorregR" column="doctorreg_r"/>
+        <result property="registertime" column="registertime"/>
+        <result property="idPatientregistersheet" column="id_patientregistersheet"/>
+        <result property="fRegreturned" column="f_regreturned"/>
+        <result property="fFeecharged" column="f_feecharged"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="feechargerNameR" column="feecharger_name_r"/>
+        <result property="feechargetime" column="feechargetime"/>
+        <result property="idFeediscounter" column="id_feediscounter"/>
+        <result property="batchnumber" column="batchnumber"/>
+        <result property="tubeposition" column="tubeposition"/>
+        <result property="samplenumber" column="samplenumber"/>
+        <result property="fLabsampled" column="f_labsampled"/>
+        <result property="idLabsampler" column="id_labsampler"/>
+        <result property="labsamplerNameR" column="labsampler_name_r"/>
+        <result property="labsampletime" column="labsampletime"/>
+        <result property="fLabsendtolis" column="f_labsendtolis"/>
+        <result property="labsendtolistime" column="labsendtolistime"/>
+        <result property="fLabrcvdfromlis" column="f_labrcvdfromlis"/>
+        <result property="labrcvdfromlistime" column="labrcvdfromlistime"/>
+        <result property="fGiveup" column="f_giveup"/>
+        <result property="fExaminated" column="f_examinated"/>
+        <result property="idPatientexamdepart" column="id_patientexamdepart"/>
+        <result property="idExamdoctor" column="id_examdoctor"/>
+        <result property="examdoctorNameR" column="examdoctor_name_r"/>
+        <result property="examinatetime" column="examinatetime"/>
+        <result property="fMarkFeereturn" column="f_mark_feereturn"/>
+        <result property="fWorkInnerModify" column="f_work_inner_modify"/>
+        <result property="severedegree" column="severedegree"/>
+        <result property="positivesummary" column="positivesummary"/>
+        <result property="interfacemarks" column="interfacemarks"/>
+        <result property="urlresult" column="urlresult"/>
+        <result property="fDelayed" column="f_delayed"/>
+        <result property="dtDelayedtill" column="dt_delayedtill"/>
+        <result property="notewhydelayed" column="notewhydelayed"/>
+        <result property="idExamplace" column="id_examplace"/>
+        <result property="fTransferedhl7" column="f_transferedhl7"/>
+        <result property="qty" column="qty"/>
+        <result property="feeitemdesc" column="feeitemdesc"/>
+        <result property="feeitemsummary" column="feeitemsummary"/>
+        <result property="idTypist" column="id_typist"/>
+        <result property="idExamapprovedby" column="id_examapprovedby"/>
+        <result property="examapprovedbyNameR" column="examapprovedby_name_r"/>
+        <result property="samplenumberfromlis" column="samplenumberfromlis"/>
+        <result property="samplemsgfromlis" column="samplemsgfromlis"/>
+        <result property="receiptsheetnofromhis" column="receiptsheetnofromhis"/>
+        <result property="feeitemrequestno" column="feeitemrequestno"/>
+        <result property="samplestatus" column="samplestatus"/>
+        <result property="backupsingleitemcopiesprinted" column="backupsingleitemcopiesprinted"/>
+        <result property="fFeechargedinttrans" column="f_feechargedinttrans"/>
+        <result property="giveupnotelet" column="giveupnotelet"/>
+        <result property="createDate" column="create_date"/>
+        <result property="sfjx" column="sfjx"/>
+        <result property="jxys" column="jxys"/>
+        <result property="idKs" column="id_ks"/>
+        <result property="count" column="count"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="changeItem" column="change_item"/>
+        <result property="isMintc" column="is_mintc"/>
+        <result property="isbx" column="isbx"/>
+        <result property="bxcount" column="bxcount"/>
+        <result property="endtuiprice" column="endtuiprice"/>
+        <result property="actualprice" column="actualprice"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="qjr" column="qjr"/>
+        <result property="bjr" column="bjr"/>
+        <result property="cjr" column="cjr"/>
+        <result property="qjsj" column="qjsj"/>
+        <result property="bjsj" column="bjsj"/>
+        <result property="cjsj" column="cjsj"/>
+        <result property="sfjj" column="sfjj"/>
+        <result property="jjr" column="jjr"/>
+        <result property="jjsj" column="jjsj"/>
+        <result property="jjrqm" column="jjrqm"/>
+        <result property="itemGroup" column="item_group"/>
+        <result property="adiconCode" column="adicon_code"/>
+        <result property="chargeId" column="charge_id"/>
+        <result property="tradeNo" column="trade_no"/>
+        <result property="isconfirm" column="isconfirm"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPeispatientfeeitemVo">
+        select id,
+               id_patientfeeitem,
+               id_patient,
+               id_examfeeitem,
+               examfeeitem_name,
+               price,
+               factprice,
+               settleprice,
+               f_addeditem,
+               id_payway,
+               f_registered,
+               id_doctorreg,
+               doctorreg_r,
+               registertime,
+               id_patientregistersheet,
+               f_regreturned,
+               f_feecharged,
+               id_feecharger,
+               feecharger_name_r,
+               feechargetime,
+               id_feediscounter,
+               batchnumber,
+               tubeposition,
+               samplenumber,
+               f_labsampled,
+               id_labsampler,
+               labsampler_name_r,
+               labsampletime,
+               f_labsendtolis,
+               labsendtolistime,
+               f_labrcvdfromlis,
+               labrcvdfromlistime,
+               f_giveup,
+               f_examinated,
+               id_patientexamdepart,
+               id_examdoctor,
+               examdoctor_name_r,
+               examinatetime,
+               f_mark_feereturn,
+               f_work_inner_modify,
+               severedegree,
+               positivesummary,
+               interfacemarks,
+               urlresult,
+               f_delayed,
+               dt_delayedtill,
+               notewhydelayed,
+               id_examplace,
+               f_transferedhl7,
+               qty,
+               feeitemdesc,
+               feeitemsummary,
+               id_typist,
+               id_examapprovedby,
+               examapprovedby_name_r,
+               samplenumberfromlis,
+               samplemsgfromlis,
+               receiptsheetnofromhis,
+               feeitemrequestno,
+               samplestatus,
+               backupsingleitemcopiesprinted,
+               f_feechargedinttrans,
+               giveupnotelet,
+               create_date,
+               sfjx,
+               jxys,
+               id_ks,
+               count,
+               createdate,
+               modifydate,
+               change_item,
+               is_mintc,
+               isbx,
+               bxcount,
+               endtuiprice,
+               actualprice,
+               short_code,
+               qjr,
+               bjr,
+               cjr,
+               qjsj,
+               bjsj,
+               cjsj,
+               sfjj,
+               jjr,
+               jjsj,
+               jjrqm,
+               item_group,
+               adicon_code,
+               charge_id,
+               trade_no,
+               isconfirm
+        from md_peispatientfeeitem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPeispatientfeeitemMap">
+        <include refid="selectMdPeispatientfeeitemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPeispatientfeeitemMap">
+        <include refid="selectMdPeispatientfeeitemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

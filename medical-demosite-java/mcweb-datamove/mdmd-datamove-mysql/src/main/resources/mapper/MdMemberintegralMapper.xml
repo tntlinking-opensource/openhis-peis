@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdMemberintegralMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdMemberintegral" id="MdMemberintegralMap">
+        <id property="id" column="id"/>
+        <result property="cardId" column="card_id"/>
+        <result property="cardType" column="card_type"/>
+        <result property="limit" column="limit"/>
+        <result property="memotext" column="memotext"/>
+        <result property="createdate" column="createdate"/>
+        <result property="operationId" column="operation_id"/>
+        <result property="isAdd" column="is_add"/>
+        <result property="operationTime" column="operation_time"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="payMode" column="pay_mode"/>
+        <result property="handleIntegral" column="handle_integral"/>
+        <result property="branchCenter" column="branch_center"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="memberName" column="member_name"/>
+        <result property="patientcode" column="patientcode"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdMemberintegralVo">
+        select id,
+               card_id,
+               card_type,
+               limit,
+               memotext,
+               createdate,
+               operation_id,
+               is_add,
+               operation_time,
+               modifydate,
+               pay_mode,
+               handle_integral,
+               branch_center,
+               is_delete,
+               member_name,
+               patientcode
+        from md_memberintegral
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdMemberintegralMap">
+        <include refid="selectMdMemberintegralVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdMemberintegralMap">
+        <include refid="selectMdMemberintegralVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

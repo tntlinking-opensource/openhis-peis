@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SectionResultMainMapper">
+
+    <resultMap type="com.center.medical.abteilung.bean.model.SectionResultMain" id="SectionResultMainMap">
+        <id property="id" column="id"/>
+        <result property="depId" column="dep_id"/>
+        <result property="rummagerId" column="rummager_id"/>
+        <result property="writeId" column="write_id"/>
+        <result property="rummagerTime" column="rummager_time"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isAudit" column="is_audit"/>
+        <result property="auditId" column="audit_id"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="isDanager" column="is_danager"/>
+        <result property="danagerLevel" column="danager_level"/>
+        <result property="conclusions" column="conclusions"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="auditName" column="audit_name"/>
+        <result property="rummagerName" column="rummager_name"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="isFinish" column="is_finish"/>
+        <result property="zyConclusions" column="zy_conclusions"/>
+        <result property="associativeTable" column="associative_table"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="fileType" column="file_type"/>
+        <result property="filePath" column="file_path"/>
+        <result property="pacsConclusions" column="pacs_conclusions"/>
+        <result property="zyPacsConclusions" column="zy_pacs_conclusions"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionResultMainVo">
+        select id,
+               dep_id,
+               rummager_id,
+               write_id,
+               rummager_time,
+               write_time,
+               createdate,
+               modifydate,
+               is_audit,
+               audit_id,
+               audit_time,
+               is_danager,
+               danager_level,
+               conclusions,
+               is_delete,
+               audit_name,
+               rummager_name,
+               patientcode,
+               is_finish,
+               zy_conclusions,
+               associative_table,
+               short_code,
+               file_type,
+               file_path,
+               pacs_conclusions,
+               zy_pacs_conclusions
+        from md_section_result_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SectionResultMainMap">
+        <include refid="selectSectionResultMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionResultMainMap">
+        <include refid="selectSectionResultMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!--根据体检号获取检查结果-->
+    <select id="getHealthSummarize" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        SELECT s.conclusions,
+        d.dept_name
+        FROM md_section_result_main s
+        INNER JOIN sys_dept d ON d.dept_no = s.dep_id
+        <where>
+            s.is_audit=1
+            <if test="patientCode!=null and patientCode!=''">
+                AND s.patientcode=#{patientCode}
+            </if>
+        </where>
+        ORDER BY d.report_sort
+    </select>
+
+
+    <!--根据体检号获取检查结果-->
+    <select id="findResultmain" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        SELECT
+        s.*
+        FROM
+        md_section_result_main s
+        INNER JOIN sys_dept d ON d.dept_no = s.dep_id
+        <where>
+            s.is_audit=1
+            <if test="patientCode!=null and patientCode!=''">
+                AND s.patientcode=#{patientCode}
+            </if>
+        </where>
+        ORDER BY
+        <if test="sort!=null and sort == 1">
+            (case when d.dept_no = '19' then 0 else 1 end),
+        </if>
+        d.report_sort
+    </select>
+
+
+    <!--查询只出现有职业项目的科室-->
+    <select id="findOccupation" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        SELECT DISTINCT m.*,
+        d.report_sort
+        FROM md_section_result_main m
+        INNER JOIN sys_dept d ON d.dept_no = m.dep_id
+        INNER JOIN md_peispatientfeeitem p ON p.id_patient = m.patientcode
+        AND p.id_ks = m.dep_id
+        AND p.f_examinated = 1
+        LEFT JOIN md_inspect_charge ic ON ic.charge_id = p.id_examfeeitem
+        AND ic.is_delete = 0
+        LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+        AND e.is_delete = 0
+        WHERE m.patientcode = #{patientcode}
+        AND ((
+        SELECT count(*)
+        FROM md_comboexamitem c
+        WHERE
+        1 = 1
+        AND c.harm_id IN
+        <choose>
+            <when test="harmstr != null">
+                <foreach collection="harmstr" item="harm" open="(" close=")" separator=",">
+                    #{harm}
+                </foreach>
+            </when>
+            <otherwise>
+                (null)
+            </otherwise>
+        </choose>
+        AND c.medical_type = #{medicaltype}
+        AND c.item_id = p.id_examfeeitem
+        ) > 0
+        OR ((
+        SELECT count(*)
+        FROM md_comboexamitem c2
+        WHERE
+        1 = 1
+        AND c2.harm_id IN
+        <choose>
+            <when test="harmstr != null">
+                <foreach collection="harmstr" item="harm" open="(" close=")" separator=",">
+                    #{harm}
+                </foreach>
+            </when>
+            <otherwise>
+                (null)
+            </otherwise>
+        </choose>
+        AND c2.medical_type = #{medicaltype}
+        AND c2.exam_id = e.id
+        ) > 0
+        )
+        )
+    </select>
+
+
+    <!--获取上次在本科室体检的小结-->
+    <select id="getArchiveData" resultType="string">
+        SELECT m.conclusions
+        FROM md_section_result_main m
+                 INNER JOIN md_peispatient p ON p.patientcode = m.patientcode
+        WHERE m.dep_id = #{ksid}
+          AND m.is_audit = 1
+          AND p.patientcode != #{patientcode}
+          AND p.patientarchiveno =(
+            SELECT
+            patientarchiveno
+            FROM
+            md_peispatient p2
+            WHERE
+            p2.patientcode = #{patientcode}
+            )
+        ORDER BY
+            p.dateregister DESC
+            limit 1
+    </select>
+
+
+    <!--查询科室报告数据-->
+    <select id="departmentReport" resultType="com.center.medical.abteilung.bean.dto.DepartmentReportDto">
+        SELECT s.audit_time,
+               s.audit_name,
+               s.rummager_name,
+               conclusions,
+               u1.sign_pic AS auditSignPic,
+               u2.sign_pic AS rummagerSignPic
+        FROM md_section_result_main s
+                 LEFT JOIN sys_user u1 ON u1.user_no = s.audit_id
+                 LEFT JOIN sys_user u2 ON u2.user_no = s.rummager_id
+        WHERE s.patientcode = #{patientcode}
+          AND dep_id = #{ksID}
+    </select>
+
+
+
+    <!--查询科室报告数据-->
+    <select id="getAdiconGridData" resultType="com.center.medical.abteilung.bean.vo.AdiconGridDataVo">
+        select e.id,
+               i.examfeeitem_name,
+               e.examitem_name,
+               e.examitem_code3
+        from md_peispatientfeeitem f
+        inner join md_items i on i.id = f.id_examfeeitem
+        inner join md_inspect_charge c on c.charge_id = i.id
+        and c.is_delete = 0
+        inner join md_basexamltem e on e.id = c.inspect_id
+        LEFT JOIN md_yblx y ON i.id_labtype = y.id
+        <where>
+            f.id_patient = #{patientCode}
+            and f.id_ks = '19'
+            and f.f_feecharged = '1'
+            and f.f_transferedhl7 is null
+            and f.sfjj = '0'
+            and f.f_giveup = '0'
+            and f.change_item = '0'
+            and y.name = '外送'
+        </where>
+    </select>
+
+
+
+    <!--查询科室报告数据-->
+    <select id="haveOutwardDelivery" resultType="com.center.medical.abteilung.bean.vo.AdiconGridDataVo">
+        select e.id,
+        i.examfeeitem_name,
+        e.examitem_name,
+        e.examitem_code3
+        from md_peispatientfeeitem f
+        inner join md_items i on i.id = f.id_examfeeitem
+        inner join md_inspect_charge c on c.charge_id = i.id
+        and c.is_delete = 0
+        inner join md_basexamltem e on e.id = c.inspect_id
+        LEFT JOIN md_yblx y ON i.id_labtype = y.id
+        <where>
+            f.id_patient = #{patientCode}
+            and f.id_ks = '19'
+            and f.f_feecharged = '1'
+            and f.f_transferedhl7 is null
+            and f.sfjj = '0'
+            and f.f_giveup = '0'
+            and f.change_item = '0'
+            and e.expressionoccudisease = '1'
+            and e.examitem_code3 is not null
+        </where>
+    </select>
+
+
+
+    <!--查询科室报告数据-->
+    <select id="getNotGenerated" resultType="java.lang.String">
+        SELECT
+            pf.id_ks
+        FROM
+            md_peispatientfeeitem pf
+            LEFT JOIN md_section_result_main srm ON srm.patientcode = pf.id_patient
+            and srm.dep_id = pf.id_ks
+        <where>
+            pf.id_patient = #{patientCode}
+          AND f_examinated = 1
+          AND pf.f_feecharged = 1
+          AND pf.f_giveup = 0
+          AND pf.sfjj = 0
+          AND pf.change_item = 0
+          AND pf.f_transferedhl7 IS NULL
+          AND pf.id_ks in ('143','24','171','173','402848e3625a920201625ff99a3404a5')
+          AND ( srm.id IS NULL OR srm.is_audit IS NULL OR srm.is_audit = 0 )
+        </where>
+        group by pf.id_ks
+    </select>
+</mapper>
+

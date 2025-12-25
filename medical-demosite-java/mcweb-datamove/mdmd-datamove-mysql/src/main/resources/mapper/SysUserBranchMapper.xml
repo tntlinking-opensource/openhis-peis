@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.SysUserBranchMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.SysUserBranch" id="SysUserBranchMap">
+        <id property="id" column="id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysUserBranchVo">
+        select id, branch_id, user_id, createdate, modifydate
+        from sys_user_branch
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysUserBranchMap">
+        <include refid="selectSysUserBranchVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysUserBranchMap">
+        <include refid="selectSysUserBranchVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

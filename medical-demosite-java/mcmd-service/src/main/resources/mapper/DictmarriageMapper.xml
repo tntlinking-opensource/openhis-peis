@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.DictmarriageMapper">
+
+    <resultMap type="com.center.medical.bean.model.Dictmarriage" id="DictmarriageMap">
+        <id property="id" column="id"/>
+        <result property="keymarriage" column="keymarriage"/>
+        <result property="marriageName" column="marriage_name"/>
+        <result property="marriageCode" column="marriage_code"/>
+        <result property="marriageCode2" column="marriage_code2"/>
+        <result property="marriageCode3" column="marriage_code3"/>
+        <result property="marriageCodehm" column="marriage_codehm"/>
+        <result property="marriageCodex" column="marriage_codex"/>
+        <result property="fHasmarried" column="f_hasmarried"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="note" column="note"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDictmarriageVo">
+        select id,
+               keymarriage,
+               marriage_name,
+               marriage_code,
+               marriage_code2,
+               marriage_code3,
+               marriage_codehm,
+               marriage_codex,
+               f_hasmarried,
+               input_code,
+               note,
+               createdate,
+               modifydate,
+               status
+        from md_dictmarriage
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="DictmarriageMap">
+        <include refid="selectDictmarriageVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DictmarriageMap">
+        <include refid="selectDictmarriageVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

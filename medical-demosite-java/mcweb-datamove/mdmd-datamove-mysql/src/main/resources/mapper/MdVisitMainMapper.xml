@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdVisitMainMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdVisitMain" id="MdVisitMainMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="isInspect" column="is_inspect"/>
+        <result property="inspectTime" column="inspect_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isInspected" column="is_inspected"/>
+        <result property="type" column="type"/>
+        <result property="note" column="note"/>
+        <result property="belowquestion" column="belowquestion"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdVisitMainVo">
+        select id,
+               patientcode,
+               is_inspect,
+               inspect_time,
+               createdate,
+               modifydate,
+               is_inspected,
+               type,
+               note,
+               belowquestion,
+               is_delete,
+               id_examfeeitem
+        from md_visit_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdVisitMainMap">
+        <include refid="selectMdVisitMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdVisitMainMap">
+        <include refid="selectMdVisitMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

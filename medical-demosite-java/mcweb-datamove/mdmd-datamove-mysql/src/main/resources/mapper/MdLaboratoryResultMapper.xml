@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdLaboratoryResultMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdLaboratoryResult" id="MdLaboratoryResultMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="projectsId" column="projects_id"/>
+        <result property="lisCode" column="lis_code"/>
+        <result property="projects" column="projects"/>
+        <result property="intensiveLevel" column="intensive_level"/>
+        <result property="projectsResult" column="projects_result"/>
+        <result property="isNormal" column="is_normal"/>
+        <result property="unit" column="unit"/>
+        <result property="resultUpper" column="result_upper"/>
+        <result property="resultFloor" column="result_floor"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="inspectCode" column="inspect_code"/>
+        <result property="inspectTime" column="inspect_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdLaboratoryResultVo">
+        select id,
+               patientcode,
+               create_id,
+               modify_id,
+               projects_id,
+               lis_code,
+               projects,
+               intensive_level,
+               projects_result,
+               is_normal,
+               unit,
+               result_upper,
+               result_floor,
+               doctor_id,
+               inspect_code,
+               inspect_time,
+               createdate,
+               modifydate
+        from md_laboratory_result
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdLaboratoryResultMap">
+        <include refid="selectMdLaboratoryResultVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdLaboratoryResultMap">
+        <include refid="selectMdLaboratoryResultVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+
