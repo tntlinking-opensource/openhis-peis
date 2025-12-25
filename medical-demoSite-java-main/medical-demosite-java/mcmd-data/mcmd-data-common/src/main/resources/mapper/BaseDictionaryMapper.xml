@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.center.medical.data.dao.BaseDictionaryMapper">
+
+        <resultMap type="com.center.medical.data.bean.model.BaseDictionary" id="BaseDictionaryMap">
+            <id property="id" column="id"/>
+            <result property="createdate" column="createdate"/>
+            <result property="modifydate" column="modifydate"/>
+            <result property="dictionaryType" column="dictionary_type"/>
+            <result property="dictionaryCode" column="dictionary_code"/>
+            <result property="dictionaryName" column="dictionary_name"/>
+            <result property="isDelete" column="is_delete"/>
+            <result property="medicalCode" column="medical_code"/>
+            <result property="shandongCode" column="shandong_code"/>
+            <result property="qingdaoCode" column="qingdao_code"/>
+            <result property="changshaCode" column="changsha_code"/>
+        </resultMap>
+
+        <!-- 数据表字段属性 -->
+    <sql id="selectBaseDictionaryVo">
+        select id, createdate, modifydate, dictionary_type, dictionary_code, dictionary_name, is_delete, medical_code, shandong_code, qingdao_code, changsha_code            from base_dictionary
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="BaseDictionaryMap">
+        <include refid="selectBaseDictionaryVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BaseDictionaryMap">
+        SELECT
+            BS.DICTIONARY_CODE,
+            BS.DICTIONARY_NAME
+        FROM
+            BASE_DICTIONARY_MATCH BDM
+            LEFT JOIN BASE_DICTIONARY BS ON BDM.DICTIONARY_ID = BS.ID
+        <where>
+            1 = 1
+            <if test="id!=null and id!=''">
+                AND BDM.MEDICAL_ID = #{id}
+            </if>
+            <if test="id!=null and id!=''">
+                AND BS.DICTIONARY_TYPE = #{classCode}
+            </if>
+        </where>
+    </select>
+
+    <!--获取classCode为308的数据-->
+    <select id="getOurDictionary308" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT
+            BEL.ID as bdid,
+            BEL.examitem_name as mc,
+            QD.dept_name as ks,
+            ( CASE WHEN BD.DICTIONARY_TYPE = '308' THEN BD.DICTIONARY_CODE ELSE NULL END ) as zddm,
+            ( CASE WHEN BD.DICTIONARY_TYPE = '308' THEN BD.DICTIONARY_NAME ELSE NULL END ) as zdmc
+        FROM md_basexamltem BEL
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID = BEL.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID = BD.ID
+        LEFT JOIN sys_dept QD ON BEL.DIVISION_ID = QD.dept_no
+        WHERE
+            BEL.IS_DELETE = 0
+            AND BEL.TYPE IN ( 1, 2 )
+            AND (
+                BD.DICTIONARY_TYPE = '308'
+                OR NOT EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                            INNER JOIN BASE_DICTIONARY BD2 ON BDM2.DICTIONARY_ID = BD2.ID
+                            AND BD2.DICTIONARY_TYPE = '308'
+                    WHERE
+                        BDM2.MEDICAL_ID = bel.ID
+                ))
+          AND EXISTS ( SELECT 1 FROM md_comboexamitem CEI WHERE CEI.EXAM_ID = BEL.ID )
+        <if test="param.srm!=null and param.srm!=''">
+            AND  BEL.INPUT_CODE LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND BEL.EXAMITEM_NAME like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+            IF( BD.DICTIONARY_TYPE = 308, 1, 0 ),
+            BD.DICTIONARY_TYPE ASC,
+            BEL.EXAMITEM_NAME ASC
+    </select>
+
+
+    <!--获取classCode为312的数据-->
+    <select id="getOurDictionary312" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT H.ID as bdid ,
+                        H.HARM_NAME as mc,
+        (CASE WHEN BD.DICTIONARY_TYPE='312' THEN BD.DICTIONARY_CODE ELSE NULL END) as zddm,
+        (CASE WHEN BD.DICTIONARY_TYPE='312' THEN BD.DICTIONARY_NAME ELSE NULL END) as zdmc
+        FROM md_harm H
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID  =H.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID=BD.ID
+        WHERE H.IS_DELETE=0
+          AND(
+                BD.DICTIONARY_TYPE='312'
+                OR  NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                            INNER JOIN
+                        BASE_DICTIONARY BD2
+                        ON   BDM2.DICTIONARY_ID=BD2.ID
+                            AND BD2.DICTIONARY_TYPE='312'
+                    WHERE
+                        BDM2.MEDICAL_ID=h.ID
+                )
+            )
+        <if test="param.srm!=null and param.srm!=''">
+            AND  H.INPUT_CODE LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND H.HARM_NAME like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+        IF( BD.DICTIONARY_TYPE = 312, 1, 0 ),
+        BD.DICTIONARY_TYPE ASC,
+        H.HARM_NAME asc
+    </select>
+
+
+    <!--获取classCode为310的数据-->
+    <select id="getOurDictionary310" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT OS.ID as bdid,
+                        OS.SYMPTOM as mc,
+                     (CASE WHEN BD.DICTIONARY_TYPE='310' THEN BD.DICTIONARY_CODE ELSE NULL END) as zddm,
+                     (CASE WHEN BD.DICTIONARY_TYPE='310' THEN BD.DICTIONARY_NAME ELSE NULL END) as zdmc
+        FROM md_occupation_symptom OS
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID  =OS.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID=BD.ID
+        WHERE OS.IS_DELETE=0
+          AND(
+                BD.DICTIONARY_TYPE='310'
+                OR  NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                        INNER JOIN BASE_DICTIONARY BD2
+                        ON   BDM2.DICTIONARY_ID=BD2.ID
+                        AND BD2.DICTIONARY_TYPE='310'
+                    WHERE
+                        BDM2.MEDICAL_ID=os.ID
+                )
+            )
+        <if test="param.srm!=null and param.srm!=''">
+            AND  OS.INPUT_CODE LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND OS.SYMPTOM like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+            IF( BD.DICTIONARY_TYPE = 310, 1, 0 ),
+            BD.DICTIONARY_TYPE ASC,
+            OS.SYMPTOM ASC
+    </select>
+
+
+    <!--获取classCode为313的数据-->
+    <select id="getOurDictionary313" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT ZVS.ID as bdid,
+                     ZVS.DIAGNOSIS as mc,
+                     (CASE WHEN BD.DICTIONARY_TYPE='313' THEN BD.DICTIONARY_CODE ELSE NULL END) as zddm,
+                     (CASE WHEN BD.DICTIONARY_TYPE='313' THEN BD.DICTIONARY_NAME ELSE NULL END) as zdmc,
+                     ZVS.REGIMENTATION_NOTE as tjlb,
+                     H.HARM_NAME as whys,
+                     ZS.OCCUPATION_SUMMARY as jcjl
+        FROM md_zy_vs_summary ZVS
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID  =ZVS.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID=BD.ID
+        LEFT JOIN md_harm H ON H.ID=ZVS.OCCUPATION_DIAGNOSIS
+        LEFT JOIN md_zy_summary ZS ON ZS.ID=ZVS.OCCUPATION_SUMMARY
+        WHERE
+            ZVS.IS_DELETE=0
+          AND(
+                BD.DICTIONARY_TYPE='313'
+                OR  NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                            INNER JOIN
+                        BASE_DICTIONARY BD2
+                        ON   BDM2.DICTIONARY_ID=BD2.ID
+                            AND BD2.DICTIONARY_TYPE='313'
+                    WHERE
+                        BDM2.MEDICAL_ID=zvs.ID
+                )
+            )
+          AND ZVS.OCCUPATION_SUMMARY='4'
+        <if test="param.srm!=null and param.srm!=''">
+            AND  ZVS.INPUT_CODE LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND ZVS.DIAGNOSIS like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+            IF( BD.DICTIONARY_TYPE = 310, 1, 0 ),
+            BD.DICTIONARY_TYPE ASC,
+            ZVS.DIAGNOSIS ASC
+    </select>
+
+
+    <!--获取classCode为314的数据-->
+    <select id="getOurDictionary314" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT ZVS.ID as bdid,
+                        OD.occupation_diseast as mc,
+                     (CASE WHEN BD.DICTIONARY_TYPE='314' THEN BD.DICTIONARY_CODE ELSE NULL END) as zddm,
+                     (CASE WHEN BD.DICTIONARY_TYPE='314' THEN BD.DICTIONARY_NAME ELSE NULL END) as zdmc,
+                     ZVS.REGIMENTATION_NOTE as tjlb,
+                     H.HARM_NAME as whys,
+                     ZS.OCCUPATION_SUMMARY as jcjl
+        FROM md_zy_vs_summary ZVS
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID  =ZVS.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID=BD.ID
+        LEFT JOIN md_harm H ON H.ID=ZVS.OCCUPATION_DIAGNOSIS
+        LEFT JOIN md_zy_summary ZS ON ZS.ID=ZVS.OCCUPATION_SUMMARY
+        LEFT JOIN md_occupation_diseast OD ON OD.ID = ZVS.OCCUPATION_DISEAST
+        WHERE ZVS.IS_DELETE=0
+          AND(
+                BD.DICTIONARY_TYPE='314'
+                OR  NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                        INNER JOIN BASE_DICTIONARY BD2
+                        ON   BDM2.DICTIONARY_ID=BD2.ID
+                        AND BD2.DICTIONARY_TYPE='314'
+                    WHERE
+                        BDM2.MEDICAL_ID=zvs.ID
+                )
+            )
+          AND ZVS.OCCUPATION_SUMMARY='3'
+        <if test="param.srm!=null and param.srm!=''">
+            AND  ZVS.INPUT_CODE LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND OD.OCCUPATION_DISEAST like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+            IF( BD.DICTIONARY_TYPE = 314, 1, 0 ),
+            BD.DICTIONARY_TYPE ASC,
+            OD.OCCUPATION_DISEAST is null
+
+    </select>
+
+
+    <!--获取classCode为323的数据-->
+    <select id="getOurDictionary323" resultType="com.center.medical.data.bean.vo.BaseDictionaryVo">
+        SELECT DISTINCT  I.ID as bdid,
+                      I.EXAMFEEITEM_NAME as mc,
+                      (CASE WHEN BD.DICTIONARY_TYPE='323' THEN BD.DICTIONARY_CODE ELSE NULL END) as zddm,
+                      (CASE WHEN BD.DICTIONARY_TYPE='323' THEN BD.DICTIONARY_NAME ELSE NULL END) as zdmc,
+                      QD.name as ks
+        FROM md_items I
+        LEFT JOIN BASE_DICTIONARY_MATCH BDM ON BDM.MEDICAL_ID = I.ID
+        LEFT JOIN BASE_DICTIONARY BD ON BDM.DICTIONARY_ID = BD.ID
+        LEFT JOIN sys_department QD ON I.ID_DEPART = QD.id
+        WHERE
+            I.IS_DELETE=0
+          AND I.TJLX IN('1','2' )
+          AND(
+                BD.DICTIONARY_TYPE='323'
+                or NOT EXISTS(
+                    SELECT
+                        1
+                    FROM
+                        BASE_DICTIONARY_MATCH BDM2
+                        INNER JOIN BASE_DICTIONARY BD2
+                        ON BDM2.DICTIONARY_ID=BD2.ID
+                        AND BD2.DICTIONARY_TYPE='323'
+                    WHERE
+                        BDM2.MEDICAL_ID=I.ID
+                )
+            )
+          AND EXISTS(
+                SELECT
+                    1
+                FROM
+                    md_comboexamitem CEI
+                WHERE
+                    CEI.ITEM_ID=I.ID
+            )
+        <if test="param.srm!=null and param.srm!=''">
+            AND  I.SFXMSRM LIKE concat('%',#{param.srm},'%')
+        </if>
+        <if test="param.mz!=null and param.mz!=''">
+            AND I.EXAMFEEITEM_NAME like concat('%',#{param.mz},'%')
+        </if>
+        ORDER BY
+            IF( BD.DICTIONARY_TYPE = 323, 1, 0 ),
+            BD.DICTIONARY_TYPE ASC,
+            I.EXAMFEEITEM_NAME ASC
+
+
+    </select>
+
+
+
+
+    <!--获取经济类型-->
+    <select id="getEconomyCode" resultType="com.center.medical.data.bean.vo.EconomyCodeVo">
+        SELECT
+            dictionary_code AS economyCode,
+            dictionary_name AS economyName
+        FROM
+            base_dictionary
+        WHERE
+            is_delete = 0
+          AND dictionary_type = '316'
+        ORDER BY
+            dictionary_name
+    </select>
+
+
+    <!--获取经济类型-->
+    <select id="getCrptSizeCode" resultType="com.center.medical.data.bean.vo.CrptSizeCodeVo">
+        SELECT
+            dictionary_code AS crptSizeCode,
+            dictionary_name AS crptSizeName
+        FROM
+            base_dictionary
+        WHERE
+            is_delete = 0
+          AND dictionary_type = '317'
+        ORDER BY
+            dictionary_code
+    </select>
+</mapper>
+

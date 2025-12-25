@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.PaPeissortexamMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.PaPeissortexam" id="PaPeissortexamMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="areaId" column="area_id"/>
+        <result property="sortNum" column="sort_num"/>
+        <result property="sortDate" column="sort_date"/>
+        <result property="isOpen" column="is_open"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPaPeissortexamVo">
+        select id,
+               createdate,
+               modifydate,
+               branch_id,
+               area_id,
+               sort_num,
+               sort_date,
+               is_open
+        from md_pa_peissortexam ppe
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.data.bean.model.PaPeissortexam">
+        select ppe.id,
+        ppe.createdate,
+        ppe.modifydate,
+        ppe.branch_id,
+        ppe.area_id,
+        ppe.sort_num,
+        ppe.sort_date,
+        ppe.is_open,
+        sb.fzx
+        from md_pa_peissortexam ppe
+        LEFT JOIN sys_branch sb ON sb.branch_id = ppe.branch_id
+        <where>
+            <if test="param.branchIds!=null">
+                AND ppe.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.startTime!=null">
+                AND ppe.sort_date <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND ppe.sort_date <![CDATA[ < ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PaPeissortexamMap">
+        <include refid="selectPaPeissortexamVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

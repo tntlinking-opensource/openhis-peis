@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrPeispatientarchiveMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPeispatientarchiveVo">
+        select id,
+               id_patientarchive,
+               patientarchiveno,
+               patientcardno,
+               idcardno,
+               patientname,
+               input_code,
+               id_sex,
+               sex,
+               age,
+               agebasedate,
+               birthdate,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               phone,
+               id_education,
+               education,
+               id_occupation,
+               occupation,
+               id_resarea,
+               resarea,
+               dateregister,
+               note,
+               ishmd,
+               hmdbz,
+               restatus,
+               yjgzbj,
+               memberlevel,
+               createdate,
+               modifydate,
+               cultural,
+               is_org,
+               membercreate,
+               khjl,
+               jf,
+               fzx,
+               dw,
+               is_delete,
+               countreportoccupationxml,
+               is_main,
+               source,
+               old_card
+        from peispatientarchive
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.olddata.bean.model.OrPeispatientarchive">
+        <include refid="selectMdPeispatientarchiveVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.olddata.bean.model.OrPeispatientarchive">
+        select *
+        from peispatientarchive
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

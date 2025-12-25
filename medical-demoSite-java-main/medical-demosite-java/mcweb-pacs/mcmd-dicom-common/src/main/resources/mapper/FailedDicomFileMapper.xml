@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dicom.dao.FailedDicomFileMapper">
+
+    <resultMap type="com.center.medical.dicom.bean.model.FailedDicomFile" id="FailedDicomFileMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="jklx" column="jklx"/>
+        <result property="bodyPart" column="body_part"/>
+        <result property="fileName" column="file_name"/>
+        <result property="remark" column="remark"/>
+        <result property="rkey" column="rkey"/>
+        <result property="createTime" column="create_time"/>
+        <result property="isProcessed" column="is_processed"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFailedDicomFileVo">
+        select id,
+               patientcode,
+               jklx,
+               body_part,
+               file_name,
+               remark,
+               rkey,
+               create_time,
+               is_processed,
+               update_time
+        from md_failed_dicom_file
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FailedDicomFileMap">
+        <include refid="selectFailedDicomFileVo"/>
+        <where>
+            is_processed=0
+            <if test="param.jklx!=null and param.jklx!=''">and jklx = #{param.jklx}</if>
+            <if test="param.bodyPart!=null and param.bodyPart!=''">and body_part = #{param.bodyPart}</if>
+            <if test="param.patientcode!=null and param.patientcode!=''">and patientcode like
+                concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND create_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND create_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FailedDicomFileMap">
+        <include refid="selectFailedDicomFileVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>

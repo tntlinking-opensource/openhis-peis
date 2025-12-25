@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.GroupBalanceMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.GroupBalance" id="GroupBalanceMap">
+        <id property="id" column="ID"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="typeId" column="TYPE_ID"/>
+        <result property="realityMoney" column="REALITY_MONEY"/>
+        <result property="prepaidAmount" column="PREPAID_AMOUNT"/>
+        <result property="getterId" column="GETTER_ID"/>
+        <result property="getterTime" column="GETTER_TIME"/>
+        <result property="memo" column="MEMO"/>
+        <result property="isSquare" column="IS_SQUARE"/>
+        <result property="returnMoney" column="RETURN_MONEY"/>
+        <result property="groupId" column="GROUP_ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="shouldMoney" column="SHOULD_MONEY"/>
+        <result property="cardId" column="CARD_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectGroupBalanceVo">
+        select ID,
+               ORDER_ID,
+               TYPE_ID,
+               REALITY_MONEY,
+               PREPAID_AMOUNT,
+               GETTER_ID,
+               GETTER_TIME,
+               MEMO,
+               IS_SQUARE,
+               RETURN_MONEY,
+               GROUP_ID,
+               CREATEDATE,
+               MODIFYDATE,
+               SHOULD_MONEY,
+               CARD_ID
+        from GROUP_BALANCE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="GroupBalanceMap">
+        <include refid="selectGroupBalanceVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="GroupBalanceMap">
+        <include refid="selectGroupBalanceVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ItemRelatedInformationMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ItemRelatedInformation"
+               id="ItemRelatedInformationMap">
+        <result property="modifyDate" column="MODIFY_DATE"/>
+        <id property="id" column="ID"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="baseItemId" column="BASE_ITEM_ID"/>
+        <result property="itemCode" column="ITEM_CODE"/>
+        <result property="baseItemCode" column="BASE_ITEM_CODE"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="baseItemName" column="BASE_ITEM_NAME"/>
+        <result property="ksId" column="KS_ID"/>
+        <result property="interfaceKsCode" column="INTERFACE_KS_CODE"/>
+        <result property="interfaceItemCode" column="INTERFACE_ITEM_CODE"/>
+        <result property="interfaceName" column="INTERFACE_NAME"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="createdate" column="CREATEDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectItemRelatedInformationVo">
+        select MODIFY_DATE,
+               ID,
+               CREATE_DATE,
+               ITEM_ID,
+               BASE_ITEM_ID,
+               ITEM_CODE,
+               BASE_ITEM_CODE,
+               ITEM_NAME,
+               BASE_ITEM_NAME,
+               KS_ID,
+               INTERFACE_KS_CODE,
+               INTERFACE_ITEM_CODE,
+               INTERFACE_NAME,
+               MODIFYDATE,
+               CREATEDATE
+        from ITEM_RELATED_INFORMATION
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ItemRelatedInformationMap">
+        <include refid="selectItemRelatedInformationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ItemRelatedInformationMap">
+        <include refid="selectItemRelatedInformationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

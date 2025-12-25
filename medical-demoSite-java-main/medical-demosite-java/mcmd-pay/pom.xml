@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>medical-center</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-pay</artifactId>
+
+    <description>第三方支付模块</description>
+    <dependencies>
+        <!--        <dependency>-->
+        <!--            <groupId>com.center.medical</groupId>-->
+        <!--            <artifactId>mcmd-common</artifactId>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-system-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-miniapp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-bean</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.center.medical</groupId>-->
+<!--            <artifactId>mcmd-pay-util</artifactId>-->
+<!--            <version>1.0.0</version>-->
+<!--        </dependency>-->
+    </dependencies>
+
+</project>

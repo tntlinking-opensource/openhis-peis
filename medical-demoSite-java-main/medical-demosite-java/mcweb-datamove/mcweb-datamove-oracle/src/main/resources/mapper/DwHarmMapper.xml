@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.DwHarmMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.DwHarm" id="DwHarmMap">
+        <id property="id" column="ID"/>
+        <result property="harmCode" column="HARM_CODE"/>
+        <result property="harmName" column="HARM_NAME"/>
+        <result property="harmClass" column="HARM_CLASS"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="keyword" column="KEYWORD"/>
+        <result property="diagnosisFrom" column="DIAGNOSIS_FROM"/>
+        <result property="mbjbZyb" column="MBJB_ZYB"/>
+        <result property="mbjbJjz" column="MBJB_JJZ"/>
+        <result property="influence" column="INFLUENCE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="diagnosis" column="DIAGNOSIS"/>
+        <result property="industrialDisease" column="INDUSTRIAL_DISEASE"/>
+        <result property="contraindication" column="CONTRAINDICATION"/>
+        <result property="affect" column="AFFECT"/>
+        <result property="companyName" column="COMPANY_NAME"/>
+        <result property="companyId" column="COMPANY_ID"/>
+        <result property="companyDepartment" column="COMPANY_DEPARTMENT"/>
+        <result property="departmentId" column="DEPARTMENT_ID"/>
+        <result property="classId" column="CLASS_ID"/>
+        <result property="khdwsrm" column="KHDWSRM"/>
+        <result property="note" column="NOTE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDwHarmVo">
+        select ID,
+               HARM_CODE,
+               HARM_NAME,
+               HARM_CLASS,
+               INPUT_CODE,
+               DB_USER,
+               KEYWORD,
+               DIAGNOSIS_FROM,
+               MBJB_ZYB,
+               MBJB_JJZ,
+               INFLUENCE,
+               CREATEDATE,
+               MODIFYDATE,
+               DIAGNOSIS,
+               INDUSTRIAL_DISEASE,
+               CONTRAINDICATION,
+               AFFECT,
+               COMPANY_NAME,
+               COMPANY_ID,
+               COMPANY_DEPARTMENT,
+               DEPARTMENT_ID,
+               CLASS_ID,
+               KHDWSRM,
+               NOTE,
+               IS_DELETE
+        from DW_HARM
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DwHarmMap">
+        <include refid="selectDwHarmVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DwHarmMap">
+        <include refid="selectDwHarmVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

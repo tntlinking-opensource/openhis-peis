@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppInfoHitsMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppInfoHits" id="AppInfoHitsMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="appUserId" column="APP_USER_ID"/>
+        <result property="appInfoId" column="APP_INFO_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppInfoHitsVo">
+        select ID, CREATEDATE, MODIFYDATE, APP_USER_ID, APP_INFO_ID
+        from APP_INFO_HITS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppInfoHitsMap">
+        <include refid="selectAppInfoHitsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppInfoHitsMap">
+        <include refid="selectAppInfoHitsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

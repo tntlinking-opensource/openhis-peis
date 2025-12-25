@@ -1,0 +1,57 @@
+##导入宏定义
+$!{define.vm}
+
+##设置表后缀（宏定义）
+#setTableSuffix("ServiceImpl")
+
+##保存文件（宏定义）
+#save("/service/impl", "ServiceImpl.java")
+
+##包路径（宏定义）
+#setPackageSuffix("service.impl")
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import $!{tableInfo.savePackageName}.dao.$!{tableInfo.name}Mapper;
+import $!{tableInfo.savePackageName}.bean.model.$!{tableInfo.name};
+import $!{tableInfo.savePackageName}.service.$!{tableInfo.name}Service;
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import page.utils.com.center.medical.common.PageParam;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+##表注释（宏定义）
+#tableComment("服务实现类")
+@Slf4j
+@Service("$!tool.firstLowerCase($!{tableInfo.name})Service")
+@RequiredArgsConstructor
+public class $!{tableName} extends ServiceImpl<$!{tableInfo.name}Mapper, $!{tableInfo.name}> implements $!{tableInfo.name}Service {
+
+	private final $!{tableInfo.name}Mapper $!tool.firstLowerCase($!{tableInfo.name})Mapper;
+
+	/**
+	* 分页查询[$!tableInfo.comment]列表
+	*
+	* @param page 分页参数
+	* @param param $!tableInfo.name查询参数
+	* @return 分页数据
+	*/
+	@Override
+	public IPage<$!tableInfo.name> getPage(PageParam<$!tableInfo.name> page, $!tableInfo.name param) {
+		return $!tool.firstLowerCase($!{tableInfo.name})Mapper .getPage(page, param);
+	}
+
+	#if($!tableInfo.pkColumn.size()>0)
+	/**
+	* 根据主键id获取记录详情
+	*
+	* @param id 主键$!tableInfo.pkColumn.get(0).name
+	* @return 详情信息
+	*/
+	@Override
+	public $!tableInfo.name getInfoById($!tableInfo.pkColumn.get(0).shortType id){
+		return $!tool.firstLowerCase($!{tableInfo.name})Mapper .getInfoById(id);
+	};
+	#end
+
+}

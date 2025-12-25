@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.center.common.dao.RilinSyncResultMapper">
+
+	<resultMap type="com.center.medical.center.common.bean.model.RilinSyncResult" id="RilinSyncResultMap">
+		<id property="id" column="id"/>
+		<result property="createdate" column="createdate"/>
+		<result property="modifydate" column="modifydate"/>
+		<result property="isSuccess" column="is_success"/>
+		<result property="errorMsg" column="error_msg"/>
+		<result property="tableName" column="table_name"/>
+		<result property="tableId" column="table_id"/>
+		<result property="patientcode" column="patientcode"/>
+		<result property="startTime" column="start_time"/>
+		<result property="endTime" column="end_time"/>
+		<result property="remarks" column="remarks"/>
+	</resultMap>
+
+	<!-- 数据表字段属性 -->
+	<sql id="selectRilinSyncResultVo">
+		select id, createdate, modifydate, is_success, error_msg, table_name, table_id, patientcode, start_time, end_time, remarks
+		from rilin_sync_result
+	</sql>
+
+	<!-- 查询列表数据 -->
+	<select id="getPage" resultMap="RilinSyncResultMap">
+		<include refid="selectRilinSyncResultVo"/>
+	</select>
+
+	<!-- 根据主键id获取记录详情 -->
+	<select id="getInfoById" resultMap="RilinSyncResultMap">
+		<include refid="selectRilinSyncResultVo"/>
+		<where>
+			id = #{id}
+		</where>
+	</select>
+	
+</mapper>

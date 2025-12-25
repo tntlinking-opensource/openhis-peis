@@ -1,0 +1,1079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.query.dao.EveryExaminerMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.query.bean.vo.EveryExaminerVo">
+        SELECT
+        aa.*,
+        (
+        SELECT
+        group_concat( DISTINCT d.payway_name ) AS payway_name
+        FROM
+        md_peispatientcharge t
+        LEFT JOIN md_dictpayway d ON t.id_payway = d.id
+        WHERE t.patientcode = aa.patientcode
+        GROUP BY
+        t.patientcode
+        ) AS idPayway,
+        (
+        SELECT
+        IFNULL( sum( pi.price ), 0 )
+        FROM
+        md_peispatientfeeitem pi
+        WHERE
+        pi.change_item = 0 AND pi.id_patient = aa.patientcode
+        GROUP BY
+        aa.patientcode
+        ) AS yjhj
+        FROM (
+        SELECT t.patientcode,
+        t.patientname,
+        t.sabc,
+        t.org_name,
+        t.id_sex,
+        t.age,
+        t.f_isforprepare,
+        t.f_isforreserve,
+        t.f_registered,
+        (CASE WHEN pcm.moneyamountpaid IS NOT NULL THEN 1 ELSE 0 END) AS FFeecharged,
+        pcm.moneyamount,
+        pcm.moneyamountpaid,
+        '' AS FGuidancereturned,
+        t.f_readytofinal,
+        (CASE WHEN t.jktjzt >=1 THEN 1 ELSE 0 END) AS FFinalexamed,
+        (CASE WHEN t.health_print_num IS NOT NULL THEN 1 ELSE 0 END) AS FReportprinted,
+        t.f_closed,
+        STR_TO_DATE(t.dateregister, '%Y-%m-%d %T') AS dateregister,
+        t.doctorreg,
+        t.phone,
+        t.examsuite_name AS idTjtc,
+        '1' AS position,
+        (CASE WHEN t.zytjzt >= 1 THEN 1 ELSE 0 END) AS FFinalexamedZy,
+        (CASE WHEN t.disease_print_num IS NOT NULL THEN 1 ELSE 0 END) AS FReportprintedZy,
+        t.doctorapply,
+        q.user_name kaidan,
+        (prc.jzje - prc.moneyamountpaid) AS jzwj,
+        t.f_usecodehiden useCodeHiden,
+        (CASE WHEN t.numorgresv = - 1 THEN NULL ELSE t.numorgresv END) AS ddh
+        FROM md_peispatient t
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = t.patientcode
+        LEFT JOIN md_peispatient_reservation_charge prc ON prc.patientcode = t.patientcode
+        LEFT JOIN sys_user q ON t.id_doctorreg = q.user_no
+        <where>
+            t.f_registered = 1
+            <if test="param.useCodeHiden!=null">
+                AND t.f_usecodehiden = #{param.useCodeHiden}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND t.id_org LIKE concat('%',#{param.idOrg},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND t.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND t.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND t.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <choose>
+                <when test='param.sabc == "S" or param.sabc == "A" or param.sabc == "B" or param.sabc == "C"'>
+                    AND t.sabc = #{param.sabc}
+                </when>
+                <when test="param.sabc == null or param.sabc == ''">
+                    AND (t.sabc IS NULL OR t.sabc = '')
+                </when>
+                <when test='param.sabc == "全部"'>
+                </when>
+            </choose>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND t.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND t.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND t.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        ORDER BY org_name,patientcode LIMIT #{pageAdapter.begin},#{pageAdapter.size}
+        ) AS aa
+    </select>
+    <!-- 查询列表数据总数 -->
+    <select id="countList" resultType="Long">
+        SELECT count(*)
+        FROM md_peispatient t
+        <where>
+            t.f_registered = 1
+            <if test="param.useCodeHiden!=null">
+                AND t.f_usecodehiden = #{param.useCodeHiden}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND t.id_org LIKE concat('%',#{param.idOrg},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND t.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND t.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND t.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND t.numorgresv = #{param.ddh}
+            </if>
+            <choose>
+                <when test='param.sabc == "S" or param.sabc == "A" or param.sabc == "B" or param.sabc == "C"'>
+                    AND t.sabc = #{param.sabc}
+                </when>
+                <when test="param.sabc == null or param.sabc == ''">
+                    AND (t.sabc IS NULL OR t.sabc = '')
+                </when>
+                <when test='param.sabc == "全部"'>
+                </when>
+            </choose>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND t.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND t.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+
+    </select>
+
+    <!-- 统计某段时间所有体检者 筛选条件 -->
+    <sql id="timeListSql">
+        <if test="param.idOrg!=null and param.idOrg!=''">
+            AND t.id_org LIKE concat('%',#{param.idOrg},'%')
+        </if>
+        <if test="param.startTime!=null">
+            AND t.dateregister <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND t.dateregister <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.branchIds!=null">
+            AND t.hospitalcode IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        <if test="param.patientcode!=null and param.patientcode!=''">
+            AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+        </if>
+        <if test="param.patientname!=null and param.patientname!=''">
+            AND t.patientname LIKE concat('%',#{param.patientname},'%')
+        </if>
+        <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+            AND t.id_patientclass = #{param.idPatientclass}
+        </if>
+        <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+            AND t.id_opendoctor = #{param.idOpendoctor}
+        </if>
+    </sql>
+
+
+    <!-- 统计某段时间所有体检者 -->
+    <select id="getTimeList" resultType="com.center.medical.query.bean.dto.EETimeListDto">
+        SELECT sum(pcm.moneyamountpaid),
+        ifnull(sum(pcm.moneyamount),0) AS yfhj,
+        ifnull(ee.jkrs,0) AS jkrs,
+        ifnull(ff.zyrs,0) AS zyrs,
+        ifnull(gg.zhrs,0) AS zhrs,
+        count(t.id) AS lbrs,
+        ifnull(count(CASE WHEN t.f_registered = '1' THEN 1 ELSE NULL END),0) ydj,
+        ifnull(count(CASE WHEN t.f_registered = 0 OR t.f_registered IS NULL THEN 1 ELSE NULL END),0) wdj,
+        0 yjs,
+        0 wjs,
+        ifnull(count(CASE WHEN t.id_sex = 0 THEN '1' ELSE NULL END),0) AS nan,
+        ifnull(count(CASE WHEN t.id_sex = 1 THEN '1' ELSE NULL END),0) AS nv,
+        ifnull(count(CASE WHEN t.f_readytofinal = 1 THEN 1 ELSE NULL END),0) AS ffwc,
+        ifnull(count(CASE WHEN t.f_readytofinal = 0 OR t.f_readytofinal IS NULL THEN 1 ELSE NULL END),0) AS fjww,
+        ifnull(bb.jktjwc,0) AS jkwc,
+        ifnull(aa.jktjwwc,0) AS jkww,
+        ifnull(dd.zytjwc,0) AS zywc,
+        ifnull(cc.zytjwwc,0) AS zyww,
+        ifnull(kk.jkbgwc,0) AS jkbgyd,
+        ifnull(jj.jkbgwwc,0) AS jkbgwd,
+        ifnull(ii.zybgwc,0) AS zybgyd,
+        ifnull(hh.zybgwwc,0) AS zybgwd,
+        ifnull(jx.jxrc,0) AS jxrc,
+        ifnull(jx.jxfy,0) AS jxfy,
+        ifnull(yjhj.yjhj,0) AS yjhj,
+        ifnull(fcrs.fcrs,0) AS fcrs
+        FROM md_peispatient t,
+        md_peispatient_charge_main pcm,
+        (
+        SELECT count(
+        IFNULL(t.jktjzt, 0)) AS jktjwwc
+        FROM md_peispatient t
+        WHERE (t.id_examtype = 0 OR t.id_examtype = 2)
+        AND (t.jktjzt IS NULL OR t.jktjzt = 0)
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) AA,
+        ( SELECT
+        count(
+        IFNULL ( t.jktjzt, 0 )) AS jktjwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 0 OR t.id_examtype = 2 )
+        AND t.jktjzt >= 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) BB,
+        (SELECT
+        count(
+        IFNULL ( t.zytjzt, 0 )) AS zytjwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 1 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        AND ( t.zytjzt IS NULL OR t.jktjzt = 0 )) cc,
+        (
+        SELECT
+        count(
+        IFNULL ( t.zytjzt, 0 )) AS zytjwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 1 OR t.id_examtype = 2 )
+        AND t.zytjzt >= 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) DD,
+        ( SELECT
+        count( t.id ) AS jkrs
+        FROM
+        md_peispatient t
+        WHERE
+        t.id_examtype = 0
+        AND t.f_registered = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) EE,
+        ( SELECT
+        count( t.id ) AS fcrs
+        FROM
+        md_peispatient t
+        WHERE
+        t.id_examtype = 3
+        AND t.f_registered = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) FCRS,
+        ( SELECT
+        count( t.id ) AS zyrs
+        FROM
+        md_peispatient t
+        WHERE
+        t.id_examtype = 1
+        AND t.f_registered = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) FF,
+        ( SELECT
+        count( t.id ) AS zhrs
+        FROM
+        md_peispatient t
+        WHERE
+        t.id_examtype = 2
+        AND t.f_registered = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) GG,
+        ( SELECT
+        count(
+        IFNULL ( t.zytjzt, 0 )) AS zybgwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 1 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        AND ( t.zytjzt IS NULL OR t.zytjzt <![CDATA[ < ]]> 2 )) hh,
+        (
+        SELECT
+        count(
+        IFNULL ( t.zytjzt, 0 )) AS zybgwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 1 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        AND t.zytjzt >= 2
+        ) ii,
+        (
+        SELECT
+        count(
+        IFNULL ( t.jktjzt, 0 )) AS jkbgwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 0 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        AND ( t.jktjzt IS NULL OR t.jktjzt <![CDATA[ < ]]> 2 )) jj,
+        (
+        SELECT
+        count(
+        IFNULL ( t.zytjzt, 0 )) AS jkbgwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 0 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        AND t.jktjzt >= 2
+        ) kk,
+        ( SELECT
+        count( DISTINCT t.patientcode ) jxrc,
+        sum( tf.factprice ) jxfy
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientfeeitem tf ON tf.id_patient = t.patientcode
+        WHERE
+        tf.change_item = 0
+        AND tf.sfjx = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) JX ,
+        ( SELECT
+        sum( tf.price ) yjhj
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientfeeitem tf ON tf.id_patient = t.patientcode
+        WHERE
+        tf.change_item = 0
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        ) yjhj
+        where pcm.patientcode = t.patientcode
+        <include refid="timeListSql"/>
+        GROUP BY aa.jktjwwc ,bb.jktjwc,cc.zytjwwc,dd.zytjwc,ee.jkrs,ff.zyrs,gg.zhrs,
+        hh.zybgwwc,ii.zybgwc,jj.jkbgwwc,kk.jkbgwc,jx.jxrc,jx.jxfy,yjhj.yjhj,fcrs.fcrs
+    </select>
+
+
+    <!-- 根据类型查询 1团体体检、2团体疫苗、3团体核酸、4个人体检、5个人疫苗、6个人核酸 -->
+    <select id="getSqlNew1" resultType="com.center.medical.query.bean.dto.EETimeListDto">
+        SELECT
+        COALESCE(SUM(pcm.moneyamountpaid), 0) AS moneyamountpaid,
+        COALESCE(SUM(pcm.moneyamount), 0) AS yfhj,
+        COALESCE(COUNT(CASE WHEN p.id_examtype = 0 AND p.f_registered = 1 THEN p.id END), 0) AS jkrs,
+        COALESCE(COUNT(CASE WHEN p.id_examtype = 1 AND p.f_registered = 1 THEN p.id END), 0) AS zyrs,
+        COALESCE(COUNT(CASE WHEN p.id_examtype = 2 AND p.f_registered = 1 THEN p.id END), 0) AS zhrs,
+        COUNT(p.id) AS lbrs,
+        COUNT(CASE WHEN p.f_registered = '1' THEN 1 END) AS ydj,
+        COUNT(CASE WHEN p.f_registered = 0 OR p.f_registered IS NULL THEN 1 END) AS wdj,
+        0 AS yjs,
+        0 AS wjs,
+        COUNT(CASE WHEN p.id_sex = 0 THEN '1' END) AS nan,
+        COUNT(CASE WHEN p.id_sex = 1 THEN '1' END) AS nv,
+        COUNT(CASE WHEN p.f_readytofinal = 1 THEN 1 END) AS ffwc,
+        COUNT(CASE WHEN p.f_readytofinal = 0 OR p.f_readytofinal IS NULL THEN 1 END) AS fjww,
+        COUNT(CASE WHEN p.id_examtype IN (0, 2) AND p.jktjzt > 1 THEN p.id END) AS jkwc,
+        COUNT(CASE WHEN p.id_examtype IN (0, 2) AND (p.jktjzt IS NULL OR p.jktjzt = 0) THEN p.id END) AS jkww,
+        COUNT(CASE WHEN p.id_examtype IN (1, 2) AND p.zytjzt > 1 THEN p.id END) AS zywc,
+        COUNT(CASE WHEN p.id_examtype IN (1, 2) AND (p.zytjzt IS NULL OR p.zytjzt = 0) THEN p.id END) AS zyww,
+        COUNT(CASE WHEN p.id_examtype IN (0, 2) AND p.jktjzt >= 2 THEN p.id END) AS jkbgyd,
+        COUNT(CASE WHEN p.id_examtype IN (0, 2) AND (p.jktjzt IS NULL OR p.jktjzt <![CDATA[ < ]]> 2) THEN p.id END) AS
+        jkbgwd,
+        COUNT(CASE WHEN p.id_examtype IN (1, 2) AND p.zytjzt >= 2 THEN p.id END) AS zybgyd,
+        COUNT(CASE WHEN p.id_examtype IN (1, 2) AND (p.zytjzt IS NULL OR p.zytjzt <![CDATA[ < ]]> 2) THEN p.id END) AS
+        zybgwd,
+        COUNT(CASE WHEN p.id_examtype = 3 AND p.f_registered = 1 THEN p.id END) AS fcrs
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <if test='type=="1" or type=="4"'>
+            LEFT JOIN (
+            SELECT DISTINCT pei_t.id_patient
+            FROM md_peispatientfeeitem pei_t
+            WHERE pei_t.change_item = 0
+            AND pei_t.f_feecharged = 1
+            AND pei_t.id_examfeeitem IN (
+            SELECT id
+            FROM md_items
+            WHERE id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            )
+            ) AS pei_t ON pei_t.id_patient = p.patientcode
+        </if>
+        <where>
+            <choose>
+                <when test='type=="1" or type=="2" or type=="3"'>
+                    p.f_usecodehiden = 1
+                </when>
+                <otherwise>
+                    p.f_usecodehiden = 0
+                </otherwise>
+            </choose>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null and param.endTime!=null">
+                AND p.dateregister BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND instr(p.patientcode,#{param.patientcode})>0
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND instr(p.patientname,#{param.patientname})>0
+            </if>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND p.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+            <if test='type=="1" or type=="4"'>
+                AND pei_t.id_patient IS NULL
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                1 = 1
+                <!--                pi.id_examfeeitem IN-->
+                <!--                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">-->
+                <!--                    #{id}-->
+                <!--                </foreach>-->
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND (pi.f_transferedhl7 IS NULL or pi.f_transferedhl7 = 0 )
+                )
+            </if>
+            <if test='type=="2" or type=="5"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pei_t
+                INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+                WHERE
+                pei_t.id_patient = p.patientcode
+                AND pei_t.change_item = 0
+                AND pei_t.f_feecharged = 1
+                AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+                )
+            </if>
+            <if test='type=="3" or type=="6"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                pi.id_examfeeitem IN
+                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND (pi.f_transferedhl7 IS NULL or pi.f_transferedhl7 = 0 )
+                )
+            </if>
+        </where>
+    </select>
+    <!-- 根据类型查询 1团体体检、2团体疫苗、3团体核酸、4个人体检、5个人疫苗、6个人核酸 -->
+    <select id="getSqlNew2" resultType="com.center.medical.query.bean.dto.EETimeListDto1">
+        SELECT
+        COALESCE(SUM(jx.jxrc), 0) AS jxrc,
+        COALESCE(SUM(jx.jxfy), 0) AS jxfy
+        FROM
+        md_peispatient p
+        LEFT JOIN (
+        SELECT
+        COUNT(DISTINCT tf.id_patient) AS jxrc,
+        SUM(tf.factprice) AS jxfy,
+        tf.id_patient
+        FROM
+        md_peispatientfeeitem tf
+        WHERE
+        tf.id_patient IN (
+        SELECT patientcode FROM md_peispatient WHERE dateregister BETWEEN #{param.startTime} AND #{param.endTime}
+        )
+        AND tf.change_item = 0
+        AND tf.sfjx = 1
+        GROUP BY
+        tf.id_patient
+        ) jx ON jx.id_patient = p.patientcode
+        <if test='type=="1" or type=="4"'>
+            LEFT JOIN (
+            SELECT DISTINCT pei_t.id_patient
+            FROM md_peispatientfeeitem pei_t
+            WHERE pei_t.change_item = 0
+            AND pei_t.f_feecharged = 1
+            AND pei_t.id_examfeeitem IN (
+            SELECT id
+            FROM md_items
+            WHERE id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            )
+            ) AS pei_t ON pei_t.id_patient = p.patientcode
+        </if>
+        <where>
+            <choose>
+                <when test='type=="1" or type=="2" or type=="3"'>
+                    p.f_usecodehiden = 1
+                </when>
+                <otherwise>
+                    p.f_usecodehiden = 0
+                </otherwise>
+            </choose>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null and param.endTime!=null">
+                AND p.dateregister BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND instr(p.patientcode,#{param.patientcode})>0
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND instr(p.patientname,#{param.patientname})>0
+            </if>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND p.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+            <if test='type=="1" or type=="4"'>
+                AND pei_t.id_patient IS NULL
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                1 = 1
+                <!--                pi.id_examfeeitem IN-->
+                <!--                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">-->
+                <!--                    #{id}-->
+                <!--                </foreach>-->
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND pi.f_transferedhl7 IS NULL
+                )
+            </if>
+            <if test='type=="2" or type=="5"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pei_t
+                INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+                WHERE
+                pei_t.id_patient = p.patientcode
+                AND pei_t.change_item = 0
+                AND pei_t.f_feecharged = 1
+                AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+                )
+            </if>
+            <if test='type=="3" or type=="6"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                pi.id_examfeeitem IN
+                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND pi.f_transferedhl7 IS NULL
+                )
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据类型查询 1团体体检、2团体疫苗、3团体核酸、4个人体检、5个人疫苗、6个人核酸 -->
+    <select id="getSqlNew3" resultType="com.center.medical.query.bean.dto.EETimeListDto1">
+        SELECT
+        COALESCE(SUM(yjhj.yjhj), 0) AS yjhj
+        FROM
+        md_peispatient p
+        LEFT JOIN (
+        SELECT
+        SUM(tf.price) AS yjhj,
+        tf.id_patient
+        FROM
+        md_peispatientfeeitem tf
+        WHERE
+        tf.id_patient IN (
+        SELECT patientcode FROM md_peispatient WHERE dateregister BETWEEN #{param.startTime} AND #{param.endTime}
+        )
+        AND tf.change_item = 0
+        GROUP BY
+        tf.id_patient
+        ) yjhj ON yjhj.id_patient = p.patientcode
+        <if test='type=="1" or type=="4"'>
+            LEFT JOIN (
+            SELECT DISTINCT pei_t.id_patient
+            FROM md_peispatientfeeitem pei_t
+            WHERE pei_t.change_item = 0
+            AND pei_t.f_feecharged = 1
+            AND pei_t.id_examfeeitem IN (
+            SELECT id
+            FROM md_items
+            WHERE id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+            )
+            ) AS pei_t ON pei_t.id_patient = p.patientcode
+        </if>
+        <where>
+            <choose>
+                <when test='type=="1" or type=="2" or type=="3"'>
+                    p.f_usecodehiden = 1
+                </when>
+                <otherwise>
+                    p.f_usecodehiden = 0
+                </otherwise>
+            </choose>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null and param.endTime!=null">
+                AND p.dateregister BETWEEN #{param.startTime} AND #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND instr(p.patientcode,#{param.patientcode})>0
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND instr(p.patientname,#{param.patientname})>0
+            </if>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND p.id_patientclass = #{param.idPatientclass}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+            <if test='type=="1" or type=="4"'>
+                AND pei_t.id_patient IS NULL
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                1 = 1
+                <!--                pi.id_examfeeitem IN-->
+                <!--                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">-->
+                <!--                    #{id}-->
+                <!--                </foreach>-->
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND pi.f_transferedhl7 IS NULL
+                )
+            </if>
+            <if test='type=="2" or type=="5"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pei_t
+                INNER JOIN md_items i_t ON i_t.id = pei_t.id_examfeeitem
+                WHERE
+                pei_t.id_patient = p.patientcode
+                AND pei_t.change_item = 0
+                AND pei_t.f_feecharged = 1
+                AND i_t.id_depart = 'ff8080817bc96399017bd2c73a0c5e96'
+                )
+            </if>
+            <if test='type=="3" or type=="6"'>
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_peispatientfeeitem pi
+                WHERE
+                pi.id_examfeeitem IN
+                <foreach collection="param.itemIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                AND pi.id_patient = p.patientcode
+                AND pi.change_item = 0
+                AND pi.sfjj = 0
+                AND pi.f_giveup = 0
+                AND pi.f_transferedhl7 IS NULL
+                )
+            </if>
+        </where>
+    </select>
+
+    <!-- 统计某段时间团体体检者(按团体分组) -->
+    <select id="getGroupSql" resultType="com.center.medical.query.bean.dto.EETimeListDto">
+        SELECT base.khdwmc,
+        ifnull (base.yf , 0 )AS yfhj,
+        jkrs.jkrs,
+        zyrs.zyrs,
+        zhrs.zhrs,
+        base.lbrs,
+        base.djs AS ydj,
+        base.wdjs AS wdj,
+        base.yjf,
+        base.wjf,
+        base.men AS nan,
+        base.women AS nv,
+        base.fjwc,
+        base.fjwwc AS fjww,
+        IFNULL(jk.jkzjwc, 0) AS jkwc,
+        IFNULL(jk.jkzjwwc, 0) AS jkww,
+        IFNULL(zy.zyzjwc, 0) AS zywc,
+        IFNULL(zy.zyzjwwc, 0) AS zyww,
+        IFNULL(jkbg.jkbgwc, 0) AS jkbgyd,
+        IFNULL(jkbg.jkbgwwc, 0) AS jkbgwd,
+        IFNULL(zybg.zybgwc, 0) AS zybgyd,
+        IFNULL(zybg.zybgwwc, 0) AS zybgwd,
+        jx.jxrc,
+        jx.jxfy,
+        ifnull (yjhj.yjhj, 0 ) AS yjhj,
+        fcrs.fcrs
+        FROM (
+        SELECT IFNULL(t.id_org, 0) AS id_org,
+        se.khdwmc AS khdwmc,
+        IFNULL(sum(pcm.moneyamount), 0) AS yf,
+        count(t.id) AS lbrs,
+        count(CASE WHEN t.f_registered = '1' THEN 1 ELSE NULL END) djs,
+        count(CASE WHEN t.f_registered IS NULL OR t.f_registered = 0 THEN 1 ELSE NULL END) wdjs,
+        0 yjf,
+        0 wjf,
+        count(CASE WHEN t.id_sex = 0 THEN '1' ELSE NULL END) men,
+        count(CASE WHEN t.id_sex = 1 THEN '1' ELSE NULL END) women,
+        count(CASE WHEN t.f_readytofinal = '1' THEN 1 ELSE NULL END) fjwc,
+        count(CASE WHEN t.f_readytofinal IS NULL OR t.f_readytofinal <![CDATA[ <> ]]> '1' THEN 1 ELSE NULL END) fjwwc
+        FROM md_peispatient t
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = t.patientcode
+        LEFT JOIN crm_sellcustomer se ON t.id_org = se.id
+        WHERE t.f_usecodehiden = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org,
+        se.khdwmc
+        ) base
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.jktjzt >= 1 THEN 1 ELSE NULL END ) jkzjwc,
+        count( CASE WHEN t.jktjzt IS NULL OR t.jktjzt = 0 THEN 1 ELSE NULL END ) jkzjwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 0 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) jk ON base.id_org = jk.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.zytjzt >= 1 THEN 1 ELSE NULL END ) zyzjwc,
+        count( CASE WHEN t.zytjzt IS NULL OR t.zytjzt = '0' THEN 1 ELSE NULL END ) zyzjwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = '1' OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) zy ON base.id_org = zy.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.id_examtype = '2' AND t.f_registered = 1 THEN 1 ELSE NULL END ) zhrs
+        FROM
+        md_peispatient t
+        WHERE
+        1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) zhrs ON base.id_org = zhrs.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.id_examtype = 0 AND t.f_registered = 1 THEN 1 ELSE NULL END ) jkrs
+        FROM
+        md_peispatient t
+        WHERE
+        1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) jkrs ON base.id_org = jkrs.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.id_examtype = 3 AND t.f_registered = 1 THEN 1 ELSE NULL END ) fcrs
+        FROM
+        md_peispatient t
+        WHERE
+        1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) fcrs ON base.id_org = fcrs.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.id_examtype = 1 AND t.f_registered = 1 THEN 1 ELSE NULL END ) zyrs
+        FROM
+        md_peispatient t
+        WHERE
+        1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) zyrs ON base.id_org = zyrs.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.jktjzt >= 2 THEN 1 ELSE NULL END ) jkbgwc,
+        count( CASE WHEN t.jktjzt IS NULL OR t.jktjzt <![CDATA[ < ]]> 2 THEN 1 ELSE NULL END ) jkbgwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = 0 OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) jkbg ON base.id_org = jkbg.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( DISTINCT t.patientcode ) jxrc,
+        sum( tf.factprice ) jxfy
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientfeeitem tf ON tf.id_patient = t.patientcode
+        WHERE
+        tf.sfjx = 1
+        AND tf.change_item = 0
+        AND t.f_usecodehiden = 1
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) jx ON base.id_org = jx.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        sum( tf.price ) yjhj
+        FROM
+        md_peispatient t
+        INNER JOIN md_peispatientfeeitem tf ON tf.id_patient = t.patientcode
+        WHERE
+        tf.change_item = 0
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) yjhj ON base.id_org = yjhj.id_org
+        LEFT JOIN (
+        SELECT
+        IFNULL ( t.id_org, 0 ) AS id_org,
+        count( CASE WHEN t.zytjzt >= 2 THEN 1 ELSE NULL END ) zybgwc,
+        count( CASE WHEN t.zytjzt IS NULL OR t.zytjzt <![CDATA[ < ]]> 2 THEN 1 ELSE NULL END ) zybgwwc
+        FROM
+        md_peispatient t
+        WHERE
+        ( t.id_examtype = '1' OR t.id_examtype = 2 )
+        AND 1 = 1
+        <include refid="timeListSql"/>
+        GROUP BY
+        t.id_org
+        ) zybg ON base.id_org = zybg.id_org
+        ORDER BY base.khdwmc
+    </select>
+
+
+    <!-- 点击获取收费项目信息 -->
+    <select id="getChargeData" resultType="com.center.medical.query.bean.vo.EEChargeDataVo">
+        SELECT q.dept_name AS idKs,
+        p.f_feecharged AS fFeecharged,
+        p.f_giveup AS fGiveup,
+        p.f_examinated AS fExaminated,
+        t.examfeeitem_name AS idExamfeeitem
+        FROM md_peispatientfeeitem p
+        LEFT JOIN sys_dept q ON p.id_ks = q.dept_no
+        LEFT JOIN md_items t ON p.id_examfeeitem = t.id
+        <where>
+            1 = 1
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.id_patient = #{param.patientcode}
+            </if>
+        </where>
+        ORDER BY p.createdate DESC
+    </select>
+
+
+    <!-- 导出每日体检者构成人员 -->
+    <select id="getExportData" resultType="com.center.medical.query.bean.vo.EveryExaminerVo">
+        SELECT
+        aa.*,
+        (
+        SELECT
+        group_concat( DISTINCT d.payway_name ) AS payway_name
+        FROM
+        md_peispatientcharge t
+        LEFT JOIN md_dictpayway d ON t.id_payway = d.id
+        WHERE t.patientcode = aa.patientcode
+        GROUP BY
+        t.patientcode
+        ) AS idPayway,
+        (
+        SELECT
+        IFNULL( sum( pi.price ), 0 )
+        FROM
+        md_peispatientfeeitem pi
+        WHERE
+        pi.change_item = 0 AND pi.id_patient = aa.patientcode
+        GROUP BY
+        aa.patientcode
+        ) AS yjhj
+        FROM (
+        SELECT t.patientcode,
+        t.patientname,
+        t.sabc,
+        t.org_name,
+        t.id_sex,
+        t.age,
+        t.f_isforprepare,
+        t.f_isforreserve,
+        t.f_registered,
+        (CASE WHEN pcm.moneyamountpaid IS NOT NULL THEN 1 ELSE 0 END) AS FFeecharged,
+        pcm.moneyamount,
+        pcm.moneyamountpaid,
+        '' AS FGuidancereturned,
+        t.f_readytofinal,
+        (CASE WHEN t.jktjzt >=1 THEN 1 ELSE 0 END) AS FFinalexamed,
+        (CASE WHEN t.health_print_num IS NOT NULL THEN 1 ELSE 0 END) AS FReportprinted,
+        t.f_closed,
+        STR_TO_DATE(t.dateregister, '%Y-%m-%d %T') AS dateregister,
+        t.doctorreg,
+        t.phone,
+        t.examsuite_name AS idTjtc,
+        '1' AS position,
+        (CASE WHEN t.zytjzt >= 1 THEN 1 ELSE 0 END) AS FFinalexamedZy,
+        (CASE WHEN t.disease_print_num IS NOT NULL THEN 1 ELSE 0 END) AS FReportprintedZy,
+        t.doctorapply,
+        q.user_name kaidan,
+        (prc.jzje - prc.moneyamountpaid) AS jzwj,
+        t.f_usecodehiden useCodeHiden,
+        (CASE WHEN t.numorgresv = - 1 THEN NULL ELSE t.numorgresv END) AS ddh
+        FROM md_peispatient t
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = t.patientcode
+        LEFT JOIN md_peispatient_reservation_charge prc ON prc.patientcode = t.patientcode
+        LEFT JOIN sys_user q ON t.id_doctorreg = q.user_no
+        <where>
+            t.f_registered = 1
+            <if test="param.useCodeHiden!=null">
+                AND t.f_usecodehiden = #{param.useCodeHiden}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND t.id_org LIKE concat('%',#{param.idOrg},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND t.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND t.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND t.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND t.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND t.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND t.numorgresv = #{param.ddh}
+            </if>
+            <choose>
+                <when test='param.sabc == "S" or param.sabc == "A" or param.sabc == "B" or param.sabc == "C"'>
+                    AND t.sabc = #{param.sabc}
+                </when>
+                <when test="param.sabc == null or param.sabc == ''">
+                    AND (t.sabc IS NULL OR t.sabc = '')
+                </when>
+                <when test='param.sabc == "全部"'>
+                </when>
+            </choose>
+            <if test="param.idPatientclass!=null and param.idPatientclass!=''">
+                AND t.id_patientclass = #{param.idPatientclass}
+            </if>
+        </where>
+        ORDER BY org_name,patientcode
+        ) AS aa
+    </select>
+</mapper>
+

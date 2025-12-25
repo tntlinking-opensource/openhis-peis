@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.PufftubeMapper">
+
+    <resultMap type="com.center.medical.bean.model.Pufftube" id="PufftubeMap">
+        <result property="patientcode" column="patientcode"/>
+        <result property="trontimage" column="trontimage"/>
+        <result property="sideimage" column="sideimage"/>
+        <result property="result" column="result"/>
+        <result property="createtime" column="createtime"/>
+        <result property="fzx" column="fzx"/>
+        <result property="isUpdate" column="is_update"/>
+        <result property="md5" column="md5"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPufftubeVo">
+        select patientcode,
+               trontimage,
+               sideimage,
+               result,
+               createtime,
+               fzx,
+               is_update,
+               md5
+        from md_pufftube
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="PufftubeMap">
+        <include refid="selectPufftubeVo"/>
+    </select>
+
+
+</mapper>
+

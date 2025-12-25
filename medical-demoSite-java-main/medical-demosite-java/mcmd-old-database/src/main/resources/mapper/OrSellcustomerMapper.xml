@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrSellcustomerMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.OrSellcustomer" id="SellcustomerMap">
+        <id property="id" column="ID"/>
+        <result property="khdwmc" column="KHDWMC"/>
+        <result property="khdwsrm" column="KHDWSRM"/>
+        <result property="khdwlxr" column="KHDWLXR"/>
+        <result property="khdh" column="KHDH"/>
+        <result property="frdwmc" column="FRDWMC"/>
+        <result property="fddbr" column="FDDBR"/>
+        <result property="yzbm" column="YZBM"/>
+        <result property="qygm" column="QYGM"/>
+        <result property="qyjjlx" column="QYJJLX"/>
+        <result property="zywsfzr" column="ZYWSFZR"/>
+        <result property="khdwzcdz" column="KHDWZCDZ"/>
+        <result property="zywsgljg" column="ZYWSGLJG"/>
+        <result property="dwjgdm" column="DWJGDM"/>
+        <result property="xsjl" column="XSJL"/>
+        <result property="zclx" column="ZCLX"/>
+        <result property="sshy" column="SSHY"/>
+        <result property="lsgx" column="LSGX"/>
+        <result property="sjzgdw" column="SJZGDW"/>
+        <result property="sjcyrs" column="SJCYRS"/>
+        <result property="ldrs" column="LDRS"/>
+        <result property="scgrs" column="SCGRS"/>
+        <result property="zybwhysrs" column="ZYBWHYSRS"/>
+        <result property="zybwhzycss" column="ZYBWHZYCSS"/>
+        <result property="zybwhyslb" column="ZYBWHYSLB"/>
+        <result property="zybwhys" column="ZYBWHYS"/>
+        <result property="gylc" column="GYLC"/>
+        <result property="zyyfl" column="ZYYFL"/>
+        <result property="tjttlx" column="TJTTLX"/>
+        <result property="zycp" column="ZYCP"/>
+        <result property="khsctjdwdz" column="KHSCTJDWDZ"/>
+        <result property="bz" column="BZ"/>
+        <result property="sjrq" column="SJRQ"/>
+        <result property="khzt" column="KHZT"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="clientid" column="CLIENTID"/>
+        <result property="ldfpid" column="LDFPID"/>
+        <result property="xsjlid" column="XSJLID"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="lost" column="LOST"/>
+        <result property="intId" column="INT_ID"/>
+        <result property="briefText" column="BRIEF_TEXT"/>
+        <result property="socialCreditCode" column="SOCIAL_CREDIT_CODE"/>
+        <result property="province" column="PROVINCE"/>
+        <result property="city" column="CITY"/>
+        <result property="district" column="DISTRICT"/>
+        <result property="street" column="STREET"/>
+        <result property="indusTypeCode" column="INDUS_TYPE_CODE"/>
+        <result property="economyCode" column="ECONOMY_CODE"/>
+        <result property="crptSizeCode" column="CRPT_SIZE_CODE"/>
+        <result property="workForce" column="WORK_FORCE"/>
+        <result property="holdCardMan" column="HOLD_CARD_MAN"/>
+        <result property="workmanNum" column="WORKMAN_NUM"/>
+        <result property="workmistressNum" column="WORKMISTRESS_NUM"/>
+        <result property="workArea" column="WORK_AREA"/>
+        <result property="registerFund" column="REGISTER_FUND"/>
+        <result property="safetyPrincipal" column="SAFETY_PRINCIPAL"/>
+        <result property="buildDate" column="BUILD_DATE"/>
+        <result property="linkman1" column="LINKMAN1"/>
+        <result property="position1" column="POSITION1"/>
+        <result property="linkphone1" column="LINKPHONE1"/>
+        <result property="linkman2" column="LINKMAN2"/>
+        <result property="position2" column="POSITION2"/>
+        <result property="linkphone2" column="LINKPHONE2"/>
+        <result property="safeposition" column="SAFEPOSITION"/>
+        <result property="safephone" column="SAFEPHONE"/>
+        <result property="subjeConn" column="SUBJE_CONN"/>
+        <result property="enrolAddress" column="ENROL_ADDRESS"/>
+        <result property="enrolPostalcode" column="ENROL_POSTALCODE"/>
+        <result property="occManaOffice" column="OCC_MANA_OFFICE"/>
+        <result property="jinanStatus" column="JINAN_STATUS"/>
+        <result property="jinanMsg" column="JINAN_MSG"/>
+        <result property="indusTypeCode1" column="INDUS_TYPE_CODE1"/>
+        <result property="indusTypeCode2" column="INDUS_TYPE_CODE2"/>
+        <result property="indusTypeCode3" column="INDUS_TYPE_CODE3"/>
+        <result property="phone" column="PHONE"/>
+        <result property="rauKhdwmc" column="RAU_KHDWMC"/>
+        <result property="rauSocialCreditCode" column="RAU_SOCIAL_CREDIT_CODE"/>
+        <result property="rauEconomyCode" column="RAU_ECONOMY_CODE"/>
+        <result property="rauIndusTypeCode1" column="RAU_INDUS_TYPE_CODE1"/>
+        <result property="rauIndusTypeCode2" column="RAU_INDUS_TYPE_CODE2"/>
+        <result property="rauIndusTypeCode3" column="RAU_INDUS_TYPE_CODE3"/>
+        <result property="rauIndusTypeCode" column="RAU_INDUS_TYPE_CODE"/>
+        <result property="rauQygm" column="RAU_QYGM"/>
+        <result property="rauProvince" column="RAU_PROVINCE"/>
+        <result property="rauCity" column="RAU_CITY"/>
+        <result property="rauDistrict" column="RAU_DISTRICT"/>
+        <result property="rauStreet" column="RAU_STREET"/>
+        <result property="unitarea" column="UNITAREA"/>
+        <result property="rauUnitarea" column="RAU_UNITAREA"/>
+        <result property="licenseName" column="LICENSE_NAME"/>
+        <result property="jindieId" column="JINDIE_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSellcustomerVo">
+        select ID,
+               KHDWMC,
+               KHDWSRM,
+               KHDWLXR,
+               KHDH,
+               FRDWMC,
+               FDDBR,
+               YZBM,
+               QYGM,
+               QYJJLX,
+               ZYWSFZR,
+               KHDWZCDZ,
+               ZYWSGLJG,
+               DWJGDM,
+               XSJL,
+               ZCLX,
+               SSHY,
+               LSGX,
+               SJZGDW,
+               SJCYRS,
+               LDRS,
+               SCGRS,
+               ZYBWHYSRS,
+               ZYBWHZYCSS,
+               ZYBWHYSLB,
+               ZYBWHYS,
+               GYLC,
+               ZYYFL,
+               TJTTLX,
+               ZYCP,
+               KHSCTJDWDZ,
+               BZ,
+               SJRQ,
+               KHZT,
+               IS_DELETE,
+               CLIENTID,
+               LDFPID,
+               XSJLID,
+               FZXID,
+               CREATEDATE,
+               MODIFYDATE,
+               LOST,
+               INT_ID,
+               BRIEF_TEXT,
+               SOCIAL_CREDIT_CODE,
+               PROVINCE,
+               CITY,
+               DISTRICT,
+               STREET,
+               INDUS_TYPE_CODE,
+               ECONOMY_CODE,
+               CRPT_SIZE_CODE,
+               WORK_FORCE,
+               HOLD_CARD_MAN,
+               WORKMAN_NUM,
+               WORKMISTRESS_NUM,
+               WORK_AREA,
+               REGISTER_FUND,
+               SAFETY_PRINCIPAL,
+               BUILD_DATE,
+               LINKMAN1,
+               POSITION1,
+               LINKPHONE1,
+               LINKMAN2,
+               POSITION2,
+               LINKPHONE2,
+               SAFEPOSITION,
+               SAFEPHONE,
+               SUBJE_CONN,
+               ENROL_ADDRESS,
+               ENROL_POSTALCODE,
+               OCC_MANA_OFFICE,
+               JINAN_STATUS,
+               JINAN_MSG,
+               INDUS_TYPE_CODE1,
+               INDUS_TYPE_CODE2,
+               INDUS_TYPE_CODE3,
+               PHONE,
+               RAU_KHDWMC,
+               RAU_SOCIAL_CREDIT_CODE,
+               RAU_ECONOMY_CODE,
+               RAU_INDUS_TYPE_CODE1,
+               RAU_INDUS_TYPE_CODE2,
+               RAU_INDUS_TYPE_CODE3,
+               RAU_INDUS_TYPE_CODE,
+               RAU_QYGM,
+               RAU_PROVINCE,
+               RAU_CITY,
+               RAU_DISTRICT,
+               RAU_STREET,
+               UNITAREA,
+               RAU_UNITAREA,
+               LICENSE_NAME,
+               JINDIE_ID
+        from SELLCUSTOMER
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SellcustomerMap">
+        <include refid="selectSellcustomerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SellcustomerMap">
+        <include refid="selectSellcustomerVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SignInInspectionMapper">
+
+    <resultMap type="com.center.medical.bean.model.Peispatient" id="PeispatientMap">
+        <id property="id" column="id"/>
+        <result property="idOrgpatient" column="id_orgpatient"/>
+        <result property="idCis" column="id_cis"/>
+        <result property="patientarchiveno" column="patientarchiveno"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="patientbizno" column="patientbizno"/>
+        <result property="idcardno" column="idcardno"/>
+        <result property="numorgresv" column="numorgresv"/>
+        <result property="patientname" column="patientname"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="idOrgreservationgroup" column="id_orgreservationgroup"/>
+        <result property="idOrgreservation" column="id_orgreservation"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgDepart" column="org_depart"/>
+        <result property="havePrivate" column="have_private"/>
+        <result property="idPayway" column="id_payway"/>
+        <result property="payway" column="payway"/>
+        <result property="personpricelimit" column="personpricelimit"/>
+        <result property="idSex" column="id_sex"/>
+        <result property="birthdate" column="birthdate"/>
+        <result property="age" column="age"/>
+        <result property="idMarriage" column="id_marriage"/>
+        <result property="marriage" column="marriage"/>
+        <result property="idNation" column="id_nation"/>
+        <result property="nation" column="nation"/>
+        <result property="address" column="address"/>
+        <result property="idInformway" column="id_informway"/>
+        <result property="idOpendoctor" column="id_opendoctor"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="idPatientclass" column="id_patientclass"/>
+        <result property="idResarea" column="id_resarea"/>
+        <result property="resarea" column="resarea"/>
+        <result property="fIsforprepare" column="f_isforprepare"/>
+        <result property="fIsforreserve" column="f_isforreserve"/>
+        <result property="fRegistered" column="f_registered"/>
+        <result property="dateregister" column="dateregister"/>
+        <result property="guidancenote" column="guidancenote"/>
+        <result property="idDoctorreg" column="id_doctorreg"/>
+        <result property="doctorreg" column="doctorreg"/>
+        <result property="idExamtype" column="id_examtype"/>
+        <result property="idExamsuite" column="id_examsuite"/>
+        <result property="examsuiteName" column="examsuite_name"/>
+        <result property="examsuiteAlias" column="examsuite_alias"/>
+        <result property="idDoctorapply" column="id_doctorapply"/>
+        <result property="doctorapply" column="doctorapply"/>
+        <result property="fGuidanceprinted" column="f_guidanceprinted"/>
+        <result property="fExamstarted" column="f_examstarted"/>
+        <result property="fReadytofinal" column="f_readytofinal"/>
+        <result property="fPaused" column="f_paused"/>
+        <result property="fFinallocked" column="f_finallocked"/>
+        <result property="fFinalexamed" column="f_finalexamed"/>
+        <result property="idDoctorfinal" column="id_doctorfinal"/>
+        <result property="doctorfinalNameR" column="doctorfinal_name_r"/>
+        <result property="datefinalexamed" column="datefinalexamed"/>
+        <result property="fClosed" column="f_closed"/>
+        <result property="dateclosed" column="dateclosed"/>
+        <result property="note" column="note"/>
+        <result property="knowledge" column="knowledge"/>
+        <result property="timingstartedat" column="timingstartedat"/>
+        <result property="hospitalcode" column="hospitalcode"/>
+        <result property="idExamplace" column="id_examplace"/>
+        <result property="parsedassignedsuiteandfi" column="parsedassignedsuiteandfi"/>
+        <result property="parsedassignedgroupandfi" column="parsedassignedgroupandfi"/>
+        <result property="parsedsuiteandfi" column="parsedsuiteandfi"/>
+        <result property="parsedsuiteandfilab" column="parsedsuiteandfilab"/>
+        <result property="idGuidenurse" column="id_guidenurse"/>
+        <result property="patientnameencoded" column="patientnameencoded"/>
+        <result property="patientcodehiden" column="patientcodehiden"/>
+        <result property="fWordprinted" column="f_wordprinted"/>
+        <result property="guidancenote2" column="guidancenote2"/>
+        <result property="fUsecodehiden" column="f_usecodehiden"/>
+        <result property="idPatientclass3" column="id_patientclass3"/>
+        <result property="dateregisternotime" column="dateregisternotime"/>
+        <result property="counterreportprinted" column="counterreportprinted"/>
+        <result property="fIsrecheck" column="f_isrecheck"/>
+        <result property="fSettlenone" column="f_settlenone"/>
+        <result property="dateguidancereturned" column="dateguidancereturned"/>
+        <result property="fOutpatient" column="f_outpatient"/>
+        <result property="patientnamereceipt" column="patientnamereceipt"/>
+        <result property="patientnamepinyin" column="patientnamepinyin"/>
+        <result property="statusofhm" column="statusofhm"/>
+        <result property="instancetag" column="instancetag"/>
+        <result property="inpatientno" column="inpatientno"/>
+        <result property="insuranceno" column="insuranceno"/>
+        <result property="countreportxml" column="countreportxml"/>
+        <result property="countreportcompare" column="countreportcompare"/>
+        <result property="countreportoccupation" column="countreportoccupation"/>
+        <result property="countreportoccupationpdf" column="countreportoccupationpdf"/>
+        <result property="countreportoccupationxml" column="countreportoccupationxml"/>
+        <result property="scbs" column="scbs"/>
+        <result property="idTjtc" column="id_tjtc"/>
+        <result property="jzdw" column="jzdw"/>
+        <result property="jzdwr" column="jzdwr"/>
+        <result property="spr" column="spr"/>
+        <result property="tjr" column="tjr"/>
+        <result property="lqfs" column="lqfs"/>
+        <result property="yzbm" column="yzbm"/>
+        <result property="yjaddress" column="yjaddress"/>
+        <result property="qtxz" column="qtxz"/>
+        <result property="isHmdb" column="is_hmdb"/>
+        <result property="isHmd" column="is_hmd"/>
+        <result property="isjj" column="isjj"/>
+        <result property="zgl" column="zgl"/>
+        <result property="jhgl" column="jhgl"/>
+        <result property="jhys" column="jhys"/>
+        <result property="jktjzt" column="jktjzt"/>
+        <result property="zytjzt" column="zytjzt"/>
+        <result property="tmyd" column="tmyd"/>
+        <result property="medicaldate" column="medicaldate"/>
+        <result property="trades" column="trades"/>
+        <result property="cjjgsfyhf" column="cjjgsfyhf"/>
+        <result property="bhgybsfyhf" column="bhgybsfyhf"/>
+        <result property="yxjgsfyhf" column="yxjgsfyhf"/>
+        <result property="medicaltype" column="medicaltype"/>
+        <result property="prepayment" column="prepayment"/>
+        <result property="tcprice" column="tcprice"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="cultural" column="cultural"/>
+        <result property="workno" column="workno"/>
+        <result property="workDate" column="work_date"/>
+        <result property="harmDate" column="harm_date"/>
+        <result property="diseasePrintNum" column="disease_print_num"/>
+        <result property="healthPrintNum" column="health_print_num"/>
+        <result property="readytofinalDate" column="readytofinal_date"/>
+        <result property="guideSignleCount" column="guide_signle_count"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="isNoticed" column="is_noticed"/>
+        <result property="reviewPdf" column="review_pdf"/>
+        <result property="contraindicatedPdf" column="contraindicated_pdf"/>
+        <result property="diseasePdf" column="disease_pdf"/>
+        <result property="tsLimit" column="ts_limit"/>
+        <result property="checkoutDate" column="checkout_date"/>
+        <result property="checkoutStatus" column="checkout_status"/>
+        <result property="worktypeId" column="worktype_id"/>
+        <result property="idExamclass" column="id_examclass"/>
+        <result property="originalTrade" column="original_trade"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientVo">
+        select id,
+               id_orgpatient,
+               id_cis,
+               patientarchiveno,
+               patientcode,
+               patientbizno,
+               idcardno,
+               numorgresv,
+               patientname,
+               input_code,
+               id_orgreservationgroup,
+               id_orgreservation,
+               id_org,
+               org_name,
+               org_depart,
+               have_private,
+               id_payway,
+               payway,
+               personpricelimit,
+               id_sex,
+               birthdate,
+               age,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               id_informway,
+               id_opendoctor,
+               email,
+               phone,
+               id_patientclass,
+               id_resarea,
+               resarea,
+               f_isforprepare,
+               f_isforreserve,
+               f_registered,
+               dateregister,
+               guidancenote,
+               id_doctorreg,
+               doctorreg,
+               id_examtype,
+               id_examsuite,
+               examsuite_name,
+               examsuite_alias,
+               id_doctorapply,
+               doctorapply,
+               f_guidanceprinted,
+               f_examstarted,
+               f_readytofinal,
+               f_paused,
+               f_finallocked,
+               f_finalexamed,
+               id_doctorfinal,
+               doctorfinal_name_r,
+               datefinalexamed,
+               f_closed,
+               dateclosed,
+               note,
+               knowledge,
+               timingstartedat,
+               hospitalcode,
+               id_examplace,
+               parsedassignedsuiteandfi,
+               parsedassignedgroupandfi,
+               parsedsuiteandfi,
+               parsedsuiteandfilab,
+               id_guidenurse,
+               patientnameencoded,
+               patientcodehiden,
+               f_wordprinted,
+               guidancenote2,
+               f_usecodehiden,
+               id_patientclass3,
+               dateregisternotime,
+               counterreportprinted,
+               f_isrecheck,
+               f_settlenone,
+               dateguidancereturned,
+               f_outpatient,
+               patientnamereceipt,
+               patientnamepinyin,
+               statusofhm,
+               instancetag,
+               inpatientno,
+               insuranceno,
+               countreportxml,
+               countreportcompare,
+               countreportoccupation,
+               countreportoccupationpdf,
+               countreportoccupationxml,
+               scbs,
+               id_tjtc,
+               jzdw,
+               jzdwr,
+               spr,
+               tjr,
+               lqfs,
+               yzbm,
+               yjaddress,
+               qtxz,
+               is_hmdb,
+               is_hmd,
+               isjj,
+               zgl,
+               jhgl,
+               jhys,
+               jktjzt,
+               zytjzt,
+               tmyd,
+               medicaldate,
+               trades,
+               cjjgsfyhf,
+               bhgybsfyhf,
+               yxjgsfyhf,
+               medicaltype,
+               prepayment,
+               tcprice,
+               createdate,
+               modifydate,
+               cultural,
+               workno,
+               work_date,
+               harm_date,
+               disease_print_num,
+               health_print_num,
+               readytofinal_date,
+               guide_signle_count,
+               short_code,
+               is_noticed,
+               review_pdf,
+               contraindicated_pdf,
+               disease_pdf,
+               ts_limit,
+               checkout_date,
+               checkout_status,
+               worktype_id,
+               id_examclass,
+               original_trade,
+               `status`
+        from md_peispatient
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="PeispatientMap">
+        <include refid="selectPeispatientVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientMap">
+        <include refid="selectPeispatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 判断是否是职业必查项目 -->
+    <select id="getCareerInspect" resultType="java.lang.Integer">
+        select distinct count(m.id)
+        from md_section_result_main m
+                 inner join sys_dept d on d.dept_no = m.dep_id
+                 inner join md_peispatientfeeitem p on p.id_patient = m.patientcode
+            and p.id_ks = m.dep_id
+            and p.f_examinated = 1
+                 left join md_inspect_charge ic on ic.charge_id = p.id_examfeeitem
+            and ic.is_delete = 0
+                 left join md_basexamltem e on e.id = ic.inspect_id
+            and e.is_delete = 0
+        where m.patientcode = #{patientCode}
+          and p.id = #{id}
+          and ((select count(*)
+                from md_comboexamitem c
+                where c.harm_id in (#{jhys})
+                  and c.medical_type = #{medicaltype}
+                  and c.item_id = p.id_examfeeitem) > 0
+            or ((select count(*)
+                 from md_comboexamitem c2
+                 where c2.harm_id in (#{jhys})
+                   and c2.medical_type = #{medicaltype}
+                   and c2.exam_id = e.id) > 0
+                   )
+            )
+    </select>
+</mapper>
+

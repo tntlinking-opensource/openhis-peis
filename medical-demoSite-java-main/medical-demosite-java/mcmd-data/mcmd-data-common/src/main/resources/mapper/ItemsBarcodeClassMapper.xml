@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.ItemsBarcodeClassMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.ItemsBarcodeClass" id="ItemsBarcodeClassMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="className" column="class_name"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectItemsBarcodeClassVo">
+        select id, createdate, modifydate, class_name
+        from md_items_barcode_class
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ItemsBarcodeClassMap">
+        <include refid="selectItemsBarcodeClassVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ItemsBarcodeClassMap">
+        <include refid="selectItemsBarcodeClassVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

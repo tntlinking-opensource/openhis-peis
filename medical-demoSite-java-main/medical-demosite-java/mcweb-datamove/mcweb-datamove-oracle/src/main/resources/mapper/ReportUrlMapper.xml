@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ReportUrlMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ReportUrl" id="ReportUrlMap">
+        <id property="id" column="ID"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="wordUrl" column="WORD_URL"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isHead" column="IS_HEAD"/>
+        <result property="pdfUrl" column="PDF_URL"/>
+        <result property="depName" column="DEP_NAME"/>
+        <result property="diseaseHealth" column="DISEASE_HEALTH"/>
+        <result property="pdfUrlHead" column="PDF_URL_HEAD"/>
+        <result property="wordUrlHead" column="WORD_URL_HEAD"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="configId" column="CONFIG_ID"/>
+        <result property="creator" column="CREATOR"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReportUrlVo">
+        select ID,
+               DEP_ID,
+               PATIENTCODE,
+               WORD_URL,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_HEAD,
+               PDF_URL,
+               DEP_NAME,
+               DISEASE_HEALTH,
+               PDF_URL_HEAD,
+               WORD_URL_HEAD,
+               SHORT_CODE,
+               CONFIG_ID,
+               CREATOR
+        from REPORT_URL
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReportUrlMap">
+        <include refid="selectReportUrlVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReportUrlMap">
+        <include refid="selectReportUrlVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

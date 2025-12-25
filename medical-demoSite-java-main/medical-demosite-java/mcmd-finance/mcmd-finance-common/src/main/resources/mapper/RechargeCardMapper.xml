@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.RechargeCardMapper">
+
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardVo">
+        select id, card_no, balance_limit, createdate, create_id, modifydate, modify_id, type_id, sell_id, sell_time, validity, card_state, memo, getter_id, get_time, grant_id, is_delete, card_prefix, card_logo, balance_jf, pay_id, sk_money, is_deletea, password, tel, order_id, tc_id, balance_money, tc_dateregister, tc_patientcode, tc_checked, recheck_money, sell_status, tc_price, sell_price, purchaser, phone, zk, process_id            from md_card
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.RechargeCardVo">
+        SELECT
+            o.id,
+            o.card_id,
+            o.`limit`,
+            o.branch_center,
+            o.operation_id,
+            STR_TO_DATE ( o.operation_time, '%Y-%m-%d' ) AS operationTime,
+            o.is_add,
+            o.memotext,
+            o.charge_id,
+            o.handle_money,
+            c.memo AS kbz,
+            STR_TO_DATE ( c.validity, '%Y-%m-%d' ) AS yxq,
+            c.card_logo AS kbs,
+            c.card_state AS ksm,
+            t.type_name AS cardType,
+            p.patientname AS tjzxm,
+            pc.moneyamountpaid AS jsf,
+            o.consumetype
+        FROM
+            md_limit_operation o
+                LEFT JOIN md_card c ON c.card_no = o.card_id
+                LEFT JOIN md_card_type t ON t.id = o.card_type
+                LEFT JOIN md_peispatient p ON p.patientcode = o.charge_id
+                LEFT JOIN md_peispatient_reservation_charge pc ON pc.patientcode = o.charge_id
+        <where>
+            o.is_delete = 0
+            AND c.is_delete = 0
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND o.branch_center IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.isAdd!=null">
+                AND o.is_add = #{param.isAdd}
+            </if>
+            <if test="param.cardId!=null and param.cardId!=''">
+                AND o.card_id = #{param.cardId}
+            </if>
+            <if test="param.startTime!=null">
+                AND o.operation_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND o.operation_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.consumetype!=null">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND(o.consumetype = #{param.consumetype} OR o.consumetype IS NULL)
+                    </when>
+                    <otherwise>
+                        AND o.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY o.operation_time DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.finance.bean.model.Card">
+        <include refid="selectCardVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.RechargeCardVo">
+        SELECT
+        row_number() over(order by o.operation_time DESC) as rownum,
+        o.id,
+        o.card_id,
+        o.`limit`,
+        o.branch_center,
+        o.operation_id,
+        STR_TO_DATE ( o.operation_time, '%Y-%m-%d' ) AS operationTime,
+        o.is_add,
+        o.memotext,
+        o.charge_id,
+        o.handle_money,
+        c.memo AS kbz,
+        STR_TO_DATE ( c.validity, '%Y-%m-%d' ) AS yxq,
+        c.card_logo AS kbs,
+        c.card_state AS ksm,
+        t.type_name AS cardType,
+        p.patientname AS tjzxm,
+        pc.moneyamountpaid AS jsf,
+        o.consumetype
+        FROM
+        md_limit_operation o
+        LEFT JOIN md_card c ON c.card_no = o.card_id
+        LEFT JOIN md_card_type t ON t.id = o.card_type
+        LEFT JOIN md_peispatient p ON p.patientcode = o.charge_id
+        LEFT JOIN md_peispatient_reservation_charge pc ON pc.patientcode = o.charge_id
+        <where>
+            o.is_delete = 0
+            AND c.is_delete = 0
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND o.branch_center IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.isAdd!=null">
+                AND o.is_add = #{param.isAdd}
+            </if>
+            <if test="param.cardId!=null and param.cardId!=''">
+                AND o.card_id = #{param.cardId}
+            </if>
+            <if test="param.startTime!=null">
+                AND o.operation_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND o.operation_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.consumetype!=null">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND(o.consumetype = #{param.consumetype} OR o.consumetype IS NULL)
+                    </when>
+                    <otherwise>
+                        AND o.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY o.operation_time DESC
+    </select>
+</mapper>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppRecommendMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppRecommend" id="AppRecommendMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="loc" column="LOC"/>
+        <result property="recType" column="REC_TYPE"/>
+        <result property="recUrl" column="REC_URL"/>
+        <result property="cid" column="CID"/>
+        <result property="recSort" column="REC_SORT"/>
+        <result property="recState" column="REC_STATE"/>
+        <result property="title" column="TITLE"/>
+        <result property="dataUrl" column="DATA_URL"/>
+        <result property="fzx" column="FZX"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppRecommendVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               LOC,
+               REC_TYPE,
+               REC_URL,
+               CID,
+               REC_SORT,
+               REC_STATE,
+               TITLE,
+               DATA_URL,
+               FZX
+        from APP_RECOMMEND
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppRecommendMap">
+        <include refid="selectAppRecommendVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppRecommendMap">
+        <include refid="selectAppRecommendVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

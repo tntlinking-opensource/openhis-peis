@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reservation.dao.ReservationMapper">
+
+    <resultMap type="com.center.medical.reservation.bean.model.Reservation" id="ReservationMap">
+        <id property="id" column="id"/>
+        <result property="reservationNo" column="reservation_no"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="fUsecodehiden" column="f_usecodehiden"/>
+        <result property="levelId" column="level_id"/>
+        <result property="reservationDate" column="reservation_date"/>
+        <result property="timeId" column="time_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="reserveGroupId" column="reserve_group_id"/>
+        <result property="comboId" column="combo_id"/>
+        <result property="bizId" column="biz_id"/>
+        <result property="bizComboId" column="biz_combo_id"/>
+        <result property="bizOrderNum" column="biz_order_num"/>
+        <result property="realName" column="real_name"/>
+        <result property="idcard" column="idcard"/>
+        <result property="sex" column="sex"/>
+        <result property="mobile" column="mobile"/>
+        <result property="systemId" column="system_id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="remark" column="remark"/>
+        <result property="status" column="status"/>
+        <result property="failReason" column="fail_reason"/>
+        <result property="operator" column="operator"/>
+        <result property="createdate" column="createdate"/>
+        <result property="creator" column="creator"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="modifier" column="modifier"/>
+        <result property="finishedTime" column="finished_time"/>
+        <result property="branchName" column="branch_name"/>
+        <result property="levelName" column="level_name"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReservationVo">
+        SELECT r.id,
+               r.reservation_no,
+               r.branch_id,
+               r.f_usecodehiden,
+               b.fzx AS branch_name,
+               r.level_id,
+               r.level_name,
+               r.reservation_date,
+               r.time_id,
+               r.user_id,
+               r.combo_id,
+               r.order_num,
+               r.reserve_group_id,
+               r.tjtcmc,
+               r.biz_id,
+               r.biz_combo_id,
+               r.biz_order_num,
+               r.real_name,
+               r.idcard,
+               r.sex,
+               r.mobile,
+               r.system_id,
+               bs.type_name,
+               r.patientcode,
+               r.id_org,
+               r.remark,
+               r.`status`,
+               r.fail_reason,
+               r.operator,
+               r.createdate,
+               r.creator,
+               r.modifydate,
+               r.modifier,
+               r.finished_time,
+               cs.khdwmc,
+               c.xsjl
+        FROM md_reservation r
+                 LEFT JOIN sys_branch b
+                           ON r.branch_id = b.branch_id
+                 LEFT JOIN sys_business_source bs ON r.system_id = bs.source_id
+                 LEFT JOIN md_createorder c ON c.ddh = r.biz_order_num
+                 LEFT JOIN crm_sellcustomer cs ON r.id_org = cs.id
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.reservation.bean.vo.ReservationVo">
+        SELECT r.id,
+        r.reservation_no,
+        r.branch_id,
+        r.f_usecodehiden,
+        b.fzx AS branch_name,
+        r.level_id,
+        r.level_name,
+        r.reservation_date,
+        r.time_id,
+        r.user_id,
+        r.combo_id,
+        r.order_num,
+        r.reserve_group_id,
+        r.tjtcmc,
+        r.biz_id,
+        r.biz_combo_id,
+        r.biz_order_num,
+        r.real_name,
+        r.idcard,
+        r.sex,
+        r.mobile,
+        r.system_id,
+        bs.type_name,
+        r.patientcode,
+        r.id_org,
+        r.remark,
+        r.`status`,
+        r.fail_reason,
+        r.operator,
+        r.createdate,
+        r.creator,
+        r.modifydate,
+        r.modifier,
+        r.finished_time,
+        cs.khdwmc,
+        p.doctorapply as xsjl,
+        (case when qu.id is not null then 1 else 0 end) as questionnaire
+        FROM md_reservation r
+        LEFT JOIN sys_branch b ON r.branch_id = b.branch_id
+        LEFT JOIN sys_business_source bs ON r.system_id = bs.source_id
+        LEFT JOIN md_createorder c ON c.ddh = r.biz_order_num
+        LEFT JOIN crm_sellcustomer cs ON r.id_org = cs.id
+        LEFT JOIN md_questionnaire qu on qu.patientcode = RIGHT(r.patientcode, 8)
+        LEFT JOIN md_peispatient p on p.patientcode = r.patientcode
+        <where>
+            r.is_delete = 0
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND r.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.startTime!=null">
+                AND r.reservation_date <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.reservation_date <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.systemId!=null ">
+                AND r.system_id = #{param.systemId}
+            </if>
+            <if test="param.mobile!=null and param.mobile!=''">
+                AND r.mobile LIKE concat('%',#{param.mobile},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.realName!=null and param.realName!=''">
+                AND r.real_name LIKE concat('%',#{param.realName},'%')
+            </if>
+            <if test="param.reservationNo!=null and param.reservationNo!=''">
+                AND r.reservation_no = #{param.reservationNo}
+            </if>
+            <if test="param.status!=null ">
+                AND r.`status` = #{param.status}
+            </if>
+            <if test="param.status == null ">
+                AND r.`status` IN (1,2,3)
+            </if>
+            <if test="param.reservationDate!=null">
+                AND STR_TO_DATE(r.reservation_date,'%Y-%m-%d') = STR_TO_DATE(#{param.reservationDate},'%Y-%m-%d')
+            </if>
+            <if test="param.levelId!=null ">
+                AND r.level_id = #{param.levelId}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND p.id_opendoctor = #{param.xsjl}
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cs.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.notDisplayVirtual!=null and param.notDisplayVirtual == 1">
+                AND r.patientcode is not null
+            </if>
+        </where>
+        GROUP BY r.reservation_no
+        ORDER BY r.reservation_date DESC
+    </select>
+
+    <!-- 根据预约号获取记录详情 -->
+    <select id="getInfoByNo" resultType="com.center.medical.reservation.bean.vo.ReservationVo">
+        <include refid="selectReservationVo"/>
+        <where>
+            r.is_delete = 0 AND r.reservation_no = #{reservationNo}
+        </where>
+    </select>
+
+
+    <!-- 根据id查体检预约记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.reservation.bean.vo.ReservationVo">
+        <include refid="selectReservationVo"/>
+        <where>
+            r.is_delete = 0 AND r.id = #{id}
+        </where>
+    </select>
+
+    <!--获取导出预约数据-->
+    <select id="getExportData" resultType="com.center.medical.reservation.bean.dto.ReservationData">
+        SELECT r.id,
+        r.reservation_no,
+        r.branch_id,
+        r.f_usecodehiden,
+        b.fzx AS branch_name,
+        r.level_id,
+        r.level_name,
+        r.reservation_date,
+        r.time_id,
+        r.user_id,
+        r.combo_id,
+        r.order_num,
+        r.reserve_group_id,
+        r.tjtcmc,
+        r.biz_id,
+        r.biz_combo_id,
+        r.biz_order_num,
+        r.real_name,
+        r.idcard,
+        r.sex,
+        r.mobile,
+        r.system_id,
+        bs.type_name,
+        r.patientcode,
+        r.id_org,
+        r.remark,
+        r.`status`,
+        r.fail_reason,
+        r.operator,
+        r.createdate,
+        r.creator,
+        r.modifydate,
+        r.modifier,
+        r.finished_time,
+        cs.khdwmc,
+        p.doctorapply as xsjl,
+        (case when qu.id is not null then 1 else 0 end) as questionnaire
+        FROM md_reservation r
+        LEFT JOIN sys_branch b ON r.branch_id = b.branch_id
+        LEFT JOIN sys_business_source bs ON r.system_id = bs.source_id
+        LEFT JOIN md_createorder c ON c.ddh = r.biz_order_num
+        LEFT JOIN crm_sellcustomer cs ON r.id_org = cs.id
+        LEFT JOIN md_questionnaire qu on qu.patientcode = RIGHT(r.patientcode, 8)
+        LEFT JOIN md_peispatient p on p.patientcode = r.patientcode
+        <where>
+            r.is_delete = 0
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND r.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.startTime!=null">
+                AND r.reservation_date <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.reservation_date <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.systemId!=null ">
+                AND r.system_id = #{param.systemId}
+            </if>
+            <if test="param.mobile!=null and param.mobile!=''">
+                AND r.mobile LIKE concat('%',#{param.mobile},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.realName!=null and param.realName!=''">
+                AND r.real_name LIKE concat('%',#{param.realName},'%')
+            </if>
+            <if test="param.reservationNo!=null and param.reservationNo!=''">
+                AND r.reservation_no = #{param.reservationNo}
+            </if>
+            <if test="param.status!=null ">
+                AND r.`status` = #{param.status}
+            </if>
+            <if test="param.status == null ">
+                AND r.`status` IN (1,2,3)
+            </if>
+            <if test="param.reservationDate!=null">
+                AND STR_TO_DATE(r.reservation_date,'%Y-%m-%d') = STR_TO_DATE(#{param.reservationDate},'%Y-%m-%d')
+            </if>
+            <if test="param.levelId!=null ">
+                AND r.level_id = #{param.levelId}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND p.id_opendoctor = #{param.xsjl}
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cs.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+        </where>
+        ORDER BY r.reservation_date DESC
+    </select>
+
+    <!--团体预约信息按时间段导出数据-->
+    <select id="getGroupExportData" resultType="com.center.medical.reservation.bean.dto.RGroupData">
+
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getReservation" resultType="com.center.medical.reservation.bean.model.Reservation">
+        select *
+        from md_reservation r
+        <where>
+            r.is_delete = 0
+            and r.status in (0,1,2,3)
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND RIGHT(r.patientcode, 8) = RIGHT(#{param.patientcode}, 8)
+            </if>
+            <if test="param.reservationNo!=null and param.reservationNo!=''">
+                AND r.reservation_no = #{param.reservationNo}
+            </if>
+            <if test="param.mobile!=null and param.mobile!=''">
+                AND r.mobile = #{param.mobile}
+            </if>
+        </where>
+        ORDER BY r.reservation_date DESC
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="vipExport" resultType="com.center.medical.reservation.bean.vo.VipExportVo">
+        SELECT
+        r.id,
+        r.reservation_date,
+        CONCAT(rs.start_time,' - ',rs.end_time) as timeSlot,
+        r.patientcode,
+        r.real_name,
+        r.sex,
+        p.age,
+        r.mobile,
+        p.doctorapply,
+        p.org_name,
+        r.level_id
+        FROM
+        md_reservation r
+        left join md_reservation_setting rs on rs.id = r.time_id
+        left join md_peispatient p on p.patientcode = r.patientcode
+        <where>
+            r.is_delete = 0
+            AND r.level_id in (2,3)
+            AND r.status IN (1,2,3)
+            <if test="param.reservationDate!=null">
+                AND r.reservation_date <![CDATA[ >= ]]> #{param.reservationDate}
+                AND r.reservation_date <![CDATA[ <= ]]> DATE_FORMAT(#{param.reservationDate}, '%Y-%m-%d 23:59:59')
+            </if>
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND r.branch_id IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY r.reservation_date ASC,rs.start_time ASC
+    </select>
+</mapper>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.MemberInterflowMapper">
+
+    <resultMap type="com.center.medical.member.bean.model.Memberbirthdat" id="MemberInterflowMap">
+        <id property="id" column="id"/>
+        <result property="hyId" column="hy_id"/>
+        <result property="visitMan" column="visit_man"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="visitType" column="visit_type"/>
+        <result property="visitNote" column="visit_note"/>
+        <result property="note" column="note"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="visitText" column="visit_text"/>
+        <result property="visitStatus" column="visit_status"/>
+    </resultMap>
+
+
+</mapper>
+

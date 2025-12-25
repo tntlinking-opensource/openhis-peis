@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.ReviewMapper">
+
+    <resultMap type="com.center.medical.bean.model.Review" id="ReviewMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="dateFrom" column="date_from"/>
+        <result property="dateTo" column="date_to"/>
+        <result property="callbackStation" column="callback_station"/>
+        <result property="userId" column="user_id"/>
+        <result property="noticeOfProceedingText" column="notice_of_proceeding_text"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="reviewPdf" column="review_pdf"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReviewVo">
+        select r.id,
+               r.patientcode,
+               r.date_from,
+               r.date_to,
+               r.callback_station,
+               r.user_id,
+               r.notice_of_proceeding_text,
+               r.createdate,
+               r.modifydate,
+               r.is_delete,
+               r.id_org,
+               r.review_pdf
+        from md_review r
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReviewMap">
+        SELECT
+        r.id,
+        r.patientcode,
+        r.date_from,
+        r.date_to,
+        r.callback_station,
+        r.user_id,
+        r.notice_of_proceeding_text,
+        r.createdate,
+        r.modifydate,
+        r.is_delete,
+        r.id_org,
+        r.review_pdf,
+        p.patientname,
+        p.idcardno,
+        p.id_sex,
+        p.age,
+        sc.khdwmc AS org_name,
+        ( SELECT GROUP_CONCAT( items_name SEPARATOR '，' ) FROM md_review_project WHERE review_id = r.id ORDER BY
+        createdate DESC ) AS items_name
+        FROM
+        md_review r
+        LEFT JOIN md_peispatient p ON r.patientcode = p.patientcode
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            <if test="param.dateFrom!=null">
+                AND r.date_from <![CDATA[ >= ]]> #{param.dateFrom}
+            </if>
+            <if test="param.dateTo!=null">
+                AND r.date_to <![CDATA[ <= ]]> #{param.dateTo}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND r.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.callbackStation!=null">
+                AND r.callback_station = #{param.callbackStation}
+            </if>
+            <if test="param.idOrg!=null">
+                AND r.id_org = #{param.idOrg}
+            </if>
+        </where>
+        ORDER BY r.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReviewMap">
+        <include refid="selectReviewVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    <!-- 根据id获取列表-->
+    <select id="getListByIds" resultType="com.center.medical.reception.bean.vo.ReviewPrintVo">
+        SELECT
+        r.id,
+        r.patientcode,
+        r.date_from,
+        r.date_to,
+        r.callback_station,
+        r.user_id,
+        r.notice_of_proceeding_text AS notice,
+        r.createdate,
+        r.modifydate,
+        r.is_delete,
+        r.id_org,
+        r.review_pdf,
+        p.patientname,
+        p.idcardno,
+        p.id_sex,
+        p.age,
+        p.id_examtype AS `type`,
+        sc.khdwmc AS org_name
+        FROM
+        md_review r
+        LEFT JOIN md_peispatient p ON r.patientcode = p.patientcode
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        <where>
+            <if test="ids!=null">
+                AND r.id IN
+                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY r.createdate DESC
+    </select>
+
+
+    <!-- 获取复查项目-->
+    <select id="getRecheckItems" resultType="com.center.medical.reception.bean.dto.RecheckItemsDto">
+        SELECT md_items.id                            as idExamfeeitem,
+               md_peispatientfeeitem.examfeeitem_name as examfeeitemName,
+               md_items.unitprice                     as price,
+               md_items.unitprice                     as factprice,
+               md_items.id_depart                     as idKs,
+               1 as count,
+            1 as idPayway,
+            0 as sfjx,
+            0 as changeItem,
+            0 as FGiveup,
+            0 as FDelayed,
+            0 as isMintc,
+            0 as isbx,
+            0 as bxcount
+        FROM md_review
+            LEFT JOIN md_review_project
+        ON md_review.id = md_review_project.review_id
+            LEFT JOIN md_peispatientfeeitem ON md_review_project.items_id = md_peispatientfeeitem.id
+            LEFT JOIN md_items ON md_peispatientfeeitem.id_examfeeitem = md_items.id
+        WHERE
+            review.patientcode = #{patientcode}
+    </select>
+
+
+    <!-- 获取复查项目-->
+    <select id="getRecheckItem" resultType="com.center.medical.reception.bean.dto.RecheckItemsDto">
+        SELECT i.id        as idExamfeeitem,
+               i.examfeeitem_name,
+               i.unitprice as price,
+               i.id_depart as idKs
+        FROM md_review mr
+                 INNER JOIN md_review_project mrp ON mr.id = mrp.review_id
+                 INNER JOIN md_items i ON mrp.items_id = i.id
+        WHERE mr.patientcode = #{patientcode}
+    </select>
+</mapper>
+

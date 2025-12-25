@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.app.security.common.dao.AppConnectMapper">
+    <resultMap id="BaseResultMap" type="com.center.medical.app.security.common.model.AppConnect">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="app_id" jdbcType="TINYINT" property="appId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="image_url" jdbcType="VARCHAR" property="imageUrl"/>
+        <result column="biz_user_id" jdbcType="VARCHAR" property="bizUserId"/>
+        <result column="biz_unionid" jdbcType="VARCHAR" property="bizUnionid"/>
+        <result column="temp_uid" jdbcType="VARCHAR" property="tempUid"/>
+        <result column="biz_temp_session" jdbcType="VARCHAR" property="bizTempSession"/>
+
+    </resultMap>
+
+    <select id="getByBizUserId" resultType="com.center.medical.app.security.common.model.AppConnect">
+        select *
+        from md_app_connect
+        where biz_user_id = #{bizUserId}
+          and app_id = #{appId}
+    </select>
+
+    <select id="getByUserId" resultType="com.center.medical.app.security.common.model.AppConnect">
+        select *
+        from md_app_connect
+        where user_id = #{userId}
+          and app_id = #{appId} limit 1
+    </select>
+    <select id="getUserIdByUnionId" resultType="java.lang.String">
+        SELECT user_id
+        from md_app_connect
+        where biz_unionid = #{bizUnionId} limit 1
+    </select>
+
+    <update id="updateByBizUserIdAndAppId">
+        UPDATE md_app_connect
+        SET user_id = #{appConnect.userId}
+        where biz_user_id = #{appConnect.bizUserId}
+          and app_id = #{appConnect.appId}
+    </update>
+
+    <select id="getByTempUid" resultType="com.center.medical.app.security.common.model.AppConnect">
+        select *
+        from md_app_connect
+        where temp_uid = #{tempUid}
+    </select>
+
+    <update id="bindUserIdByTempUid">
+        update md_app_connect
+        set user_id = #{userId}
+        where temp_uid = #{tempUid}
+    </update>
+</mapper>

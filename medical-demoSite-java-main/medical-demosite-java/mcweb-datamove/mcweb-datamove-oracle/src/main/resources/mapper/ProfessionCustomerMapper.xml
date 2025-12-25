@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ProfessionCustomerMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.ProfessionCustomer" id="ProfessionCustomerMap">
+        <id property="id" column="ID"/>
+        <result property="empOrgAddress" column="EMP_ORG_ADDRESS"/>
+        <result property="empOrgAreaName" column="EMP_ORG_AREA_NAME"/>
+        <result property="empOrgBizCode" column="EMP_ORG_BIZ_CODE"/>
+        <result property="empOrgEconSectorName" column="EMP_ORG_ECON_SECTOR_NAME"/>
+        <result property="empOrgEconTypeName" column="EMP_ORG_ECON_TYPE_NAME"/>
+        <result property="empOrgName" column="EMP_ORG_NAME"/>
+        <result property="empOrgPhone" column="EMP_ORG_PHONE"/>
+        <result property="empOrgPostcode" column="EMP_ORG_POSTCODE"/>
+        <result property="empOrgSecBizCode" column="EMP_ORG_SEC_BIZ_CODE"/>
+        <result property="empOrgSizeName" column="EMP_ORG_SIZE_NAME"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectProfessionCustomerVo">
+        select ID,
+               EMP_ORG_ADDRESS,
+               EMP_ORG_AREA_NAME,
+               EMP_ORG_BIZ_CODE,
+               EMP_ORG_ECON_SECTOR_NAME,
+               EMP_ORG_ECON_TYPE_NAME,
+               EMP_ORG_NAME,
+               EMP_ORG_PHONE,
+               EMP_ORG_POSTCODE,
+               EMP_ORG_SEC_BIZ_CODE,
+               EMP_ORG_SIZE_NAME
+        from PROFESSION_CUSTOMER
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ProfessionCustomerMap">
+        <include refid="selectProfessionCustomerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ProfessionCustomerMap">
+        <include refid="selectProfessionCustomerVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

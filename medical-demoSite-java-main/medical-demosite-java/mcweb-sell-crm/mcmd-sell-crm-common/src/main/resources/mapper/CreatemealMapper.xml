@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.CreatemealMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Createmeal" id="CreatemealMap">
+        <id property="id" column="id"/>
+        <result property="tjtcmc" column="tjtcmc"/>
+        <result property="tjtcsrm" column="tjtcsrm"/>
+        <result property="tjtcjc" column="tjtcjc"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="jhys" column="jhys"/>
+        <result property="syxb" column="syxb"/>
+        <result property="tcysjg" column="tcysjg"/>
+        <result property="tczk" column="tczk"/>
+        <result property="zhjg" column="zhjg"/>
+        <result property="khdwmcid" column="khdwmcid"/>
+        <result property="sfybd" column="sfybd"/>
+        <result property="sfyhtc" column="sfyhtc"/>
+        <result property="nlz" column="nlz"/>
+        <result property="nld" column="nld"/>
+        <result property="fkfs" column="fkfs"/>
+        <result property="zytjlb" column="zytjlb"/>
+        <result property="combostate" column="combostate"/>
+        <result property="kxsl" column="kxsl"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="bjzt" column="bjzt"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isOrgPlus" column="is_org_plus"/>
+        <result property="zkztw" column="zkztw"/>
+        <result property="tjm" column="tjm"/>
+        <result property="sfzx" column="sfzx"/>
+        <result property="sfwc" column="sfwc"/>
+        <result property="zxzk" column="zxzk"/>
+        <result property="forbidden" column="forbidden"/>
+        <result property="pinganId" column="pingan_id"/>
+        <result property="isBig" column="is_big"/>
+        <result property="tongLimit" column="tong_limit"/>
+        <result property="zhjgapp" column="zhjgapp"/>
+        <result property="groupPrice" column="group_price"/>
+        <result property="totalCostprice" column="total_costprice"/>
+        <result property="bz" column="bz"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCreatemealVo">
+        SELECT c.id,
+               c.tjtcmc,
+               c.tjtcsrm,
+               c.tjtcjc,
+               c.tjlx,
+               c.jhys,
+               c.syxb,
+               c.tcysjg,
+               c.tczk,
+               c.zhjg,
+               c.khdwmcid,
+               c.sfybd,
+               c.sfyhtc,
+               c.nlz,
+               c.nld,
+               c.fkfs,
+               c.zytjlb,
+               c.combostate,
+               c.kxsl,
+               c.xsjlid,
+               sb.fzx,
+               c.fzxid,
+               c.is_delete,
+               c.bjzt,
+               c.createdate,
+               c.modifydate,
+               c.is_org_plus,
+               c.zkztw,
+               c.tjm,
+               c.sfzx,
+               c.sfwc,
+               c.zxzk,
+               c.forbidden,
+               c.pingan_id,
+               c.is_big,
+               c.tong_limit,
+               c.zhjgapp,
+               c.group_price,
+               c.total_costprice,
+               c.bz
+        FROM md_createmeal c
+                 LEFT JOIN sys_branch sb ON sb.branch_id = c.fzxid
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.sellcrm.bean.model.Createmeal">
+        SELECT c.*,
+        cs.khdwmc,
+        group_concat(sb.fzx) AS fzxName,
+        ca.id as appId
+        FROM md_createmeal c
+        LEFT JOIN crm_sellcustomer cs ON c.khdwmcid = cs.id
+        LEFT JOIN md_mealandfzx maf on c.id = maf.tcid
+        LEFT JOIN sys_branch sb ON sb.branch_id = maf.fzxid
+        LEFT JOIN md_createmeal_app ca on ca.tcid = c.id
+            and ca.is_delete = 0
+        INNER JOIN sys_user u ON u.user_no=c.xsjlid
+        <where>
+            c.is_delete = 0
+            <if test="param.branchIds!=null">
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_mealandfzx mf
+                WHERE
+                mf.tcid = c.id
+                AND mf.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+                )
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND c.xsjlid=#{param.userNo}
+            </if>
+            <if test="param.tjtcmc!=null and param.tjtcmc!=''">
+                AND c.tjtcmc LIKE concat('%',#{param.tjtcmc},'%')
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND c.tjtcsrm LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.tjlx!=null">
+                AND c.tjlx = #{param.tjlx}
+            </if>
+            <if test="param.syxb!=null">
+                AND c.syxb = #{param.syxb}
+            </if>
+            <if test="param.lowerLevelIds!=null">
+                AND c.xsjlid IN
+                <foreach collection="param.lowerLevelIds" item="lowerLevelId" open="(" close=")" separator=",">
+                    #{lowerLevelId}
+                </foreach>
+            </if>
+            <if test="param.pinganId!=null and param.pinganId!=''">
+                AND c.pingan_id = #{param.pinganId}
+            </if>
+        </where>
+        GROUP BY c.id
+        <choose>
+            <when test="param.customerNameSort!=null and param.customerNameSort == 1">
+                ORDER BY cs.khdwmc,c.createdate DESC
+            </when>
+            <otherwise>
+                ORDER BY c.createdate DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CreatemealMap">
+        <include refid="selectCreatemealVo"/>
+        <where>
+            c.id = #{id}
+        </where>
+    </select>
+
+    <!-- 判断套餐能否编辑-->
+    <select id="isEdit" resultType="java.lang.String">
+        SELECT group_concat(o.ddmc)
+        FROM md_createmeal m
+                 INNER JOIN md_orderandcombo c ON c.tcid = m.id
+                 INNER JOIN md_createorder o ON o.id = c.ddid
+            AND o.is_delete = 0
+        WHERE m.id = #{tcId}
+          AND (o.spzt = 3 OR o.bgzt = 3 OR c.spzt = 1)
+    </select>
+
+    <!-- 判断套餐能否删除-->
+    <select id="isRemove" resultType="java.lang.String">
+        SELECT group_concat(o.ddmc)
+        FROM md_createmeal m
+                 INNER JOIN md_orderandcombo c ON c.tcid = m.id
+                 INNER JOIN md_createorder o ON o.id = c.ddid
+            AND o.is_delete = 0
+        WHERE m.id = #{tcId}
+    </select>
+
+    <!--获取普通套餐与最小套餐的数据 -->
+    <select id="getTcData" resultType="com.center.medical.sellcrm.bean.model.Createmeal">
+        SELECT
+        m.id,
+        m.tjtcmc,
+        m.tjlx,
+        m.tjtcjc,
+        m.tjtcsrm,
+        m.jhys,
+        m.syxb,
+        m.tcysjg,
+        m.tczk,
+        s.khdwmc,
+        m.sfybd,
+        m.sfwc sfwctj,
+        m.nlz,
+        m.nld,
+        m.fkfs,
+        m.zytjlb,
+        m.combostate,
+        a.fzxid,
+        m.sfzx,
+        m.sfwc,
+        m.forbidden,
+        m.zhjg,
+        m.sfyhtc,
+        a.fzx as fzxName
+        FROM
+        md_createmeal m
+        INNER JOIN md_mealandfzx mf ON mf.tcid = m.id
+        LEFT JOIN crm_sellcustomer s ON s.id = m.khdwmcid
+        INNER JOIN (
+        SELECT
+        mfin.tcid,
+        GROUP_CONCAT( DISTINCT mfin.fzxid ) AS fzxid,
+        GROUP_CONCAT( DISTINCT b.fzx ) AS fzx
+        FROM
+        md_mealandfzx mfin
+        LEFT JOIN sys_branch b ON b.branch_id = mfin.fzxid
+        GROUP BY
+        tcid
+        ) a ON a.tcid = m.id
+        <where>
+            m.is_delete = 0
+            AND (m.forbidden IS NULL or m.forbidden = 0)
+            AND m.zhjg IS NOT NULL
+            <if test="param.key!=null and param.key!=''">
+                AND m.tjtcsrm like concat('%',#{param.key},'%')
+            </if>
+            AND ( m.xsjlid = #{param.userId} )
+        </where>
+        GROUP BY
+        m.id,
+        m.tjtcmc,
+        m.tjlx,
+        m.tjtcjc,
+        m.tjtcsrm,
+        m.jhys,
+        m.syxb,
+        m.tcysjg,
+        m.tczk,
+        s.khdwmc,
+        m.sfybd,
+        m.sfwc,
+        m.nlz,
+        m.nld,
+        m.fkfs,
+        m.zytjlb,
+        m.combostate,
+        m.sfzx,
+        m.createdate,
+        a.fzxid,
+        m.forbidden
+        ORDER BY
+        m.createdate DESC
+    </select>
+
+    <!-- 返回客户从未使用过的套餐和客户单位电话-->
+    <select id="getKhdwdhAndTcs" resultType="com.center.medical.sellcrm.bean.model.Createmeal">
+        SELECT
+        m.*,
+        (SELECT GROUP_CONCAT(DISTINCT harm_name)
+        FROM md_harm
+        WHERE FIND_IN_SET(id, m.jhys)
+        ) as jhysName,
+        (SELECT
+        group_concat( DISTINCT b.fzx ) AS fzx
+        FROM
+        md_mealandfzx maf
+        LEFT JOIN sys_branch b ON b.branch_id = maf.fzxid
+        WHERE
+        maf.tcid = m.id
+        ) as fzxName
+        FROM
+        md_createmeal m
+        LEFT JOIN md_orderandcombo o ON o.tcid = m.id
+        LEFT JOIN crm_sellcustomer ms ON ms.id = m.khdwmcid
+        <where>
+            o.id IS NULL
+            AND m.is_delete = 0
+            <if test="khdwdhId!=null and khdwdhId!=''">
+                AND m.khdwmcid = #{khdwdhId}
+            </if>
+            <if test="ids!=null">
+                AND m.id NOT IN
+                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="seasonZk!=null and seasonZk!=''">
+                AND m.tczk >= #{seasonZk}
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取体检套餐名称-->
+    <select id="getTjtcmc" resultType="java.lang.String">
+        SELECT
+            IFNULL( c.tjtcmc, cm.tjtcmc ) AS tjtcmc
+        FROM
+            md_peispatient t
+                LEFT JOIN md_createcombo c ON t.id_tjtc = c.id
+                LEFT JOIN md_createmeal cm ON t.id_tjtc = cm.id
+        WHERE
+            t.id_tjtc = #{idTjtc}
+        GROUP BY t.id_tjtc
+    </select>
+
+
+    <!-- 获取体检套餐名称-->
+    <select id="getExportXyData" resultType="com.center.medical.sellcrm.bean.dto.CreatemealExportXyDto">
+        SELECT
+            c.tjtcmc,
+            c.jhys,
+            c.zytjlb,
+            0 as num,
+            c.tjlx,
+            c.id
+        FROM
+            md_createmeal c
+        <where>
+            1 = 1
+            <if test="tcId!=null and tcId.size > 0">
+                AND c.id IN
+                <foreach collection="tcId" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="orderId!=null and orderId!=''">
+                and exists(select 1 from md_orderandcombo oac where oac.ddid = #{orderId} and oac.tcid = c.id)
+            </if>
+        </where>
+        UNION ALL
+        SELECT
+            c.tjtcmc,
+            c.jhys,
+            c.zytjlb,
+            1 as num,
+            c.tjlx,
+            c.id
+        FROM
+            md_createcombo c
+        <where>
+            1 = 1
+            <if test="tcId!=null and tcId.size > 0">
+                AND c.id IN
+                <foreach collection="tcId" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="orderId!=null and orderId!=''">
+                and exists(select 1 from md_orderandcombo oac where oac.ddid = #{orderId} and oac.tcid = c.id)
+            </if>
+        </where>
+    </select>
+
+
+
+    <!-- 普通套餐表查询职业项目-->
+    <select id="findMedicalItems" resultType="java.lang.String">
+        SELECT DISTINCT
+            i.examfeeitem_name
+        FROM
+            md_createmeal m
+                INNER JOIN md_mealanditem mai ON mai.tcid = m.id
+                INNER JOIN md_items i ON i.id = mai.sfxmid
+                LEFT JOIN md_inspect_charge ic ON ic.charge_id = i.id
+                AND ic.is_delete = 0
+                LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+                AND e.is_delete = 0
+        WHERE
+            m.id = #{id}
+          AND (
+                EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem c
+                        WHERE
+                             1 = 1
+                            <if test="harmIds!=null">
+                                AND c.harm_id IN
+                                <foreach collection="harmIds" item="harmId" open="(" close=")" separator=",">
+                                    #{harmId}
+                                </foreach>
+                            </if>
+                          AND c.medical_type = #{medicaltype}
+                          AND c.item_id = i.id
+                    )
+                OR EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem c2
+                        WHERE
+                             1 = 1
+                            <if test="harmIds!=null">
+                                AND c2.harm_id IN
+                                <foreach collection="harmIds" item="harmId" open="(" close=")" separator=",">
+                                    #{harmId}
+                                </foreach>
+                            </if>
+                          AND c2.medical_type = #{medicaltype}
+                          AND c2.exam_id = e.id
+                    )
+            )
+    </select>
+
+
+    <!-- 最小套餐查询职业项目-->
+    <select id="findMedicalItems2" resultType="java.lang.String">
+        SELECT DISTINCT
+            i.examfeeitem_name
+        FROM
+            md_createcombo m
+                INNER JOIN md_comboanditem mai ON mai.tcid = m.id
+                INNER JOIN md_items i ON i.id = mai.sfxmid
+                LEFT JOIN md_inspect_charge ic ON ic.charge_id = i.id
+                AND ic.is_delete = 0
+                LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+                AND e.is_delete = 0
+        WHERE
+            m.id = #{id}
+          AND (
+                EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem c
+                        WHERE
+                            1 = 1
+                            <if test="harmIds!=null">
+                                AND c.harm_id IN
+                                <foreach collection="harmIds" item="harmId" open="(" close=")" separator=",">
+                                    #{harmId}
+                                </foreach>
+                            </if>
+                          AND c.medical_type = #{medicaltype}
+                          AND c.item_id = i.id
+                    )
+                OR EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem c2
+                        WHERE
+                            1 = 1
+                            <if test="harmIds!=null">
+                                AND c2.harm_id IN
+                                <foreach collection="harmIds" item="harmId" open="(" close=")" separator=",">
+                                    #{harmId}
+                                </foreach>
+                            </if>
+                          AND c2.medical_type = #{medicaltype}
+                          AND c2.exam_id = e.id
+                    )
+            )
+    </select>
+
+
+
+    <!-- 获取增加健康项目1-->
+    <select id="getJxItemsStr1" resultType="java.lang.String">
+        SELECT
+        group_concat(i.examfeeitem_name)
+        FROM
+            md_createmeal m
+                INNER JOIN md_mealanditem maf ON maf.tcid = m.id
+                INNER JOIN md_items i ON i.id = maf.sfxmid
+                INNER JOIN sys_dept d ON d.dept_no = i.id_depart
+                AND d.is_function = 1
+        WHERE
+            NOT EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        md_comboexamitem c
+                    WHERE
+                        1 = 1
+                        <if test="jhyss!=null">
+                            AND c.harm_id IN
+                            <foreach collection="jhyss" item="jhys" open="(" close=")" separator=",">
+                                #{jhys}
+                            </foreach>
+                        </if>
+                      AND c.medical_type = #{zytjlb}
+                      AND c.item_id = i.id
+                )
+          AND NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    md_inspect_charge ic
+                        INNER JOIN md_comboexamitem c ON c.exam_id = ic.inspect_id
+                WHERE
+                    ic.is_delete = 0
+                  AND ic.charge_id = i.id
+                    <if test="jhyss!=null">
+                        AND c.harm_id IN
+                        <foreach collection="jhyss" item="jhys" open="(" close=")" separator=",">
+                            #{jhys}
+                        </foreach>
+                    </if>
+                  AND c.medical_type = #{zytjlb}
+            )
+          AND m.id = #{id}
+        ORDER BY
+            i.examfeeitem_name
+    </select>
+
+
+    <!-- 获取增加健康项目2-->
+    <select id="getJxItemsStr2" resultType="java.lang.String">
+        SELECT
+        group_concat(i.examfeeitem_name)
+        FROM
+            md_createcombo m
+                INNER JOIN md_comboanditem maf ON maf.tcid = m.id
+                AND maf.is_delete = 0
+                INNER JOIN md_items i ON i.id = maf.sfxmid
+                INNER JOIN sys_dept d ON d.dept_no = i.id_depart
+                AND d.is_function = 1
+        WHERE
+            NOT EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        md_comboexamitem c
+                    WHERE
+                        1 = 1
+                        <if test="jhyss!=null">
+                            AND c.harm_id IN
+                            <foreach collection="jhyss" item="jhys" open="(" close=")" separator=",">
+                                #{jhys}
+                            </foreach>
+                        </if>
+                      AND c.medical_type = #{zytjlb}
+                      AND c.item_id = i.id
+                )
+          AND NOT EXISTS (
+                SELECT
+                    1
+                FROM
+                    md_inspect_charge ic
+                        INNER JOIN md_comboexamitem c ON c.exam_id = ic.inspect_id
+                WHERE
+                    ic.is_delete = 0
+                  AND ic.charge_id = i.id
+                    <if test="jhyss!=null">
+                        AND c.harm_id IN
+                        <foreach collection="jhyss" item="jhys" open="(" close=")" separator=",">
+                            #{jhys}
+                        </foreach>
+                    </if>
+                  AND c.medical_type = #{zytjlb}
+            )
+          AND m.id = #{id}
+        ORDER BY
+            i.examfeeitem_name
+    </select>
+
+
+
+    <!-- 获取增加健康项目通过id-->
+    <select id="getJxItemsStrById1" resultType="java.lang.String">
+        SELECT
+            group_concat(i.examfeeitem_name)
+        FROM
+            md_createmeal m
+                INNER JOIN md_mealanditem mai ON mai.tcid = m.id
+                INNER JOIN md_items i ON i.id = mai.sfxmid
+        WHERE
+            1 = 1
+          AND m.id =  #{id}
+        ORDER BY
+            i.examfeeitem_name
+    </select>
+
+
+    <!-- 获取增加健康项目通过id2-->
+    <select id="getJxItemsStrById2" resultType="java.lang.String">
+        SELECT
+            group_concat(i.examfeeitem_name)
+        FROM
+            md_createcombo m
+                INNER JOIN md_comboanditem mai ON mai.tcid = m.id
+                AND mai.is_delete = 0
+                INNER JOIN md_items i ON i.id = mai.sfxmid
+        WHERE
+            1 = 1
+          AND m.id = #{id}
+        ORDER BY
+            i.examfeeitem_name
+    </select>
+
+
+    <!-- 获取增加健康项目通过id2-->
+    <select id="getSfxm" resultType="com.center.medical.sellcrm.bean.dto.CMSfxmDto">
+        SELECT
+            fz,
+            group_concat( itemid ) itemId,
+            group_concat( sfxm ) sfxm,
+            group_concat( jcmd ) jcmd,
+            group_concat( jg ) jg,
+            group_concat( tcid ) tcId,
+            group_concat( tcjc ) tcjc
+        FROM
+            (
+                SELECT
+                    *
+                FROM
+                    (
+                        SELECT
+                            i.id itemid,
+                            m.id tcid,
+                            m.tjtcjc tcjc,
+                            i.xsdyfl,
+                            i.xh,
+                            p.print_name fz,
+                            i.examfeeitem_nameprn sfxm,
+                            i.jcyy jcmd,
+                            i.unitprice jg,
+                            p.shunxu
+                        FROM
+                            md_createmeal m,
+                            md_items i,
+                            md_mealanditem mi,
+                            md_printtype p
+                        WHERE
+                            ( i.f_discountdisabled IS NULL OR i.f_discountdisabled = 0 )
+                          AND mi.tcid = m.id
+                          AND mi.sfxmid = i.id
+                          AND p.id = i.xsdyfl
+                          AND m.id IN (${mealIds})
+                    ) as aaaaa
+                ) as bbbbb
+        GROUP BY
+            fz,
+            shunxu
+        ORDER BY
+            shunxu
+    </select>
+
+
+
+    <!-- 通过套餐id获取成本价-->
+    <select id="getCostpriceByTcid" resultType="java.lang.Double">
+        SELECT
+            IFNULL( sum( i.costprice ), 0 )
+        FROM
+            md_items i
+                INNER JOIN md_mealanditem mai ON mai.sfxmid = i.id
+        WHERE
+            mai.tcid = #{id}
+    </select>
+
+
+
+    <!-- 获取增加健康项目通过id2-->
+    <select id="getSfxmByOrder" resultType="com.center.medical.sellcrm.bean.dto.CMSfxmDto">
+        SELECT
+            fz,
+            group_concat( itemid ) itemid,
+            group_concat( sfxm ) sfxm,
+            group_concat( jcmd ) jcmd,
+            group_concat( jg ) jg,
+            group_concat( tcid ) tcid,
+            group_concat( tcjc ) tcjc
+        FROM
+            (
+                SELECT
+                    *
+                FROM
+                    (
+                        SELECT
+                            i.id itemid,
+                            o.ddh,
+                            m.id tcid,
+                            m.tjtcjc tcjc,
+                            i.xsdyfl,
+                            i.xh,
+                            p.print_name fz,
+                            i.examfeeitem_nameprn sfxm,
+                            i.jcyy jcmd,
+                            i.unitprice jg,
+                            p.shunxu
+                        FROM
+                            md_createorder o,
+                            md_orderandcombo c,
+                            md_createmeal m,
+                            md_items i,
+                            md_mealanditem mi,
+                            md_printtype p
+                        WHERE
+                            ( i.f_discountdisabled IS NULL OR i.f_discountdisabled = 0 )
+                          AND c.ddid = o.id
+                          AND c.tcid = m.id
+                          AND mi.tcid = m.id
+                          AND mi.sfxmid = i.id
+                          AND p.id = i.xsdyfl
+                          AND o.id = #{id}
+                        UNION ALL
+                        SELECT
+                            i.id itemid,
+                            o.ddh,
+                            m.id tcid,
+                            m.tjtcjc tcjc,
+                            i.xsdyfl,
+                            i.xh,
+                            p.print_name fz,
+                            i.examfeeitem_nameprn sfxm,
+                            i.jcyy jcmd,
+                            i.unitprice jg,
+                            p.shunxu
+                        FROM
+                            md_createorder o,
+                            md_orderandcombo c,
+                            md_createcombo m,
+                            md_items i,
+                            md_comboanditem ci,
+                            md_printtype p
+                        WHERE
+                            ( i.f_discountdisabled IS NULL OR i.f_discountdisabled = 0 )
+                          AND c.ddid = o.id
+                          AND c.tcid = m.id
+                          AND ci.tcid = m.id
+                          AND ci.sfxmid = i.id
+                          AND p.id = i.xsdyfl
+                          AND ci.is_delete = 0
+                          AND o.id = #{id}
+                    ) bbbbbb
+            ) aaaaa
+        GROUP BY
+            fz,
+            shunxu
+        ORDER BY
+            shunxu
+    </select>
+
+
+
+    <!-- 查询平安套餐-->
+    <select id="findPingAn" resultType="com.center.medical.sellcrm.bean.model.Createmeal">
+        SELECT
+            *
+        FROM
+            md_createmeal m
+        WHERE
+            m.is_delete = 0
+          AND m.pingan_id = #{medicalPackage}
+          AND m.syxb IN (2,#{idSex})
+          AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    md_mealandfzx maf
+                WHERE
+                    maf.tcid = m.id
+                  AND maf.fzxid = #{branchId}
+            )
+        <if test="sfyh!=null and sfyh!=''">
+            AND M.SFYHTC IN ('2',#{sfyh})
+        </if>
+    </select>
+
+
+    <!-- 查询平安套餐-->
+    <select id="getBranchNames" resultType="java.lang.String">
+        SELECT
+            group_concat( DISTINCT b.fzx ) AS fzx
+        FROM
+            md_mealandfzx maf
+                LEFT JOIN sys_branch b ON b.branch_id = maf.fzxid
+        WHERE
+            maf.tcid = #{id}
+    </select>
+</mapper>
+

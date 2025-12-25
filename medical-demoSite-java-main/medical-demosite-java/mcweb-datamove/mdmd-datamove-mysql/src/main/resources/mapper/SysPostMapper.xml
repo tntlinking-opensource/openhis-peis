@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.SysPostMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.SysPost" id="SysPostMap">
+        <id property="postId" column="post_id"/>
+        <result property="parentIds" column="parent_ids"/>
+        <result property="postCode" column="post_code"/>
+        <result property="postName" column="post_name"/>
+        <result property="postSort" column="post_sort"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysPostVo">
+        select post_id,
+               parent_ids,
+               post_code,
+               post_name,
+               post_sort,
+               status,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_post
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysPostMap">
+        <include refid="selectSysPostVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysPostMap">
+        <include refid="selectSysPostVo"/>
+        <where>
+            postId = #{id}
+        </where>
+    </select>
+
+</mapper>
+

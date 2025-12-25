@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.center.medical.abteilung.dao.VisionMapper">
+
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionResultMainVo">
+        select id, dep_id, rummager_id, write_id, rummager_time, write_time, createdate, modifydate, is_audit, audit_id, audit_time, is_danager, danager_level, conclusions, is_delete, audit_name, rummager_name, patientcode, is_finish, zy_conclusions, associative_table, short_code, file_type, file_path, pacs_conclusions, zy_pacs_conclusions            from md_section_result_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        <include refid="selectSectionResultMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        <include refid="selectSectionResultMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!--获取内科页面收费项目检查项目数据-->
+    <select id="getVisiondata" resultType="com.center.medical.abteilung.bean.dto.GetC13dataDto">
+        SELECT
+        i.examfeeitem_name AS sfxmmc,
+        e.examitem_name AS jcxmmc,
+        (
+        CASE
+        e.f_entryonly
+        WHEN 1 THEN
+        'shuru' ELSE 'gouxuan'
+        END
+        ) as fEntryonly,
+        i.id AS sfxmId,
+        e.id AS tjxmId,
+        s.id AS tzcId,
+        c.id AS jlcId,
+        <choose>
+            <when test="tjlx!=null and tjlx== 0">
+                (s.body_detail) AS jcmc,
+            </when>
+            <otherwise>
+                (s.body_detail_zy) AS jcmc,
+            </otherwise>
+        </choose>
+        c.name AS jlcmc,
+        e.add_unit,
+        e.valueunit,
+        (
+        CASE
+        s.is_default
+        WHEN 1 THEN
+        'morenxuanzhong' ELSE 'morenbuxuanzhong'
+        END
+        ) AS mrxz,
+        (
+        CASE
+        e.is_name
+        WHEN 1 THEN
+        'shiin' ELSE 'founotin'
+        END
+        ) AS jcxmjxj,
+        (
+        CASE
+        s.is_in_summary
+        WHEN 1 THEN
+        'tzcfounotin' ELSE 'tzcshiin'
+        END
+        ) AS tzcjxj,
+        (
+        group_concat( hc.str, '@' )
+        ) AS hcfz,
+        IFNULL ( e.is_desc, 0 ) AS isDesc,
+        IFNULL ( s.intensive_level, 0 ) AS intensiveLevel,
+        s.name AS sName
+        FROM
+        md_peispatientfeeitem p
+        INNER JOIN md_items i ON i.id = p.id_examfeeitem
+        INNER JOIN md_inspect_charge ch ON ch.charge_id = i.id
+        INNER JOIN md_basexamltem e ON e.id = ch.inspect_id
+        LEFT JOIN md_basexamltem_sign s ON s.inspect_id = e.id
+        LEFT JOIN md_basconclusion c ON s.result_id = c.id
+        LEFT JOIN (
+        SELECT
+        iss.id AS isid,
+        es.id AS esid,
+        ss.other_mutex,
+        ss.num_mutex,
+        (
+        group_concat( iss.examfeeitem_name || ':' || es.examitem_name || ':' || ss.NAME, '@' ) ) AS str
+        FROM
+        md_items iss
+        INNER JOIN md_inspect_charge chs ON chs.charge_id = iss.id
+        AND chs.is_delete = 0
+        INNER JOIN md_basexamltem es ON es.id = chs.inspect_id
+        INNER JOIN md_basexamltem_sign ss ON ss.inspect_id = es.id
+        AND ( ss.is_delete IS NULL OR ss.is_delete = 0 )
+        GROUP BY
+        iss.id,
+        es.id,
+        iss.examfeeitem_name,
+        es.examitem_name,
+        ss.other_mutex,
+        ss.num_mutex
+        ) hc ON hc.isid = i.id
+        AND hc.esid = e.id
+        AND (
+        hc.other_mutex != s.other_mutex
+        OR ( hc.num_mutex != 0 AND s.num_mutex != 0 AND hc.num_mutex = s.num_mutex )
+        )
+        WHERE
+        p.id_patient = #{tjh}
+        AND p.id_ks = #{ksId}
+        AND ( s.is_delete IS NULL OR s.is_delete = 0 )
+        AND e.is_delete = 0
+        AND ch.is_delete = 0
+        AND p.f_transferedhl7 IS NULL
+        AND p.change_item = 0
+        AND ( p.sfjj IS NULL OR p.sfjj = 0 )
+        AND p.f_giveup = 0
+        AND p.f_feecharged = 1
+        GROUP BY
+        i.examfeeitem_name,
+        e.examitem_name,
+        i.id,
+        i.xh,
+        e.id,
+        s.id,
+        c.id,
+        i.examfeeitem_name,
+        e.examitem_name,
+        s.body_detail,
+        c.NAME,
+        s.is_default,
+        e.is_name,
+        s.is_in_summary,
+        e.is_desc,
+        s.NAME,
+        ch.order_index,
+        s.orderindex,
+        s.body_detail_zy,
+        e.f_entryonly,
+        s.intensive_level,
+        e.add_unit,
+        e.valueunit
+        ORDER BY
+        convert(i.xh,signed),
+        i.id,
+        ch.order_index,
+        e.id,
+        s.orderindex,
+        s.id
+    </select>
+
+
+
+    </mapper>
+

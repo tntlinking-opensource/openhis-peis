@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.CommentsProgessionalMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.CommentsProgessional" id="CommentsProgessionalMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="progessionalId" column="progessional_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCommentsProgessionalVo">
+        select id, patientcode, progessional_id, createdate, modifydate, is_delete
+        from md_comments_progessional
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CommentsProgessionalMap">
+        <include refid="selectCommentsProgessionalVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CommentsProgessionalMap">
+        <include refid="selectCommentsProgessionalVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取所有职业处理意见分类号码 -->
+    <select id="findAllSerialNo" resultType="string">
+        SELECT
+            s.serial_no
+        FROM
+            md_comments_progessional c
+                LEFT JOIN md_zy_vs_summary z ON z.id = c.progessional_id
+                AND z.is_delete = 0
+                LEFT JOIN md_zy_summary s ON s.id = z.occupation_summary
+                AND s.is_delete = 0
+        WHERE
+            c.patientcode = #{patientno}
+        GROUP BY
+            s.serial_no
+    </select>
+
+
+    <!-- 根据体检号获取职业处理意见表数据 -->
+    <select id="getCommentsProgessionalList" resultType="com.center.medical.report.bean.model.CommentsProgessional">
+        SELECT id,
+               patientcode,
+               progessional_id,
+               createdate,
+               modifydate,
+               is_delete
+        FROM md_comments_progessional
+        WHERE
+            patientcode = #{patientno}
+    </select>
+</mapper>
+

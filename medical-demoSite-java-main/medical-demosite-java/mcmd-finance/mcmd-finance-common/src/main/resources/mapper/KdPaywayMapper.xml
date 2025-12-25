@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.KdPaywayMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.KdPayway" id="KdPaywayMap">
+        <id property="accountNo" column="account_no"/>
+        <result property="accountName" column="account_name"/>
+        <result property="useStatusId" column="use_status_id"/>
+        <result property="ctDate" column="ct_date"/>
+        <result property="ltDate" column="lt_date"/>
+        <result property="branchId" column="branch_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdPaywayVo">
+        select account_no, account_name, use_status_id, ct_date, lt_date, branch_id
+        from kd_payway
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdPaywayMap">
+        <include refid="selectKdPaywayVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdPaywayMap">
+        <include refid="selectKdPaywayVo"/>
+        <where>
+            accountNo = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取银行结算方式列表 -->
+    <select id="getKingdeeReserWay" resultType="com.center.medical.finance.bean.vo.KingdeeReserWayVo">
+        SELECT DISTINCT account_no,
+        account_name
+        FROM kd_payway
+        WHERE 1 = 1
+        AND use_status_id = '1'
+        AND (
+        account_name = '团检-统收'
+        OR account_name = '个检-记账'
+        OR account_name = '充卡-银行存款'
+        OR account_name = '代收体检费-银行存款'
+        )
+        <if test="key!=null and key!=''">
+            AND account_name LIKE concat('%',#{key},'%')
+        </if>
+        ORDER BY account_no DESC
+    </select>
+
+
+    <!-- 获取账户名称 -->
+    <select id="getAccountName" resultType="com.center.medical.finance.bean.dto.AccountNameDto">
+        SELECT DISTINCT
+            account_no,
+            account_name
+        FROM
+            kd_payway
+        <where>
+            1 = 1
+            AND use_status_id = '1'
+            <if test="way!=null and way!=''">
+                AND account_no LIKE concat('%',#{way},'%')
+            </if>
+        </where>
+        ORDER BY
+            account_no DESC
+    </select>
+</mapper>
+

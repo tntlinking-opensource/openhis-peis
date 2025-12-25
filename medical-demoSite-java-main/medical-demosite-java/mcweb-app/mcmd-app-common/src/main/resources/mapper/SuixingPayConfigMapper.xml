@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.appadmin.dao.SuixingPayConfigMapper">
+
+    <resultMap type="com.center.medical.appadmin.bean.model.SuixingPayConfig" id="SuixingPayConfigMap">
+        <id property="id" column="id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="mno" column="mno"/>
+        <result property="privateKey" column="private_key"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSuixingPayConfigVo">
+        select id, branch_id, org_id, mno, private_key, createdate, modifydate
+        from md_suixing_pay_config
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.appadmin.bean.vo.SuixingPayConfigVo">
+        select sx.id, sx.branch_id, sx.org_id, sx.mno, sx.createdate,sb.fzx as branchName
+        from md_suixing_pay_config sx
+        left join md_sys_branch sb on sb.branch_id = sx.branch_id
+        <where>
+            <if test="param.branchId!=null and param.branchId!=''">
+                sx.branch_id = #{param.branchId}
+            </if>
+        </where>
+        order by createdate
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.appadmin.bean.model.SuixingPayConfig">
+        select sx.*,
+               sb.fzx as branchName
+        from md_suixing_pay_config sx
+        left join md_sys_branch sb on sb.branch_id = sx.branch_id
+        <where>
+            sx.id = #{id}
+        </where>
+    </select>
+
+    <!-- 通过分中心id查询 -->
+    <select id="getInfoByFzx" resultType="com.center.medical.appadmin.bean.model.SuixingPayConfig">
+        select id, branch_id, org_id, mno, private_key
+        from md_suixing_pay_config
+        <where>
+            branch_id = #{branchId}
+        </where>
+    </select>
+</mapper>
+

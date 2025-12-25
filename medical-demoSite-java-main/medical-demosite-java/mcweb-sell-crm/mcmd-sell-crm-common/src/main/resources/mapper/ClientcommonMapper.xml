@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.ClientcommonMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Clientcommon" id="ClientcommonMap">
+        <id property="id" column="id"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="khdwsrm" column="khdwsrm"/>
+        <result property="khdwlxr" column="khdwlxr"/>
+        <result property="khdh" column="khdh"/>
+        <result property="sshy" column="sshy"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="dwjgdm" column="dwjgdm"/>
+        <result property="khdwdz" column="khdwdz"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="lqcstj" column="lqcstj"/>
+        <result property="fpzt" column="fpzt"/>
+        <result property="frdwmc" column="frdwmc"/>
+        <result property="fddbr" column="fddbr"/>
+        <result property="yzbm" column="yzbm"/>
+        <result property="qygm" column="qygm"/>
+        <result property="qyjjlx" column="qyjjlx"/>
+        <result property="zywsfzr" column="zywsfzr"/>
+        <result property="khdwzcdz" column="khdwzcdz"/>
+        <result property="zywsgljg" column="zywsgljg"/>
+        <result property="zclx" column="zclx"/>
+        <result property="lsgx" column="lsgx"/>
+        <result property="sjzgdw" column="sjzgdw"/>
+        <result property="sjcyrs" column="sjcyrs"/>
+        <result property="ldrs" column="ldrs"/>
+        <result property="scgrs" column="scgrs"/>
+        <result property="khsctjdwdz" column="khsctjdwdz"/>
+        <result property="bz" column="bz"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectClientcommonVo">
+        select id,
+               khdwmc,
+               khdwsrm,
+               khdwlxr,
+               khdh,
+               sshy,
+               xsjl,
+               dwjgdm,
+               khdwdz,
+               fzxid,
+               xsjlid,
+               lqcstj,
+               fpzt,
+               frdwmc,
+               fddbr,
+               yzbm,
+               qygm,
+               qyjjlx,
+               zywsfzr,
+               khdwzcdz,
+               zywsgljg,
+               zclx,
+               lsgx,
+               sjzgdw,
+               sjcyrs,
+               ldrs,
+               scgrs,
+               khsctjdwdz,
+               bz,
+               is_delete,
+               createdate,
+               modifydate
+        from crm_clientcommon
+    </sql>
+
+    <!-- 分页查询列表数据 -->
+    <select id="getPage" resultMap="ClientcommonMap">
+        SELECT
+        cc.id,
+        cc.khdwmc,
+        cc.khdwsrm,
+        cc.khdwlxr,
+        cc.khdh,
+        cc.khdwdz,
+        s.hymc AS sshy,
+        cc.dwjgdm,
+        cc.lqcstj,
+        cc.fpzt,
+        cc.xsjl
+        FROM
+        crm_clientcommon cc
+        LEFT JOIN md_sshy s ON cc.sshy = s.id
+        <where>
+            cc.is_delete = 0
+            <if test="param.branchIds!=null">
+                AND cc.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.khdwsrm!=null and param.khdwsrm!=''">
+                AND cc.khdwsrm LIKE concat('%',#{param.khdwsrm},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cc.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+        </where>
+        ORDER BY
+        cc.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ClientcommonMap">
+        SELECT
+        cc.id,
+        cc.khdwmc,
+        cc.khdwsrm,
+        cc.khdwlxr,
+        cc.khdh,
+        cc.xsjl,
+        cc.dwjgdm,
+        cc.khdwdz,
+        cc.fzxid,
+        cc.xsjlid,
+        cc.lqcstj,
+        cc.fpzt,
+        cc.frdwmc,
+        cc.fddbr,
+        cc.yzbm,
+        cc.qygm,
+        cc.qyjjlx,
+        cc.zywsfzr,
+        cc.khdwzcdz,
+        cc.zywsgljg,
+        cc.zclx,
+        cc.lsgx,
+        cc.sjzgdw,
+        cc.sjcyrs,
+        cc.ldrs,
+        cc.scgrs,
+        cc.khsctjdwdz,
+        cc.bz,
+        cc.is_delete,
+        cc.createdate,
+        cc.modifydate,
+        s.hymc AS sshy
+        FROM
+        crm_clientcommon cc
+        LEFT JOIN md_sshy s ON cc.sshy = s.id
+        <where>
+            cc.is_delete = 0
+            AND cc.id = #{id}
+        </where>
+    </select>
+
+    <!--获取当前登录人分中心下的客户公共池数据-->
+    <select id="getListData" resultMap="ClientcommonMap">
+        <include refid="selectClientcommonVo"/>
+        <where>
+            xsjlid = #{xsjlId}
+            AND is_delete = 0
+        </where>
+    </select>
+
+</mapper>
+

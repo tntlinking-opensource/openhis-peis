@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reservation.dao.IntegratedReservationMapper">
+    <select id="getOrderListByMealId" resultType="com.center.medical.sellcrm.bean.model.Createorder">
+        select
+            o.id,
+            o.ddh,
+            o.khdwmcid,
+            sc.khdwmc,
+            sc.xsjl,
+            sc.xsjlid
+        from
+            md_createorder o
+        left join crm_sellcustomer sc on sc.id=o.khdwmcid
+        inner join md_orderandcombo oac on oac.ddid=o.id and oac.tcid=#{mealId}
+        where
+            o.is_delete=0
+            and o.spzt=4
+            and (
+                o.bgzt is null
+                or
+                o.bgzt in (4,5)
+            )
+        order by o.createdate desc
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdTempFeeitemMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdTempFeeitem" id="MdTempFeeitemMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="itemId" column="item_id"/>
+        <result property="doctorUsername" column="doctor_username"/>
+        <result property="price" column="price"/>
+        <result property="remarks" column="remarks"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="feeitemId" column="feeitem_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdTempFeeitemVo">
+        select id,
+               createdate,
+               modifydate,
+               item_id,
+               doctor_username,
+               price,
+               remarks,
+               patientcode,
+               is_delete,
+               feeitem_id
+        from md_temp_feeitem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdTempFeeitemMap">
+        <include refid="selectMdTempFeeitemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdTempFeeitemMap">
+        <include refid="selectMdTempFeeitemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

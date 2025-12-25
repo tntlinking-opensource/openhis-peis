@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.DictpaywayMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Dictpayway" id="DictpaywayMap">
+        <id property="id" column="ID"/>
+        <result property="idPayway" column="ID_PAYWAY"/>
+        <result property="keypayway" column="KEYPAYWAY"/>
+        <result property="paywayName" column="PAYWAY_NAME"/>
+        <result property="paywayCode" column="PAYWAY_CODE"/>
+        <result property="paywayCode2" column="PAYWAY_CODE2"/>
+        <result property="paywayCode3" column="PAYWAY_CODE3"/>
+        <result property="paywayCodehm" column="PAYWAY_CODEHM"/>
+        <result property="paywaycodex" column="PAYWAYCODEX"/>
+        <result property="keypayway2" column="KEYPAYWAY2"/>
+        <result property="keypayway3" column="KEYPAYWAY3"/>
+        <result property="idPayway2" column="ID_PAYWAY2"/>
+        <result property="idPayway3" column="ID_PAYWAY3"/>
+        <result property="paywayhisCode" column="PAYWAYHIS_CODE"/>
+        <result property="paywayhisName" column="PAYWAYHIS_NAME"/>
+        <result property="fHisinttransdisabled" column="F_HISINTTRANSDISABLED"/>
+        <result property="idMedinsurance" column="ID_MEDINSURANCE"/>
+        <result property="idMembercard" column="ID_MEMBERCARD"/>
+        <result property="fIscash" column="F_ISCASH"/>
+        <result property="fIsoffline" column="F_ISOFFLINE"/>
+        <result property="fDiscountorfree" column="F_DISCOUNTORFREE"/>
+        <result property="fDelayed" column="F_DELAYED"/>
+        <result property="fApplytoaccountonly" column="F_APPLYTOACCOUNTONLY"/>
+        <result property="fApplytoOutp" column="F_APPLYTO_OUTP"/>
+        <result property="fApplytoInp" column="F_APPLYTO_INP"/>
+        <result property="fApplytoOrg" column="F_APPLYTO_ORG"/>
+        <result property="fApplytoPerson" column="F_APPLYTO_PERSON"/>
+        <result property="fReturntocash" column="F_RETURNTOCASH"/>
+        <result property="fBuiltin" column="F_BUILTIN"/>
+        <result property="fDisabled" column="F_DISABLED"/>
+        <result property="idReceipttypeOrg" column="ID_RECEIPTTYPE_ORG"/>
+        <result property="idReceipttypePerson" column="ID_RECEIPTTYPE_PERSON"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="note" column="NOTE"/>
+        <result property="fHideondailyreport" column="F_HIDEONDAILYREPORT"/>
+        <result property="fAutoinputbox" column="F_AUTOINPUTBOX"/>
+        <result property="plsx" column="PLSX"/>
+        <result property="hisbfs" column="HISBFS"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isChange" column="IS_CHANGE"/>
+        <result property="thingKingdeeNumber" column="THING_KINGDEE_NUMBER"/>
+        <result property="thingKingdeePaywayname" column="THING_KINGDEE_PAYWAYNAME"/>
+        <result property="thingKingdeeUseStatus" column="THING_KINGDEE_USE_STATUS"/>
+        <result property="groupKingdeeNumber" column="GROUP_KINGDEE_NUMBER"/>
+        <result property="groupKingdeePaywayname" column="GROUP_KINGDEE_PAYWAYNAME"/>
+        <result property="groupKingdeeUseStatus" column="GROUP_KINGDEE_USE_STATUS"/>
+        <result property="posKingdeeNumber" column="POS_KINGDEE_NUMBER"/>
+        <result property="posKingdeePaywayname" column="POS_KINGDEE_PAYWAYNAME"/>
+        <result property="posKingdeeUseStatus" column="POS_KINGDEE_USE_STATUS"/>
+        <result property="kingdeeCompany" column="KINGDEE_COMPANY"/>
+        <result property="kingdeeSaleer" column="KINGDEE_SALEER"/>
+        <result property="vaccine" column="VACCINE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDictpaywayVo">
+        select ID_PAYWAY,
+               KEYPAYWAY,
+               PAYWAY_NAME,
+               PAYWAY_CODE,
+               PAYWAY_CODE2,
+               PAYWAY_CODE3,
+               PAYWAY_CODEHM,
+               PAYWAYCODEX,
+               KEYPAYWAY2,
+               KEYPAYWAY3,
+               ID_PAYWAY2,
+               ID_PAYWAY3,
+               PAYWAYHIS_CODE,
+               PAYWAYHIS_NAME,
+               F_HISINTTRANSDISABLED,
+               ID_MEDINSURANCE,
+               ID_MEMBERCARD,
+               F_ISCASH,
+               F_ISOFFLINE,
+               F_DISCOUNTORFREE,
+               F_DELAYED,
+               F_APPLYTOACCOUNTONLY,
+               F_APPLYTO_OUTP,
+               F_APPLYTO_INP,
+               F_APPLYTO_ORG,
+               F_APPLYTO_PERSON,
+               F_RETURNTOCASH,
+               F_BUILTIN,
+               F_DISABLED,
+               ID_RECEIPTTYPE_ORG,
+               ID_RECEIPTTYPE_PERSON,
+               INPUT_CODE,
+               NOTE,
+               F_HIDEONDAILYREPORT,
+               F_AUTOINPUTBOX,
+               PLSX,
+               HISBFS,
+               ID,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE,
+               IS_CHANGE,
+               THING_KINGDEE_NUMBER,
+               THING_KINGDEE_PAYWAYNAME,
+               THING_KINGDEE_USE_STATUS,
+               GROUP_KINGDEE_NUMBER,
+               GROUP_KINGDEE_PAYWAYNAME,
+               GROUP_KINGDEE_USE_STATUS,
+               POS_KINGDEE_NUMBER,
+               POS_KINGDEE_PAYWAYNAME,
+               POS_KINGDEE_USE_STATUS,
+               KINGDEE_COMPANY,
+               KINGDEE_SALEER,
+               VACCINE
+        from DICTPAYWAY
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DictpaywayMap">
+        <include refid="selectDictpaywayVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DictpaywayMap">
+        <include refid="selectDictpaywayVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

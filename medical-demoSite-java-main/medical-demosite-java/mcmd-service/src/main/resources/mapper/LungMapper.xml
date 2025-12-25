@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.LungMapper">
+
+    <resultMap type="com.center.medical.bean.model.Lung" id="LungMap">
+        <id property="id" column="id"/>
+        <result property="depId" column="dep_id"/>
+        <result property="tjrq" column="tjrq"/>
+        <result property="xj" column="xj"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="fvc" column="fvc"/>
+        <result property="fev" column="fev"/>
+        <result property="fevFvc" column="fev_fvc"/>
+        <result property="percentageMmef" column="percentage_mmef"/>
+        <result property="predictMmef" column="predict_mmef"/>
+        <result property="mmef" column="mmef"/>
+        <result property="percentageFeffa" column="percentage_feffa"/>
+        <result property="predictFeffa" column="predict_feffa"/>
+        <result property="feffa" column="feffa"/>
+        <result property="percentageFeffb" column="percentage_feffb"/>
+        <result property="predictFeffb" column="predict_feffb"/>
+        <result property="feffb" column="feffb"/>
+        <result property="percentageFeffc" column="percentage_feffc"/>
+        <result property="predictFeffc" column="predict_feffc"/>
+        <result property="feffc" column="feffc"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="predictFvc" column="predict_fvc"/>
+        <result property="percentageFvc" column="percentage_fvc"/>
+        <result property="predictFev" column="predict_fev"/>
+        <result property="percentageFev" column="percentage_fev"/>
+        <result property="predictFevFvc" column="predict_fev_fvc"/>
+        <result property="percentageFevFvc" column="percentage_fev_fvc"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectLungVo">
+        select id,
+               dep_id,
+               tjrq,
+               xj,
+               create_id,
+               modify_id,
+               fvc,
+               fev,
+               fev_fvc,
+               percentage_mmef,
+               predict_mmef,
+               mmef,
+               percentage_feffa,
+               predict_feffa,
+               feffa,
+               percentage_feffb,
+               predict_feffb,
+               feffb,
+               percentage_feffc,
+               predict_feffc,
+               feffc,
+               patientcode,
+               createdate,
+               modifydate,
+               predict_fvc,
+               percentage_fvc,
+               predict_fev,
+               percentage_fev,
+               predict_fev_fvc,
+               percentage_fev_fvc
+        from md_lung
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="LungMap">
+        <include refid="selectLungVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="LungMap">
+        <include refid="selectLungVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 根据体检码获取记录详情 -->
+    <select id="getInfoPatientCode" resultMap="LungMap">
+        <include refid="selectLungVo"/>
+        <where>
+            patientcode = #{patientcode}
+        </where>
+    </select>
+
+
+    <!-- 根据体检码获取记录详情 -->
+    <select id="getLung" resultType="com.center.medical.bean.vo.GetLungVo">
+        select l.id,
+               l.dep_id,
+               l.tjrq,
+               l.xj,
+               l.fvc,
+               l.fev,
+               l.fev_fvc,
+               l.percentage_mmef,
+               l.predict_mmef,
+               l.mmef,
+               l.percentage_feffa,
+               l.predict_feffa,
+               l.feffa,
+               l.percentage_feffb,
+               l.predict_feffb,
+               l.feffb,
+               l.percentage_feffc,
+               l.predict_feffc,
+               l.feffc,
+               l.patientcode,
+               l.predict_fvc,
+               l.percentage_fvc,
+               l.predict_fev,
+               l.percentage_fev,
+               l.predict_fev_fvc,
+               l.percentage_fev_fvc,
+               srm.audit_time,
+               srm.rummager_name,
+               srm.audit_name,
+               srm.conclusions,
+               srm.zy_conclusions
+        from md_lung l
+        left join md_section_result_main srm on srm.patientcode = l.patientcode
+        and srm.dep_id = '77'
+        <where>
+            l.patientcode = #{patientcode}
+        </where>
+    </select>
+</mapper>
+

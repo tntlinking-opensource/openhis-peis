@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.YearMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Year" id="YearMap">
+        <id property="id" column="ID"/>
+        <result property="year" column="YEAR"/>
+        <result property="parentname" column="PARENTNAME"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectYearVo">
+        select ID, YEAR, PARENTNAME, CREATEDATE, MODIFYDATE
+        from YEAR
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="YearMap">
+        <include refid="selectYearVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="YearMap">
+        <include refid="selectYearVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

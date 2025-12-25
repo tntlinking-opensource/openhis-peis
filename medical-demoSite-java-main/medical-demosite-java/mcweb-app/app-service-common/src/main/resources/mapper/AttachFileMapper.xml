@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.app.dao.AttachFileMapper">
+
+    <resultMap type="com.center.medical.app.bean.model.AttachFile" id="AttachFileMap">
+        <id property="fileId" column="file_id"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="fileName" column="file_name"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="uploadTime" column="upload_time"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="type" column="type"/>
+        <result property="attachFileGroupId" column="attach_file_group_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAttachFileVo">
+        select file_id,
+               file_path,
+               file_type,
+               file_name,
+               file_size,
+               upload_time,
+               branch_id,
+               type,
+               attach_file_group_id
+        from md_attach_file
+    </sql>
+
+    <!--根据文件ID更新文件名称和分组-->
+    <update id="updateFile">
+        UPDATE md_attach_file
+        <set>
+            <if test="attachFile.fileName != null">
+                `file_name` = #{attachFile.fileName},
+            </if>
+            <if test="attachFile.attachFileGroupId != null">
+                `attach_file_group_id` = #{attachFile.attachFileGroupId},
+            </if>
+        </set>
+        WHERE file_id = #{attachFile.fileId}
+    </update>
+
+    <!--根据id列表获取文件信息列表-->
+    <select id="getByIds" resultType="com.center.medical.app.bean.model.AttachFile">
+        select * from md_attach_file
+        where file_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <!--保存-->
+    <insert id="save" useGeneratedKeys="true" keyProperty="fileId" keyColumn="file_id">
+        INSERT INTO md_attach_file (`file_path`, `file_type`, `file_name`, `branch`, `type`, `file_size`,
+                                    `upload_time`)
+        VALUES (#{attachFile.filePath}, #{attachFile.fileType}, #{attachFile.fileName},
+                #{attachFile.branchId}, #{attachFile.type}, #{attachFile.fileSize}, #{attachFile.uploadTime})
+    </insert>
+
+    <!--根据id列表批量删除文件记录-->
+    <delete id="batchDeleteByIds">
+        delete from md_attach_file where file_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
+

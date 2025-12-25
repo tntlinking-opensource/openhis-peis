@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.AttachmentGroupMapper">
+
+    <resultMap type="com.center.medical.bean.model.AttachmentGroup" id="AttachmentGroupMap">
+        <id property="fileGroupId" column="file_group_id"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAttachmentGroupVo">
+        select file_group_id, branch_id, name, type
+        from md_attachment_group
+    </sql>
+
+</mapper>
+

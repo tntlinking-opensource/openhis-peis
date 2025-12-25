@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PeispatientexamitemMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Peispatientexamitem" id="PeispatientexamitemMap">
+        <id property="id" column="ID"/>
+        <result property="associativeTable" column="ASSOCIATIVE_TABLE"/>
+        <result property="idPatientexamitem" column="ID_PATIENTEXAMITEM"/>
+        <result property="idPatientexamdepart" column="ID_PATIENTEXAMDEPART"/>
+        <result property="idPatientfeeitem" column="ID_PATIENTFEEITEM"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="idExamfeeitem" column="ID_EXAMFEEITEM"/>
+        <result property="examfeeitem" column="EXAMFEEITEM"/>
+        <result property="idExamitem" column="ID_EXAMITEM"/>
+        <result property="examitemNameR" column="EXAMITEM_NAME_R"/>
+        <result property="examitemCodeR" column="EXAMITEM_CODE_R"/>
+        <result property="idExamitemvalue" column="ID_EXAMITEMVALUE"/>
+        <result property="severedegree" column="SEVEREDEGREE"/>
+        <result property="refrange" column="REFRANGE"/>
+        <result property="examitemvalues" column="EXAMITEMVALUES"/>
+        <result property="examitemvaluestext" column="EXAMITEMVALUESTEXT"/>
+        <result property="examitemvaluesshort" column="EXAMITEMVALUESSHORT"/>
+        <result property="examitemvaluesnumber" column="EXAMITEMVALUESNUMBER"/>
+        <result property="labitemflag" column="LABITEMFLAG"/>
+        <result property="fLabitemnormal" column="F_LABITEMNORMAL"/>
+        <result property="examitemvaluesnumber2" column="EXAMITEMVALUESNUMBER2"/>
+        <result property="examitemvaluesnumber3" column="EXAMITEMVALUESNUMBER3"/>
+        <result property="befidDisporderR" column="BEFID_DISPORDER_R"/>
+        <result property="rowcreatetime" column="ROWCREATETIME"/>
+        <result property="fLabrcvdfromlis" column="F_LABRCVDFROMLIS"/>
+        <result property="valueoper" column="VALUEOPER"/>
+        <result property="valueoper2" column="VALUEOPER2"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="status" column="STATUS"/>
+        <result property="lisCode" column="LIS_CODE"/>
+        <result property="units" column="UNITS"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="reportRange" column="REPORT_RANGE"/>
+        <result property="examitemvaluesreport" column="EXAMITEMVALUESREPORT"/>
+        <result property="patientName" column="PATIENT_NAME"/>
+        <result property="examDoctor" column="EXAM_DOCTOR"/>
+        <result property="examDateTime" column="EXAM_DATE_TIME"/>
+        <result property="imageFullPath" column="IMAGE_FULL_PATH"/>
+        <result property="auditName" column="AUDIT_NAME"/>
+        <result property="inspectName" column="INSPECT_NAME"/>
+        <result property="auditDate" column="AUDIT_DATE"/>
+        <result property="reflow" column="REFLOW"/>
+        <result property="refhigh" column="REFHIGH"/>
+        <result property="lisybbh" column="LISYBBH"/>
+        <result property="tableValue" column="TABLE_VALUE"/>
+        <result property="zyConclusions" column="ZY_CONCLUSIONS"/>
+        <result property="conclusions" column="CONCLUSIONS"/>
+        <result property="sectionResultTwoData" column="SECTION_RESULT_TWO_DATA"/>
+        <result property="ms" column="MS"/>
+        <result property="inputResult" column="INPUT_RESULT"/>
+        <result property="isUnchecked" column="IS_UNCHECKED"/>
+        <result property="basconclusionId" column="BASCONCLUSION_ID"/>
+        <result property="positive" column="POSITIVE"/>
+        <result property="examitemNameprn" column="EXAMITEM_NAMEPRN"/>
+        <result property="examfeeitemNameprn" column="EXAMFEEITEM_NAMEPRN"/>
+        <result property="type" column="TYPE"/>
+        <result property="posistive" column="POSISTIVE"/>
+        <result property="zyStatus" column="ZY_STATUS"/>
+        <result property="inspectCode" column="INSPECT_CODE"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="receiveDate" column="RECEIVE_DATE"/>
+        <result property="adiconCode" column="ADICON_CODE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientexamitemVo">
+        select ASSOCIATIVE_TABLE,
+               ID,
+               ID_PATIENTEXAMITEM,
+               ID_PATIENTEXAMDEPART,
+               ID_PATIENTFEEITEM,
+               PATIENTCODE,
+               ID_EXAMFEEITEM,
+               EXAMFEEITEM,
+               ID_EXAMITEM,
+               EXAMITEM_NAME_R,
+               EXAMITEM_CODE_R,
+               ID_EXAMITEMVALUE,
+               SEVEREDEGREE,
+               REFRANGE,
+               EXAMITEMVALUES,
+               EXAMITEMVALUESTEXT,
+               EXAMITEMVALUESSHORT,
+               EXAMITEMVALUESNUMBER,
+               LABITEMFLAG,
+               F_LABITEMNORMAL,
+               EXAMITEMVALUESNUMBER2,
+               EXAMITEMVALUESNUMBER3,
+               BEFID_DISPORDER_R,
+               ROWCREATETIME,
+               F_LABRCVDFROMLIS,
+               VALUEOPER,
+               VALUEOPER2,
+               CREATEDATE,
+               MODIFYDATE,
+               STATUS,
+               LIS_CODE,
+               UNITS,
+               DEP_ID,
+               REPORT_RANGE,
+               EXAMITEMVALUESREPORT,
+               PATIENT_NAME,
+               EXAM_DOCTOR,
+               EXAM_DATE_TIME,
+               IMAGE_FULL_PATH,
+               AUDIT_NAME,
+               INSPECT_NAME,
+               AUDIT_DATE,
+               REFLOW,
+               REFHIGH,
+               LISYBBH,
+               TABLE_VALUE,
+               ZY_CONCLUSIONS,
+               CONCLUSIONS,
+               SECTION_RESULT_TWO_DATA,
+               MS,
+               INPUT_RESULT,
+               IS_UNCHECKED,
+               BASCONCLUSION_ID,
+               POSITIVE,
+               EXAMITEM_NAMEPRN,
+               EXAMFEEITEM_NAMEPRN,
+               TYPE,
+               POSISTIVE,
+               ZY_STATUS,
+               INSPECT_CODE,
+               SHORT_CODE,
+               RECEIVE_DATE,
+               ADICON_CODE
+        from PEISPATIENTEXAMITEM
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeispatientexamitemMap">
+        <include refid="selectPeispatientexamitemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientexamitemMap">
+        <include refid="selectPeispatientexamitemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

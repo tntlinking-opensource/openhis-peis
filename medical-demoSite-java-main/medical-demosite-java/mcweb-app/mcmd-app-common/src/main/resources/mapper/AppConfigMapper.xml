@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.appadmin.dao.AppConfigMapper">
+
+    <resultMap type="com.center.medical.appadmin.bean.model.SysConfig" id="SysConfigMap">
+        <id property="id" column="id"/>
+        <result property="paramKey" column="param_key"/>
+        <result property="paramValue" column="param_value"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysConfigVo">
+        select id, param_key, param_value, remark
+        from md_sys_config
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysConfigMap">
+        <include refid="selectSysConfigVo"/>
+        <where>
+            <if test="param.paramKey!=null and param.paramKey!=''">
+                param_key = #{param.paramKey}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysConfigMap">
+        <include refid="selectSysConfigVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

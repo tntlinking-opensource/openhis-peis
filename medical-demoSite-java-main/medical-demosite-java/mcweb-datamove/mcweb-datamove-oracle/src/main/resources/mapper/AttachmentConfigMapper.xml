@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AttachmentConfigMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AttachmentConfig" id="AttachmentConfigMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="aetitle" column="AETITLE"/>
+        <result property="ip" column="IP"/>
+        <result property="port" column="PORT"/>
+        <result property="realPath" column="REAL_PATH"/>
+        <result property="visitPath" column="VISIT_PATH"/>
+        <result property="memo" column="MEMO"/>
+        <result property="memoA" column="MEMO_A"/>
+        <result property="memoB" column="MEMO_B"/>
+        <result property="flag" column="FLAG"/>
+        <result property="mappingPath" column="MAPPING_PATH"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAttachmentConfigVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               AETITLE,
+               IP,
+               PORT,
+               REAL_PATH,
+               VISIT_PATH,
+               MEMO,
+               MEMO_A,
+               MEMO_B,
+               FLAG,
+               MAPPING_PATH
+        from ATTACHMENT_CONFIG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AttachmentConfigMap">
+        <include refid="selectAttachmentConfigVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AttachmentConfigMap">
+        <include refid="selectAttachmentConfigVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

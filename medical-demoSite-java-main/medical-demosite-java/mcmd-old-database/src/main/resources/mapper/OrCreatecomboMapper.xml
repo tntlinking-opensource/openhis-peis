@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrCreatecomboMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.OrCreatecombo" id="CreatecomboMap">
+        <id property="id" column="ID"/>
+        <result property="tjtcmc" column="TJTCMC"/>
+        <result property="tjlx" column="TJLX"/>
+        <result property="tjtcjc" column="TJTCJC"/>
+        <result property="tjtcsrm" column="TJTCSRM"/>
+        <result property="jhys" column="JHYS"/>
+        <result property="zytjlb" column="ZYTJLB"/>
+        <result property="syxb" column="SYXB"/>
+        <result property="tcysjg" column="TCYSJG"/>
+        <result property="tczk" column="TCZK"/>
+        <result property="zhjg" column="ZHJG"/>
+        <result property="khdwmc" column="KHDWMC"/>
+        <result property="khdwmcid" column="KHDWMCID"/>
+        <result property="sfybd" column="SFYBD"/>
+        <result property="sfyhtc" column="SFYHTC"/>
+        <result property="nlz" column="NLZ"/>
+        <result property="nld" column="NLD"/>
+        <result property="fkfs" column="FKFS"/>
+        <result property="sl" column="SL"/>
+        <result property="jxj" column="JXJ"/>
+        <result property="combostate" column="COMBOSTATE"/>
+        <result property="xsjlid" column="XSJLID"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="bz" column="BZ"/>
+        <result property="bjzt" column="BJZT"/>
+        <result property="isPlus" column="IS_PLUS"/>
+        <result property="tbzt" column="TBZT"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isRecommended" column="IS_RECOMMENDED"/>
+        <result property="comboSort" column="COMBO_SORT"/>
+        <result property="isBan" column="IS_BAN"/>
+        <result property="pinganId" column="PINGAN_ID"/>
+        <result property="appTypeId" column="APP_TYPE_ID"/>
+        <result property="modifier" column="MODIFIER"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCreatecomboVo">
+        select ID,
+               TJTCMC,
+               TJLX,
+               TJTCJC,
+               TJTCSRM,
+               JHYS,
+               ZYTJLB,
+               SYXB,
+               TCYSJG,
+               TCZK,
+               ZHJG,
+               KHDWMC,
+               KHDWMCID,
+               SFYBD,
+               SFYHTC,
+               NLZ,
+               NLD,
+               FKFS,
+               SL,
+               JXJ,
+               COMBOSTATE,
+               XSJLID,
+               FZXID,
+               IS_DELETE,
+               CREATEDATE,
+               MODIFYDATE,
+               BZ,
+               BJZT,
+               IS_PLUS,
+               TBZT,
+               IS_ACTIVE,
+               IS_RECOMMENDED,
+               COMBO_SORT,
+               IS_BAN,
+               PINGAN_ID,
+               APP_TYPE_ID,
+               MODIFIER
+        from CREATECOMBO
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CreatecomboMap">
+        <include refid="selectCreatecomboVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CreatecomboMap">
+        <include refid="selectCreatecomboVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

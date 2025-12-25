@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.KdOrganizationMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.KdOrganization" id="KdOrganizationMap">
+        <id property="orgId" column="org_id"/>
+        <result property="orgNumber" column="org_number"/>
+        <result property="orgName" column="org_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="branchId" column="branch_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdOrganizationVo">
+        select org_id, org_number, org_name, parent_id, branch_id
+        from kd_organization
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdOrganizationMap">
+        <include refid="selectKdOrganizationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdOrganizationMap">
+        <include refid="selectKdOrganizationVo"/>
+        <where>
+            orgId = #{id}
+        </where>
+    </select>
+
+</mapper>
+

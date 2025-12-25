@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.TotalVerdictMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.TotalVerdict" id="TotalVerdictMap">
+        <id property="id" column="id"/>
+        <result property="basconclusionId" column="basconclusion_id"/>
+        <result property="totalId" column="total_id"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="flag" column="flag"/>
+        <result property="totalAdvice" column="total_advice"/>
+        <result property="basconclusionName" column="basconclusion_name"/>
+        <result property="mergeId" column="merge_id"/>
+        <result property="mergeName" column="merge_name"/>
+        <result property="verdictSort" column="verdict_sort"/>
+        <result property="suggestiongroup" column="suggestiongroup"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectTotalVerdictVo">
+        select id,
+               basconclusion_id,
+               total_id,
+               division_id,
+               createdate,
+               modifydate,
+               is_delete,
+               disease_health,
+               flag,
+               total_advice,
+               basconclusion_name,
+               merge_id,
+               merge_name,
+               verdict_sort,
+               suggestiongroup
+        from md_total_verdict
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.report.bean.vo.TotalVerdictVo">
+        SELECT
+        tv.id,
+        IF(ISNULL(tv.flag),1,tv.flag) AS see,
+        tv.basconclusion_id,
+        tv.basconclusion_name AS basconclusion,
+        tv.division_id,
+        tv.verdict_sort,
+        tv.merge_id,
+        tv.merge_name,
+        tv.total_advice,
+        tv.suggestiongroup AS tjjy,
+        d.dept_name AS division,
+        b.creater
+        FROM
+        md_total_verdict tv
+        INNER JOIN md_basconclusion b ON b.id = tv.basconclusion_id
+        LEFT JOIN sys_dept d ON d.dept_no = tv.division_id
+        INNER JOIN md_section_total s ON s.id = tv.total_id
+        <where>
+            <if test="param.patientno!=null and param.patientno!=''">
+                AND s.patientcode=#{param.patientno}
+            </if>
+            <if test="param.dh!=null">
+                AND s.disease_health = #{param.dh}
+            </if>
+        </where>
+        ORDER BY
+        tv.verdict_sort
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="TotalVerdictMap">
+        <include refid="selectTotalVerdictVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取健康总检结论词列表数据 -->
+    <select id="getVerdictListData" resultType="com.center.medical.report.bean.vo.TotalVerdictVo">
+        SELECT
+            v.id,
+            IFNULL(v.flag,1) as flag,
+            v.basconclusion_id,
+            v.basconclusion_name,
+            v.division_id,
+            d.dept_name as division,
+            v.verdict_sort,
+            v.merge_id,
+            v.merge_name,
+            v.total_advice,
+            b.creater as creater,
+            v.suggestiongroup AS tjjy
+        FROM
+            md_total_verdict v
+                INNER JOIN md_basconclusion b ON b.id = v.basconclusion_id
+                LEFT JOIN sys_dept d ON d.dept_no = v.division_id
+                INNER JOIN md_section_total s ON s.id = v.total_id
+        WHERE
+            1 = 1
+        <if test="patientcode!=null and patientcode!=''">
+            AND s.patientcode = #{patientcode}
+        </if>
+        <if test="dh!=null and dh!=''">
+          AND s.disease_health = #{dh}
+        </if>
+        ORDER BY
+            v.verdict_sort
+    </select>
+</mapper>
+

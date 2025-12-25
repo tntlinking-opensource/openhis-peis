@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.ZyFinalSummaryMapper">
+
+    <resultMap type="com.center.medical.report.bean.model.ZyFinalSummary" id="ZyFinalSummaryMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="progessional" column="progessional"/>
+        <result property="memo" column="memo"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="commentsProgessionalId" column="comments_progessional_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectZyFinalSummaryVo">
+        select id,
+               createdate,
+               modifydate,
+               patientcode,
+               progessional,
+               memo,
+               is_delete,
+               comments_progessional_id
+        from md_zy_final_summary
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ZyFinalSummaryMap">
+        <include refid="selectZyFinalSummaryVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ZyFinalSummaryMap">
+        <include refid="selectZyFinalSummaryVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 获取职业最终结论 -->
+    <select id="getGridData" resultType="com.center.medical.report.bean.vo.ZyGridDataVo">
+        SELECT
+            zfs.id,
+            zvs.regimentation_note,
+            zs.occupation_summary,
+            h.harm_name as occupationDiagnosis,
+            zvs.summary_text,
+            zvs.diagnosis as zyjjzdm,
+            od.occupation_diseast as kyzyb
+        FROM
+            md_zy_final_summary zfs
+                LEFT JOIN md_zy_vs_summary zvs ON zvs.id = zfs.progessional
+                LEFT JOIN md_zy_summary zs ON zs.id = zvs.occupation_summary
+                LEFT JOIN md_harm h ON h.id = zvs.occupation_diagnosis
+                LEFT JOIN md_occupation_diseast od ON od.id = zvs.occupation_diseast
+        <where>
+            zfs.is_delete = 0
+            <if test="patientcode!=null and patientcode!=''">
+                AND zfs.patientcode = #{patientcode}
+            </if>
+        </where>
+
+        ORDER BY
+            zfs.createdate DESC
+    </select>
+
+
+
+    <!-- 获取职业最终结论 -->
+    <select id="getPendingHarmsList" resultType="com.center.medical.report.bean.vo.ZyChooseVo">
+        SELECT
+            zvs.occupation_diagnosis AS harmId,
+            h.harm_name
+        FROM
+            md_comments_progessional cp
+                INNER JOIN md_zy_vs_summary zvs ON zvs.id = cp.progessional_id
+                INNER JOIN md_harm h ON h.id = zvs.occupation_diagnosis
+        <where>
+            <if test="patientcode!=null and patientcode!=''">
+                cp.patientcode = #{patientcode}
+            </if>
+            AND zvs.occupation_summary = '2'
+            AND NOT EXISTS (
+            SELECT
+            1
+            FROM
+            md_zy_final_summary zfs
+            INNER JOIN md_zy_vs_summary zvss ON zvss.id = zfs.progessional
+            WHERE
+            zvss.occupation_diagnosis = zvs.occupation_diagnosis
+            AND zfs.patientcode = cp.patientcode
+            AND zfs.is_delete = 0
+            )
+        </where>
+
+    </select>
+
+
+    <!-- 获取职业最终结论 -->
+    <select id="getZyVsSummaryList" resultType="com.center.medical.report.bean.vo.ZyVsSummaryListVo">
+        SELECT
+            zvs.id,
+            zvs.regimentation_note,
+            zs.occupation_summary,
+            h.harm_name as occupationDiagnosis,
+            zvs.summary_text,
+            zvs.diagnosis as zyjjzdm,
+            od.occupation_diseast as kyzyb
+        FROM
+            md_zy_vs_summary zvs
+            left join md_zy_summary zs on zs.id = zvs.occupation_summary
+            LEFT JOIN md_harm h ON h.id = zvs.occupation_diagnosis
+            LEFT JOIN md_occupation_diseast od ON od.id = zvs.occupation_diseast
+        <where>
+            <if test="param.occupationDiagnosis!=null">
+                AND zvs.occupation_diagnosis IN
+                <foreach collection="param.occupationDiagnosis" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="param.regimentationNote!=null and param.regimentationNote!=''">
+                AND zvs.regimentation_note = #{param.regimentationNote}
+            </if>
+            <if test="param.occupationSummary!=null">
+                AND zvs.occupation_summary IN
+                <foreach collection="param.occupationSummary" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        order by zvs.occupation_diagnosis desc,zvs.occupation_summary desc
+    </select>
+</mapper>
+

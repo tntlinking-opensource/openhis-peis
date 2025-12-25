@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.CardRecheckRecordMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.CardRecheckRecord" id="CardRecheckRecordMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="startMoney" column="start_money"/>
+        <result property="endMoney" column="end_money"/>
+        <result property="money" column="money"/>
+        <result property="note" column="note"/>
+        <result property="cardNo" column="card_no"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="chargeTime" column="charge_time"/>
+        <result property="chargeType" column="charge_type"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardRecheckRecordVo">
+        select id,
+               createdate,
+               modifydate,
+               start_money,
+               end_money,
+               money,
+               note,
+               card_no,
+               patientcode,
+               charge_time,
+               charge_type,
+               username
+        from md_card_recheck_record
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="CardRecheckRecordMap">
+        <include refid="selectCardRecheckRecordVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CardRecheckRecordMap">
+        <include refid="selectCardRecheckRecordVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

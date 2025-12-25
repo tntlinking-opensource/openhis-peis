@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.FailTotalVisitMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.FailTotalVisit" id="FailTotalVisitMap">
+        <id property="id" column="ID"/>
+        <result property="visitType" column="VISIT_TYPE"/>
+        <result property="personcode" column="PERSONCODE"/>
+        <result property="visitId" column="VISIT_ID"/>
+        <result property="memo" column="MEMO"/>
+        <result property="visitTime" column="VISIT_TIME"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="visitMainId" column="VISIT_MAIN_ID"/>
+        <result property="sflj" column="SFLJ"/>
+        <result property="ljsj" column="LJSJ"/>
+        <result property="visitText" column="VISIT_TEXT"/>
+        <result property="visitResult" column="VISIT_RESULT"/>
+        <result property="noticeAgain" column="NOTICE_AGAIN"/>
+        <result property="preTime" column="PRE_TIME"/>
+        <result property="preResult" column="PRE_RESULT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFailTotalVisitVo">
+        select ID,
+               VISIT_TYPE,
+               PERSONCODE,
+               VISIT_ID,
+               MEMO,
+               VISIT_TIME,
+               CREATEDATE,
+               MODIFYDATE,
+               VISIT_MAIN_ID,
+               SFLJ,
+               LJSJ,
+               VISIT_TEXT,
+               VISIT_RESULT,
+               NOTICE_AGAIN,
+               PRE_TIME,
+               PRE_RESULT
+        from FAIL_TOTAL_VISIT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FailTotalVisitMap">
+        <include refid="selectFailTotalVisitVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FailTotalVisitMap">
+        <include refid="selectFailTotalVisitVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

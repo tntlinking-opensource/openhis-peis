@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.SpecimenTypeMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.SpecimenType" id="SpecimenTypeMap">
+        <id property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="specimenName" column="specimen_name"/>
+        <result property="nationalStandardCode" column="national_standard_code"/>
+        <result property="hisCode" column="his_code"/>
+        <result property="status" column="status"/>
+        <result property="pinyinCode" column="pinyin_code"/>
+        <result property="fiveStrokeCode" column="five_stroke_code"/>
+        <result property="customCode" column="custom_code"/>
+        <result property="category" column="category"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSpecimenTypeVo">
+        select id,
+               code,
+               specimen_name,
+               national_standard_code,
+               his_code,
+               status,
+               pinyin_code,
+               five_stroke_code,
+               custom_code,
+               category,
+               createdate,
+               modifydate
+        from md_specimen_type
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SpecimenTypeMap">
+        <include refid="selectSpecimenTypeVo"/>
+        <where>
+            <if test="param.pinyinCode!=null and param.pinyinCode!=''">
+                AND pinyin_code like concat('%',#{param.pinyinCode},'%')
+            </if>
+        </where>
+        order by code asc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SpecimenTypeMap">
+        <include refid="selectSpecimenTypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.MealandfzxMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Mealandfzx" id="MealandfzxMap">
+        <id property="id" column="ID"/>
+        <result property="tcid" column="TCID"/>
+        <result property="fzxid" column="FZXID"/>
+        <result property="tbzt" column="TBZT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMealandfzxVo">
+        select ID, TCID, FZXID, TBZT, CREATEDATE, MODIFYDATE
+        from MEALANDFZX
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MealandfzxMap">
+        <include refid="selectMealandfzxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MealandfzxMap">
+        <include refid="selectMealandfzxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdReservationDefaultMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdReservationDefault" id="MdReservationDefaultMap">
+        <id property="id" column="id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="maxNum" column="max_num"/>
+        <result property="levelId" column="level_id"/>
+        <result property="remark" column="remark"/>
+        <result property="branchId" column="branch_id"/>
+        <result property="openDay" column="open_day"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="creator" column="creator"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="modifier" column="modifier"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdReservationDefaultVo">
+        select id,
+               start_time,
+               end_time,
+               max_num,
+               level_id,
+               remark,
+               branch_id,
+               open_day,
+               status,
+               createdate,
+               creator,
+               modifydate,
+               modifier
+        from md_reservation_default
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdReservationDefaultMap">
+        <include refid="selectMdReservationDefaultVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdReservationDefaultMap">
+        <include refid="selectMdReservationDefaultVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

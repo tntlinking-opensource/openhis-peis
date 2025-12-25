@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.HarmMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Harm" id="HarmMap">
+        <id property="id" column="id"/>
+        <result property="harmCode" column="harm_code"/>
+        <result property="harmName" column="harm_name"/>
+        <result property="harmClass" column="harm_class"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="keyword" column="keyword"/>
+        <result property="diagnosisFrom" column="diagnosis_from"/>
+        <result property="mbjbZyb" column="mbjb_zyb"/>
+        <result property="mbjbJjz" column="mbjb_jjz"/>
+        <result property="influence" column="influence"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="diagnosis" column="diagnosis"/>
+        <result property="industrialDisease" column="industrial_disease"/>
+        <result property="contraindication" column="contraindication"/>
+        <result property="affect" column="affect"/>
+        <result property="classId" column="class_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="note" column="note"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+        <result property="creater" column="creater"/>
+        <result property="createFzx" column="create_fzx"/>
+        <result property="pid" column="pid"/>
+        <result property="lv" column="lv"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectHarmVo">
+        select id,
+               harm_code,
+               harm_name,
+               harm_class,
+               input_code,
+               db_user,
+               keyword,
+               diagnosis_from,
+               mbjb_zyb,
+               mbjb_jjz,
+               influence,
+               createdate,
+               modifydate,
+               diagnosis,
+               industrial_disease,
+               contraindication,
+               affect,
+               class_id,
+               is_delete,
+               note,
+               is_public,
+               fzx_ids,
+               creater,
+               create_fzx,
+               pid,
+               lv
+        from md_harm
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getListSimple" resultMap="HarmMap">
+        select id,
+        harm_code,
+        harm_name,
+        input_code
+        from md_harm
+        <where>
+            is_delete = 0
+            <if test="param.lv!=null">
+                AND lv = #{param.lv}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.harmName!=null and param.harmName!=''">
+                AND harm_name like concat('%',#{param.harmName},'%')
+            </if>
+            <if test="param.harmCode!=null and param.harmCode!=''">
+                AND harm_code like concat('%',#{param.harmCode},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="HarmMap">
+        <include refid="selectHarmVo"/>
+        <where>
+            <if test="param.isDelete!=null">
+                AND is_delete = #{param.isDelete}
+            </if>
+            <if test="param.lv!=null">
+                AND lv = #{param.lv}
+            </if>
+            <if test="param.lv!=null">
+                AND lv = #{param.lv}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.harmName!=null and param.harmName!=''">
+                AND harm_name like concat('%',#{param.harmName},'%')
+            </if>
+            <if test="param.harmCode!=null and param.harmCode!=''">
+                AND harm_code like concat('%',#{param.harmCode},'%')
+            </if>
+        </where>
+        ORDER BY createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.data.bean.model.Harm">
+        select mh.*,
+        mzhc.harm_class as mzhcHarmClass
+        from md_harm mh
+        left join md_zy_harm_class mzhc on mzhc.id = mh.harm_class
+        <where>
+            mh.id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 根据筛选条件查询对应的数据 -->
+    <select id="getHarmData" resultType="com.center.medical.data.bean.model.Harm">
+        select mh.id,
+        mh.harm_code,
+        mh.harm_name,
+        mzhc.harm_class as mzhcHarmClass,
+        mh.input_code,
+        mh.affect,
+        mh.is_public,
+        mh.creater,
+        mh.create_fzx,
+        group_concat(sb.fzx) as fzx,
+        mh.fzx_ids
+        from md_harm mh
+        left join md_zy_harm_class mzhc on mzhc.id = mh.harm_class
+        left join md_harm_and_fzx haf on haf.harm_id = mh.id
+        left join sys_branch sb on sb.branch_id = haf.fzx_id
+        <where>
+            mh.is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND mh.input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.harmCode!=null and param.harmCode!=''">
+                AND mh.harm_code like concat('%',#{param.harmCode},'%')
+            </if>
+            <if test="param.harmClass!=null and param.harmClass!=''">
+                AND mzhc.id = #{param.harmClass}
+            </if>
+        </where>
+        group by mh.id
+        order by mh.createdate desc
+    </select>
+
+
+    <!-- 根据筛选条件查询对应的数据 -->
+    <select id="getHarmText" resultType="java.lang.String">
+        select group_concat(harm_name) as harmName
+        from md_harm
+        where id in
+        <foreach collection="strharm" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!-- 根据筛选条件查询对应的数据 -->
+    <select id="getJhysDataByFzx" resultType="com.center.medical.data.bean.vo.JhysDataVo">
+        SELECT
+        h.id,
+        h.harm_code,
+        h.harm_name,
+        h.harm_class,
+        h.input_code
+        FROM
+        md_harm h
+        WHERE
+        h.is_delete = 0
+        AND h.lv = 2
+        AND EXISTS (
+        SELECT
+        1
+        FROM
+        md_harm_and_fzx haf
+        WHERE
+        haf.harm_id = h.id
+        AND haf.fzx_id = #{cId})
+        <if test="key!=null and key!=''">
+            AND (h.input_code LIKE concat('%',#{key},'%')
+            OR h.harm_name LIKE concat('%',#{key},'%') )
+        </if>
+    </select>
+</mapper>
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxWsUserRoleMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxWsUserRole" id="QxWsUserRoleMap">
+        <id property="userId" column="USER_ID"/>
+        <result property="roleId" column="ROLE_ID"/>
+        <result property="adminId" column="ADMIN_ID"/>
+        <result property="id" column="ID"/>
+        <result property="roleName" column="ROLE_NAME"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxWsUserRoleVo">
+        select USER_ID, ROLE_ID, ADMIN_ID, ID, ROLE_NAME, CREATEDATE, MODIFYDATE
+        from QX_WS_USER_ROLE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxWsUserRoleMap">
+        <include refid="selectQxWsUserRoleVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxWsUserRoleMap">
+        <include refid="selectQxWsUserRoleVo"/>
+        <where>
+            userId = #{id}
+        </where>
+    </select>
+
+</mapper>
+

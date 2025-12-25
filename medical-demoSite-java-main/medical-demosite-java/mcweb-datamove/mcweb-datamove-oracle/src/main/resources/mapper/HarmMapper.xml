@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.HarmMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Harm" id="HarmMap">
+        <id property="id" column="ID"/>
+        <result property="harmCode" column="HARM_CODE"/>
+        <result property="harmName" column="HARM_NAME"/>
+        <result property="harmClass" column="HARM_CLASS"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="dbUser" column="DB_USER"/>
+        <result property="keyword" column="KEYWORD"/>
+        <result property="diagnosisFrom" column="DIAGNOSIS_FROM"/>
+        <result property="mbjbZyb" column="MBJB_ZYB"/>
+        <result property="mbjbJjz" column="MBJB_JJZ"/>
+        <result property="influence" column="INFLUENCE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="diagnosis" column="DIAGNOSIS"/>
+        <result property="industrialDisease" column="INDUSTRIAL_DISEASE"/>
+        <result property="contraindication" column="CONTRAINDICATION"/>
+        <result property="affect" column="AFFECT"/>
+        <result property="classId" column="CLASS_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="note" column="NOTE"/>
+        <result property="isPublic" column="IS_PUBLIC"/>
+        <result property="fzxIds" column="FZX_IDS"/>
+        <result property="creater" column="CREATER"/>
+        <result property="createFzx" column="CREATE_FZX"/>
+        <result property="pid" column="PID"/>
+        <result property="lv" column="LV"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectHarmVo">
+        select ID,
+               HARM_CODE,
+               HARM_NAME,
+               HARM_CLASS,
+               INPUT_CODE,
+               DB_USER,
+               KEYWORD,
+               DIAGNOSIS_FROM,
+               MBJB_ZYB,
+               MBJB_JJZ,
+               INFLUENCE,
+               CREATEDATE,
+               MODIFYDATE,
+               DIAGNOSIS,
+               INDUSTRIAL_DISEASE,
+               CONTRAINDICATION,
+               AFFECT,
+               CLASS_ID,
+               IS_DELETE,
+               NOTE,
+               IS_PUBLIC,
+               FZX_IDS,
+               CREATER,
+               CREATE_FZX,
+               PID,
+               LV
+        from HARM
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="HarmMap">
+        <include refid="selectHarmVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="HarmMap">
+        <include refid="selectHarmVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

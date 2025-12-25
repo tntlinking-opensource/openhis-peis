@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdHandleNewProjectsMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdHandleNewProjects" id="MdHandleNewProjectsMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="projectsId" column="projects_id"/>
+        <result property="addDoctorId" column="add_doctor_id"/>
+        <result property="isHandle" column="is_handle"/>
+        <result property="handleTime" column="handle_time"/>
+        <result property="handleNameId" column="handle_name_id"/>
+        <result property="status" column="status"/>
+        <result property="idea" column="idea"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="handleType" column="handle_type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdHandleNewProjectsVo">
+        select id,
+               patientcode,
+               createdate,
+               modifydate,
+               create_id,
+               modify_id,
+               projects_id,
+               add_doctor_id,
+               is_handle,
+               handle_time,
+               handle_name_id,
+               status,
+               idea,
+               is_delete,
+               handle_type
+        from md_handle_new_projects
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdHandleNewProjectsMap">
+        <include refid="selectMdHandleNewProjectsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdHandleNewProjectsMap">
+        <include refid="selectMdHandleNewProjectsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

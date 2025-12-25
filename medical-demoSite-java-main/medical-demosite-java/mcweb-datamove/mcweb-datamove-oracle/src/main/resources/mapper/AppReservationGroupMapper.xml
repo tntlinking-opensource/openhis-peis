@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppReservationGroupMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppReservationGroup" id="AppReservationGroupMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="reservationDate" column="RESERVATION_DATE"/>
+        <result property="amount" column="AMOUNT"/>
+        <result property="creator" column="CREATOR"/>
+        <result property="modifier" column="MODIFIER"/>
+        <result property="orderId" column="ORDER_ID"/>
+        <result property="used" column="USED"/>
+        <result property="am" column="AM"/>
+        <result property="pm" column="PM"/>
+        <result property="bz" column="BZ"/>
+        <result property="cid" column="CID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppReservationGroupVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               RESERVATION_DATE,
+               AMOUNT,
+               CREATOR,
+               MODIFIER,
+               ORDER_ID,
+               USED,
+               AM,
+               PM,
+               BZ,
+               CID
+        from APP_RESERVATION_GROUP
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppReservationGroupMap">
+        <include refid="selectAppReservationGroupVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppReservationGroupMap">
+        <include refid="selectAppReservationGroupVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

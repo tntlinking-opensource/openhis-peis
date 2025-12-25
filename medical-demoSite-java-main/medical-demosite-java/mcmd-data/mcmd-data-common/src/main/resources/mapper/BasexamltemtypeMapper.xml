@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.BasexamltemtypeMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Basexamltemtype" id="BasexamltemtypeMap">
+        <id property="id" column="id"/>
+        <result property="examitemtypekey" column="examitemtypekey"/>
+        <result property="examitemtypeName" column="examitemtype_name"/>
+        <result property="examitemtypeNameeng" column="examitemtype_nameeng"/>
+        <result property="examitemtypeCode" column="examitemtype_code"/>
+        <result property="examitemtypecodex" column="examitemtypecodex"/>
+        <result property="idDepartment" column="id_department"/>
+        <result property="departR" column="depart_r"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="note" column="note"/>
+        <result property="version" column="version"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBasexamltemtypeVo">
+        select id,
+               examitemtypekey,
+               examitemtype_name,
+               examitemtype_nameeng,
+               examitemtype_code,
+               examitemtypecodex,
+               id_department,
+               depart_r,
+               input_code,
+               note,
+               version,
+               createdate,
+               modifydate,
+               is_delete
+        from md_basexamltemtype
+    </sql>
+
+    <!-- 分页查询列表数据 -->
+    <select id="getPage" resultMap="BasexamltemtypeMap">
+        <include refid="selectBasexamltemtypeVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.examitemtypeName!=null and param.examitemtypeName!=''">
+                AND examitemtype_name like concat('%',#{param.examitemtypeName},'%')
+            </if>
+        </where>
+        ORDER BY createdate DESC
+    </select>
+
+    <!-- 根据输入码查询查询JC检查项目类型列表 -->
+    <select id="getList" resultMap="BasexamltemtypeMap">
+        <include refid="selectBasexamltemtypeVo"/>
+        <where>
+            is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND input_code like concat('%',#{param.inputCode},'%')
+            </if>
+        </where>
+        ORDER BY createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BasexamltemtypeMap">
+        <include refid="selectBasexamltemtypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

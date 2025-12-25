@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.SelltargetMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Selltarget" id="SelltargetMap">
+        <id property="id" column="id"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="year" column="year"/>
+        <result property="dyjdmb" column="dyjdmb"/>
+        <result property="dejdmb" column="dejdmb"/>
+        <result property="dsjdmb" column="dsjdmb"/>
+        <result property="dijdmb" column="dijdmb"/>
+        <result property="qnmb" column="qnmb"/>
+        <result property="qnhke" column="qnhke"/>
+        <result property="hkbl" column="hkbl"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="bz" column="bz"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSelltargetVo">
+        select id, xsjlid, year, dyjdmb, dejdmb, dsjdmb, dijdmb, qnmb, qnhke, hkbl, fzxid, createdate, modifydate, bz
+        from crm_selltarget
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.sellcrm.bean.vo.SelltargetVo">
+        SELECT
+            *
+        FROM
+            (
+                SELECT
+                    l.id,
+                    u.user_no as userid,
+                    u.user_name as username,
+                    l.dyjdmb as target1,
+                    l.dejdmb as target2,
+                    l.dsjdmb as target3,
+                    l.dijdmb as target4,
+                    l.bz,
+                    IFNULL( p.complete1, 0 ) complete1,
+                    IFNULL( p.complete2, 0 ) complete2,
+                    IFNULL( p.complete3, 0 ) complete3,
+                    IFNULL( p.complete4, 0 ) complete4,
+                    b.fzx,
+                    TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge
+                FROM
+                    sys_user u
+                        INNER JOIN sys_branch b ON b.branch_id = u.cid
+                        LEFT JOIN crm_selltarget l ON l.xsjlid = u.user_no
+                        AND l.fzxid = u.cid
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND l.YEAR = #{param.listYear}
+                        </if>
+                        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+                        AND p.cid = u.cid
+                        AND p.type = 1
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND p.YEAR = #{param.listYear}
+                        </if>
+                <where>
+                    1 = 1
+                    <if test="param.branchIds!=null">
+                        AND u.cid IN
+                        <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                            #{brandId}
+                        </foreach>
+                    </if>
+                        AND u.del_flag = 0
+                        AND EXISTS (
+                        SELECT
+                        1
+                        FROM
+                        sys_dept qd
+                        LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+                        WHERE
+                        qud.user_id = u.user_no
+                        AND qd.dept_name = '销售部'
+                        )
+                    <if test="param.userNo!=null and param.userNo!=''">
+                        AND u.user_no = #{param.userNo}
+                    </if>
+                </where>
+                UNION ALL
+                SELECT NULL
+                       id,
+                       u.user_no userid,
+                       u.user_name,
+                       NULL dyjdmb,
+                       NULL dejdmb,
+                       NULL dsjdmb,
+                       NULL dijdmb,
+                       '服务单' bz,
+                       IFNULL( p.complete1, 0 ) completeMoney1,
+                       IFNULL( p.complete2, 0 ) completeMoney2,
+                       IFNULL( p.complete3, 0 ) completeMoney3,
+                       IFNULL( p.complete4, 0 ) completeMoney4,
+                       b.fzx,
+                       TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge
+                FROM
+                    sys_user u
+                        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+                        AND p.type = 1
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND p.YEAR = #{param.listYear}
+                        </if>
+                        <if test="param.branchIds!=null">
+                            AND p.cid IN
+                            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                                #{brandId}
+                            </foreach>
+                        </if>
+                        INNER JOIN sys_branch b ON b.branch_id = p.cid
+                <where>
+                    u.cid != p.cid
+                    AND u.del_flag = 0
+                    AND EXISTS (
+                    SELECT
+                    1
+                    FROM
+                    sys_dept qd
+                    LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+                    WHERE
+                    qud.user_id = u.user_no
+                    AND qd.dept_name = '销售部'
+                    )
+                    <if test="param.userNo!=null and param.userNo!=''">
+                        AND u.user_no = #{param.userNo}
+                    </if>
+                </where>
+                    ) as z
+        ORDER BY
+            workingAge DESC,
+            username
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SelltargetMap">
+        <include refid="selectSelltargetVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getSummaryData" resultType="com.center.medical.sellcrm.bean.vo.SelltargetVo">
+        SELECT
+            sum( dyjdmb ) as target1,
+            sum( dejdmb ) as target2,
+            sum( dsjdmb ) as target3,
+            sum( dijdmb ) as target4,
+            sum( complete1 ) as complete1,
+            sum( complete2 ) as complete2,
+            sum( complete3 ) as complete3,
+            sum( complete4 ) as complete4
+        FROM
+            (
+                SELECT
+                    l.id,
+                    u.user_no userid,
+                    u.user_name,
+                    l.dyjdmb,
+                    l.dejdmb,
+                    l.dsjdmb,
+                    l.dijdmb,
+                    l.bz,
+                    IFNULL ( p.complete1, 0 ) complete1,
+                    IFNULL ( p.complete2, 0 ) complete2,
+                    IFNULL ( p.complete3, 0 ) complete3,
+                    IFNULL ( p.complete4, 0 ) complete4,
+                    b.fzx
+                FROM
+                    sys_user u
+                        INNER JOIN sys_branch b ON b.branch_id = u.cid
+                        LEFT JOIN crm_selltarget l ON l.xsjlid = u.user_no
+                        AND l.fzxid = u.cid
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND l.YEAR = #{param.listYear}
+                        </if>
+                        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+                        AND p.cid = u.cid
+                        AND p.type = 1
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND p.YEAR = #{param.listYear}
+                        </if>
+                <where>
+                    1 = 1
+                    <if test="param.branchIds!=null and param.branchIds.size() > 0">
+                        AND u.cid IN
+                        <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                            #{brandId}
+                        </foreach>
+                    </if>
+                        AND u.del_flag = 0
+                        AND EXISTS (
+                        SELECT
+                        1
+                        FROM
+                        sys_dept qd
+                        LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+                        WHERE
+                        qud.user_id = u.user_no
+                        AND qd.dept_name = '销售部'
+                        )
+                    <if test="param.userNo!=null and param.userNo!=''">
+                        AND u.user_no = #{param.userNo}
+                    </if>
+                </where>
+                UNION ALL
+                SELECT NULL
+                       id,
+                       u.user_no userid,
+                       u.user_name,
+                       NULL dyjdmb,
+                       NULL dejdmb,
+                       NULL dsjdmb,
+                       NULL dijdmb,
+                       '服务单' bz,
+                        IFNULL ( p.complete1, 0 ) complete1,
+                        IFNULL ( p.complete2, 0 ) complete2,
+                        IFNULL ( p.complete3, 0 ) complete3,
+                        IFNULL ( p.complete4, 0 ) complete4,
+                       b.fzx
+                FROM
+                    sys_user u
+                        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+                        AND p.type = 1
+                        <if test="param.listYear!=null and param.listYear!=''">
+                            AND p.YEAR = #{param.listYear}
+                        </if>
+                        <if test="param.branchIds!=null and param.branchIds.size() > 0">
+                            AND p.cid IN
+                            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                                #{brandId}
+                            </foreach>
+                        </if>
+                        INNER JOIN sys_branch b ON b.branch_id = p.cid
+                <where>
+                    u.cid != p.cid
+                    AND u.del_flag = 0
+                    AND EXISTS (
+                    SELECT
+                    1
+                    FROM
+                    sys_dept qd
+                    LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+                    WHERE
+                    qud.user_id = u.user_no
+                    AND qd.dept_name = '销售部'
+                    )
+                    <if test="param.userNo!=null and param.userNo!=''">
+                        AND u.user_no = #{param.userNo}
+                    </if>
+                </where>
+        )as z
+    </select>
+
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getAllList" resultType="com.center.medical.sellcrm.bean.vo.SelltargetVo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        l.id,
+        u.user_no as userid,
+        u.user_name as username,
+        l.dyjdmb as target1,
+        l.dejdmb as target2,
+        l.dsjdmb as target3,
+        l.dijdmb as target4,
+        l.bz,
+        IFNULL( p.complete1, 0 ) complete1,
+        IFNULL( p.complete2, 0 ) complete2,
+        IFNULL( p.complete3, 0 ) complete3,
+        IFNULL( p.complete4, 0 ) complete4,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge
+        FROM
+        sys_user u
+        INNER JOIN sys_branch b ON b.branch_id = u.cid
+        LEFT JOIN crm_selltarget l ON l.xsjlid = u.user_no
+        AND l.fzxid = u.cid
+        <if test="param.listYear!=null and param.listYear!=''">
+            AND l.YEAR = #{param.listYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.cid = u.cid
+        AND p.type = 1
+        <if test="param.listYear!=null and param.listYear!=''">
+            AND p.YEAR = #{param.listYear}
+        </if>
+        <where>
+            1 = 1
+            <if test="param.branchIds!=null and param.branchIds.size() > 0">
+                AND u.cid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        UNION ALL
+        SELECT NULL
+        id,
+        u.user_no userid,
+        u.user_name,
+        NULL dyjdmb,
+        NULL dejdmb,
+        NULL dsjdmb,
+        NULL dijdmb,
+        '服务单' bz,
+        IFNULL( p.complete1, 0 ) completeMoney1,
+        IFNULL( p.complete2, 0 ) completeMoney2,
+        IFNULL( p.complete3, 0 ) completeMoney3,
+        IFNULL( p.complete4, 0 ) completeMoney4,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge
+        FROM
+        sys_user u
+        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.type = 1
+        <if test="param.listYear!=null and param.listYear!=''">
+            AND p.YEAR = #{param.listYear}
+        </if>
+        <if test="param.branchIds!=null and param.branchIds.size() > 0">
+            AND p.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        INNER JOIN sys_branch b ON b.branch_id = p.cid
+        <where>
+            u.cid != p.cid
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        ) as z
+        ORDER BY
+        workingAge DESC,
+        username
+    </select>
+
+
+
+    <!-- 获取销售同期对比年 -->
+    <select id="getSellDateYear" resultType="com.center.medical.sellcrm.bean.vo.SellDateVo">
+        SELECT *
+        from (
+        SELECT
+        l.id,
+        u.user_no as userid,
+        u.user_name as username,
+        l.ndmb,
+        l.bz,
+        IFNULL ( p.complete, 0 ) as complete,
+        b.fzx,
+        TimeStampDiff( year, u.entry_date ,now() ) AS workingAge,
+        l2.ndmb as ndmb2,
+        IFNULL ( p2.complete, 0 ) as complete2
+        FROM
+        sys_user u
+        INNER JOIN sys_branch b ON b.branch_id = u.cid
+        LEFT JOIN md_leadertarget l ON l.xsjlid = u.user_no
+        AND l.fzxid = u.cid
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND l.YEAR = #{param.startYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.cid = u.cid
+        AND p.type = 0
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR = #{param.startYear}
+        </if>
+
+        LEFT JOIN md_leadertarget l2 ON l2.xsjlid = u.user_no
+        AND l2.fzxid = u.cid
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND l2.YEAR = #{param.endYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.cid = u.cid
+        AND p2.type = 0
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR = #{param.endYear}
+        </if>
+
+        <where>
+            1 = 1
+            <if test="param.branchIds!=null">
+                AND u.cid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            AND u.del_flag = 0
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+        </where>
+        group by u.user_no
+        UNION ALL
+        SELECT NULL
+        id,
+        u.user_no as userid,
+        u.user_name as username,
+        NULL ndmb,
+        '服务单' bz,
+        IFNULL ( p.complete, 0 ) as complete,
+        b.fzx,
+        TimeStampDiff( year, u.entry_date ,now() ) AS workingAge,
+        null as ndmb2,
+        IFNULL ( p2.complete, 0 ) as complete2
+        FROM
+        sys_user u
+        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.type = 0
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR = #{param.startYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+
+        INNER JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.type = 0
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR = #{param.endYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p2.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        INNER JOIN sys_branch b ON b.id = p.cid
+        <where>
+            u.cid != p.cid
+            AND u.del_flag = 0
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+        </where>
+        group by u.user_no
+        ) as z
+        ORDER BY
+        workingage DESC,
+        username
+    </select>
+
+
+    <!-- 获取销售同期对季度 -->
+    <select id="getSellDateQuarter" resultType="com.center.medical.sellcrm.bean.vo.SellDateQuarterVo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        l.id,
+        u.user_no as userid,
+        u.user_name as username,
+        l.dyjdmb as target1,
+        l.dejdmb as target2,
+        l.dsjdmb as target3,
+        l.dijdmb as target4,
+        l.bz,
+        IFNULL( p.complete1, 0 ) complete1,
+        IFNULL( p.complete2, 0 ) complete2,
+        IFNULL( p.complete3, 0 ) complete3,
+        IFNULL( p.complete4, 0 ) complete4,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge,
+        l2.dyjdmb as endTarget1,
+        l2.dejdmb as endTarget2,
+        l2.dsjdmb as endTarget3,
+        l2.dijdmb as endTarget4,
+        IFNULL( p2.complete1, 0 ) endComplete1,
+        IFNULL( p2.complete2, 0 ) endComplete2,
+        IFNULL( p2.complete3, 0 ) endComplete3,
+        IFNULL( p2.complete4, 0 ) endComplete4
+        FROM
+        sys_user u
+        INNER JOIN sys_branch b ON b.branch_id = u.cid
+        LEFT JOIN crm_selltarget l ON l.xsjlid = u.user_no
+        AND l.fzxid = u.cid
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND l.YEAR = #{param.startYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.cid = u.cid
+        AND p.type = 1
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR = #{param.startYear}
+        </if>
+
+        LEFT JOIN crm_selltarget l2 ON l2.xsjlid = u.user_no
+        AND l2.fzxid = u.cid
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND l2.YEAR = #{param.endYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.cid = u.cid
+        AND p2.type = 1
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR = #{param.endYear}
+        </if>
+        <where>
+            1 = 1
+            <if test="param.branchIds!=null">
+                AND u.cid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        UNION ALL
+        SELECT NULL
+        id,
+        u.user_no userid,
+        u.user_name,
+        NULL target1,
+        NULL target2,
+        NULL target3,
+        NULL target4,
+        '服务单' bz,
+        IFNULL( p.complete1, 0 ) completeMoney1,
+        IFNULL( p.complete2, 0 ) completeMoney2,
+        IFNULL( p.complete3, 0 ) completeMoney3,
+        IFNULL( p.complete4, 0 ) completeMoney4,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingAge,
+        NULL endTarget1,
+        NULL endTarget2,
+        NULL endTarget3,
+        NULL endTarget4,
+        IFNULL( p.complete1, 0 ) endCompleteMoney1,
+        IFNULL( p.complete2, 0 ) endCompleteMoney2,
+        IFNULL( p.complete3, 0 ) endCompleteMoney3,
+        IFNULL( p.complete4, 0 ) endCompleteMoney4
+        FROM
+        sys_user u
+        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.type = 1
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR = #{param.startYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+
+        INNER JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.type = 1
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR = #{param.startYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        INNER JOIN sys_branch b ON b.branch_id = p.cid
+        <where>
+            u.cid != p.cid
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        ) as z
+        ORDER BY
+        workingAge DESC,
+        username
+    </select>
+
+
+    <!-- 获取销售同期对月 -->
+    <select id="getSellDateMonth" resultType="com.center.medical.sellcrm.bean.vo.SellDateMonthVo">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        l.id,
+        u.user_no userid,
+        u.user_name,
+        l.target1,
+        l.target2,
+        l.target3,
+        l.target4,
+        l.target5,
+        l.target6,
+        l.target7,
+        l.target8,
+        l.target9,
+        l.target10,
+        l.target11,
+        l.target12,
+        l.bz,
+        IFNULL ( p.complete1, 0 ) complete1,
+        IFNULL ( p.complete2, 0 ) complete2,
+        IFNULL ( p.complete3, 0 ) complete3,
+        IFNULL ( p.complete4, 0 ) complete4,
+        IFNULL ( p.complete5, 0 ) complete5,
+        IFNULL ( p.complete6, 0 ) complete6,
+        IFNULL ( p.complete7, 0 ) complete7,
+        IFNULL ( p.complete8, 0 ) complete8,
+        IFNULL ( p.complete9, 0 ) complete9,
+        IFNULL ( p.complete10, 0 ) complete10,
+        IFNULL ( p.complete11, 0 ) complete11,
+        IFNULL ( p.complete12, 0 ) complete12,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingage,
+        l2.target1 endTarget1,
+        l2.target2 endTarget2,
+        l2.target3 endTarget3,
+        l2.target4 endTarget4,
+        l2.target5 endTarget5,
+        l2.target6 endTarget6,
+        l2.target7 endTarget7,
+        l2.target8 endTarget8,
+        l2.target9 endTarget9,
+        l2.target10 endTarget10,
+        l2.target11 endTarget11,
+        l2.target12 endTarget12,
+        IFNULL ( p2.complete1, 0 ) endComplete1,
+        IFNULL ( p2.complete2, 0 ) endComplete2,
+        IFNULL ( p2.complete3, 0 ) endComplete3,
+        IFNULL ( p2.complete4, 0 ) endComplete4,
+        IFNULL ( p2.complete5, 0 ) endComplete5,
+        IFNULL ( p2.complete6, 0 ) endComplete6,
+        IFNULL ( p2.complete7, 0 ) endComplete7,
+        IFNULL ( p2.complete8, 0 ) endComplete8,
+        IFNULL ( p2.complete9, 0 ) endComplete9,
+        IFNULL ( p2.complete10, 0 ) endComplete10,
+        IFNULL ( p2.complete11, 0 ) endComplete11,
+        IFNULL ( p2.complete12, 0 ) endComplete12
+        FROM
+        sys_user u
+        INNER JOIN sys_branch b ON b.branch_id = u.cid
+        LEFT JOIN md_monthtarget l ON l.xsjlid = u.user_no
+        AND l.fzxid = u.cid
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND l.YEAR = #{param.startYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.cid = u.cid
+        AND p.type = 2
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR =#{param.startYear}
+        </if>
+
+
+        LEFT JOIN md_monthtarget l2 ON l2.xsjlid = u.user_no
+        AND l2.fzxid = u.cid
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND l2.YEAR = #{param.endYear}
+        </if>
+        LEFT JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.cid = u.cid
+        AND p2.type = 2
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR =#{param.endYear}
+        </if>
+        <where>
+            1 = 1
+            <if test="param.branchIds!=null">
+                AND u.cid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        UNION ALL
+        SELECT NULL id,
+        u.user_no userid,
+        u.user_name,
+        NULL target1,
+        NULL target2,
+        NULL target3,
+        NULL target4,
+        NULL target5,
+        NULL target6,
+        NULL target7,
+        NULL target8,
+        NULL target9,
+        NULL target10,
+        NULL target11,
+        NULL target12,
+        '服务单' bz,
+        IFNULL ( p.complete1, 0 ) completemoney1,
+        IFNULL ( p.complete2, 0 ) completemoney2,
+        IFNULL ( p.complete3, 0 ) completemoney3,
+        IFNULL ( p.complete4, 0 ) completemoney4,
+        IFNULL ( p.complete5, 0 ) completemoney5,
+        IFNULL ( p.complete6, 0 ) completemoney6,
+        IFNULL ( p.complete7, 0 ) completemoney7,
+        IFNULL ( p.complete8, 0 ) completemoney8,
+        IFNULL ( p.complete9, 0 ) completemoney9,
+        IFNULL ( p.complete10, 0 ) completemoney10,
+        IFNULL ( p.complete11, 0 ) completemoney11,
+        IFNULL ( p.complete12, 0 ) completemoney12,
+        b.fzx,
+        TimeStampDiff( year,  u.entry_date ,now() ) AS workingage,
+        NULL endTarget1,
+        NULL endTarget2,
+        NULL endTarget3,
+        NULL endTarget4,
+        NULL endTarget5,
+        NULL endTarget6,
+        NULL endTarget7,
+        NULL endTarget8,
+        NULL endTarget9,
+        NULL endTarget10,
+        NULL endTarget11,
+        NULL endTarget12,
+        IFNULL ( p2.complete1, 0 ) endCompletemoney1,
+        IFNULL ( p2.complete2, 0 ) endCompletemoney2,
+        IFNULL ( p2.complete3, 0 ) endCompletemoney3,
+        IFNULL ( p2.complete4, 0 ) endCompletemoney4,
+        IFNULL ( p2.complete5, 0 ) endCompletemoney5,
+        IFNULL ( p2.complete6, 0 ) endCompletemoney6,
+        IFNULL ( p2.complete7, 0 ) endCompletemoney7,
+        IFNULL ( p2.complete8, 0 ) endCompletemoney8,
+        IFNULL ( p2.complete9, 0 ) endCompletemoney9,
+        IFNULL ( p2.complete10, 0 ) endCompletemoney10,
+        IFNULL ( p2.complete11, 0 ) endCompletemoney11,
+        IFNULL ( p2.complete12, 0 ) endCompletemoney12
+        FROM
+        sys_user u
+        INNER JOIN md_sales_target_statistic p ON p.userid = u.user_no
+        AND p.type = 2
+        <if test="param.startYear!=null and param.startYear!=''">
+            AND p.YEAR = #{param.startYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+
+        INNER JOIN md_sales_target_statistic p2 ON p2.userid = u.user_no
+        AND p2.type = 2
+        <if test="param.endYear!=null and param.endYear!=''">
+            AND p2.YEAR = #{param.endYear}
+        </if>
+        <if test="param.branchIds!=null">
+            AND p2.cid IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        INNER JOIN sys_branch b ON b.branch_id = p.cid
+        <where>
+            u.cid != p.cid
+            AND u.del_flag = 0
+            AND EXISTS (
+            SELECT
+            1
+            FROM
+            sys_dept qd
+            LEFT JOIN sys_user_dep qud ON qud.dep_id = qd.dept_no
+            WHERE
+            qud.user_id = u.user_no
+            AND qd.dept_name = '销售部'
+            )
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND u.user_no = #{param.userNo}
+            </if>
+        </where>
+        ) AS a
+        ORDER BY
+        workingage DESC,
+        user_name
+    </select>
+</mapper>
+

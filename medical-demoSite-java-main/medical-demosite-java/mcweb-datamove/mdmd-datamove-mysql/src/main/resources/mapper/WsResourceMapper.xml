@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.WsResourceMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.WsResource" id="WsResourceMap">
+        <id property="id" column="id"/>
+        <result property="resourcename" column="resourcename"/>
+        <result property="resourceurl" column="resourceurl"/>
+        <result property="description" column="description"/>
+        <result property="modulename" column="modulename"/>
+        <result property="moduleid" column="moduleid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="imgvalue" column="imgvalue"/>
+        <result property="presource" column="presource"/>
+        <result property="state" column="state"/>
+        <result property="sortorder" column="sortorder"/>
+        <result property="issystem" column="issystem"/>
+        <result property="type" column="type"/>
+        <result property="classify" column="classify"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWsResourceVo">
+        select id,
+               resourcename,
+               resourceurl,
+               description,
+               modulename,
+               moduleid,
+               createdate,
+               modifydate,
+               imgvalue,
+               presource,
+               state,
+               sortorder,
+               issystem,
+               type,
+               classify
+        from ws_resource
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WsResourceMap">
+        <include refid="selectWsResourceVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WsResourceMap">
+        <include refid="selectWsResourceVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

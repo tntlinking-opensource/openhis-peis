@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PacsResultMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.PacsResult" id="PacsResultMap">
+        <id property="id" column="ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="examfeeitemCode" column="EXAMFEEITEM_CODE"/>
+        <result property="examdatetime" column="EXAMDATETIME"/>
+        <result property="examdoctor" column="EXAMDOCTOR"/>
+        <result property="examresultdesc" column="EXAMRESULTDESC"/>
+        <result property="examresultsummary" column="EXAMRESULTSUMMARY"/>
+        <result property="examresultisnormal" column="EXAMRESULTISNORMAL"/>
+        <result property="transftertarget" column="TRANSFTERTARGET"/>
+        <result property="fResulttransfered" column="F_RESULTTRANSFERED"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="imagefullpath" column="IMAGEFULLPATH"/>
+        <result property="username" column="USERNAME"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="writeDate" column="WRITE_DATE"/>
+        <result property="pacsItemId" column="PACS_ITEM_ID"/>
+        <result property="isNewPacs" column="IS_NEW_PACS"/>
+        <result property="updateNum" column="UPDATE_NUM"/>
+        <result property="auditDoctor" column="AUDIT_DOCTOR"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPacsResultVo">
+        select ID,
+               PATIENTCODE,
+               PATIENTNAME,
+               EXAMFEEITEM_CODE,
+               EXAMDATETIME,
+               EXAMDOCTOR,
+               EXAMRESULTDESC,
+               EXAMRESULTSUMMARY,
+               EXAMRESULTISNORMAL,
+               TRANSFTERTARGET,
+               F_RESULTTRANSFERED,
+               CREATEDATE,
+               MODIFYDATE,
+               IMAGEFULLPATH,
+               USERNAME,
+               DEP_ID,
+               ITEM_ID,
+               ITEM_NAME,
+               SHORT_CODE,
+               WRITE_DATE,
+               PACS_ITEM_ID,
+               IS_NEW_PACS,
+               UPDATE_NUM,
+               AUDIT_DOCTOR
+        from PACS_RESULT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PacsResultMap">
+        <include refid="selectPacsResultVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PacsResultMap">
+        <include refid="selectPacsResultVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

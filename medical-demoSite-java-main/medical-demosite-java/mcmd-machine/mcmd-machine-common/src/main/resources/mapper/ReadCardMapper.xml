@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.machine.dao.ReadCardMapper">
+
+
+    <!-- 查找科室加项体检号 -->
+    <select id="checkAddNo" resultType="java.lang.String">
+        SELECT t.patientcode
+        FROM (
+                 SELECT tf.patientcode,
+                        row_number() over ( ORDER BY tf.createdate DESC) AS r
+                 FROM md_temp_feeitem tf
+                          INNER JOIN md_peispatient p ON p.patientcode = tf.patientcode
+                 WHERE tf.is_delete = 0
+                   AND p.idcardno = #{idcardno}
+                 ORDER BY tf.createdate DESC
+             ) t
+        WHERE r = 1
+    </select>
+
+
+    <!-- 查询科室信息 -->
+    <select id="findDept" resultType="com.center.medical.machine.bean.dto.FindDeptDto">
+        SELECT DISTINCT
+        d.dept_no,
+        d.dept_name,
+        d.report_sort
+        FROM
+        md_peispatientfeeitem pi
+        INNER JOIN sys_dept d ON d.dept_no = pi.id_ks
+        <where>
+            pi.id_patient = #{patientcode}
+            AND pi.f_examinated = 1
+            <if test="depIds!=null">
+                AND d.dept_no IN
+                <foreach collection="depIds" item="depId" open="(" close=")" separator=",">
+                    #{depId}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY d.report_sort
+    </select>
+
+
+    <!-- 健康体检打印健康报告，职业体检打印职业报告，综合体检两份报告都打印 -->
+    <select id="getPersonalReportList" resultType="com.center.medical.machine.bean.dto.PersonalReportDto">
+        SELECT t.id,
+               t.dreg AS date,
+        t.patientcode
+        FROM
+            (
+            SELECT
+            p.id,
+            STR_TO_DATE( p.dateregister, 'yyyy-mm-dd' ) dreg,
+            p.patientcode,
+            row_number() over(order by p.dateregister DESC) as r
+            FROM
+            md_peispatient p
+            WHERE
+            EXISTS ( SELECT 1 FROM md_report r WHERE r.patientcode = p.patientcode AND r.generate_date IS NOT NULL )
+            AND p.idcardno = #{idcardno}
+            AND ( p.jktjzt > 0 OR p.zytjzt > 0 )
+            ORDER BY
+            p.dateregister DESC
+            ) t
+        WHERE
+            t.r <![CDATA[ < ]]> 6
+    </select>
+
+
+    <!-- 按身份证获取当前日期信息 -->
+    <select id="getCurrentDateInfoByIdCardNo" resultType="com.center.medical.machine.bean.dto.CurrentDateInfoDto">
+        SELECT id, patientcode
+        FROM md_peispatient
+        WHERE STR_TO_DATE(dateregister, '%Y-%m-%d') = STR_TO_DATE(CURRENT_TIMESTAMP(), '%Y-%m-%d')
+          AND idcardno IS NOT NULL
+          AND idcardno = #{idcardno}
+          AND idcardno IS NOT NULL
+          AND f_registered = 1
+        ORDER BY dateregister Desc lIMIT 1
+    </select>
+
+
+    <!-- 查找登记时间是今天的体检号 -->
+    <select id="unregisteredCode" resultType="java.lang.String">
+        SELECT patientcode
+        FROM md_peispatient
+        WHERE STR_TO_DATE(dateregister, '%Y-%m-%d') = STR_TO_DATE(CURRENT_TIMESTAMP(), '%Y-%m-%d')
+          AND idcardno IS NOT NULL
+          AND idcardno = #{idcardno}
+          AND idcardno IS NOT NULL
+          AND f_registered = 1
+    </select>
+</mapper>
+

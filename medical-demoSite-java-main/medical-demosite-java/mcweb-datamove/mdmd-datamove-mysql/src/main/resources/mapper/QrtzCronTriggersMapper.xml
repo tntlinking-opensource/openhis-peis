@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.QrtzCronTriggersMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.QrtzCronTriggers" id="QrtzCronTriggersMap">
+        <id property="schedName" column="sched_name"/>
+        <result property="triggerName" column="trigger_name"/>
+        <result property="triggerGroup" column="trigger_group"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="timeZoneId" column="time_zone_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQrtzCronTriggersVo">
+        select sched_name, trigger_name, trigger_group, cron_expression, time_zone_id
+        from qrtz_cron_triggers
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QrtzCronTriggersMap">
+        <include refid="selectQrtzCronTriggersVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QrtzCronTriggersMap">
+        <include refid="selectQrtzCronTriggersVo"/>
+        <where>
+            schedName = #{id}
+        </where>
+    </select>
+
+</mapper>
+

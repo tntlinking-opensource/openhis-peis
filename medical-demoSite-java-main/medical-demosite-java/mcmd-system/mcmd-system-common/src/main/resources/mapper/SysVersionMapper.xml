@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.SysVersionMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.SysVersion" id="SysVersionMap">
+        <id property="id" column="id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="versionNumber" column="version_number"/>
+        <result property="versionName" column="version_name"/>
+        <result property="notes" column="notes"/>
+        <result property="versionFlag" column="version_flag"/>
+        <result property="status" column="status"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="createby" column="createby"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifyby" column="modifyby"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysVersionVo">
+        select *
+        from sys_version
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysVersionMap">
+        SELECT id,
+        parent_id,
+        version_number,
+        version_name,
+        notes,
+        status,
+        version_flag,
+        finish_time,
+        createby,
+        createdate,
+        modifyby,
+        modifydate
+        FROM sys_version
+        <where>
+            <if test="param.versionNumber!=null and param.versionNumber!=''">
+                AND version_number = #{param.versionNumber}
+            </if>
+            <if test="param.versionName!=null and param.versionName!=''">
+                AND version_name LIKE concat('%',#{param.versionName},'%')
+            </if>
+            <if test="param.parentId!=null">
+                AND parent_id = #{param.parentId}
+            </if>
+            <if test="param.status!=null">
+                AND status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="SysVersionMap">
+        SELECT id,
+        parent_id,
+        version_number,
+        version_name,
+        notes,
+        status,
+        version_flag,
+        finish_time,
+        createby,
+        createdate,
+        modifyby,
+        modifydate
+        FROM sys_version
+        <where>
+            <if test="param.versionNumber!=null and param.versionNumber!=''">
+                AND version_number = #{param.versionNumber}
+            </if>
+            <if test="param.versionName!=null and param.versionName!=''">
+                AND version_name LIKE concat('%',#{param.versionName},'%')
+            </if>
+            <if test="param.parentId!=null">
+                AND parent_id = #{param.parentId}
+            </if>
+            <if test="param.status!=null">
+                AND status = #{param.status}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysVersionMap">
+        <include refid="selectSysVersionVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    <!-- 获取历史版本信息列表-->
+    <select id="getLastList" resultType="com.center.medical.system.bean.model.SysVersion">
+        SELECT id,
+        parent_id,
+        version_number,
+        version_name,
+        notes,
+        `status`,
+        version_flag,
+        finish_time,
+        createby,
+        createdate,
+        modifyby,
+        modifydate
+        FROM sys_version
+        <where>
+            version_flag IN (0,1)
+            <if test="param.versionNumber!=null and param.versionNumber!=''">
+                AND version_number = #{param.versionNumber}
+            </if>
+            <if test="param.versionName!=null and param.versionName!=''">
+                AND version_name LIKE concat('%',#{param.versionName},'%')
+            </if>
+            <if test="param.parentId!=null">
+                AND parent_id = #{param.parentId}
+            </if>
+            <if test="param.status!=null">
+                AND `status` = #{param.status}
+            </if>
+        </where>
+        ORDER BY version_number DESC
+    </select>
+    <!-- 获取最新版本-->
+    <select id="getlastVersion" resultType="com.center.medical.system.bean.model.SysVersion">
+        SELECT id,
+               parent_id,
+               version_number,
+               version_name,
+               notes,
+               `status`,
+               version_flag,
+               finish_time,
+               createby,
+               createdate,
+               modifyby,
+               modifydate
+        FROM sys_version
+        WHERE `status` IN (1, 2)
+          AND version_flag = 1
+    </select>
+
+</mapper>
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.KdReserMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.KdReser" id="KdReserMap">
+        <id property="id" column="id"/>
+        <result property="idRemitter" column="id_remitter"/>
+        <result property="idRemittanceway" column="id_remittanceway"/>
+        <result property="customername" column="customername"/>
+        <result property="idCustomer" column="id_customer"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="idCreator" column="id_creator"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="note" column="note"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="idAudit" column="id_audit"/>
+        <result property="isUpdate" column="is_update"/>
+        <result property="isAudit" column="is_audit"/>
+        <result property="auditdate" column="auditdate"/>
+        <result property="idChange" column="id_change"/>
+        <result property="branchId" column="branch_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectKdReserVo">
+        select id,
+               id_remitter,
+               id_remittanceway,
+               customername,
+               id_customer,
+               id_feecharger,
+               id_creator,
+               moneyamountpaid,
+               note,
+               createdate,
+               modifydate,
+               id_audit,
+               is_update,
+               is_audit,
+               auditdate,
+               id_change,
+               branch_id
+        from kd_reser
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="KdReserMap">
+        <include refid="selectKdReserVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="KdReserMap">
+        <include refid="selectKdReserVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="selectOtherPayable" resultType="com.center.medical.finance.bean.dto.SelectOtherPayableDto" >
+        select
+            op.id_remittanceway id_remittanceway,
+            op.moneyamountpaid moneyamountpaid,
+            op.id_customer id_customer,
+            s.account_no account_no,
+            kp.account_name payway_name,
+            op.is_update is_update,
+            op.id_feecharger
+        from
+            kd_reser op
+        left join md_user_saleer us on us.user_id = op.id_feecharger
+        left join kd_saleer s on us.saleer_md5 = s.md5
+        left join kd_payway kp on kp.account_no = op.id_remittanceway
+        where
+            op.is_audit = '1'
+            and op.id_remitter = #{idRemitter}
+    </select>
+</mapper>
+

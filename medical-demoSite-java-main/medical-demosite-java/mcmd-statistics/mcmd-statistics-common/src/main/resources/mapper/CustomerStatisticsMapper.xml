@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.CustomerStatisticsMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.statistics.bean.vo.CustomerStatisticsVo">
+        SELECT
+        sc.id,
+        bc.fzx,
+        sc.int_id,
+        sc.khdwmc,
+        co.ddmc,
+        co.tjlx,
+        count(p.patientcode) as ljrs,
+        sum(pcm.moneyamountpaid) as total,
+        co.xsjl,
+        co.ddh
+        FROM
+        md_peispatient p
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        LEFT JOIN sys_branch bc ON bc.branch_id = p.hospitalcode
+        LEFT JOIN md_createorder co ON co.ddh = p.numorgresv
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            p.f_registered = 1
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.fUsecodehiden!=null">
+                AND p.f_usecodehiden = #{param.fUsecodehiden}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND co.xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY sc.int_id
+        ORDER BY sc.int_id
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+
+    </select>
+
+
+
+    <!-- 导出订单信息 -->
+    <select id="getPhysicalExaminer" resultType="com.center.medical.statistics.bean.vo.PhysicalExaminerVo">
+        SELECT
+        p.id,
+        p.patientcode,
+        p.examsuite_name,
+        p.dateregister,
+        (CASE WHEN pcm.moneyamount = pcm.moneyamountpaid THEN pcm.modifydate ELSE null END) AS chargdate,
+        pcm.moneyamount,
+        (CASE WHEN pcm.moneyamount = pcm.moneyamountpaid THEN 1 ELSE 0 END) AS status
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            p.f_registered = 1
+            <choose>
+                <when test="param.ddh!=null and param.ddh!=''">
+                    AND p.numorgresv = #{param.ddh}
+                </when>
+                <otherwise>
+                    AND p.f_usecodehiden = 0
+                </otherwise>
+            </choose>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY p.dateregister desc
+    </select>
+
+
+
+    <!-- 导出人员信息 -->
+    <select id="exportOrg" resultType="com.center.medical.statistics.bean.vo.CustomerStatisticsVo">
+        SELECT
+        sc.id,
+        bc.fzx,
+        sc.int_id,
+        sc.khdwmc,
+        co.ddmc,
+        co.tjlx,
+        count(p.patientcode) as ljrs,
+        sum(pcm.moneyamountpaid) as total,
+        co.xsjl,
+        co.ddh
+        FROM
+        md_peispatient p
+        LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+        LEFT JOIN sys_branch bc ON bc.branch_id = p.hospitalcode
+        LEFT JOIN md_createorder co ON co.ddh = p.numorgresv
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            p.f_registered = 1
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.fUsecodehiden!=null">
+                AND p.f_usecodehiden = #{param.fUsecodehiden}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND co.xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY sc.int_id
+        ORDER BY sc.int_id
+    </select>
+
+
+
+    <!-- 获取体检者 -->
+    <select id="exportPer" resultType="com.center.medical.statistics.bean.vo.PhysicalExaminerVo">
+        SELECT
+        p.id,
+        p.patientcode,
+        p.examsuite_name,
+        p.dateregister,
+        (CASE WHEN pcm.moneyamount = pcm.moneyamountpaid THEN pcm.modifydate ELSE null END) AS chargdate,
+        pcm.moneyamount,
+        (CASE WHEN pcm.moneyamount = pcm.moneyamountpaid THEN 1 ELSE 0 END) AS status
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        <where>
+            p.f_registered = 1
+            <choose>
+                <when test="param.ddh!=null and param.ddh!=''">
+                    AND p.numorgresv = #{param.ddh}
+                </when>
+                <otherwise>
+                    AND p.f_usecodehiden = 0
+                </otherwise>
+            </choose>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY p.dateregister desc
+    </select>
+</mapper>
+

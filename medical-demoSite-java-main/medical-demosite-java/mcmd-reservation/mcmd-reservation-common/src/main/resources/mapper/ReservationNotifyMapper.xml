@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reservation.dao.ReservationNotifyMapper">
+
+    <resultMap type="com.center.medical.reservation.bean.model.ReservationNotify" id="ReservationNotifyMap">
+        <id property="id" column="id"/>
+        <result property="bizId" column="biz_id"/>
+        <result property="systemId" column="system_id"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReservationNotifyVo">
+        select id, biz_id, system_id, status, createdate, modifydate
+        from md_reservation_notify
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReservationNotifyMap">
+        <include refid="selectReservationNotifyVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReservationNotifyMap">
+        <include refid="selectReservationNotifyVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    
+    <!--获取待通知的列表-->
+    <select id="getNotifyList" resultType="com.center.medical.reservation.bean.dto.ReservationNotifyDto">
+        SELECT rn.id,
+               rv.biz_id,
+               rv.system_id,
+               rv.`status`,
+               rv.fail_reason
+        FROM md_reservation_notify rn
+                 LEFT JOIN md_reservation rv ON rn.biz_id = rv.id
+        WHERE rn.`status` = 0
+        ORDER BY rn.createdate ASC LIMIT #{num}
+    </select>
+
+</mapper>
+

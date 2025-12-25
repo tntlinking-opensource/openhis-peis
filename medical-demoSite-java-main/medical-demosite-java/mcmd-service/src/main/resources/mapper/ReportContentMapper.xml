@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.ReportContentMapper">
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReportContentVo">
+        select *
+        from md_report_content
+    </sql>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.ReportContent">
+        <include refid="selectReportContentVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoByPatientcode" resultType="com.center.medical.bean.model.ReportContent">
+        <include refid="selectReportContentVo"/>
+        <where>
+            patientcode = #{patientcode}
+        </where>
+    </select>
+
+    <!-- 根据体检号获取记录详情 -->
+    <select id="getInfoByAnalyzeId" resultType="com.center.medical.bean.model.ReportContent">
+        <include refid="selectReportContentVo"/>
+        <where>
+            analyze_id = #{analyzeId}
+        </where>
+    </select>
+
+
+    <!-- 查询报告内容 -->
+    <select id="findReport" resultType="com.center.medical.bean.model.ReportContent">
+        <include refid="selectReportContentVo"/>
+        <where>
+            1 = 1
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND patientcode = #{param.patientcode}
+            </if>
+            <if test="param.idExamtype!=null and param.idExamtype!=''">
+                AND id_examtype = #{param.idExamtype}
+            </if>
+            <if test="param.reportType!=null">
+                AND report_type = #{param.reportType}
+            </if>
+            <if test="param.analyzeId!=null and param.analyzeId!=''">
+                AND analyze_id = #{param.analyzeId}
+            </if>
+            <if test="param.compareReportId!=null and param.analyzeId!=''">
+                AND compare_report_id = #{param.compareReportId}
+            </if>
+            <if test="param.ksId!=null and param.ksId!=''">
+                AND ks_id = #{param.ksId}
+            </if>
+        </where>
+    </select>
+</mapper>
+

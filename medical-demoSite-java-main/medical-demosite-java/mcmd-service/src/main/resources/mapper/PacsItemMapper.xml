@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.PacsItemMapper">
+
+    <resultMap type="com.center.medical.bean.model.PacsItems" id="PacsItemsMap">
+        <id property="id" column="id"/>
+        <result property="sysmanmark" column="sysmanmark"/>
+        <result property="examfeeitemName" column="examfeeitem_name"/>
+        <result property="examfeeitemNameabr" column="examfeeitem_nameabr"/>
+        <result property="examfeeitemNameprn" column="examfeeitem_nameprn"/>
+        <result property="examfeeitemNameeng" column="examfeeitem_nameeng"/>
+        <result property="examfeeitemNameengabr" column="examfeeitem_nameengabr"/>
+        <result property="examfeeitemCode" column="examfeeitem_code"/>
+        <result property="examfeeitemCodehm" column="examfeeitem_codehm"/>
+        <result property="xXxdm" column="x_xxdm"/>
+        <result property="idDepart" column="id_depart"/>
+        <result property="departName" column="depart_name"/>
+        <result property="sfxmsrm" column="sfxmsrm"/>
+        <result property="xh" column="xh"/>
+        <result property="jcyy" column="jcyy"/>
+        <result property="xb" column="xb"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPacsItemsVo">
+        select id,
+               sysmanmark,
+               examfeeitem_name,
+               examfeeitem_nameabr,
+               examfeeitem_nameprn,
+               examfeeitem_nameeng,
+               examfeeitem_nameengabr,
+               examfeeitem_code,
+               examfeeitem_codehm,
+               x_xxdm,
+               id_depart,
+               depart_name,
+               sfxmsrm,
+               xh,
+               jcyy,
+               xb,
+               createdate,
+               modifydate,
+               is_delete
+        from md_pacs_items
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="PacsItemsMap">
+        <include refid="selectPacsItemsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PacsItemsMap">
+        <include refid="selectPacsItemsVo"/>
+        <where>
+            id = #{id}
+            and is_delete = 0
+        </where>
+    </select>
+
+</mapper>
+

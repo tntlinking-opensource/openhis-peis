@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mcmd-finance</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-finance-common</artifactId>
+    <description>财务业务模块</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-system-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-sell-crm-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-datascreen-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdFxPositiveMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdFxPositive" id="MdFxPositiveMap">
+        <id property="id" column="id"/>
+        <result property="sampleId" column="sample_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="dateregister" column="dateregister"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgDepart" column="org_depart"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="patientname" column="patientname"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="positiveResult" column="positive_result"/>
+        <result property="verdict" column="verdict"/>
+        <result property="offer" column="offer"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdFxPositiveVo">
+        select id,
+               sample_id,
+               createdate,
+               modifydate,
+               dateregister,
+               id_org,
+               org_name,
+               org_depart,
+               patientcode,
+               patientname,
+               sex,
+               age,
+               positive_result,
+               verdict,
+               offer
+        from md_fx_positive
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdFxPositiveMap">
+        <include refid="selectMdFxPositiveVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdFxPositiveMap">
+        <include refid="selectMdFxPositiveVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

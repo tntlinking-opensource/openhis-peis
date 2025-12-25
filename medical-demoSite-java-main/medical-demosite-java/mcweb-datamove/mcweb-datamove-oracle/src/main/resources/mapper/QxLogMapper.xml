@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxLogMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxLog" id="QxLogMap">
+        <id property="id" column="ID"/>
+        <result property="czUser" column="CZ_USER"/>
+        <result property="czDate" column="CZ_DATE"/>
+        <result property="djType" column="DJ_TYPE"/>
+        <result property="czType" column="CZ_TYPE"/>
+        <result property="czObject" column="CZ_OBJECT"/>
+        <result property="ipDz" column="IP_DZ"/>
+        <result property="pcName" column="PC_NAME"/>
+        <result property="rmk" column="RMK"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="czdj" column="CZDJ"/>
+        <result property="fzx" column="FZX"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxLogVo">
+        select ID,
+               CZ_USER,
+               CZ_DATE,
+               DJ_TYPE,
+               CZ_TYPE,
+               CZ_OBJECT,
+               IP_DZ,
+               PC_NAME,
+               RMK,
+               CREATEDATE,
+               MODIFYDATE,
+               CZDJ,
+               FZX
+        from QX_LOG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxLogMap">
+        <include refid="selectQxLogVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxLogMap">
+        <include refid="selectQxLogVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

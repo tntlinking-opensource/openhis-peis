@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxDepartmentMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxDepartment" id="QxDepartmentMap">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="parent" column="PARENT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isFunction" column="IS_FUNCTION"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="xh" column="XH"/>
+        <result property="sjbggs" column="SJBGGS"/>
+        <result property="jcdd" column="JCDD"/>
+        <result property="jklx" column="JKLX"/>
+        <result property="ksh" column="KSH"/>
+        <result property="imgpath" column="IMGPATH"/>
+        <result property="reportPathHealth" column="REPORT_PATH_HEALTH"/>
+        <result property="reportPathDisease" column="REPORT_PATH_DISEASE"/>
+        <result property="addPicBefore" column="ADD_PIC_BEFORE"/>
+        <result property="reportSort" column="REPORT_SORT"/>
+        <result property="dydXh" column="DYD_XH"/>
+        <result property="dydMemo" column="DYD_MEMO"/>
+        <result property="kingdeeAccountNo" column="KINGDEE_ACCOUNT_NO"/>
+        <result property="greyImgpath" column="GREY_IMGPATH"/>
+        <result property="isShowapp" column="IS_SHOWAPP"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxDepartmentVo">
+        select ID,
+               NAME,
+               DESCRIPTION,
+               PARENT,
+               CREATEDATE,
+               MODIFYDATE,
+               IS_DELETE,
+               IS_FUNCTION,
+               INPUT_CODE,
+               XH,
+               SJBGGS,
+               JCDD,
+               JKLX,
+               KSH,
+               IMGPATH,
+               REPORT_PATH_HEALTH,
+               REPORT_PATH_DISEASE,
+               ADD_PIC_BEFORE,
+               REPORT_SORT,
+               DYD_XH,
+               DYD_MEMO,
+               KINGDEE_ACCOUNT_NO,
+               GREY_IMGPATH,
+               IS_SHOWAPP
+        from QX_DEPARTMENT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxDepartmentMap">
+        <include refid="selectQxDepartmentVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxDepartmentMap">
+        <include refid="selectQxDepartmentVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

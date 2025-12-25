@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdItemsNewMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdItemsNew" id="MdItemsNewMap">
+        <id property="id" column="id"/>
+        <result property="sysmanmark" column="sysmanmark"/>
+        <result property="examfeeitemName" column="examfeeitem_name"/>
+        <result property="examfeeitemNameabr" column="examfeeitem_nameabr"/>
+        <result property="examfeeitemNameprn" column="examfeeitem_nameprn"/>
+        <result property="examfeeitemNameeng" column="examfeeitem_nameeng"/>
+        <result property="examfeeitemNameengabr" column="examfeeitem_nameengabr"/>
+        <result property="examfeeitemCode" column="examfeeitem_code"/>
+        <result property="examfeeitemCodehm" column="examfeeitem_codehm"/>
+        <result property="examfeeitemCodex" column="examfeeitem_codex"/>
+        <result property="examfeeitemClass" column="examfeeitem_class"/>
+        <result property="xXxdm" column="x_xxdm"/>
+        <result property="fDiscountdisabled" column="f_discountdisabled"/>
+        <result property="unitprice" column="unitprice"/>
+        <result property="suiteprice" column="suiteprice"/>
+        <result property="materialprice" column="materialprice"/>
+        <result property="costprice" column="costprice"/>
+        <result property="coopprice" column="coopprice"/>
+        <result property="idCooporg" column="id_cooporg"/>
+        <result property="idDepart" column="id_depart"/>
+        <result property="departName" column="depart_name"/>
+        <result property="xYbdm" column="x_ybdm"/>
+        <result property="idLabtype" column="id_labtype"/>
+        <result property="labtypeR" column="labtype_r"/>
+        <result property="labtypeSub" column="labtype_sub"/>
+        <result property="inputcodee" column="inputcodee"/>
+        <result property="guidesheetcode" column="guidesheetcode"/>
+        <result property="dtLastautoinsert" column="dt_lastautoinsert"/>
+        <result property="sfxmsrm" column="sfxmsrm"/>
+        <result property="dydfz" column="dydfz"/>
+        <result property="xh" column="xh"/>
+        <result property="dyddybs" column="dyddybs"/>
+        <result property="zk" column="zk"/>
+        <result property="wbjg" column="wbjg"/>
+        <result property="ydjg" column="ydjg"/>
+        <result property="nbj" column="nbj"/>
+        <result property="yblx" column="yblx"/>
+        <result property="dlbs" column="dlbs"/>
+        <result property="yblxmc" column="yblxmc"/>
+        <result property="fylx" column="fylx"/>
+        <result property="jcyy" column="jcyy"/>
+        <result property="cx" column="cx"/>
+        <result property="yblxid" column="yblxid"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="xb" column="xb"/>
+        <result property="bs" column="bs"/>
+        <result property="bz" column="bz"/>
+        <result property="bgdybs" column="bgdybs"/>
+        <result property="xsdyfl" column="xsdyfl"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="reviewMatters" column="review_matters"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="jccs" column="jccs"/>
+        <result property="examfeeitemid" column="examfeeitemid"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+        <result property="preUpperLimit" column="pre_upper_limit"/>
+        <result property="isBan" column="is_ban"/>
+        <result property="barcodeCount" column="barcode_count"/>
+        <result property="barcodeName" column="barcode_name"/>
+        <result property="groupOrder" column="group_order"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdItemsNewVo">
+        select id,
+               sysmanmark,
+               examfeeitem_name,
+               examfeeitem_nameabr,
+               examfeeitem_nameprn,
+               examfeeitem_nameeng,
+               examfeeitem_nameengabr,
+               examfeeitem_code,
+               examfeeitem_codehm,
+               examfeeitem_codex,
+               examfeeitem_class,
+               x_xxdm,
+               f_discountdisabled,
+               unitprice,
+               suiteprice,
+               materialprice,
+               costprice,
+               coopprice,
+               id_cooporg,
+               id_depart,
+               depart_name,
+               x_ybdm,
+               id_labtype,
+               labtype_r,
+               labtype_sub,
+               inputcodee,
+               guidesheetcode,
+               dt_lastautoinsert,
+               sfxmsrm,
+               dydfz,
+               xh,
+               dyddybs,
+               zk,
+               wbjg,
+               ydjg,
+               nbj,
+               yblx,
+               dlbs,
+               yblxmc,
+               fylx,
+               jcyy,
+               cx,
+               yblxid,
+               tjlx,
+               xb,
+               bs,
+               bz,
+               bgdybs,
+               xsdyfl,
+               createdate,
+               modifydate,
+               review_matters,
+               is_delete,
+               jccs,
+               examfeeitemid,
+               is_public,
+               fzx_ids,
+               pre_upper_limit,
+               is_ban,
+               barcode_count,
+               barcode_name,
+               group_order
+        from md_items_new
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdItemsNewMap">
+        <include refid="selectMdItemsNewVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdItemsNewMap">
+        <include refid="selectMdItemsNewVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

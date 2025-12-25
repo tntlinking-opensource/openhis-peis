@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.BasMergeConclusionMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.BasMergeConclusion" id="BasMergeConclusionMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="conclusionId" column="conclusion_id"/>
+        <result property="mergeId" column="merge_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBasMergeConclusionVo">
+        select id, createdate, modifydate, conclusion_id, merge_id
+        from md_bas_merge_conclusion
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="BasMergeConclusionMap">
+        <include refid="selectBasMergeConclusionVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BasMergeConclusionMap">
+        <include refid="selectBasMergeConclusionVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 获取历史 -->
+    <select id="getHistory" resultType="com.center.medical.data.bean.model.BasMergeConclusion">
+        select s.patientcode,
+               STR_TO_DATE(s.total_time, '%Y-%m-%d') as total_time,
+               s.summarize,
+               s.offer,
+               s.posistive,
+               p.medicaltype,
+               p.org_name
+        from md_section_total s
+                 inner join md_peispatient p on p.patientcode = s.patientcode
+        where s.disease_health = #{dh}
+          and s.id != #{smid}
+          and p.patientarchiveno = #{patientarchiveno}
+        order by
+            s.total_time desc
+    </select>
+
+
+    <!-- 获取历史 -->
+    <select id="getMergeConbination" resultType="string">
+        SELECT group_concat(c.NAME)
+        FROM md_bas_merge_conclusion bmc
+                 INNER JOIN md_basconclusion c ON c.id = bmc.conclusion_id
+                 INNER JOIN md_bas_merge bm ON bm.id = bmc.merge_id
+            AND bm.is_delete = 0
+        WHERE EXISTS(SELECT 1
+                     FROM md_bas_merge_conclusion bmc2
+                     WHERE bmc2.conclusion_id = #{conclusionid}
+                       AND bmc2.merge_id = bmc.merge_id)
+        GROUP BY bmc.merge_id
+    </select>
+</mapper>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.TotalAddWorkMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.TotalAddWorkVo">
+        SELECT
+            qu.user_no AS id,
+            sum( feeitem.price ) AS price,
+            sum( feeitem.factprice ) AS factprice,
+            min( qu.user_name ) AS jxys,
+            (#{param.startTime} ) AS startTime,
+            (#{param.endTime} ) AS endTime
+        FROM
+            md_peispatientfeeitem feeitem
+                INNER JOIN md_peispatient p ON feeitem.id_patient = p.patientcode
+                LEFT JOIN sys_user qu ON feeitem.jxys = qu.user_no
+        <where>
+            feeitem.sfjx = 1
+          AND feeitem.f_feecharged = 1
+          AND (
+                feeitem.change_item IS NULL
+                OR feeitem.change_item = 0
+            )
+            <if test="param.startTime!=null">
+                AND feeitem.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND feeitem.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.doctorId!=null and param.doctorId!=''">
+                AND qu.user_no = #{param.doctorId}
+            </if>
+        </where>
+        GROUP BY qu.user_no
+        ORDER BY qu.user_no
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getExportData" resultType="com.center.medical.statistics.bean.vo.TotalAddWorkVo">
+        SELECT
+        qu.user_no AS id,
+        sum( feeitem.price ) AS price,
+        sum( feeitem.factprice ) AS factprice,
+        min( qu.user_name ) AS jxys,
+        (#{param.startTime} ) AS startTime,
+        (#{param.endTime} ) AS endTime
+        FROM
+        md_peispatientfeeitem feeitem
+        INNER JOIN md_peispatient p ON feeitem.id_patient = p.patientcode
+        LEFT JOIN sys_user qu ON feeitem.jxys = qu.user_no
+        <where>
+            feeitem.sfjx = 1
+            AND feeitem.f_feecharged = 1
+            AND (
+            feeitem.change_item IS NULL
+            OR feeitem.change_item = 0
+            )
+            <if test="param.startTime!=null">
+                AND feeitem.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND feeitem.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.doctorId!=null and param.doctorId!=''">
+                AND qu.user_no = #{param.doctorId}
+            </if>
+        </where>
+        GROUP BY qu.user_no
+        ORDER BY qu.user_no
+    </select>
+
+</mapper>
+

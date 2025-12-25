@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.UpperowerMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Upperower" id="UpperowerMap">
+        <id property="id" column="ID"/>
+        <result property="rymc" column="RYMC"/>
+        <result property="zw" column="ZW"/>
+        <result property="xb" column="XB"/>
+        <result property="nl" column="NL"/>
+        <result property="dh" column="DH"/>
+        <result property="sfysj" column="SFYSJ"/>
+        <result property="sj" column="SJ"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectUpperowerVo">
+        select ID,
+               RYMC,
+               ZW,
+               XB,
+               NL,
+               DH,
+               SFYSJ,
+               SJ,
+               CREATEDATE,
+               MODIFYDATE
+        from UPPEROWER
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="UpperowerMap">
+        <include refid="selectUpperowerVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="UpperowerMap">
+        <include refid="selectUpperowerVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

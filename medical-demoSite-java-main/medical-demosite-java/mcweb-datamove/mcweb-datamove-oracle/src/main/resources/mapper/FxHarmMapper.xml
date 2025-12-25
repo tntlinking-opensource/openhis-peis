@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.FxHarmMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.FxHarm" id="FxHarmMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="harmId" column="HARM_ID"/>
+        <result property="sampleId" column="SAMPLE_ID"/>
+        <result property="personNum" column="PERSON_NUM"/>
+        <result property="harmName" column="HARM_NAME"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFxHarmVo">
+        select ID, CREATEDATE, MODIFYDATE, HARM_ID, SAMPLE_ID, PERSON_NUM, HARM_NAME
+        from FX_HARM
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FxHarmMap">
+        <include refid="selectFxHarmVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FxHarmMap">
+        <include refid="selectFxHarmVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.CrisisValueMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.abteilung.bean.vo.CrisisValueVo">
+        SELECT
+            r.id,
+            rc.wjzjb,
+            r.reportstatus,
+            r.hfclzt,
+            r.zjclzt,
+            d.dept_name as reportDivision,
+            r.tjid,
+            r.gwrymc,
+            r.xb,
+            r.nl,
+            p.org_name as orgName,
+            p.org_depart as orgDepart,
+            r.lxdh,
+            p.doctorapply,
+            r.report_time as reportTime,
+            rc.wjzxj,
+            r.ywclr,
+            r.ywclsj as ywclsj,
+            r.ywbz,
+            r.hfclr,
+            r.hfclsj as hfclsj,
+            r.hfclfs,
+            r.hfbz,
+            r.zjclr,
+            r.zjclsj as zjclsj,
+            r.zjclfs,
+            r.zjbz,
+            p.numorgresv,
+            r.ywclzt
+        FROM
+            md_riskclient r
+                LEFT JOIN sys_dept d ON d.dept_no = r.report_division
+                LEFT JOIN md_peispatient p ON p.patientcode = r.tjid
+                INNER JOIN md_riskclientcon rc ON rc.riskid = r.id
+        <where>
+            r.report_man IS NOT NULL
+            <if test="param.gwrymc!=null and param.gwrymc!=''">
+                AND r.gwrymc like concat('%',#{param.gwrymc},'%')
+            </if>
+            <if test="param.tjid!=null and param.tjid!=''">
+                AND r.tjid like concat('%',#{param.tjid},'%')
+            </if>
+            <if test="param.reportDivision!=null and param.reportDivision!=''">
+                AND r.report_division = #{param.reportDivision}
+            </if>
+            <if test="param.wjzjb!=null and param.wjzjb!=''">
+                AND rc.wjzjb = #{param.wjzjb}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND r.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null">
+                AND r.report_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.report_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.useCodeHiden!=null and param.useCodeHiden!=''">
+                AND p.f_usecodehiden = #{param.useCodeHiden}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND p.numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.hfclr!=null and param.hfclr!=''">
+                AND r.hfclr like concat('%',#{param.hfclr},'%')
+            </if>
+        </where>
+        <choose>
+            <when test="param.isdoc!=null and param.isdoc == 1">
+                ORDER BY r.zjclzt ASC,( CASE WHEN r.hfclzt = 1 THEN - 1 ELSE r.hfclzt END ) ASC,
+                r.createdate DESC
+            </when>
+            <otherwise>
+                ORDER BY
+                r.zjclzt ASC,
+                r.hfclzt ASC,
+                r.createdate DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.sellcrm.bean.model.Riskclient">
+        SELECT
+            *
+        FROM
+        md_riskclient
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 导出数据 -->
+    <select id="getExportData" resultType="com.center.medical.abteilung.bean.vo.CrisisValueVo">
+        SELECT
+        r.id,
+        rc.wjzjb,
+        r.reportstatus,
+        r.hfclzt,
+        r.zjclzt,
+        d.dept_name as reportDivision,
+        r.tjid,
+        r.gwrymc,
+        r.xb,
+        r.nl,
+        p.org_name as orgName,
+        p.org_depart as orgDepart,
+        r.lxdh,
+        p.doctorapply,
+        r.report_time as reportTime,
+        rc.wjzxj,
+        r.ywclr,
+        r.ywclsj as ywclsj,
+        r.ywbz,
+        r.hfclr,
+        r.hfclsj as hfclsj,
+        r.hfclfs,
+        r.hfbz,
+        r.zjclr,
+        r.zjclsj as zjclsj,
+        r.zjclfs,
+        r.zjbz,
+        p.numorgresv,
+        r.ywclzt
+        FROM
+        md_riskclient r
+        LEFT JOIN sys_dept d ON d.dept_no = r.report_division
+        LEFT JOIN md_peispatient p ON p.patientcode = r.tjid
+        INNER JOIN md_riskclientcon rc ON rc.riskid = r.id
+        <where>
+            r.report_man IS NOT NULL
+            <if test="param.gwrymc!=null and param.gwrymc!=''">
+                AND r.gwrymc like concat('%',#{param.gwrymc},'%')
+            </if>
+            <if test="param.tjid!=null and param.tjid!=''">
+                AND r.tjid like concat('%',#{param.tjid},'%')
+            </if>
+            <if test="param.reportDivision!=null and param.reportDivision!=''">
+                AND r.report_division = #{param.reportDivision}
+            </if>
+            <if test="param.wjzjb!=null and param.wjzjb!=''">
+                AND rc.wjzjb = #{param.wjzjb}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND r.id_org = #{param.idOrg}
+            </if>
+            <if test="param.startTime!=null">
+                AND r.report_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND r.report_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.useCodeHiden!=null and param.useCodeHiden!=''">
+                AND p.f_usecodehiden = #{param.useCodeHiden}
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND p.numorgresv = #{param.numorgresv}
+            </if>
+        </where>
+        <choose>
+            <when test="param.isdoc!=null and param.isdoc == 1">
+                ORDER BY r.zjclzt ASC,( CASE WHEN r.hfclzt = 1 THEN - 1 ELSE r.hfclzt END ) ASC,
+                r.createdate DESC
+            </when>
+            <otherwise>
+                ORDER BY
+                r.zjclzt ASC,
+                r.hfclzt ASC,
+                r.createdate DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+
+    <!-- 获取科室及体检结果 -->
+    <select id="getKs" resultType="com.center.medical.abteilung.bean.vo.GetKsVo">
+        SELECT
+        d.dept_name as name,
+        d.dept_no as id,
+        d.input_code,
+        m.conclusions
+        FROM
+        sys_dept d
+        INNER JOIN md_peispatientfeeitem pi ON pi.id_ks = d.dept_no
+        LEFT JOIN md_section_result_main m ON m.patientcode = pi.id_patient
+        AND m.dep_id = d.dept_no
+        <where>
+            pi.id_patient = #{patientcode}
+            <if test="key!=null and key!=''">
+                AND d.input_code LIKE concat('%',#{key},'%')
+            </if>
+        </where>
+        GROUP BY d.dept_name,d.dept_no,d.input_code,m.conclusions
+    </select>
+</mapper>
+

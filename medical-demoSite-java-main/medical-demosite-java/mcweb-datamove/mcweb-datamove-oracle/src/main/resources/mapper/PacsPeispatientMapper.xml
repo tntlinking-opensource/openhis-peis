@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PacsPeispatientMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.PacsPeispatient" id="PacsPeispatientMap">
+        <id property="id" column="ID"/>
+        <result property="idPatient" column="ID_PATIENT"/>
+        <result property="idOrgpatient" column="ID_ORGPATIENT"/>
+        <result property="idCis" column="ID_CIS"/>
+        <result property="idPatientarchive" column="ID_PATIENTARCHIVE"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="patientcodeprn" column="PATIENTCODEPRN"/>
+        <result property="patientarchiveno" column="PATIENTARCHIVENO"/>
+        <result property="patientcardno" column="PATIENTCARDNO"/>
+        <result property="patientbizno" column="PATIENTBIZNO"/>
+        <result property="idcardno" column="IDCARDNO"/>
+        <result property="dailynumberdate" column="DAILYNUMBERDATE"/>
+        <result property="dailynumber" column="DAILYNUMBER"/>
+        <result property="numtotal" column="NUMTOTAL"/>
+        <result property="numyear" column="NUMYEAR"/>
+        <result property="nummonth" column="NUMMONTH"/>
+        <result property="numday" column="NUMDAY"/>
+        <result property="numorg" column="NUMORG"/>
+        <result property="numorgresv" column="NUMORGRESV"/>
+        <result property="idPatientlinked" column="ID_PATIENTLINKED"/>
+        <result property="idNonorg" column="ID_NONORG"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="idOrgreservationgroup" column="ID_ORGRESERVATIONGROUP"/>
+        <result property="idOrgreservation" column="ID_ORGRESERVATION"/>
+        <result property="idOrg" column="ID_ORG"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="orgDepart" column="ORG_DEPART"/>
+        <result property="orgDepartsuba" column="ORG_DEPARTSUBA"/>
+        <result property="orgDepartsubb" column="ORG_DEPARTSUBB"/>
+        <result property="orgDepartsubc" column="ORG_DEPARTSUBC"/>
+        <result property="orgDepartsubd" column="ORG_DEPARTSUBD"/>
+        <result property="orgDepartsube" column="ORG_DEPARTSUBE"/>
+        <result property="havePrivate" column="have_private"/>
+        <result property="idPayway" column="ID_PAYWAY"/>
+        <result property="payway" column="PAYWAY"/>
+        <result property="offpercent" column="OFFPERCENT"/>
+        <result property="maxoffpercent" column="MAXOFFPERCENT"/>
+        <result property="personpricelimit" column="PERSONPRICELIMIT"/>
+        <result property="idSex" column="ID_SEX"/>
+        <result property="sex" column="SEX"/>
+        <result property="birthdate" column="BIRTHDATE"/>
+        <result property="age" column="AGE"/>
+        <result property="idAgeunit" column="ID_AGEUNIT"/>
+        <result property="ageunit" column="AGEUNIT"/>
+        <result property="ageofreal" column="AGEOFREAL"/>
+        <result property="idMarriage" column="ID_MARRIAGE"/>
+        <result property="marriage" column="MARRIAGE"/>
+        <result property="idNation" column="ID_NATION"/>
+        <result property="nation" column="NATION"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="idInformway" column="ID_INFORMWAY"/>
+        <result property="idOpendoctor" column="ID_OPENDOCTOR"/>
+        <result property="email" column="EMAIL"/>
+        <result property="phone" column="PHONE"/>
+        <result property="idPatientclass" column="ID_PATIENTCLASS"/>
+        <result property="idEducation" column="ID_EDUCATION"/>
+        <result property="education" column="EDUCATION"/>
+        <result property="idOccupation" column="ID_OCCUPATION"/>
+        <result property="occupation" column="OCCUPATION"/>
+        <result property="idResarea" column="ID_RESAREA"/>
+        <result property="resarea" column="RESAREA"/>
+        <result property="dateinorganization" column="DATEINORGANIZATION"/>
+        <result property="fIsforprepare" column="F_ISFORPREPARE"/>
+        <result property="fIsforreserve" column="F_ISFORRESERVE"/>
+        <result property="datecreated" column="DATECREATED"/>
+        <result property="fRegistered" column="F_REGISTERED"/>
+        <result property="dateregister" column="DATEREGISTER"/>
+        <result property="positionCode" column="POSITION_CODE"/>
+        <result property="jobtypeCode" column="JOBTYPE_CODE"/>
+        <result property="moneyamount" column="MONEYAMOUNT"/>
+        <result property="moneyamountpaid" column="MONEYAMOUNTPAID"/>
+        <result property="guidancenote" column="GUIDANCENOTE"/>
+        <result property="workno" column="WORKNO"/>
+        <result property="idDoctorreg" column="ID_DOCTORREG"/>
+        <result property="doctorreg" column="DOCTORREG"/>
+        <result property="idExamtype" column="ID_EXAMTYPE"/>
+        <result property="idExamsuite" column="ID_EXAMSUITE"/>
+        <result property="examsuiteName" column="EXAMSUITE_NAME"/>
+        <result property="examsuiteAlias" column="EXAMSUITE_ALIAS"/>
+        <result property="idDoctorconclusion" column="ID_DOCTORCONCLUSION"/>
+        <result property="doctorconclusion" column="DOCTORCONCLUSION"/>
+        <result property="idDoctorapply" column="ID_DOCTORAPPLY"/>
+        <result property="doctorapply" column="DOCTORAPPLY"/>
+        <result property="fGuidanceprinted" column="F_GUIDANCEPRINTED"/>
+        <result property="fFeecharged" column="F_FEECHARGED"/>
+        <result property="fExamstarted" column="F_EXAMSTARTED"/>
+        <result property="fReadytofinal" column="F_READYTOFINAL"/>
+        <result property="idDoctorfee" column="ID_DOCTORFEE"/>
+        <result property="doctorfee" column="DOCTORFEE"/>
+        <result property="fPaused" column="F_PAUSED"/>
+        <result property="fFinallocked" column="F_FINALLOCKED"/>
+        <result property="fFinalexamed" column="F_FINALEXAMED"/>
+        <result property="fFinalapproved" column="F_FINALAPPROVED"/>
+        <result property="idDoctorfinal" column="ID_DOCTORFINAL"/>
+        <result property="doctorfinalNameR" column="DOCTORFINAL_NAME_R"/>
+        <result property="datefinalexamed" column="DATEFINALEXAMED"/>
+        <result property="idDoctorfinalapproved" column="ID_DOCTORFINALAPPROVED"/>
+        <result property="datefinalapproved" column="DATEFINALAPPROVED"/>
+        <result property="fCardissued" column="F_CARDISSUED"/>
+        <result property="fCardreturned" column="F_CARDRETURNED"/>
+        <result property="fCoverprinted" column="F_COVERPRINTED"/>
+        <result property="fReportprinted" column="F_REPORTPRINTED"/>
+        <result property="idReportprintedby" column="ID_REPORTPRINTEDBY"/>
+        <result property="datereportprinted" column="DATEREPORTPRINTED"/>
+        <result property="fReportinformed" column="F_REPORTINFORMED"/>
+        <result property="datereportinformed" column="DATEREPORTINFORMED"/>
+        <result property="fReportfetched" column="F_REPORTFETCHED"/>
+        <result property="datereportfetched" column="DATEREPORTFETCHED"/>
+        <result property="fIssevere" column="F_ISSEVERE"/>
+        <result property="fClosed" column="F_CLOSED"/>
+        <result property="dateclosed" column="DATECLOSED"/>
+        <result property="fNeedtraced" column="F_NEEDTRACED"/>
+        <result property="fDiffperson" column="F_DIFFPERSON"/>
+        <result property="confidentiallevel" column="CONFIDENTIALLEVEL"/>
+        <result property="fSettleall" column="F_SETTLEALL"/>
+        <result property="signature" column="SIGNATURE"/>
+        <result property="note" column="NOTE"/>
+        <result property="dtLastmodifiedthisat" column="DT_LASTMODIFIEDTHISAT"/>
+        <result property="fInneroper" column="F_INNEROPER"/>
+        <result property="severedegree" column="SEVEREDEGREE"/>
+        <result property="severedegreenote" column="SEVEREDEGREENOTE"/>
+        <result property="fSevereinformed" column="F_SEVEREINFORMED"/>
+        <result property="severeinformtime" column="SEVEREINFORMTIME"/>
+        <result property="idSevereinformby" column="ID_SEVEREINFORMBY"/>
+        <result property="conclusion" column="CONCLUSION"/>
+        <result property="conclusionsummary" column="CONCLUSIONSUMMARY"/>
+        <result property="suggestion" column="SUGGESTION"/>
+        <result property="conclusionrich" column="CONCLUSIONRICH"/>
+        <result property="dietguide" column="DIETGUIDE"/>
+        <result property="sportguide" column="SPORTGUIDE"/>
+        <result property="knowledge" column="KNOWLEDGE"/>
+        <result property="message" column="MESSAGE"/>
+        <result property="positivesummary" column="POSITIVESUMMARY"/>
+        <result property="resultcompare" column="RESULTCOMPARE"/>
+        <result property="interfacemarks" column="INTERFACEMARKS"/>
+        <result property="patientflag" column="PATIENTFLAG"/>
+        <result property="timingstartedat" column="TIMINGSTARTEDAT"/>
+        <result property="timeresultlastchange" column="TIMERESULTLASTCHANGE"/>
+        <result property="timeresultlastarchive" column="TIMERESULTLASTARCHIVE"/>
+        <result property="timeresultlastolap" column="TIMERESULTLASTOLAP"/>
+        <result property="hospitalcode" column="HOSPITALCODE"/>
+        <result property="hospitalname" column="HOSPITALNAME"/>
+        <result property="idExamplace" column="ID_EXAMPLACE"/>
+        <result property="parsedassignedsuiteandfi" column="PARSEDASSIGNEDSUITEANDFI"/>
+        <result property="parsedassignedgroupandfi" column="PARSEDASSIGNEDGROUPANDFI"/>
+        <result property="parsedsuiteandfi" column="PARSEDSUITEANDFI"/>
+        <result property="parsedsuiteandfilab" column="PARSEDSUITEANDFILAB"/>
+        <result property="idGuidenurse" column="ID_GUIDENURSE"/>
+        <result property="patientnameencoded" column="PATIENTNAMEENCODED"/>
+        <result property="patientcodehiden" column="PATIENTCODEHIDEN"/>
+        <result property="fPdfcreated" column="F_PDFCREATED"/>
+        <result property="fWordcreated" column="F_WORDCREATED"/>
+        <result property="fWordprinted" column="F_WORDPRINTED"/>
+        <result property="guidancenote2" column="GUIDANCENOTE2"/>
+        <result property="fUsecodehiden" column="F_USECODEHIDEN"/>
+        <result property="idPatientclass2" column="ID_PATIENTCLASS2"/>
+        <result property="idPatientclass3" column="ID_PATIENTCLASS3"/>
+        <result property="dateregisternotime" column="DATEREGISTERNOTIME"/>
+        <result property="counterreportprinted" column="COUNTERREPORTPRINTED"/>
+        <result property="fPrintcomparingreport" column="F_PRINTCOMPARINGREPORT"/>
+        <result property="fIsrecheck" column="F_ISRECHECK"/>
+        <result property="fSettlenone" column="F_SETTLENONE"/>
+        <result property="fGuidancereturned" column="F_GUIDANCERETURNED"/>
+        <result property="dateguidancereturned" column="DATEGUIDANCERETURNED"/>
+        <result property="idGuidancereturnedby" column="ID_GUIDANCERETURNEDBY"/>
+        <result property="fOutpatient" column="F_OUTPATIENT"/>
+        <result property="patientnamereceipt" column="PATIENTNAMERECEIPT"/>
+        <result property="patientnamepinyin" column="PATIENTNAMEPINYIN"/>
+        <result property="fForpreparefinancialconfirm" column="F_FORPREPAREFINANCIALCONFIRM"/>
+        <result property="statusofhm" column="STATUSOFHM"/>
+        <result property="instancetag" column="INSTANCETAG"/>
+        <result property="keybirthplace" column="KEYBIRTHPLACE"/>
+        <result property="keybloodtype" column="KEYBLOODTYPE"/>
+        <result property="exammethod" column="EXAMMETHOD"/>
+        <result property="inpatientno" column="INPATIENTNO"/>
+        <result property="insuranceno" column="INSURANCENO"/>
+        <result property="keypayway" column="KEYPAYWAY"/>
+        <result property="healthcard" column="HEALTHCARD"/>
+        <result property="exampoint" column="EXAMPOINT"/>
+        <result property="fingerprint" column="FINGERPRINT"/>
+        <result property="countreportcoverprinted" column="COUNTREPORTCOVERPRINTED"/>
+        <result property="countreportprinted" column="COUNTREPORTPRINTED"/>
+        <result property="countreportpdf" column="COUNTREPORTPDF"/>
+        <result property="countreportword" column="COUNTREPORTWORD"/>
+        <result property="countreportxml" column="COUNTREPORTXML"/>
+        <result property="countreportcompare" column="COUNTREPORTCOMPARE"/>
+        <result property="countreportcomparepdf" column="COUNTREPORTCOMPAREPDF"/>
+        <result property="countreportcompareword" column="COUNTREPORTCOMPAREWORD"/>
+        <result property="countreportcomparexml" column="COUNTREPORTCOMPAREXML"/>
+        <result property="countreportoccupation" column="COUNTREPORTOCCUPATION"/>
+        <result property="countreportoccupationpdf" column="COUNTREPORTOCCUPATIONPDF"/>
+        <result property="countreportoccupationword" column="COUNTREPORTOCCUPATIONWORD"/>
+        <result property="countreportoccupationxml" column="COUNTREPORTOCCUPATIONXML"/>
+        <result property="scbs" column="SCBS"/>
+        <result property="idTjtc" column="ID_TJTC"/>
+        <result property="jzdw" column="JZDW"/>
+        <result property="jzdwr" column="JZDWR"/>
+        <result property="spr" column="SPR"/>
+        <result property="tjr" column="TJR"/>
+        <result property="lqfs" column="LQFS"/>
+        <result property="yzbm" column="YZBM"/>
+        <result property="yjaddress" column="YJADDRESS"/>
+        <result property="qtxz" column="QTXZ"/>
+        <result property="isHmdb" column="IS_HMDB"/>
+        <result property="isHmd" column="IS_HMD"/>
+        <result property="isjj" column="ISJJ"/>
+        <result property="zgl" column="ZGL"/>
+        <result property="jhgl" column="JHGL"/>
+        <result property="jhys" column="JHYS"/>
+        <result property="jktjzt" column="JKTJZT"/>
+        <result property="zytjzt" column="ZYTJZT"/>
+        <result property="tmyd" column="TMYD"/>
+        <result property="medicaldate" column="MEDICALDATE"/>
+        <result property="trades" column="TRADES"/>
+        <result property="cjjgsfyhf" column="CJJGSFYHF"/>
+        <result property="bhgybsfyhf" column="BHGYBSFYHF"/>
+        <result property="yxjgsfyhf" column="YXJGSFYHF"/>
+        <result property="medicaltype" column="MEDICALTYPE"/>
+        <result property="prepayment" column="PREPAYMENT"/>
+        <result property="tcprice" column="TCPRICE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="cultural" column="CULTURAL"/>
+        <result property="everOfDisease" column="EVER_OF_DISEASE"/>
+        <result property="ccnl" column="CCNL"/>
+        <result property="jq" column="JQ"/>
+        <result property="zq" column="ZQ"/>
+        <result property="tjnl" column="TJNL"/>
+        <result property="familyNumber" column="FAMILY_NUMBER"/>
+        <result property="zc" column="ZC"/>
+        <result property="sc" column="SC"/>
+        <result property="lc" column="LC"/>
+        <result property="jt" column="JT"/>
+        <result property="ywrc" column="YWRC"/>
+        <result property="abstainSmokeNote" column="ABSTAIN_SMOKE_NOTE"/>
+        <result property="everydaySmokeN" column="EVERYDAY_SMOKE_N"/>
+        <result property="smokeYear" column="SMOKE_YEAR"/>
+        <result property="noKissTheCup" column="NO_KISS_THE_CUP"/>
+        <result property="betweenKissTheCup" column="BETWEEN_KISS_THE_CUP"/>
+        <result property="evermoreKiss" column="EVERMORE_KISS"/>
+        <result property="abstainLostKiss" column="ABSTAIN_LOST_KISS"/>
+        <result property="kissYearN" column="KISS_YEAR_N"/>
+        <result property="kissAmount" column="KISS_AMOUNT"/>
+        <result property="kissType" column="KISS_TYPE"/>
+        <result property="familyOfDisease" column="FAMILY_OF_DISEASE"/>
+        <result property="symptom" column="SYMPTOM"/>
+        <result property="isAudit" column="IS_AUDIT"/>
+        <result property="everOfDiseaseRemark" column="EVER_OF_DISEASE_REMARK"/>
+        <result property="createReportNum" column="CREATE_REPORT_NUM"/>
+        <result property="workDate" column="WORK_DATE"/>
+        <result property="harmDate" column="HARM_DATE"/>
+        <result property="picture" column="PICTURE"/>
+        <result property="advice" column="ADVICE"/>
+        <result property="diseasePrintNum" column="DISEASE_PRINT_NUM"/>
+        <result property="healthPrintNum" column="HEALTH_PRINT_NUM"/>
+        <result property="readytofinalDate" column="READYTOFINAL_DATE"/>
+        <result property="guideSignleCount" column="GUIDE_SIGNLE_COUNT"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="isNoticed" column="IS_NOTICED"/>
+        <result property="reviewPdf" column="REVIEW_PDF"/>
+        <result property="contraindicatedPdf" column="CONTRAINDICATED_PDF"/>
+        <result property="diseasePdf" column="DISEASE_PDF"/>
+        <result property="signPicture" column="SIGN_PICTURE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPacsPeispatientVo">
+        select ID_PATIENT,
+               ID_ORGPATIENT,
+               ID_CIS,
+               ID_PATIENTARCHIVE,
+               PATIENTCODE,
+               PATIENTCODEPRN,
+               PATIENTARCHIVENO,
+               PATIENTCARDNO,
+               PATIENTBIZNO,
+               IDCARDNO,
+               DAILYNUMBERDATE,
+               DAILYNUMBER,
+               NUMTOTAL,
+               NUMYEAR,
+               NUMMONTH,
+               NUMDAY,
+               NUMORG,
+               NUMORGRESV,
+               ID_PATIENTLINKED,
+               ID_NONORG,
+               PATIENTNAME,
+               INPUT_CODE,
+               ID_ORGRESERVATIONGROUP,
+               ID_ORGRESERVATION,
+               ID_ORG,
+               ORG_NAME,
+               ORG_DEPART,
+               ORG_DEPARTSUBA,
+               ORG_DEPARTSUBB,
+               ORG_DEPARTSUBC,
+               ORG_DEPARTSUBD,
+               ORG_DEPARTSUBE,
+               ID_FEETYPE,
+               ID_PAYWAY,
+               PAYWAY,
+               OFFPERCENT,
+               MAXOFFPERCENT,
+               PERSONPRICELIMIT,
+               ID_SEX,
+               SEX,
+               BIRTHDATE,
+               AGE,
+               ID_AGEUNIT,
+               AGEUNIT,
+               AGEOFREAL,
+               ID_MARRIAGE,
+               MARRIAGE,
+               ID_NATION,
+               NATION,
+               ADDRESS,
+               ID_INFORMWAY,
+               ID_OPENDOCTOR,
+               EMAIL,
+               PHONE,
+               ID_PATIENTCLASS,
+               ID_EDUCATION,
+               EDUCATION,
+               ID_OCCUPATION,
+               OCCUPATION,
+               ID_RESAREA,
+               RESAREA,
+               DATEINORGANIZATION,
+               F_ISFORPREPARE,
+               F_ISFORRESERVE,
+               DATECREATED,
+               F_REGISTERED,
+               DATEREGISTER,
+               POSITION_CODE,
+               JOBTYPE_CODE,
+               MONEYAMOUNT,
+               MONEYAMOUNTPAID,
+               GUIDANCENOTE,
+               WORKNO,
+               ID_DOCTORREG,
+               DOCTORREG,
+               ID_EXAMTYPE,
+               ID_EXAMSUITE,
+               EXAMSUITE_NAME,
+               EXAMSUITE_ALIAS,
+               ID_DOCTORCONCLUSION,
+               DOCTORCONCLUSION,
+               ID_DOCTORAPPLY,
+               DOCTORAPPLY,
+               F_GUIDANCEPRINTED,
+               F_FEECHARGED,
+               F_EXAMSTARTED,
+               F_READYTOFINAL,
+               ID_DOCTORFEE,
+               DOCTORFEE,
+               F_PAUSED,
+               F_FINALLOCKED,
+               F_FINALEXAMED,
+               F_FINALAPPROVED,
+               ID_DOCTORFINAL,
+               DOCTORFINAL_NAME_R,
+               DATEFINALEXAMED,
+               ID_DOCTORFINALAPPROVED,
+               DATEFINALAPPROVED,
+               F_CARDISSUED,
+               F_CARDRETURNED,
+               F_COVERPRINTED,
+               F_REPORTPRINTED,
+               ID_REPORTPRINTEDBY,
+               DATEREPORTPRINTED,
+               F_REPORTINFORMED,
+               DATEREPORTINFORMED,
+               F_REPORTFETCHED,
+               DATEREPORTFETCHED,
+               F_ISSEVERE,
+               F_CLOSED,
+               DATECLOSED,
+               F_NEEDTRACED,
+               F_DIFFPERSON,
+               CONFIDENTIALLEVEL,
+               F_SETTLEALL,
+               SIGNATURE,
+               NOTE,
+               DT_LASTMODIFIEDTHISAT,
+               F_INNEROPER,
+               SEVEREDEGREE,
+               SEVEREDEGREENOTE,
+               F_SEVEREINFORMED,
+               SEVEREINFORMTIME,
+               ID_SEVEREINFORMBY,
+               CONCLUSION,
+               CONCLUSIONSUMMARY,
+               SUGGESTION,
+               CONCLUSIONRICH,
+               DIETGUIDE,
+               SPORTGUIDE,
+               KNOWLEDGE,
+               MESSAGE,
+               POSITIVESUMMARY,
+               RESULTCOMPARE,
+               INTERFACEMARKS,
+               PATIENTFLAG,
+               TIMINGSTARTEDAT,
+               TIMERESULTLASTCHANGE,
+               TIMERESULTLASTARCHIVE,
+               TIMERESULTLASTOLAP,
+               HOSPITALCODE,
+               HOSPITALNAME,
+               ID_EXAMPLACE,
+               PARSEDASSIGNEDSUITEANDFI,
+               PARSEDASSIGNEDGROUPANDFI,
+               PARSEDSUITEANDFI,
+               PARSEDSUITEANDFILAB,
+               ID_GUIDENURSE,
+               PATIENTNAMEENCODED,
+               PATIENTCODEHIDEN,
+               F_PDFCREATED,
+               F_WORDCREATED,
+               F_WORDPRINTED,
+               GUIDANCENOTE2,
+               F_USECODEHIDEN,
+               ID_PATIENTCLASS2,
+               ID_PATIENTCLASS3,
+               DATEREGISTERNOTIME,
+               COUNTERREPORTPRINTED,
+               F_PRINTCOMPARINGREPORT,
+               F_ISRECHECK,
+               F_SETTLENONE,
+               F_GUIDANCERETURNED,
+               DATEGUIDANCERETURNED,
+               ID_GUIDANCERETURNEDBY,
+               F_OUTPATIENT,
+               PATIENTNAMERECEIPT,
+               PATIENTNAMEPINYIN,
+               F_FORPREPAREFINANCIALCONFIRM,
+               STATUSOFHM,
+               INSTANCETAG,
+               KEYBIRTHPLACE,
+               KEYBLOODTYPE,
+               EXAMMETHOD,
+               INPATIENTNO,
+               INSURANCENO,
+               KEYPAYWAY,
+               HEALTHCARD,
+               EXAMPOINT,
+               FINGERPRINT,
+               COUNTREPORTCOVERPRINTED,
+               COUNTREPORTPRINTED,
+               COUNTREPORTPDF,
+               COUNTREPORTWORD,
+               COUNTREPORTXML,
+               COUNTREPORTCOMPARE,
+               COUNTREPORTCOMPAREPDF,
+               COUNTREPORTCOMPAREWORD,
+               COUNTREPORTCOMPAREXML,
+               COUNTREPORTOCCUPATION,
+               COUNTREPORTOCCUPATIONPDF,
+               COUNTREPORTOCCUPATIONWORD,
+               COUNTREPORTOCCUPATIONXML,
+               SCBS,
+               ID_TJTC,
+               JZDW,
+               JZDWR,
+               SPR,
+               TJR,
+               LQFS,
+               YZBM,
+               YJADDRESS,
+               QTXZ,
+               IS_HMDB,
+               IS_HMD,
+               ISJJ,
+               ZGL,
+               JHGL,
+               JHYS,
+               JKTJZT,
+               ZYTJZT,
+               TMYD,
+               ID,
+               MEDICALDATE,
+               TRADES,
+               CJJGSFYHF,
+               BHGYBSFYHF,
+               YXJGSFYHF,
+               MEDICALTYPE,
+               PREPAYMENT,
+               TCPRICE,
+               CREATEDATE,
+               MODIFYDATE,
+               CULTURAL,
+               EVER_OF_DISEASE,
+               CCNL,
+               JQ,
+               ZQ,
+               TJNL,
+               FAMILY_NUMBER,
+               ZC,
+               SC,
+               LC,
+               JT,
+               YWRC,
+               ABSTAIN_SMOKE_NOTE,
+               EVERYDAY_SMOKE_N,
+               SMOKE_YEAR,
+               NO_KISS_THE_CUP,
+               BETWEEN_KISS_THE_CUP,
+               EVERMORE_KISS,
+               ABSTAIN_LOST_KISS,
+               KISS_YEAR_N,
+               KISS_AMOUNT,
+               KISS_TYPE,
+               FAMILY_OF_DISEASE,
+               SYMPTOM,
+               IS_AUDIT,
+               EVER_OF_DISEASE_REMARK,
+               CREATE_REPORT_NUM,
+               WORK_DATE,
+               HARM_DATE,
+               PICTURE,
+               ADVICE,
+               DISEASE_PRINT_NUM,
+               HEALTH_PRINT_NUM,
+               READYTOFINAL_DATE,
+               GUIDE_SIGNLE_COUNT,
+               SHORT_CODE,
+               IS_NOTICED,
+               REVIEW_PDF,
+               CONTRAINDICATED_PDF,
+               DISEASE_PDF,
+               SIGN_PICTURE
+        from PACS_PEISPATIENT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PacsPeispatientMap">
+        <include refid="selectPacsPeispatientVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PacsPeispatientMap">
+        <include refid="selectPacsPeispatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

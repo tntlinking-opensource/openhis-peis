@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.SysDepartmentMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.SysDepartment" id="SysDepartmentMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="parent" column="parent"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isFunction" column="is_function"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="xh" column="xh"/>
+        <result property="sjbggs" column="sjbggs"/>
+        <result property="jcdd" column="jcdd"/>
+        <result property="jklx" column="jklx"/>
+        <result property="ksh" column="ksh"/>
+        <result property="imgpath" column="imgpath"/>
+        <result property="reportPathHealth" column="report_path_health"/>
+        <result property="reportPathDisease" column="report_path_disease"/>
+        <result property="addPicBefore" column="add_pic_before"/>
+        <result property="reportSort" column="report_sort"/>
+        <result property="dydXh" column="dyd_xh"/>
+        <result property="dydMemo" column="dyd_memo"/>
+        <result property="kingdeeAccountNo" column="kingdee_account_no"/>
+        <result property="greyImgpath" column="grey_imgpath"/>
+        <result property="isShowapp" column="is_showapp"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysDepartmentVo">
+        select id,
+               name,
+               description,
+               parent,
+               createdate,
+               modifydate,
+               is_delete,
+               is_function,
+               input_code,
+               xh,
+               sjbggs,
+               jcdd,
+               jklx,
+               ksh,
+               imgpath,
+               report_path_health,
+               report_path_disease,
+               add_pic_before,
+               report_sort,
+               dyd_xh,
+               dyd_memo,
+               kingdee_account_no,
+               grey_imgpath,
+               is_showapp
+        from sys_department
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysDepartmentMap">
+        <include refid="selectSysDepartmentVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysDepartmentMap">
+        <include refid="selectSysDepartmentVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

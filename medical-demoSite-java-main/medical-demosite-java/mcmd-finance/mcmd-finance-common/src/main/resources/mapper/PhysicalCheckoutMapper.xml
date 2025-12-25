@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.PhysicalCheckoutMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCreateorderVo">
+        select id,
+               ddh,
+               ddmc,
+               dddm,
+               khdwmcid,
+               txfs,
+               fsdxsjh,
+               cjddrq,
+               khdwdh,
+               tjzx,
+               jhjqc,
+               jhjqd,
+               sfyqdht,
+               htbh,
+               nxtjrs,
+               vxtjrs,
+               ddjg,
+               ddzk,
+               ddyhj,
+               qtxz,
+               spzt,
+               spyj,
+               xsjlid,
+               xsjl,
+               fzxid,
+               is_delete,
+               createdate,
+               modifydate,
+               urls,
+               bgzt,
+               xsdh,
+               tjxs,
+               clurls,
+               clspzt,
+               clspyj,
+               id_inforway,
+               tjlx,
+               spr,
+               clspr,
+               is_online,
+               submit_time,
+               cant_replace,
+               chest_num,
+               bgmemo,
+               review_payway,
+               review_zk,
+               template_jm,
+               template_text,
+               kdzl_name,
+               is_market
+        from md_createorder
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.AnalyseVo">
+        SELECT
+        min( co.ddh ) AS ddh,
+        min( vation.id ) AS id,
+        min( sc.khdwmc ) AS orgName,
+        min( IFNULL( vation.f_finished, 0 )) AS ffinished,
+        min( co.nxtjrs + co.vxtjrs ) AS placeCount,
+        sum( CASE WHEN p.f_isforprepare = 1 THEN 1 ELSE 0 END ) AS bdcount,
+        sum( CASE WHEN p.f_registered = 0 OR p.f_registered IS NULL THEN 1 ELSE 0 END ) AS noreg,
+        sum( CASE WHEN p.f_registered = 1 THEN 1 ELSE 0 END ) AS reg,
+        min( vation.datereservation ) AS ydDate,
+        min( sc.int_id ) AS intId,
+        min( co.ddmc ) AS ddmc
+        FROM
+        md_peisorgreservation vation
+        LEFT JOIN md_peispatient p ON vation.id = p.id_orgreservation
+        LEFT JOIN md_createorder co ON vation.ddh = co.id
+        LEFT JOIN crm_sellcustomer sc ON vation.id_org = sc.id
+        <where>
+            co.spzt = 4
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND (co.xsjlid = #{param.userNo} or co.kdzl_name like concat('%', #{param.userName},'%'))
+            </if>
+            <if test="param.startTime!=null">
+                AND vation.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND vation.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null">
+                AND EXISTS (
+                SELECT 1
+                FROM md_orderandfzx oaf
+                WHERE
+                oaf.ddid = co.id
+                AND oaf.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+                )
+            </if>
+            <if test="param.order!=null">
+                AND co.ddh IN
+                <foreach collection="param.order" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND sc.id = #{param.idOrg}
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id = #{param.intId}
+            </if>
+            <if test="param.lowerLevelIds!=null">
+                AND co.xsjlid IN
+                <foreach collection="param.lowerLevelIds" item="lowerLevelId" open="(" close=")" separator=",">
+                    #{lowerLevelId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY vation.ddh,co.createdate
+        ORDER BY co.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.sellcrm.bean.model.Createorder">
+        <include refid="selectCreateorderVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 查看左中体检人数据 -->
+    <select id="getAccountsInfoData" resultType="com.center.medical.finance.bean.vo.AccountsInfoVo">
+        SELECT
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname AS groupName,
+        p.patientname,
+        IFNULL(p.f_registered,0) AS fRegistered,
+        p.id_sex AS sex,
+        p.id_marriage AS marriageName,
+        p.age,
+        IFNULL( cm.tjtcmc, cc.tjtcmc ) AS examName,
+        IFNULL ( cm.tcysjg, cc.tcysjg ) AS tcyj,
+        IFNULL ( cm.zhjg, cc.zhjg ) AS tcyhj,
+        sum( CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS sshj,
+        sum( CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssts,
+        p.org_depart,
+        p.dateregister AS medicaldate,
+        p.doctorreg,
+        group_concat(DISTINCT ( CASE WHEN pc.f_feecharged = 1 THEN w.payway_name ELSE NULL END )) AS chargePayway,
+        p.input_code,
+        a.patientarchiveno AS chiveNo,
+        p.idcardno,
+        p.f_readytofinal,
+        p.jzdwr AS jzr,
+        sum( CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END ) AS jz,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name AS guidancenote2,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        STR_TO_DATE ( p.checkout_date, '%Y-%m-%d %T' ) AS checkoutDate,
+        p.checkout_status AS checkoutStatus,
+        sum( CASE WHEN pc.id_payway = #{param.idPayway} AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS
+        sskt,
+        sum( CASE WHEN pc.is_add = 1 AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssAdd,
+        sb.fzx,
+        p.modifydate,
+        ( SELECT sum( pi.price ) price FROM md_peispatientfeeitem pi WHERE pi.change_item = 0 and pi.id_patient = p.patientcode GROUP BY pi.id_patient )  as price
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+        LEFT JOIN md_createcombo cc ON cc.id = p.id_tjtc
+        LEFT JOIN md_createmeal cm ON cm.id = p.id_tjtc
+        LEFT JOIN sys_user scr ON scr.user_no = p.guidancenote2
+        LEFT JOIN md_dictpayway w ON w.id = pc.id_payway
+        LEFT JOIN md_peispatientarchive a ON a.id = p.patientarchiveno
+        LEFT JOIN sys_branch sb on sb.branch_id = p.hospitalcode
+        <where>
+            1 = 1
+            <if test="param.containUnchecked!=null and param.containUnchecked != 1">
+                AND p.f_registered = 1
+            </if>
+            <if test="param.containBj!=null and param.containBj != 1">
+                AND p.insuranceno IS NULL
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.id_orgreservation = #{param.idOrder}
+            </if>
+            <if test="param.startRegTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startRegTime}
+            </if>
+            <if test="param.endRegTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endRegTime}
+            </if>
+            <if test="param.ddinputCode!=null and param.ddinputCode!=''">
+                AND p.patientcode = #{param.ddinputCode}
+            </if>
+            <if test="param.ddinputName!=null and param.ddinputName!=''">
+                AND p.patientname like concat('%',#{param.ddinputName},'%')
+            </if>
+            <if test="param.checkoutStatus!=null">
+                <choose>
+                    <when test="param.checkoutStatus == 0">
+                        AND (p.checkout_status is null or p.checkout_status = 0)
+                    </when>
+                    <when test="param.checkoutStatus == 1">
+                        AND p.checkout_status = 1
+                    </when>
+                </choose>
+            </if>
+            <if test="param.containBan!=null and param.containBan == 0">
+                AND (p.f_paused is null or p.f_paused = 0)
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname,
+        p.patientname,
+        p.f_registered,
+        p.id_sex,
+        p.id_marriage,
+        p.age,
+        cm.tjtcmc,
+        cc.tjtcmc,
+        cm.tcysjg,
+        cc.tcysjg,
+        cm.zhjg,
+        cc.zhjg,
+        p.org_depart,
+        p.dateregister,
+        p.doctorreg,
+        p.input_code,
+        a.patientarchiveno,
+        p.idcardno,
+        p.f_examstarted,
+        p.f_readytofinal,
+        p.jzdwr,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        p.checkout_date,
+        p.checkout_status
+        ORDER BY
+        ( CASE WHEN p.f_readytofinal = 1 THEN 0 WHEN p.f_registered = 1 THEN 2 ELSE 3 END ) ASC,
+        p.dateregister
+    </select>
+
+
+    <!-- 项目列表数据 -->
+    <select id="getItemListData" resultType="com.center.medical.finance.bean.vo.PCItemListVo">
+        SELECT p.id_tjtc,
+               o.id                     AS ddId,
+               p.id_orgreservationgroup AS groupId,
+               p.id_examtype,
+               p.jhys,
+               p.medicaltype
+        FROM md_peispatient p
+                 LEFT JOIN md_createorder o ON o.ddh = p.numorgresv
+        WHERE p.patientcode = #{patientcode}
+    </select>
+
+
+    <!-- 项目列表数据 -->
+    <select id="exportItems" resultType="com.center.medical.finance.bean.vo.ExportItemsVo">
+        SELECT row_number()    over ( ORDER BY pa.createdate ) AS rownum,
+               i.examfeeitem_name,
+               pa.price,
+               pa.factprice,
+               dp.payway_name,
+               u.user_name  AS jxysmc,
+               pa.f_registered,
+               pa.change_item,
+               pa.f_feecharged,
+               pa.f_labsendtolis,
+               pa.f_examinated,
+               pa.f_giveup,
+               pa.f_delayed,
+               pa.f_transferedhl7,
+               d.dept_name,
+               u2.user_name AS doctorregName,
+               pa.feechargetime
+        FROM md_peispatientfeeitem pa
+                 LEFT JOIN md_items i ON i.id = pa.id_examfeeitem
+                 LEFT JOIN md_dictpayway dp ON dp.id = pa.id_payway
+                 LEFT JOIN sys_user u ON u.user_no = pa.jxys
+                 LEFT JOIN sys_dept d ON d.dept_no = pa.id_ks
+                 LEFT JOIN sys_user u2 ON u2.user_no = pa.id_doctorreg
+        WHERE pa.id_patient = #{patientcode}
+
+        ORDER BY pa.createdate ASC
+    </select>
+
+
+    <!-- 导出体检人员上方数据 -->
+    <select id="exportAccountsInfoData" resultType="com.center.medical.finance.bean.vo.AccountsInfoVo">
+        SELECT
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname AS groupName,
+        p.patientname,
+        IFNULL(p.f_registered,0) AS fRegistered,
+        p.id_sex AS sex,
+        p.id_marriage AS idMarriage,
+        p.age,
+        IFNULL( cm.tjtcmc, cc.tjtcmc ) AS examName,
+        IFNULL ( cm.tcysjg, cc.tcysjg ) AS tcyj,
+        IFNULL ( cm.zhjg, cc.zhjg ) AS tcyhj,
+        sum( CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS sshj,
+        sum( CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssts,
+        p.org_depart,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS medicaldate,
+        p.doctorreg,
+        group_concat(DISTINCT ( CASE WHEN pc.f_feecharged = 1 THEN w.payway_name ELSE NULL END )) AS chargePayway,
+        p.input_code,
+        p.patientarchiveno AS chiveNo,
+        p.idcardno,
+        p.f_readytofinal,
+        p.jzdwr AS jzr,
+        sum( CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END ) AS jz,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name AS guidancenote2,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        STR_TO_DATE ( p.checkout_date, '%Y-%m-%d %T' ) AS checkoutDate,
+        p.checkout_status AS checkoutStatus,
+        sum( CASE WHEN pc.id_payway = #{param.idPayway} AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS
+        sskt,
+        sum( CASE WHEN pc.is_add = 1 AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssAdd,
+        ( SELECT sum( pi.price ) price FROM md_peispatientfeeitem pi WHERE pi.change_item = 0 and pi.id_patient = p.patientcode GROUP BY pi.id_patient )  as price,
+        b.fzx
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+        LEFT JOIN md_createcombo cc ON cc.id = p.id_tjtc
+        LEFT JOIN md_createmeal cm ON cm.id = p.id_tjtc
+        LEFT JOIN sys_user scr ON scr.user_no = p.guidancenote2
+        LEFT JOIN md_dictpayway w ON w.id = pc.id_payway
+        LEFT JOIN md_peispatientarchive a ON a.id = p.patientarchiveno
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            1 = 1
+            <if test="param.containUnchecked!=null and param.containUnchecked != 1">
+                AND p.f_registered = 1
+            </if>
+            <if test="param.containBj!=null and param.containBj != 1">
+                AND p.insuranceno IS NULL
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.id_orgreservation = #{param.idOrder}
+            </if>
+            <if test="param.startRegTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startRegTime}
+            </if>
+            <if test="param.endRegTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endRegTime}
+            </if>
+            <if test="param.ddinputCode!=null and param.ddinputCode!=''">
+                AND p.patientcode = #{param.ddinputCode}
+            </if>
+            <if test="param.ddinputName!=null and param.ddinputName!=''">
+                AND p.patientname like concat('%',#{param.ddinputName},'%')
+            </if>
+            <if test="param.checkoutStatus!=null">
+                <choose>
+                    <when test="param.checkoutStatus == 0">
+                        AND (p.checkout_status is null or p.checkout_status = 0)
+                    </when>
+                    <when test="param.checkoutStatus == 1">
+                        AND p.checkout_status = 1
+                    </when>
+                </choose>
+            </if>
+            <if test="param.containBan!=null and param.containBan == 0">
+                AND (p.f_paused is null or p.f_paused = 0)
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname,
+        p.patientname,
+        p.f_registered,
+        p.id_sex,
+        p.id_marriage,
+        p.age,
+        cm.tjtcmc,
+        cc.tjtcmc,
+        cm.tcysjg,
+        cc.tcysjg,
+        cm.zhjg,
+        cc.zhjg,
+        p.org_depart,
+        p.dateregister,
+        p.doctorreg,
+        p.input_code,
+        a.patientarchiveno,
+        p.idcardno,
+        p.f_examstarted,
+        p.f_readytofinal,
+        p.jzdwr,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        p.checkout_date,
+        p.checkout_status
+        ORDER BY
+        ( CASE WHEN p.f_readytofinal = 1 THEN 0 WHEN p.f_registered = 1 THEN 2 ELSE 3 END ) ASC,
+        p.dateregister
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="synchronizedChecked" resultType="java.lang.String">
+        SELECT
+        p.id
+        FROM
+        peispatient p
+        LEFT JOIN createorder co ON co.ddh = p.numorgresv
+        <where>
+            co.ddh = #{ddh}
+            and p.f_registered = 1
+        </where>
+    </select>
+
+
+    <!-- 查看新系统体检人数据 -->
+    <select id="getAccountsInfoList" resultType="com.center.medical.finance.bean.vo.AccountsInfoVo">
+        SELECT
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname AS groupName,
+        p.patientname,
+        IFNULL(p.f_registered,0) AS fRegistered,
+        p.id_sex AS sex,
+        p.id_marriage AS marriageName,
+        p.age,
+        IFNULL( cm.tjtcmc, cc.tjtcmc ) AS examName,
+        IFNULL ( cm.tcysjg, cc.tcysjg ) AS tcyj,
+        IFNULL ( cm.zhjg, cc.zhjg ) AS tcyhj,
+        sum( CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS sshj,
+        sum( CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssts,
+        p.org_depart,
+        p.dateregister AS medicaldate,
+        p.doctorreg,
+        group_concat(DISTINCT ( CASE WHEN pc.f_feecharged = 1 THEN w.payway_name ELSE NULL END )) AS chargePayway,
+        p.input_code,
+        a.patientarchiveno AS chiveNo,
+        p.idcardno,
+        p.f_readytofinal,
+        p.jzdwr AS jzr,
+        sum( CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END ) AS jz,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name AS guidancenote2,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        STR_TO_DATE ( p.checkout_date, '%Y-%m-%d %T' ) AS checkoutDate,
+        p.checkout_status AS checkoutStatus,
+        sum( CASE WHEN pc.id_payway = #{param.idPayway} AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS
+        sskt,
+        sum( CASE WHEN pc.is_add = 1 AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END ) AS ssAdd,
+        sb.fzx,
+        p.modifydate,
+        ( SELECT sum( pi.price ) price FROM md_peispatientfeeitem pi WHERE pi.change_item = 0 and pi.id_patient = p.patientcode GROUP BY pi.id_patient )  as price
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+        LEFT JOIN md_createcombo cc ON cc.id = p.id_tjtc
+        LEFT JOIN md_createmeal cm ON cm.id = p.id_tjtc
+        LEFT JOIN sys_user scr ON scr.user_no = p.guidancenote2
+        LEFT JOIN md_dictpayway w ON w.id = pc.id_payway
+        LEFT JOIN md_peispatientarchive a ON a.id = p.patientarchiveno
+        LEFT JOIN sys_branch sb on sb.branch_id = p.hospitalcode
+        <where>
+            1 = 1
+            <if test="param.containUnchecked!=null and param.containUnchecked != 1">
+                AND p.f_registered = 1
+            </if>
+            <if test="param.containBj!=null and param.containBj != 1">
+                AND p.insuranceno IS NULL
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.id_orgreservation = #{param.idOrder}
+            </if>
+            <if test="param.startRegTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startRegTime}
+            </if>
+            <if test="param.endRegTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endRegTime}
+            </if>
+            <if test="param.ddinputCode!=null and param.ddinputCode!=''">
+                AND p.patientcode = #{param.ddinputCode}
+            </if>
+            <if test="param.ddinputName!=null and param.ddinputName!=''">
+                AND p.patientname like concat('%',#{param.ddinputName},'%')
+            </if>
+            <if test="param.checkoutStatus!=null">
+                <choose>
+                    <when test="param.checkoutStatus == 0">
+                        AND (p.checkout_status is null or p.checkout_status = 0)
+                    </when>
+                    <when test="param.checkoutStatus == 1">
+                        AND p.checkout_status = 1
+                    </when>
+                </choose>
+            </if>
+            <if test="param.containBan!=null and param.containBan == 0">
+                AND (p.f_paused is null or p.f_paused = 0)
+            </if>
+            <if test="param.branchIds!=null">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname,
+        p.patientname,
+        p.f_registered,
+        p.id_sex,
+        p.id_marriage,
+        p.age,
+        cm.tjtcmc,
+        cc.tjtcmc,
+        cm.tcysjg,
+        cc.tcysjg,
+        cm.zhjg,
+        cc.zhjg,
+        p.org_depart,
+        p.dateregister,
+        p.doctorreg,
+        p.input_code,
+        a.patientarchiveno,
+        p.idcardno,
+        p.f_examstarted,
+        p.f_readytofinal,
+        p.jzdwr,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name,
+        p.phone,
+        p.id_examtype,
+        p.jktjzt,
+        p.zytjzt,
+        p.checkout_date,
+        p.checkout_status
+        ORDER BY
+        ( CASE WHEN p.f_readytofinal = 1 THEN 0 WHEN p.f_registered = 1 THEN 2 ELSE 3 END ) ASC,
+        p.dateregister
+    </select>
+
+
+
+
+    <!-- 查看老系统体检人数据 -->
+    <select id="getAccountsOldList" resultType="com.center.medical.finance.bean.vo.AccountsInfoVo">
+        SELECT
+            P.PATIENTCODE,
+            P.F_PAUSED,
+            G.ORGRESERVATIONGROUPNAME AS groupName,
+            P.PATIENTNAME,
+            NVL(P.F_REGISTERED,0) AS fRegistered,
+            P.ID_SEX AS sex,
+            M.MARRIAGE_NAME AS marriageName,
+            P.AGE,
+            NVL ( CM.TJTCMC, CC.TJTCMC ) AS examName,
+            IC.PRICE,
+            NVL ( CM.TCYSJG, CC.TCYSJG ) AS tcyj,
+            NVL ( CM.ZHJG, CC.ZHJG ) AS tcyhj,
+            SUM( CASE WHEN PC.F_FEECHARGED = 1 THEN PC.MONEYAMOUNTPAID ELSE 0 END ) AS sshj,
+            SUM( CASE WHEN PC.ID_PAYWAY = '5' AND PC.F_FEECHARGED = 1 THEN PC.MONEYAMOUNTPAID ELSE 0 END ) AS ssts,
+            P.ORG_DEPART,
+            P.DATEREGISTER AS medicaldate,
+            P.DOCTORREG,
+            WMSYS.WM_CONCAT (
+                DISTINCT ( CASE WHEN PC.F_FEECHARGED = 1 THEN W.PAYWAY_NAME ELSE NULL END )) AS chargePayway,
+            P.INPUT_CODE,
+            A.PATIENTARCHIVENO AS chiveNo,
+            P.IDCARDNO,
+            P.F_READYTOFINAL,
+            P.JZDWR AS jzr,
+            SUM( CASE WHEN PC.ID_PAYWAY = '4' THEN PC.MONEYAMOUNTPAID ELSE 0 END ) AS jz,
+            P.ID,
+            P.NOTE,
+            P.COUNTREPORTXML,
+            P.TJR,
+            SCR.USERNAME AS guidancenote2,
+            P.PHONE,
+            P.ID_EXAMTYPE,
+            P.JKTJZT,
+            P.ZYTJZT,
+            P.CHECKOUT_DATE AS checkoutDate,
+            P.CHECKOUT_STATUS AS checkoutStatus,
+            SUM( CASE WHEN PC.ID_PAYWAY = #{param.idPayway} AND PC.F_FEECHARGED = 1 THEN PC.MONEYAMOUNTPAID ELSE 0 END ) AS sskt,
+            SUM( CASE WHEN PC.IS_ADD = 1 AND PC.F_FEECHARGED = 1 THEN PC.MONEYAMOUNTPAID ELSE 0 END ) AS ssAdd,
+            sb.FZX
+        FROM
+            PEISPATIENT P
+                LEFT JOIN PEISPATIENTCHARGE PC ON PC.PATIENTCODE = P.PATIENTCODE
+                LEFT JOIN PEISORGRESERVATIONGROUP G ON G.ID = P.ID_ORGRESERVATIONGROUP
+                LEFT JOIN DICTMARRIAGE M ON M.ID = P.ID_MARRIAGE
+                LEFT JOIN CREATECOMBO CC ON CC.ID = P.ID_TJTC
+                LEFT JOIN CREATEMEAL CM ON CM.ID = P.ID_TJTC
+                LEFT JOIN QX_USERS SCR ON SCR.ID = P.GUIDANCENOTE2
+                LEFT JOIN (
+                SELECT
+                    PI.ID_PATIENT,
+                    SUM( I.UNITPRICE ) PRICE
+                FROM
+                    PEISPATIENTFEEITEM PI
+                        INNER JOIN ITEMS I ON I.ID = PI.ID_EXAMFEEITEM
+                WHERE
+                    PI.CHANGE_ITEM = 0
+                GROUP BY
+                    PI.ID_PATIENT
+            ) IC ON IC.ID_PATIENT = P.PATIENTCODE
+                LEFT JOIN DICTPAYWAY W ON W.ID = PC.ID_PAYWAY
+                LEFT JOIN PEISPATIENTARCHIVE A ON A.ID = P.ID_PATIENTARCHIVE
+                LEFT JOIN BRANCH sb on sb.id = p.hospitalcode
+        <where>
+            1 = 1
+            AND p.f_registered = 1
+            <if test="param.containBj!=null and param.containBj != 1">
+                AND p.insuranceno IS NULL
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.id_orgreservation = #{param.idOrder}
+            </if>
+            <if test="param.startRegTime!=null and param.startRegTime!=''">
+                AND p.dateregister <![CDATA[ >= ]]> TO_DATE( #{param.startRegTime},'YYYY-MM-DD HH24:MI:SS')
+            </if>
+            <if test="param.endRegTime!=null and param.endRegTime!=''">
+                AND p.dateregister <![CDATA[ <= ]]> TO_DATE( #{param.endRegTime},'YYYY-MM-DD HH24:MI:SS')
+            </if>
+            <if test="param.ddinputCode!=null and param.ddinputCode!=''">
+                AND p.patientcode = #{param.ddinputCode}
+            </if>
+            <if test="param.ddinputName!=null and param.ddinputName!=''">
+                AND p.patientname like concat(#{param.ddinputName},'%')
+            </if>
+            <if test="param.checkoutStatus!=null">
+                <choose>
+                    <when test="param.checkoutStatus == 0">
+                        AND (p.checkout_status is null or p.checkout_status = 0)
+                    </when>
+                    <when test="param.checkoutStatus == 1">
+                        AND p.checkout_status = 1
+                    </when>
+                </choose>
+            </if>
+            <if test="param.containBan!=null and param.containBan == 0">
+                AND (p.f_paused is null or p.f_paused = 0)
+            </if>
+        </where>
+        GROUP BY
+        P.PATIENTCODE,
+        P.F_PAUSED,
+        G.ORGRESERVATIONGROUPNAME,
+        P.PATIENTNAME,
+        P.F_REGISTERED,
+        P.ID_SEX,
+        M.MARRIAGE_NAME,
+        P.AGE,
+        CM.TJTCMC,
+        CC.TJTCMC,
+        IC.PRICE,
+        CM.TCYSJG,
+        CC.TCYSJG,
+        CM.ZHJG,
+        CC.ZHJG,
+        P.ORG_DEPART,
+        P.DATEREGISTER,
+        P.DOCTORREG,
+        P.INPUT_CODE,
+        A.PATIENTARCHIVENO,
+        P.IDCARDNO,
+        P.F_EXAMSTARTED,
+        P.F_READYTOFINAL,
+        P.JZDWR,
+        P.ID,
+        P.NOTE,
+        P.COUNTREPORTXML,
+        P.TJR,
+        SCR.USERNAME,
+        P.PHONE,
+        P.ID_EXAMTYPE,
+        P.JKTJZT,
+        P.ZYTJZT,
+        P.CHECKOUT_DATE,
+        P.CHECKOUT_STATUS,
+        P.TS_LIMIT,
+        sb.FZX
+        ORDER BY
+        ( CASE WHEN P.F_READYTOFINAL = 1 THEN 0 WHEN P.F_REGISTERED = 1 THEN 2 ELSE 3 END ) ASC,
+        P.DATEREGISTER
+    </select>
+</mapper>
+

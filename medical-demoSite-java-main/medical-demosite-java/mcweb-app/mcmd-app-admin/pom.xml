@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mcweb-app</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-app-admin</artifactId>
+    <description>APP管理后台接口服务</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-app-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional> <!-- 表示依赖不会传递 -->
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-framework</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

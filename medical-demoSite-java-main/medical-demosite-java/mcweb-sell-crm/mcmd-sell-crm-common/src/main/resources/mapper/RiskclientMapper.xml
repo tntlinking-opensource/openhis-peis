@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.RiskclientMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Riskclient" id="RiskclientMap">
+        <id property="id" column="id"/>
+        <result property="tjid" column="tjid"/>
+        <result property="gwrymc" column="gwrymc"/>
+        <result property="nl" column="nl"/>
+        <result property="xb" column="xb"/>
+        <result property="lxdh" column="lxdh"/>
+        <result property="gwxm" column="gwxm"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="tirq" column="tirq"/>
+        <result property="tjzt" column="tjzt"/>
+        <result property="bz" column="bz"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="cid" column="cid"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="idOpendoctor" column="id_opendoctor"/>
+        <result property="reportMan" column="report_man"/>
+        <result property="reportDivision" column="report_division"/>
+        <result property="dealMan" column="deal_man"/>
+        <result property="reportstatus" column="reportstatus"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="dealTime" column="deal_time"/>
+        <result property="tbbz" column="tbbz"/>
+        <result property="clbz" column="clbz"/>
+        <result property="ywclr" column="ywclr"/>
+        <result property="ywclsj" column="ywclsj"/>
+        <result property="ywfffs" column="ywfffs"/>
+        <result property="ywclzt" column="ywclzt"/>
+        <result property="ywbz" column="ywbz"/>
+        <result property="hfclr" column="hfclr"/>
+        <result property="hfclsj" column="hfclsj"/>
+        <result property="hfclzt" column="hfclzt"/>
+        <result property="hffffs" column="hffffs"/>
+        <result property="hfbz" column="hfbz"/>
+        <result property="hfclfs" column="hfclfs"/>
+        <result property="zjclr" column="zjclr"/>
+        <result property="zjclsj" column="zjclsj"/>
+        <result property="zjclzt" column="zjclzt"/>
+        <result property="zjbz" column="zjbz"/>
+        <result property="zjclfs" column="zjclfs"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectRiskclientVo">
+        select rc.id,
+               rc.tjid,
+               rc.gwrymc,
+               rc.nl,
+               rc.xb,
+               rc.lxdh,
+               rc.gwxm,
+               rc.tjlx,
+               rc.tirq,
+               rc.tjzt,
+               rc.bz,
+               rc.createdate,
+               rc.modifydate,
+               rc.cid,
+               rc.id_org,
+               rc.id_opendoctor,
+               rc.report_man,
+               rc.report_division,
+               rc.deal_man,
+               rc.reportstatus,
+               rc.report_time,
+               rc.deal_time,
+               rc.tbbz,
+               rc.clbz,
+               rc.ywclr,
+               rc.ywclsj,
+               rc.ywfffs,
+               rc.ywclzt,
+               rc.ywbz,
+               rc.hfclr,
+               rc.hfclsj,
+               rc.hfclzt,
+               rc.hffffs,
+               rc.hfbz,
+               rc.hfclfs,
+               rc.zjclr,
+               rc.zjclsj,
+               rc.zjclzt,
+               rc.zjbz,
+               rc.zjclfs
+        from md_riskclient rc
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="RiskclientMap">
+        <include refid="selectRiskclientVo"/>
+        LEFT JOIN sys_dept d ON d.dept_no = rc.report_division
+        <where>
+            <if test="param.branchIds!=null">
+                AND rc.cid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.tjid!=null and param.tjid!=''">
+                AND rc.tjid LIKE concat('%',#{param.tjid},'%')
+            </if>
+            <if test="param.gwrymc!=null and param.gwrymc!=''">
+                AND rc.gwrymc LIKE concat('%',#{param.gwrymc},'%')
+            </if>
+            <if test="param.xb!=null">
+                AND rc.xb = #{param.xb}
+            </if>
+            <if test="param.tjzt!=null">
+                AND rc.tjzt = #{param.tjzt}
+            </if>
+            <if test="param.lxdh!=null and param.lxdh!=''">
+                AND rc.lxdh LIKE concat('%',#{param.lxdh},'%')
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND rc.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        ORDER BY rc.createdate ASC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="RiskclientMap">
+        <include refid="selectRiskclientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.DeployRecordMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.DeployRecord" id="DeployRecordMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isSuccess" column="is_success"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="versionId" column="version_id"/>
+        <result property="ksIpId" column="ks_ip_id"/>
+        <result property="message" column="message"/>
+        <result property="address" column="address"/>
+        <result property="hostName" column="host_name"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDeployRecordVo">
+        SELECT
+            sdr.id,
+            sdr.createdate,
+            sdr.modifydate,
+            sdr.is_success,
+            sdr.update_time,
+            sdr.version_id,
+            sdr.ks_ip_id,
+            sdr.message,
+            sdr.address,
+            sdr.host_name
+        FROM
+            sys_deploy_record	sdr
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DeployRecordMap">
+        <include refid="selectDeployRecordVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DeployRecordMap">
+        <include refid="selectDeployRecordVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="selectRecordListByBranchId" resultType="com.center.medical.system.bean.vo.DeployRecordListVo">
+        SELECT
+            sdr.id,
+            sdr.createdate,
+            sdr.modifydate,
+            sdr.is_success,
+            sdr.update_time,
+            sdr.message,
+            sdr.address,
+            sdr.host_name,
+            sdr.creator,
+            sdr.modifier,
+            sdr.remark,
+            sdr.is_manual_success,
+            sdr.manual_update_time,
+            sdr.is_manual,
+            mki.name as dep_name,
+            mki.is_enable_update,
+            mki.deploy_startup_command,
+            mki.service_startup_command,
+            mki.deploy_service_addr,
+            mki.service_addr,
+            mki.id as ks_ip_id
+        FROM
+            md_ks_ip mki
+        left join sys_deploy_record	sdr on sdr.ks_ip_id=mki.id and sdr.version_id=#{versionId}
+        where
+            mki.branch_id=#{branchId}
+            and mki.update_type=#{updateType}
+            and mki.status=1
+        order by mki.name
+    </select>
+</mapper>

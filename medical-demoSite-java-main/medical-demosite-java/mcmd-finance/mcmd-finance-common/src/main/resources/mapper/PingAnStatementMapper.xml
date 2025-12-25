@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.PingAnStatementMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.PingAnPageVo">
+        SELECT o.ddh,
+        o.ddmc,
+        s.int_id,
+        IFNULL(v.f_finished, 0) AS ffinished,
+        (o.nxtjrs + o.vxtjrs) AS placeCount,
+        sum(CASE WHEN p.f_isforprepare = 1 THEN 1 ELSE 0 END) AS bdcount,
+        sum(CASE WHEN p.f_registered = 0 OR p.f_registered IS NULL THEN 1 ELSE 0 END) AS noreg,
+        sum(CASE WHEN p.f_registered = 1 THEN 1 ELSE 0 END) AS reg,
+        v.datereservation AS ydDate
+        FROM md_createorder o
+        INNER JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        LEFT JOIN md_peisorgreservation v ON v.ddh = o.id
+        LEFT JOIN md_peispatient p ON p.numorgresv = o.ddh
+        <where>
+            1 = 1
+            <if test="param.center!=null and param.center!=''">
+                AND EXISTS(SELECT 1 FROM md_orderandfzx oaf WHERE oaf.ddid=o.id AND oaf.fzxid = #{param.center})
+            </if>
+            <if test="param.order!=null and param.order.size > 0">
+                AND o.ddh IN
+                <foreach collection="param.order" item="orderId" open="(" close=")" separator=",">
+                    #{orderId}
+                </foreach>
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND s.id = #{param.idOrg}
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND s.int_id = #{param.intId}
+            </if>
+        </where>
+        GROUP BY
+        o.ddh,
+        o.ddmc,
+        s.int_id,
+        IFNULL ( v.f_finished, 0 ),
+        placeCount,
+        v.datereservation,
+        o.createdate
+        ORDER BY
+        o.createdate DESC
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPatientListData" resultType="com.center.medical.finance.bean.vo.PatientListVo">
+        SELECT p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname AS groupName,
+        p.patientname,
+        p.f_registered,
+        p.id_sex AS sex,
+        p.id_marriage AS idMarriage,
+        p.age,
+        IFNULL(cm.tjtcmc, cc.tjtcmc) AS examName,
+        ic.price,
+        IFNULL(cm.tcysjg, cc.tcysjg) AS tcyj,
+        IFNULL(cm.zhjg, cc.zhjg) AS tcyhj,
+        sum(CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS sshj,
+        sum(CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS ssts,
+        p.org_depart,
+        STR_TO_DATE(p.dateregister, '%Y-%m-%d') AS medicaldate,
+        p.doctorreg,
+        group_concat(
+        DISTINCT ( CASE WHEN pc.f_feecharged = 1 THEN w.payway_name ELSE NULL END )) AS chargePayway,
+        p.input_code,
+        a.patientarchiveno AS chiveNo,
+        p.idcardno,
+        p.f_readytofinal,
+        p.jzdwr AS jzr,
+        sum(CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END) AS jz,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name AS guidancenote2,
+        p.patientnamereceipt
+        FROM md_peispatient p
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+        LEFT JOIN md_createcombo cc ON cc.id = p.id_tjtc
+        LEFT JOIN md_createmeal cm ON cm.id = p.id_tjtc
+        LEFT JOIN sys_user scr ON scr.user_no = p.guidancenote2
+        LEFT JOIN (
+        SELECT pi.id_patient,
+        sum(i.unitprice) price
+        FROM md_peispatientfeeitem pi
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        WHERE pi.change_item = 0
+        GROUP BY pi.id_patient
+        ) ic ON ic.id_patient = p.patientcode
+        LEFT JOIN md_dictpayway w ON w.id = pc.id_payway
+        LEFT JOIN md_peispatientarchive a ON a.id = p.patientarchiveno
+        <where>
+            1 = 1
+            <if test="param.containUnchecked!=null and param.containUnchecked != 1">
+                AND p.f_registered = 1
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.numorgresv = #{param.idOrder}
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.center != null and param.center != ''">
+                AND p.hospitalcode = #{param.center}
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode
+        ORDER BY
+        p.patientcode
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="exportOrderPatient" resultType="com.center.medical.finance.bean.vo.PatientListVo">
+        SELECT p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname AS groupName,
+        p.patientname,
+        p.f_registered,
+        p.id_sex AS sex,
+        p.id_marriage AS idMarriage,
+        p.age,
+        IFNULL(cm.tjtcmc, cc.tjtcmc) AS examName,
+        ic.price,
+        IFNULL(cm.tcysjg, cc.tcysjg) AS tcyj,
+        IFNULL(cm.zhjg, cc.zhjg) AS tcyhj,
+        sum(CASE WHEN pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS sshj,
+        sum(CASE WHEN pc.id_payway = '5' AND pc.f_feecharged = 1 THEN pc.moneyamountpaid ELSE 0 END) AS ssts,
+        p.org_depart,
+        STR_TO_DATE(p.dateregister, '%Y-%m-%d') AS medicaldate,
+        p.doctorreg,
+        group_concat(
+        DISTINCT ( CASE WHEN pc.f_feecharged = 1 THEN w.payway_name ELSE NULL END )) AS chargePayway,
+        p.input_code,
+        a.patientarchiveno AS chiveNo,
+        p.idcardno,
+        p.f_readytofinal,
+        p.jzdwr AS jzr,
+        sum(CASE WHEN pc.id_payway = '4' THEN pc.moneyamountpaid ELSE 0 END) AS jz,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name AS guidancenote2,
+        p.patientnamereceipt
+        FROM md_peispatient p
+        LEFT JOIN md_peispatientcharge pc ON pc.patientcode = p.patientcode
+        LEFT JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+        LEFT JOIN md_createcombo cc ON cc.id = p.id_tjtc
+        LEFT JOIN md_createmeal cm ON cm.id = p.id_tjtc
+        LEFT JOIN sys_user scr ON scr.user_no = p.guidancenote2
+        LEFT JOIN (
+        SELECT pi.id_patient,
+        sum(i.unitprice) price
+        FROM md_peispatientfeeitem pi
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        WHERE pi.change_item = 0
+        GROUP BY pi.id_patient
+        ) ic ON ic.id_patient = p.patientcode
+        LEFT JOIN md_dictpayway w ON w.id = pc.id_payway
+        LEFT JOIN md_peispatientarchive a ON a.id = p.patientarchiveno
+        <where>
+            1 = 1
+            <if test="param.containUnchecked!=null and param.containUnchecked != 1">
+                AND p.f_registered = 1
+            </if>
+            <if test="param.idOrder!=null and param.idOrder!=''">
+                AND p.numorgresv = #{param.idOrder}
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        GROUP BY
+        p.patientcode,
+        p.f_paused,
+        g.orgreservationgroupname,
+        p.patientname,
+        p.f_registered,
+        p.id_sex,
+        p.id_marriage,
+        p.age,
+        cm.tjtcmc,
+        cc.tjtcmc,
+        ic.price,
+        cm.tcysjg,
+        cc.tcysjg,
+        cm.zhjg,
+        cc.zhjg,
+        p.org_depart,
+        p.dateregister,
+        p.doctorreg,
+        p.input_code,
+        a.patientarchiveno,
+        p.idcardno,
+        p.f_examstarted,
+        p.f_readytofinal,
+        p.jzdwr,
+        p.id,
+        p.note,
+        p.countreportxml,
+        p.tjr,
+        scr.user_name,
+        p.patientnamereceipt
+        ORDER BY
+        p.patientcode
+    </select>
+</mapper>
+

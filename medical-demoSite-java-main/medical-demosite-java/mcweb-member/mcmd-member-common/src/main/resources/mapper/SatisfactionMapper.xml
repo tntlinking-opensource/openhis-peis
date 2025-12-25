@@ -1,0 +1,1672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.SatisfactionMapper">
+
+    <resultMap type="com.center.medical.member.bean.model.Satisfaction" id="SatisfactionMap">
+        <id property="id" column="id"/>
+        <result property="divisionReceptionist" column="division_receptionist"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="appraiseResult" column="appraise_result"/>
+        <result property="visitResult" column="visit_result"/>
+        <result property="appraiseTime" column="appraise_time"/>
+        <result property="personcode" column="personcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isVerySatisfy" column="is_very_satisfy"/>
+        <result property="note" column="note"/>
+        <result property="visitTime" column="visit_time"/>
+        <result property="visitPerson" column="visit_person"/>
+        <result property="visitNote" column="visit_note"/>
+        <result property="secondResult" column="second_result"/>
+        <result property="secondNote" column="second_note"/>
+        <result property="secondPerson" column="second_person"/>
+        <result property="secondTime" column="second_time"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="patientname" column="patientname"/>
+        <result property="visitText" column="visit_text"/>
+        <result property="ksDoctorId" column="ks_doctor_id"/>
+        <result property="satisfactionLevel" column="satisfaction_level"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="consultId" column="consult_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSatisfactionVo">
+        select id,
+               division_receptionist,
+               division_id,
+               doctor_id,
+               appraise_result,
+               visit_result,
+               appraise_time,
+               personcode,
+               createdate,
+               modifydate,
+               is_very_satisfy,
+               note,
+               visit_time,
+               visit_person,
+               visit_note,
+               second_result,
+               second_note,
+               second_person,
+               second_time,
+               is_delete,
+               patientname,
+               visit_text,
+               ks_doctor_id,
+               satisfaction_level,
+               source_type,
+               user_id,
+               consult_id
+        from md_satisfaction
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.createdate,
+        s.modifydate ,
+        s.appraise_result,
+        s.appraise_time,
+        s.division_id,
+        s.division_receptionist,
+        s.doctor_id,
+        s.is_delete,
+        s.is_very_satisfy,
+        s.ks_doctor_id,
+        s.satisfaction_level,
+        s.note,
+        s.patientname,
+        s.personcode,
+        s.second_note,
+        s.second_person,
+        s.second_result,
+        s.second_time,
+        s.source_type,
+        s.user_id,
+        s.visit_note,
+        s.visit_person,
+        s.visit_result,
+        s.visit_text,
+        s.visit_time,
+        sd.name as divisionIdName,
+        su.user_name as ksDoctorName
+        FROM md_satisfaction s
+        LEFT JOIN sys_department sd on sd.id = s.division_id
+        LEFT JOIN sys_user su on su.user_id = s.ks_doctor_id
+        <where>
+            s.is_delete = 0
+            AND s.division_receptionist = 0
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result like concat('%',#{param.appraiseResult},'%')
+            </if>
+            <if test="param.ksDoctorId!=null and param.ksDoctorId!=''">
+                AND s.ks_doctor_id = #{param.ksDoctorId}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                and s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY s.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SatisfactionMap">
+        <include refid="selectSatisfactionVo"/>
+        <where>
+            id = #{id}
+            and is_delete = 0
+        </where>
+    </select>
+
+    <!-- 获取对科室评价不是非常满意的数据 -->
+    <select id="getListData" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.createdate,
+        s.modifydate ,
+        s.appraise_result,
+        s.appraise_time,
+        s.division_id,
+        s.division_receptionist,
+        s.doctor_id,
+        s.is_delete,
+        s.is_very_satisfy,
+        s.ks_doctor_id,
+        s.satisfaction_level,
+        s.note,
+        s.patientname,
+        s.personcode,
+        s.second_note,
+        s.second_person,
+        s.second_result,
+        s.second_time,
+        s.source_type,
+        s.user_id,
+        s.visit_note,
+        s.visit_person,
+        s.visit_result,
+        s.visit_text,
+        s.visit_time,
+        sd.name as divisionIdName,
+        su.user_name as ksDoctorName
+        FROM md_satisfaction s
+        LEFT JOIN sys_department sd on sd.id = s.division_id
+        LEFT JOIN sys_user su on su.user_id = s.ks_doctor_id
+        <where>
+            s.is_delete = 0
+            AND s.division_receptionist = 0
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result like concat('%',#{param.appraiseResult},'%')
+            </if>
+            <if test="param.ksDoctorId!=null and param.ksDoctorId!=''">
+                AND s.ks_doctor_id = #{param.ksDoctorId}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                and s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY s.createdate DESC
+    </select>
+
+
+    <!--满意度排名数据-->
+    <select id="getAnalyseData" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        t.*,
+        rank() over ( PARTITION BY t.did ORDER BY t.points DESC ) AS ranking
+        FROM
+        (
+        SELECT
+        u.user_name AS uname,
+        d.NAME AS dname,
+        sum(
+        CASE
+        WHEN s.appraise_result = '1' THEN
+        2
+        WHEN s.appraise_result = '2' THEN
+        1
+        WHEN s.appraise_result = '4' THEN
+        - 1 ELSE 0
+        END
+        ) AS points,
+        d.report_sort,
+        d.id AS did,
+        u.user_id AS u_id
+        FROM
+        md_satisfaction s
+        INNER JOIN sys_department d ON d.id = s.division_id
+        INNER JOIN sys_user u ON u.user_id = s.ks_doctor_id
+        WHERE
+        s.division_receptionist = 0
+        <where>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.divisionId!=null and param.divisionId!=''">
+                AND s.division_id = #{param.divisionId}
+            </if>
+        </where>
+        GROUP BY U.user_name,D.NAME,U.user_id,D.ID,D.REPORT_SORT)T)S
+        <where>
+            1=1
+            <if test="param.userid!=null and param.userid!=''">
+                AND s.u_id = #{param.userid}
+            </if>
+        </where>
+        ORDER BY
+        s.report_sort ASC,
+        s.dname ASC,
+        s.points DESC
+    </select>
+
+
+    <!-- 不分页，根据筛选条件查全部 -->
+    <select id="getAllList" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.createdate,
+        s.modifydate ,
+        s.appraise_result,
+        s.appraise_time,
+        s.division_id,
+        s.division_receptionist,
+        s.doctor_id,
+        s.is_delete,
+        s.is_very_satisfy,
+        s.ks_doctor_id,
+        s.satisfaction_level,
+        s.note,
+        s.patientname,
+        s.personcode,
+        s.second_note,
+        s.second_person,
+        s.second_result,
+        s.second_time,
+        s.source_type,
+        s.user_id,
+        s.visit_note,
+        s.visit_person,
+        s.visit_result,
+        s.visit_text,
+        s.visit_time,
+        sd.name as divisionIdName,
+        su.user_name as ksDoctorName
+        FROM md_satisfaction s
+        LEFT JOIN sys_department sd on sd.id = s.division_id
+        LEFT JOIN sys_user su on su.user_id = s.ks_doctor_id
+        <where>
+            s.is_delete = 0
+            AND s.division_receptionist = 0
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.ksDoctorId!=null and param.ksDoctorId!=''">
+                AND s.ks_doctor_id = #{param.ksDoctorId}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                and s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY s.createdate DESC
+    </select>
+
+
+
+    <!-- 分页查询体检满意度所有数据 -->
+    <select id="getAddSatisficingPage" resultType="com.center.medical.member.bean.vo.AddSatisficingVo">
+        SELECT
+        s.id AS sid,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply,
+        s.appraise_result,
+        s.appraise_time,
+        s.note
+        FROM
+        md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+        AND s.personcode = p.patientcode
+        AND s.division_receptionist = 1
+        <where>
+            p.f_registered = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND p.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+
+            <if test="param.appraiseResult!=null and param.appraiseResult == 0">
+                AND (S.APPRAISE_RESULT = '0' OR S.APPRAISE_RESULT IS NULL)
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult != 0">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.startRegTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startRegTime}
+            </if>
+            <if test="param.endRegTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endRegTime}
+            </if>
+        </where>
+        ORDER BY
+        p.dateregister DESC,
+        p.patientcode DESC
+    </select>
+
+
+
+    <!-- 不分页，根据筛选条件查全部体检满意度 -->
+    <select id="getAllAddList" resultType="com.center.medical.member.bean.vo.AddSatisficingVo">
+        SELECT
+        s.id AS sid,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply,
+        s.appraise_result,
+        s.appraise_time,
+        s.note
+        FROM
+        md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+        AND s.personcode = p.patientcode
+        AND s.division_receptionist = 1
+        <where>
+            p.f_registered = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND p.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+
+            <if test="param.appraiseResult!=null and param.appraiseResult == 0">
+                AND (S.APPRAISE_RESULT = '0' OR S.APPRAISE_RESULT IS NULL)
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult != 0">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.startRegTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startRegTime}
+            </if>
+            <if test="param.endRegTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endRegTime}
+            </if>
+        </where>
+        ORDER BY
+        p.dateregister DESC,
+        p.patientcode DESC
+    </select>
+
+
+    <!-- 分页显示未评价的数据 -->
+    <select id="getWpjData" resultType="com.center.medical.bean.model.Peispatient">
+        SELECT
+            sa.appraise_result,
+            pt.patientcode,
+            pt.patientname,
+            pt.id_sex,
+            pt.age,
+            pt.phone,
+            pt.org_name,
+            pt.org_depart,
+            pt.doctorapply
+        FROM
+            md_peispatient pt
+                LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        <where>
+            pt.f_closed = '1'
+            AND sa.appraise_result IS NULL
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND pt.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND pt.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND pt.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND pt.org_name like concat('%',#{param.orgName},'%')
+            </if>
+        </where>
+        ORDER BY
+        pt.createdate DESC
+    </select>
+
+
+    <!-- 分页显示未评价的数据 -->
+    <select id="getAllWpjData" resultType="com.center.medical.bean.model.Peispatient">
+        SELECT
+        sa.appraise_result,
+        pt.patientcode,
+        pt.patientname,
+        pt.id_sex,
+        pt.age,
+        pt.phone,
+        pt.org_name,
+        pt.org_depart,
+        pt.doctorapply
+        FROM
+        md_peispatient pt
+        LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        <where>
+            pt.f_closed = '1'
+            AND sa.appraise_result IS NULL
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND pt.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND pt.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND pt.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND pt.org_name like concat('%',#{param.orgName},'%')
+            </if>
+        </where>
+        ORDER BY
+        pt.createdate DESC
+    </select>
+
+
+
+    <!-- 分页显示未评价的数据 -->
+    <select id="getFirstInterviewPage" resultType="com.center.medical.member.bean.vo.FirstInterviewVo">
+        SELECT
+        s.id AS sid,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply,
+        s.appraise_result,
+        s.appraise_time,
+        s.note,
+        s.visit_result,
+        s.visit_time,
+        s.visit_person,
+        s.visit_note
+        FROM
+        md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+        AND s.personcode = p.patientcode
+        AND s.division_receptionist = 1
+        <where>
+            p.f_registered = 1
+            AND ( s.appraise_result IS NULL OR s.appraise_result != '1' )
+            AND ( s.visit_result IS NULL OR s.visit_result != '1' )
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND p.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                and s.visit_result = #{param.visitResult}
+            </if>
+        </where>
+        ORDER BY
+        p.dateregister DESC,
+        p.patientcode DESC
+    </select>
+
+
+
+    <!-- 分页显示未评价的数据 -->
+    <select id="getFcmyListData" resultType="com.center.medical.member.bean.vo.FirstInterviewVo">
+        SELECT
+            s.personcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.org_name,
+            p.org_depart,
+            p.phone,
+            p.doctorapply,
+            s.division_id,
+            s.appraise_result,
+            s.appraise_time,
+            s.note,
+            s.visit_result,
+            s.visit_time,
+            s.visit_person,
+            s.visit_note
+        FROM md_satisfaction s
+        LEFT JOIN md_peispatient p
+        ON s.personcode = p.patientcode
+        <where>
+            s.appraise_result != 1
+            and s.is_delete = 0
+            and s.visit_result = 1
+            and s.division_receptionist = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND p.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY
+        p.dateregister DESC,
+        p.patientcode DESC
+    </select>
+
+
+
+    <!-- 不满意客户回访导出excel -->
+    <select id="exportFirstInterview" resultType="com.center.medical.member.bean.vo.FirstInterviewVo">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.org_name,
+            p.org_depart,
+            p.phone,
+            p.doctorapply,
+            ifnull( s.appraise_result, '0' ) as appraiseResult,
+            IF( s.appraise_time IS NULL, '', STR_TO_DATE( s.appraise_time, '%Y-%m-%d %t' )) as appraiseTime,
+            s.note,
+            s.visit_result,
+            IF (s.visit_time IS NULL,'',STR_TO_DATE( s.visit_time, '%Y-%m-%d %t' )) as visitTime,
+            s.visit_person,
+            s.visit_note
+        FROM md_peispatient p
+        LEFT JOIN md_satisfaction s ON s.is_delete = 0
+        AND s.personcode = p.patientcode
+        AND s.division_receptionist = 1
+        <where>
+            p.f_registered = 1
+            AND ( s.appraise_result IS NULL OR s.appraise_result != '1' )
+            AND (
+                s.visit_result IS NULL
+                OR s.visit_result != 1
+            )
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND p.patientcode like concat('%',#{param.personcode},'%')
+            </if>
+
+            <if test="param.appraiseResult!=null and param.appraiseResult == 0">
+                AND (S.APPRAISE_RESULT = '0' OR S.APPRAISE_RESULT IS NULL)
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult != 0">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                and s.visit_result = #{param.visitResult}
+            </if>
+            ORDER BY P.DATEREGISTER DESC,P.PATIENTCODE DESC
+        </where>
+    </select>
+
+
+
+    <!-- 满意度统计分页查询 -->
+    <select id="getTotalCountPage" resultType="com.center.medical.member.bean.vo.TotalCountVo">
+        SELECT
+        z.afcmy as fcmy,
+        z.aoname,
+        z.bmy as my,
+        z.cjbmy as jbmy,
+        z.dbmy as bmy,
+        z.ewpj as wpj,
+        (z.afcmy/(z.bmy+z.cjbmy+z.dbmy+z.afcmy)*100) as myd
+        FROM
+        (
+        SELECT
+        f.afcmy,
+        f.aoname,
+        m.bmy,
+        j.cjbmy,
+        b.dbmy,
+        w.ewpj
+        FROM
+        (
+        SELECT
+        count( a.fcmy ) AS afcmy,
+        max( a.oname ) aoname,
+        max( a.odept ) aodept,
+        max( a.doc ) adoc
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS fcmy,
+        sa.appraise_time AS atime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '1'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) a
+        WHERE
+        a.atime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) f,
+        (
+        SELECT
+        count( b.my ) AS bmy,
+        max( b.oname ) aoname,
+        max( b.odept ) aodept,
+        max( b.doc ) adoc
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS my,
+        sa.appraise_time AS btime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '2'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) b
+        WHERE
+        b.btime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) m,
+        (
+        SELECT
+        count( c.jbmy ) AS cjbmy
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS jbmy,
+        sa.appraise_time AS ctime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '3'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) c
+        WHERE
+        c.ctime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) j,
+        (
+        SELECT
+        count( d.bmy ) AS dbmy
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS bmy,
+        sa.appraise_time AS dtime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '4'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) d
+        WHERE
+        d.dtime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) b,
+        (
+        SELECT
+        count( e.wpj ) AS ewpj
+        FROM
+        (
+        SELECT
+        pt.patientcode AS wpj,
+        sa.appraise_time AS etime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_peispatient pt
+        LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        WHERE
+        pt.f_closed = '1'
+        AND sa.appraise_result IS NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) e
+        WHERE
+        e.etime IS NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) w UNION ALL
+        SELECT
+        f.afcmy,
+        f.aoname,
+        m.bmy,
+        j.cjbmy,
+        b.dbmy,
+        w.ewpj
+        FROM
+        (
+        SELECT
+        count( a.fcmy ) AS afcmy,
+        max( a.oname ) aoname
+        FROM
+        (
+        SELECT
+        sa.visit_result AS fcmy,
+        sa.appraise_time AS atime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '1'
+        AND sa.visit_result IS NOT NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) a
+        WHERE
+        a.atime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) f,
+        (
+        SELECT
+        count( b.my ) AS bmy,
+        max( b.oname ) boname
+        FROM
+        (
+        SELECT
+        sa.visit_result AS my,
+        sa.appraise_time AS btime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '2'
+        AND sa.visit_result IS NOT NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) b
+        WHERE
+        b.btime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) m,
+        (
+        SELECT
+        count( c.jbmy ) AS cjbmy,
+        max( c.oname ) coname
+        FROM
+        (
+        SELECT
+        sa.visit_result AS jbmy,
+        sa.appraise_time AS ctime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '3'
+        AND sa.visit_result IS NOT NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) c
+        WHERE
+        c.ctime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) j,
+        (
+        SELECT
+        count( d.bmy ) AS dbmy,
+        max( d.oname ) doname
+        FROM
+        (
+        SELECT
+        sa.visit_result AS bmy,
+        sa.appraise_time AS dtime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '4'
+        AND sa.visit_result IS NOT NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) d
+        WHERE
+        d.dtime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) b,
+        (
+        SELECT
+        count( e.wpj ) AS ewpj
+        FROM
+        (
+        SELECT
+        pt.patientcode AS wpj,
+        sa.appraise_time AS etime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_peispatient pt
+        LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        WHERE
+        pt.f_closed = '1'
+        AND sa.appraise_result IS NULL
+        AND sa.visit_result IS NOT NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) e
+        WHERE
+        e.etime IS NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) w UNION ALL
+        SELECT
+        f.afcmy,
+        f.aoname,
+        m.bmy,
+        j.cjbmy,
+        b.dbmy,
+        w.ewpj
+        FROM
+        (
+        SELECT
+        count( a.fcmy ) AS afcmy,
+        max( a.oname ) aoname
+        FROM
+        (
+        SELECT
+        sa.visit_result AS fcmy,
+        sa.appraise_time AS atime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.visit_result = '1'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) a
+        WHERE
+        a.atime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) f,
+        (
+        SELECT
+        count( b.my ) AS bmy
+        FROM
+        (
+        SELECT
+        sa.visit_result AS my,
+        sa.appraise_time AS btime
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.visit_result = '2'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) b
+        WHERE
+        b.btime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) m,
+        (
+        SELECT
+        count( c.jbmy ) AS cjbmy
+        FROM
+        (
+        SELECT
+        sa.visit_result AS jbmy,
+        sa.appraise_time AS ctime
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.visit_result = '3'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) c
+        WHERE
+        c.ctime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) j,
+        (
+        SELECT
+        count( d.bmy ) AS dbmy
+        FROM
+        (
+        SELECT
+        sa.visit_result AS bmy,
+        sa.appraise_time AS dtime
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.visit_result = '4'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) d
+        WHERE
+        d.dtime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) b,
+        (
+        SELECT
+        count( e.wpj ) AS ewpj
+        FROM
+        (
+        SELECT
+        pt.patientcode AS wpj,
+        sa.appraise_time AS etime
+        FROM
+        md_peispatient pt
+        LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        WHERE
+        pt.f_closed = '1'
+        AND sa.visit_result = NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) e
+        WHERE
+        e.etime IS NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) w UNION ALL
+        SELECT
+        f.afcmy,
+        f.aoname,
+        m.bmy + f.afcmy,
+        j.cjbmy,
+        b.dbmy,
+        w.ewpj
+        FROM
+        (
+        SELECT
+        count( a.fcmy ) AS afcmy,
+        max( a.oname ) aoname
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS fcmy,
+        sa.appraise_time AS atime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '1'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) a
+        WHERE
+        a.atime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( a.atime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) f,
+        (
+        SELECT
+        count( b.my ) AS bmy
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS my,
+        sa.appraise_time AS btime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '2'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) b
+        WHERE
+        b.btime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( b.btime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) m,
+        (
+        SELECT
+        count( c.jbmy ) AS cjbmy
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS jbmy,
+        sa.appraise_time AS ctime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '3'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) c
+        WHERE
+        c.ctime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( c.ctime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) j,
+        (
+        SELECT
+        count( d.bmy ) AS dbmy
+        FROM
+        (
+        SELECT
+        sa.appraise_result AS bmy,
+        sa.appraise_time AS dtime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_satisfaction sa
+        LEFT JOIN md_peispatient pt ON pt.patientcode = sa.personcode
+        WHERE
+        sa.is_delete = '0'
+        AND sa.appraise_result = '4'
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) d
+        WHERE
+        d.dtime IS NOT NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( d.dtime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) b,
+        (
+        SELECT
+        count( e.wpj ) AS ewpj
+        FROM
+        (
+        SELECT
+        pt.patientcode AS wpj,
+        sa.appraise_time AS etime,
+        pt.org_name oname,
+        pt.org_depart odept,
+        pt.doctorapply doc
+        FROM
+        md_peispatient pt
+        LEFT JOIN md_satisfaction sa ON sa.personcode = pt.patientcode
+        WHERE
+        pt.f_closed = '1'
+        AND sa.appraise_result IS NULL
+        <if test="param.orgName!=null and param.orgName!=''">
+            AND pt.org_name like concat('%',#{param.orgName},'%')
+        </if>
+        <if test="param.orgDepart!=null and param.orgDepart!=''">
+            AND pt.org_depart LIKE concat('%',#{param.orgDepart},'%')
+        </if>
+        <if test="param.doctorapply!=null and param.doctorapply!=''">
+            AND pt.doctorapply LIKE concat('%',#{param.doctorapply},'%')
+        </if>
+        ) e
+        WHERE
+        e.etime IS NULL
+        <if test="param.startDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ >= ]]> #{param.startDate}
+        </if>
+        <if test="param.endDate!=null">
+            AND STR_TO_DATE ( e.etime, '%Y-%m-%d' ) <![CDATA[ <= ]]> #{param.endDate}
+        </if>
+        ) w
+        ) z
+    </select>
+
+
+
+    <!-- 不满意客户回访导出excel -->
+    <select id="getSecondInterviewPage" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.personcode,
+        s.division_id,
+        s.appraise_result,
+        s.appraise_time,
+        s.note,
+        s.visit_result,
+        s.visit_time,
+        s.visit_person,
+        s.visit_note,
+        s.second_result,
+        s.second_time,
+        s.second_person,
+        s.second_note,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply
+        FROM md_satisfaction s
+        LEFT JOIN md_peispatient p ON p.patientcode = s.personcode
+        <where>
+            s.appraise_result <![CDATA[ <> ]]> 1
+            AND s.visit_result <![CDATA[ <> ]]> 1
+            AND s.is_delete = 0
+            AND ( s.second_result <![CDATA[ <> ]]> 1 OR s.second_result IS NULL )
+            AND s.division_receptionist = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                AND s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.secondResult!=null and param.secondResult!=''">
+                AND s.second_result = #{param.secondResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY
+        s.createdate DESC
+    </select>
+
+
+    <!-- 不满意客户回访导出excel -->
+    <select id="exportSecondInterview" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.personcode,
+        s.division_id,
+        s.appraise_result,
+        s.appraise_time,
+        s.note,
+        s.visit_result,
+        s.visit_time,
+        s.visit_person,
+        s.visit_note,
+        s.second_result,
+        s.second_time,
+        s.second_person,
+        s.second_note,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply
+        FROM md_satisfaction s
+        LEFT JOIN md_peispatient p ON p.patientcode = s.personcode
+        <where>
+            s.appraise_result <![CDATA[ <> ]]> 1
+            AND s.visit_result <![CDATA[ <> ]]> 1
+            AND s.is_delete = 0
+            AND ( s.second_result <![CDATA[ <> ]]> 1 OR s.second_result IS NULL )
+            AND s.division_receptionist = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.secondResult!=null and param.secondResult!=''">
+                s.second_result = #{param.secondResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY
+        s.createdate DESC
+    </select>
+
+
+
+    <!-- 获取科室回访全部为非常满意的数据 -->
+    <select id="getFcmyListSecondData" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.personcode,
+        s.division_id,
+        s.appraise_result,
+        s.appraise_time,
+        s.note,
+        s.visit_result,
+        s.visit_time,
+        s.visit_person,
+        s.visit_note,
+        s.second_result,
+        s.second_time,
+        s.second_person,
+        s.second_note,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply
+        FROM md_satisfaction s
+        LEFT JOIN md_peispatient p ON p.patientcode = s.personcode
+        <where>
+            s.appraise_result <![CDATA[ <> ]]> 1
+            AND s.visit_result <![CDATA[ <> ]]> 1
+            AND s.is_delete = 0
+            AND s.second_result = 1
+            AND s.division_receptionist = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY
+        s.createdate DESC
+    </select>
+
+
+    <!-- 导出科室回访全部为非常满意数据 -->
+    <select id="exportsSecondInterview" resultType="com.center.medical.member.bean.model.Satisfaction">
+        SELECT
+        s.id,
+        s.personcode,
+        s.division_id,
+        s.appraise_result,
+        s.appraise_time,
+        s.note,
+        s.visit_result,
+        s.visit_time,
+        s.visit_person,
+        s.visit_note,
+        s.second_result,
+        s.second_time,
+        s.second_person,
+        s.second_note,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        p.doctorapply
+        FROM md_satisfaction s
+        LEFT JOIN md_peispatient p ON p.patientcode = s.personcode
+        <where>
+            s.appraise_result <![CDATA[ <> ]]> 1
+            AND s.visit_result <![CDATA[ <> ]]> 1
+            AND s.is_delete = 0
+            AND s.second_result = 1
+            AND s.division_receptionist = 1
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND s.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.personcode!=null and param.personcode!=''">
+                AND s.personcode like concat('%',#{param.personcode},'%')
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND p.phone like concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.appraiseResult!=null and param.appraiseResult!=''">
+                AND s.appraise_result = #{param.appraiseResult}
+            </if>
+            <if test="param.visitResult!=null and param.visitResult!=''">
+                AND s.visit_result = #{param.visitResult}
+            </if>
+            <if test="param.startDate!=null">
+                AND s.appraise_time <![CDATA[ >= ]]> #{param.startDate}
+            </if>
+            <if test="param.endDate!=null">
+                AND s.appraise_time <![CDATA[ <= ]]> #{param.endDate}
+            </if>
+        </where>
+        ORDER BY
+        s.modifydate DESC
+    </select>
+</mapper>
+
+
+
+

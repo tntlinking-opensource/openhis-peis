@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxWsRolesMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxWsRoles" id="QxWsRolesMap">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="issystem" column="ISSYSTEM"/>
+        <result property="roleType" column="ROLE_TYPE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxWsRolesVo">
+        select ID, NAME, CREATEDATE, MODIFYDATE, DESCRIPTION, ISSYSTEM, ROLE_TYPE
+        from QX_WS_ROLES
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxWsRolesMap">
+        <include refid="selectQxWsRolesVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxWsRolesMap">
+        <include refid="selectQxWsRolesVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

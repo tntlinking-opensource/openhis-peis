@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.enterprise.mapper.ReportMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.enterprise.bean.vo.ReportListDataVo">
+        SELECT
+            p.id,
+            p.patientname,
+            p.f_registered,
+            p.f_readytofinal,
+            jkr.url_pdf AS jkurl,
+            b.fzx,
+            p.id_sex,
+            p.phone,
+            p.idcardno,
+            p.org_depart,
+            zyst.verdict,
+            p.age,
+            STR_TO_DATE( p.dateregister, '%Y-%m-%d %T' ) as dateregister,
+            p.jktjzt AS jktjztNum,
+            p.examsuite_name as tc,
+            zyr.url_pdf AS zyurl,
+            zyst.posistive,
+            p.patientcode,
+            p.zytjzt AS zytjztNum
+        FROM
+            md_peispatient p
+                LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+                LEFT JOIN md_report jkr ON jkr.patientcode = p.patientcode
+                AND jkr.disease_health = 0
+                LEFT JOIN md_report zyr ON zyr.patientcode = p.patientcode
+                AND zyr.disease_health = 1
+                LEFT JOIN md_section_total st ON st.patientcode = p.patientcode
+                AND st.disease_health = 0
+                LEFT JOIN md_section_total zyst ON zyst.patientcode = p.patientcode
+                AND zyst.disease_health = 1
+        <where>
+            (p.jktjzt >= 7 OR p.zytjzt >= 7)
+            <if test="param.customerId!=null and param.customerId!=''">
+                AND p.id_org = #{param.customerId}
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.dept!=null and param.dept!=''">
+                AND p.org_depart like concat('%',#{param.dept},'%')
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.patientname like concat('%',#{param.name},'%')
+            </if>
+            <if test="param.dd!=null and param.dd!=''">
+                AND p.numorgresv = #{param.dd}
+            </if>
+        </where>
+        ORDER BY p.patientcode DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.enterprise.bean.model.Report">
+
+    </select>
+
+
+    <!-- 获取职业结论 -->
+    <select id="getProfessionResultById" resultType="com.center.medical.enterprise.bean.dto.ProfessionResultDto">
+        SELECT
+            z.occupation_summary,
+            z.serial_no
+        FROM
+            md_peispatient p
+                LEFT JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+                LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        WHERE
+            p.zytjzt > 0
+          AND p.patientcode = #{patientcode}
+        ORDER BY z.sort
+        limit 1
+    </select>
+
+    <!-- 获取处理意见 -->
+    <select id="getSummaryText" resultType="java.lang.String">
+        SELECT
+            group_concat(DISTINCT zv.summary_text ) as summaryText
+        FROM
+            md_comments_progessional c
+                LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+                LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        WHERE
+            c.patientcode = #{patientcode}
+          AND z.serial_no = #{serialNo}
+    </select>
+
+
+    <!-- 获取导出数据 -->
+    <select id="getExportData" resultType="com.center.medical.enterprise.bean.vo.ReportExportVo">
+        SELECT
+            a.patientcode,
+            a.patientname,
+            a.item_name,
+            a.result,
+            a.idcardno
+        FROM
+            (
+                SELECT
+                    p.patientcode,
+                    p.patientname,
+                    d.item_name,
+                    SUBSTRING(IFNULL(inspect_describe, sign_list), 1, 4000) AS result,
+                    p.idcardno,
+                    d.fee_name
+                FROM
+                    md_peispatient p
+                        LEFT JOIN md_describe d ON d.patientcode = p.patientcode
+                <where>
+                    (p.jktjzt >= 9 || p.jktjzt = 7)
+                    <if test="param.customerId!=null and param.customerId!=''">
+                        AND p.id_org = #{param.customerId}
+                    </if>
+                    <if test="param.startTime!=null">
+                        AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+                    </if>
+                    <if test="param.endTime!=null">
+                        AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+                    </if>
+                    <if test="param.dept!=null and param.dept!=''">
+                        AND p.org_depart like concat('%',#{param.dept},'%')
+                    </if>
+                    <if test="param.name!=null and param.name!=''">
+                        AND p.patientname like concat('%',#{param.name},'%')
+                    </if>
+                    <if test="param.dd!=null and param.dd!=''">
+                        AND p.numorgresv = #{param.dd}
+                    </if>
+                    <if test="param.ids!=null">
+                        AND p.id IN
+                        <foreach collection="param.ids" item="id" open="(" close=")" separator=",">
+                            #{id}
+                        </foreach>
+                    </if>
+                </where>
+                UNION ALL
+                SELECT
+                p.patientcode,
+                p.patientname,
+                r.item_name,
+                r.examresultsummary result,
+                p.idcardno,
+                r.item_name fee_name
+                FROM
+                md_peispatient p
+                LEFT JOIN md_pacs_result r ON r.patientcode = p.patientcode
+                <where>
+                    (p.jktjzt >= 9 || p.jktjzt = 7)
+                    <if test="param.customerId!=null and param.customerId!=''">
+                        AND p.id_org = #{param.customerId}
+                    </if>
+                    <if test="param.startTime!=null">
+                        AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+                    </if>
+                    <if test="param.endTime!=null">
+                        AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+                    </if>
+                    <if test="param.dept!=null and param.dept!=''">
+                        AND p.org_depart like concat('%',#{param.dept},'%')
+                    </if>
+                    <if test="param.name!=null and param.name!=''">
+                        AND p.patientname like concat('%',#{param.name},'%')
+                    </if>
+                    <if test="param.dd!=null and param.dd!=''">
+                        AND p.numorgresv = #{param.dd}
+                    </if>
+                    <if test="param.ids!=null">
+                        AND p.id IN
+                        <foreach collection="param.ids" item="id" open="(" close=")" separator=",">
+                            #{id}
+                        </foreach>
+                    </if>
+                </where>
+            )a
+        having a.item_name is not null
+        ORDER BY a.patientcode,a.fee_name,a.item_name
+
+    </select>
+
+
+
+
+    <!-- 职业结论导出 -->
+    <select id="getExportZyData" resultType="com.center.medical.enterprise.bean.vo.ReportExportZyVo">
+        SELECT
+            p.id,
+            p.patientname,
+            p.f_registered,
+            p.f_readytofinal,
+            jkr.url_pdf AS jkurl,
+            b.fzx,
+            p.id_sex,
+            p.phone,
+            p.idcardno,
+            p.org_depart,
+            zyst.verdict,
+            p.age,
+            p.dateregister,
+            p.jktjzt,
+            p.examsuite_name,
+            zyr.url_pdf AS zyurl,
+            zyst.posistive,
+            p.patientcode,
+            p.zytjzt
+        FROM
+            md_peispatient p
+                LEFT JOIN sys_branch b ON b.id = p.hospitalcode
+                LEFT JOIN md_report jkr ON jkr.patientcode = p.patientcode
+                AND jkr.disease_health = 0
+                LEFT JOIN md_report zyr ON zyr.patientcode = p.patientcode
+                AND zyr.disease_health = 1
+                LEFT JOIN md_section_total st ON st.patientcode = p.patientcode
+                AND st.disease_health = 0
+                LEFT JOIN md_section_total zyst ON zyst.patientcode = p.patientcode
+                AND zyst.disease_health = 1
+        <where>
+            (p.jktjzt >= 7 OR p.zytjzt >= 7)
+            <if test="param.customerId!=null and param.customerId!=''">
+                AND p.id_org = #{param.customerId}
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.dept!=null and param.dept!=''">
+                AND p.org_depart like concat('%',#{param.dept},'%')
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.patientname like concat('%',#{param.name},'%')
+            </if>
+            <if test="param.dd!=null and param.dd!=''">
+                AND p.numorgresv = #{param.dd}
+            </if>
+            <if test="param.ids!=null">
+                AND p.id IN
+                <foreach collection="param.ids" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY p.patientcode DESC
+    </select>
+
+
+
+    <!-- 获取科室结果 -->
+    <select id="getksResults" resultType="com.center.medical.enterprise.bean.dto.KsResultsDto">
+        select
+            d.dept_no,
+            d.dept_name,
+            s.conclusions
+        from
+            md_section_result_main s
+                inner join sys_dept d on d.dept_no = s.dep_id
+        <where>
+            s.is_audit = 1
+            and s.patientcode =#{patientcode}
+        </where>
+        order by
+            d.dyd_xh
+    </select>
+
+
+    <!-- 查询历次结果 -->
+    <select id="getPreviousResults" resultType="com.center.medical.enterprise.bean.dto.KsResultsDto">
+        select
+        d.dept_no,
+        d.dept_name,
+        s.conclusions
+        from
+        md_section_result_main s
+        inner join sys_dept d on d.dept_no = s.dep_id
+        <where>
+            s.is_audit = 1
+            and s.patientcode =#{patientcode}
+            AND s.dep_id IN
+            <foreach collection="deptIds" item="deptId" open="(" close=")" separator=",">
+                #{deptId}
+            </foreach>
+        </where>
+        order by
+        d.dyd_xh
+    </select>
+
+
+    <!-- 查询历次结果 -->
+    <select id="getOrderListData" resultType="com.center.medical.enterprise.bean.vo.OrderListDataVo">
+        SELECT
+            o.id,
+            o.ddmc,
+            o.ddh
+        FROM
+            md_createorder o
+        <where>
+            <if test="param.customerId!=null and param.customerId!=''">
+                AND o.khdwmcid = #{param.customerId}
+            </if>
+            <if test="param.key!=null and param.key!=''">
+                AND o.ddmc like concat('%',#{param.key},'%')
+            </if>
+        </where>
+        ORDER BY o.createdate DESC
+    </select>
+</mapper>
+

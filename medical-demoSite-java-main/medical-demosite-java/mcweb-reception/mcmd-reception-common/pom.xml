@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mcweb-reception</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-reception-common</artifactId>
+    <description>前台系统业务模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-sell-crm-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-member-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-reservation-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <!--oracle的jdbc驱动-->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.8.0.0</version>
+        </dependency>
+        <!--oracle乱码-->
+        <dependency>
+            <groupId>com.oracle.database.nls</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>19.7.0.0</version>
+        </dependency>
+        <!--mysql的jdbc驱动-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.26</version>
+        </dependency>
+    </dependencies>
+
+</project>

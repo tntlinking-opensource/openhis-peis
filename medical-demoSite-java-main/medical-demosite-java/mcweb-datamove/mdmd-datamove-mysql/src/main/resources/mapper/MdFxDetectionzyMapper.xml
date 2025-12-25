@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdFxDetectionzyMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdFxDetectionzy" id="MdFxDetectionzyMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="sampleId" column="sample_id"/>
+        <result property="disease" column="disease"/>
+        <result property="checkNum" column="check_num"/>
+        <result property="occupationDiseast" column="occupation_diseast"/>
+        <result property="occupationDiagnosis" column="occupation_diagnosis"/>
+        <result property="harmName" column="harm_name"/>
+        <result property="harmNum" column="harm_num"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdFxDetectionzyVo">
+        select id,
+               createdate,
+               modifydate,
+               sample_id,
+               disease,
+               check_num,
+               occupation_diseast,
+               occupation_diagnosis,
+               harm_name,
+               harm_num
+        from md_fx_detectionzy
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdFxDetectionzyMap">
+        <include refid="selectMdFxDetectionzyVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdFxDetectionzyMap">
+        <include refid="selectMdFxDetectionzyVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

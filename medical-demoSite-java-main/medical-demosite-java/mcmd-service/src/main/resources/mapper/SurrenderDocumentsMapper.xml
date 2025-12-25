@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.SurrenderDocumentsMapper">
+
+    <resultMap type="com.center.medical.bean.model.SurrenderDocuments" id="SurrenderDocumentsMap">
+        <id property="id" column="id"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="patientname" column="patientname"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="submitId" column="submit_id"/>
+        <result property="presenter" column="presenter"/>
+        <result property="submitdate" column="submitdate"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSurrenderDocumentsVo">
+        select id,
+               fzxid,
+               patientname,
+               patientcode,
+               submit_id,
+               presenter,
+               submitdate,
+               createdate,
+               modifydate
+        from md_surrender_documents
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SurrenderDocumentsMap">
+        <include refid="selectSurrenderDocumentsVo"/>
+        <where>
+            <if test="param.startTime!=null">
+                AND submitdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND submitdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.presenter!=null and param.presenter!=''">
+                AND presenter like concat('%',#{param.presenter},'%')
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND patientcode = #{param.patientcode}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND patientname like concat('%',#{param.patientname},'%')
+            </if>
+        </where>
+        order by createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SurrenderDocumentsMap">
+        <include refid="selectSurrenderDocumentsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getByPatientCode" resultMap="SurrenderDocumentsMap">
+        <include refid="selectSurrenderDocumentsVo"/>
+        <where>
+            patientcode = #{patientCode}
+        </where>
+    </select>
+</mapper>
+

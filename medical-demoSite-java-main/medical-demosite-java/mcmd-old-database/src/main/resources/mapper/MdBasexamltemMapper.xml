@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdBasexamltemMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdBasexamltem" id="MdBasexamltemMap">
+        <id property="id" column="id"/>
+        <result property="sysmanmark" column="sysmanmark"/>
+        <result property="keyexamitem" column="keyexamitem"/>
+        <result property="examitemName" column="examitem_name"/>
+        <result property="examitemNameabr" column="examitem_nameabr"/>
+        <result property="examitemNameprn" column="examitem_nameprn"/>
+        <result property="examitemNameeng" column="examitem_nameeng"/>
+        <result property="examitemNameengabr" column="examitem_nameengabr"/>
+        <result property="examitemCode" column="examitem_code"/>
+        <result property="examitemCode2" column="examitem_code2"/>
+        <result property="examitemCode3" column="examitem_code3"/>
+        <result property="examitemCodehm" column="examitem_codehm"/>
+        <result property="examitemcodex" column="examitemcodex"/>
+        <result property="lbdmExamitemtype" column="lbdm_examitemtype"/>
+        <result property="idExamitemtype" column="id_examitemtype"/>
+        <result property="idTreegroup" column="id_treegroup"/>
+        <result property="idTreegroupsub" column="id_treegroupsub"/>
+        <result property="valuetype" column="valuetype"/>
+        <result property="valueunit" column="valueunit"/>
+        <result property="valuememolines" column="valuememolines"/>
+        <result property="fAutocalc" column="f_autocalc"/>
+        <result property="fPrint" column="f_print"/>
+        <result property="fMultival" column="f_multival"/>
+        <result property="commongroup" column="commongroup"/>
+        <result property="valuecheckcols" column="valuecheckcols"/>
+        <result property="fEntryonly" column="f_entryonly"/>
+        <result property="fNoentry" column="f_noentry"/>
+        <result property="fEntrytoconclusion" column="f_entrytoconclusion"/>
+        <result property="fUsecheck" column="f_usecheck"/>
+        <result property="fSameline" column="f_sameline"/>
+        <result property="fCanDup" column="f_can_dup"/>
+        <result property="fLabByhand" column="f_lab_byhand"/>
+        <result property="fLabNowait" column="f_lab_nowait"/>
+        <result property="conclusionlevel" column="conclusionlevel"/>
+        <result property="fSummarytitle" column="f_summarytitle"/>
+        <result property="phraseforhilo" column="phraseforhilo"/>
+        <result property="increments" column="increments"/>
+        <result property="numprecision" column="numprecision"/>
+        <result property="valuevalidmin" column="valuevalidmin"/>
+        <result property="valuevalidmax" column="valuevalidmax"/>
+        <result property="itemflagcaselessthan" column="itemflagcaselessthan"/>
+        <result property="itemflagcasegreaterthan" column="itemflagcasegreaterthan"/>
+        <result property="fBothnumtext" column="f_bothnumtext"/>
+        <result property="fNumonly" column="f_numonly"/>
+        <result property="fUseappmaxmin" column="f_useappmaxmin"/>
+        <result property="fIncludemin" column="f_includemin"/>
+        <result property="fIncludemax" column="f_includemax"/>
+        <result property="fMale" column="f_male"/>
+        <result property="valuemaledef" column="valuemaledef"/>
+        <result property="valuemalemax" column="valuemalemax"/>
+        <result property="valuemalenormmid" column="valuemalenormmid"/>
+        <result property="valuemalemin" column="valuemalemin"/>
+        <result property="valuemaleweakup" column="valuemaleweakup"/>
+        <result property="valuemaleweakdown" column="valuemaleweakdown"/>
+        <result property="valuemalesevereup" column="valuemalesevereup"/>
+        <result property="valuemaleseveredown" column="valuemaleseveredown"/>
+        <result property="fFemale" column="f_female"/>
+        <result property="valuefemaledef" column="valuefemaledef"/>
+        <result property="valuefemalemax" column="valuefemalemax"/>
+        <result property="valuefemalenormmid" column="valuefemalenormmid"/>
+        <result property="valuefemalemin" column="valuefemalemin"/>
+        <result property="valuefemaleweakup" column="valuefemaleweakup"/>
+        <result property="valuefemaleweakdown" column="valuefemaleweakdown"/>
+        <result property="valuefemalesevereup" column="valuefemalesevereup"/>
+        <result property="valuefemaleseveredown" column="valuefemaleseveredown"/>
+        <result property="gxdm" column="gxdm"/>
+        <result property="expression" column="expression"/>
+        <result property="idConclusionhi" column="id_conclusionhi"/>
+        <result property="idConclusionlo" column="id_conclusionlo"/>
+        <result property="idConclusionpo" column="id_conclusionpo"/>
+        <result property="idConclusionne" column="id_conclusionne"/>
+        <result property="idConclusionweaknormhi" column="id_conclusionweaknormhi"/>
+        <result property="idConclusionweaknormlo" column="id_conclusionweaknormlo"/>
+        <result property="idConclusionweakposihi" column="id_conclusionweakposihi"/>
+        <result property="idConclusionweakposilo" column="id_conclusionweakposilo"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="inputcodeb" column="inputcodeb"/>
+        <result property="inputcodec" column="inputcodec"/>
+        <result property="inputcoded" column="inputcoded"/>
+        <result property="inputcodee" column="inputcodee"/>
+        <result property="fPatientbaseinfo" column="f_patientbaseinfo"/>
+        <result property="patientbaseinfodisporder" column="patientbaseinfodisporder"/>
+        <result property="note" column="note"/>
+        <result property="disporder" column="disporder"/>
+        <result property="fExamitemexportflag01" column="f_examitemexportflag01"/>
+        <result property="fExamitemexportflag02" column="f_examitemexportflag02"/>
+        <result property="fNodepartsummary" column="f_nodepartsummary"/>
+        <result property="fComparereport" column="f_comparereport"/>
+        <result property="fNoreportoutput" column="f_noreportoutput"/>
+        <result property="fAlwayspositive" column="f_alwayspositive"/>
+        <result property="fTitleonreport" column="f_titleonreport"/>
+        <result property="itemrefrange" column="itemrefrange"/>
+        <result property="keysummarygroup" column="keysummarygroup"/>
+        <result property="fUseapprangeoccudisease" column="f_useapprangeoccudisease"/>
+        <result property="expressionoccudisease" column="expressionoccudisease"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="type" column="type"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="interfaceCode" column="interface_code"/>
+        <result property="valuedangerousmax" column="valuedangerousmax"/>
+        <result property="valuedangerousmin" column="valuedangerousmin"/>
+        <result property="isDesc" column="is_desc"/>
+        <result property="isName" column="is_name"/>
+        <result property="status" column="status"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+        <result property="devicetypePositionCheckitem" column="devicetype_position_checkitem"/>
+        <result property="addUnit" column="add_unit"/>
+        <result property="itemFlag" column="item_flag"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdBasexamltemVo">
+        select id,
+               sysmanmark,
+               keyexamitem,
+               examitem_name,
+               examitem_nameabr,
+               examitem_nameprn,
+               examitem_nameeng,
+               examitem_nameengabr,
+               examitem_code,
+               examitem_code2,
+               examitem_code3,
+               examitem_codehm,
+               examitemcodex,
+               lbdm_examitemtype,
+               id_examitemtype,
+               id_treegroup,
+               id_treegroupsub,
+               valuetype,
+               valueunit,
+               valuememolines,
+               f_autocalc,
+               f_print,
+               f_multival,
+               commongroup,
+               valuecheckcols,
+               f_entryonly,
+               f_noentry,
+               f_entrytoconclusion,
+               f_usecheck,
+               f_sameline,
+               f_can_dup,
+               f_lab_byhand,
+               f_lab_nowait,
+               conclusionlevel,
+               f_summarytitle,
+               phraseforhilo,
+               increments,
+               numprecision,
+               valuevalidmin,
+               valuevalidmax,
+               itemflagcaselessthan,
+               itemflagcasegreaterthan,
+               f_bothnumtext,
+               f_numonly,
+               f_useappmaxmin,
+               f_includemin,
+               f_includemax,
+               f_male,
+               valuemaledef,
+               valuemalemax,
+               valuemalenormmid,
+               valuemalemin,
+               valuemaleweakup,
+               valuemaleweakdown,
+               valuemalesevereup,
+               valuemaleseveredown,
+               f_female,
+               valuefemaledef,
+               valuefemalemax,
+               valuefemalenormmid,
+               valuefemalemin,
+               valuefemaleweakup,
+               valuefemaleweakdown,
+               valuefemalesevereup,
+               valuefemaleseveredown,
+               gxdm,
+               expression,
+               id_conclusionhi,
+               id_conclusionlo,
+               id_conclusionpo,
+               id_conclusionne,
+               id_conclusionweaknormhi,
+               id_conclusionweaknormlo,
+               id_conclusionweakposihi,
+               id_conclusionweakposilo,
+               input_code,
+               inputcodeb,
+               inputcodec,
+               inputcoded,
+               inputcodee,
+               f_patientbaseinfo,
+               patientbaseinfodisporder,
+               note,
+               disporder,
+               f_examitemexportflag01,
+               f_examitemexportflag02,
+               f_nodepartsummary,
+               f_comparereport,
+               f_noreportoutput,
+               f_alwayspositive,
+               f_titleonreport,
+               itemrefrange,
+               keysummarygroup,
+               f_useapprangeoccudisease,
+               expressionoccudisease,
+               division_id,
+               type,
+               createdate,
+               modifydate,
+               interface_code,
+               valuedangerousmax,
+               valuedangerousmin,
+               is_desc,
+               is_name,
+               status,
+               is_delete,
+               is_public,
+               fzx_ids,
+               devicetype_position_checkitem,
+               add_unit,
+               item_flag
+        from md_basexamltem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdBasexamltemMap">
+        <include refid="selectMdBasexamltemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdBasexamltemMap">
+        <include refid="selectMdBasexamltemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

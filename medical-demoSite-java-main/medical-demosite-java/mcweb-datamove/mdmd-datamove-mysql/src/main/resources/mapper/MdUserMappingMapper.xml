@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdUserMappingMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdUserMapping" id="MdUserMappingMap">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="bizUserId" column="biz_user_id"/>
+        <result property="systemId" column="system_id"/>
+        <result property="status" column="status"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdUserMappingVo">
+        select id, user_id, biz_user_id, system_id, status, createdate, modifydate
+        from md_user_mapping
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdUserMappingMap">
+        <include refid="selectMdUserMappingVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdUserMappingMap">
+        <include refid="selectMdUserMappingVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

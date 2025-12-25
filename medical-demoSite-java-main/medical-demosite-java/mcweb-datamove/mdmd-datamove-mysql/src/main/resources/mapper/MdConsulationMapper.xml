@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdConsulationMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdConsulation" id="MdConsulationMap">
+        <id property="id" column="id"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createdate" column="createdate"/>
+        <result property="consultType" column="consult_type"/>
+        <result property="consultName" column="consult_name"/>
+        <result property="consultTime" column="consult_time"/>
+        <result property="depId" column="dep_id"/>
+        <result property="signPath" column="sign_path"/>
+        <result property="consultContent" column="consult_content"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="consultPhone" column="consult_phone"/>
+        <result property="doctorUsername" column="doctor_username"/>
+        <result property="configId" column="config_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdConsulationVo">
+        select id,
+               modifydate,
+               createdate,
+               consult_type,
+               consult_name,
+               consult_time,
+               dep_id,
+               sign_path,
+               consult_content,
+               patientcode,
+               consult_phone,
+               doctor_username,
+               config_id
+        from md_consulation
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdConsulationMap">
+        <include refid="selectMdConsulationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdConsulationMap">
+        <include refid="selectMdConsulationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.data.dao.BasexamltemMapper">
+
+    <resultMap type="com.center.medical.data.bean.model.Basexamltem" id="BasexamltemMap">
+        <id property="id" column="id"/>
+        <result property="cid" column="cid"/>
+        <result property="sysmanmark" column="sysmanmark"/>
+        <result property="keyexamitem" column="keyexamitem"/>
+        <result property="examitemName" column="examitem_name"/>
+        <result property="examitemNameabr" column="examitem_nameabr"/>
+        <result property="examitemNameprn" column="examitem_nameprn"/>
+        <result property="examitemNameeng" column="examitem_nameeng"/>
+        <result property="examitemNameengabr" column="examitem_nameengabr"/>
+        <result property="examitemCode" column="examitem_code"/>
+        <result property="examitemCode2" column="examitem_code2"/>
+        <result property="examitemCode3" column="examitem_code3"/>
+        <result property="examitemCodehm" column="examitem_codehm"/>
+        <result property="examitemcodex" column="examitemcodex"/>
+        <result property="lbdmExamitemtype" column="lbdm_examitemtype"/>
+        <result property="idExamitemtype" column="id_examitemtype"/>
+        <result property="idTreegroup" column="id_treegroup"/>
+        <result property="idTreegroupsub" column="id_treegroupsub"/>
+        <result property="valuetype" column="valuetype"/>
+        <result property="valueunit" column="valueunit"/>
+        <result property="valuememolines" column="valuememolines"/>
+        <result property="fAutocalc" column="f_autocalc"/>
+        <result property="fPrint" column="f_print"/>
+        <result property="fMultival" column="f_multival"/>
+        <result property="commongroup" column="commongroup"/>
+        <result property="valuecheckcols" column="valuecheckcols"/>
+        <result property="fEntryonly" column="f_entryonly"/>
+        <result property="fNoentry" column="f_noentry"/>
+        <result property="fEntrytoconclusion" column="f_entrytoconclusion"/>
+        <result property="fUsecheck" column="f_usecheck"/>
+        <result property="fSameline" column="f_sameline"/>
+        <result property="fCanDup" column="f_can_dup"/>
+        <result property="fLabByhand" column="f_lab_byhand"/>
+        <result property="fLabNowait" column="f_lab_nowait"/>
+        <result property="conclusionlevel" column="conclusionlevel"/>
+        <result property="fSummarytitle" column="f_summarytitle"/>
+        <result property="phraseforhilo" column="phraseforhilo"/>
+        <result property="increments" column="increments"/>
+        <result property="numprecision" column="numprecision"/>
+        <result property="valuevalidmin" column="valuevalidmin"/>
+        <result property="valuevalidmax" column="valuevalidmax"/>
+        <result property="itemflagcaselessthan" column="itemflagcaselessthan"/>
+        <result property="itemflagcasegreaterthan" column="itemflagcasegreaterthan"/>
+        <result property="fBothnumtext" column="f_bothnumtext"/>
+        <result property="fNumonly" column="f_numonly"/>
+        <result property="fUseappmaxmin" column="f_useappmaxmin"/>
+        <result property="fIncludemin" column="f_includemin"/>
+        <result property="fIncludemax" column="f_includemax"/>
+        <result property="fMale" column="f_male"/>
+        <result property="valuemaledef" column="valuemaledef"/>
+        <result property="valuemalemax" column="valuemalemax"/>
+        <result property="valuemalenormmid" column="valuemalenormmid"/>
+        <result property="valuemalemin" column="valuemalemin"/>
+        <result property="valuemaleweakup" column="valuemaleweakup"/>
+        <result property="valuemaleweakdown" column="valuemaleweakdown"/>
+        <result property="valuemalesevereup" column="valuemalesevereup"/>
+        <result property="valuemaleseveredown" column="valuemaleseveredown"/>
+        <result property="fFemale" column="f_female"/>
+        <result property="valuefemaledef" column="valuefemaledef"/>
+        <result property="valuefemalemax" column="valuefemalemax"/>
+        <result property="valuefemalenormmid" column="valuefemalenormmid"/>
+        <result property="valuefemalemin" column="valuefemalemin"/>
+        <result property="valuefemaleweakup" column="valuefemaleweakup"/>
+        <result property="valuefemaleweakdown" column="valuefemaleweakdown"/>
+        <result property="valuefemalesevereup" column="valuefemalesevereup"/>
+        <result property="valuefemaleseveredown" column="valuefemaleseveredown"/>
+        <result property="gxdm" column="gxdm"/>
+        <result property="expression" column="expression"/>
+        <result property="idConclusionhi" column="id_conclusionhi"/>
+        <result property="idConclusionlo" column="id_conclusionlo"/>
+        <result property="idConclusionpo" column="id_conclusionpo"/>
+        <result property="idConclusionne" column="id_conclusionne"/>
+        <result property="idConclusionweaknormhi" column="id_conclusionweaknormhi"/>
+        <result property="idConclusionweaknormlo" column="id_conclusionweaknormlo"/>
+        <result property="idConclusionweakposihi" column="id_conclusionweakposihi"/>
+        <result property="idConclusionweakposilo" column="id_conclusionweakposilo"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="inputcodeb" column="inputcodeb"/>
+        <result property="inputcodec" column="inputcodec"/>
+        <result property="inputcoded" column="inputcoded"/>
+        <result property="inputcodee" column="inputcodee"/>
+        <result property="fPatientbaseinfo" column="f_patientbaseinfo"/>
+        <result property="patientbaseinfodisporder" column="patientbaseinfodisporder"/>
+        <result property="note" column="note"/>
+        <result property="disporder" column="disporder"/>
+        <result property="fExamitemexportflag01" column="f_examitemexportflag01"/>
+        <result property="fExamitemexportflag02" column="f_examitemexportflag02"/>
+        <result property="fNodepartsummary" column="f_nodepartsummary"/>
+        <result property="fComparereport" column="f_comparereport"/>
+        <result property="fNoreportoutput" column="f_noreportoutput"/>
+        <result property="fAlwayspositive" column="f_alwayspositive"/>
+        <result property="fTitleonreport" column="f_titleonreport"/>
+        <result property="itemrefrange" column="itemrefrange"/>
+        <result property="keysummarygroup" column="keysummarygroup"/>
+        <result property="fUseapprangeoccudisease" column="f_useapprangeoccudisease"/>
+        <result property="expressionoccudisease" column="expressionoccudisease"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="type" column="type"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="interfaceCode" column="interface_code"/>
+        <result property="valuedangerousmax" column="valuedangerousmax"/>
+        <result property="valuedangerousmin" column="valuedangerousmin"/>
+        <result property="isDesc" column="is_desc"/>
+        <result property="isName" column="is_name"/>
+        <result property="status" column="status"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="fzxIds" column="fzx_ids"/>
+        <result property="devicetypePositionCheckitem" column="devicetype_position_checkitem"/>
+        <result property="addUnit" column="add_unit"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectBasexamltemVo">
+        SELECT bei.id,
+               bei.id                                                             AS cid,
+               bei.sysmanmark,
+               bei.keyexamitem,
+               bei.examitem_name,
+               bei.examitem_nameabr,
+               bei.examitem_nameprn,
+               bei.examitem_nameeng,
+               bei.examitem_nameengabr,
+               bei.examitem_code,
+               bei.examitem_code2,
+               bei.examitem_code3,
+               bei.examitem_codehm,
+               bei.examitemcodex,
+               bei.lbdm_examitemtype,
+               bei.id_examitemtype,
+               bei.id_treegroup,
+               bei.id_treegroupsub,
+               bei.valuetype,
+               bei.valueunit,
+               bei.valuememolines,
+               bei.f_autocalc,
+               bei.f_print,
+               bei.f_multival,
+               bei.commongroup,
+               bei.valuecheckcols,
+               bei.f_entryonly,
+               bei.f_noentry,
+               bei.f_entrytoconclusion,
+               bei.f_usecheck,
+               bei.f_sameline,
+               bei.f_can_dup,
+               bei.f_lab_byhand,
+               bei.f_lab_nowait,
+               bei.conclusionlevel,
+               bei.f_summarytitle,
+               bei.phraseforhilo,
+               bei.increments,
+               bei.numprecision,
+               bei.valuevalidmin,
+               bei.valuevalidmax,
+               bei.itemflagcaselessthan,
+               bei.itemflagcasegreaterthan,
+               bei.f_bothnumtext,
+               bei.f_numonly,
+               bei.f_useappmaxmin,
+               bei.f_includemin,
+               bei.f_includemax,
+               bei.f_male,
+               bei.valuemaledef,
+               bei.valuemalemax,
+               bei.valuemalenormmid,
+               bei.valuemalemin,
+               bei.valuemaleweakup,
+               bei.valuemaleweakdown,
+               bei.valuemalesevereup,
+               bei.valuemaleseveredown,
+               bei.f_female,
+               bei.valuefemaledef,
+               bei.valuefemalemax,
+               bei.valuefemalenormmid,
+               bei.valuefemalemin,
+               bei.valuefemaleweakup,
+               bei.valuefemaleweakdown,
+               bei.valuefemalesevereup,
+               bei.valuefemaleseveredown,
+               bei.gxdm,
+               bei.expression,
+               bei.id_conclusionhi,
+               bei.id_conclusionlo,
+               bei.id_conclusionpo,
+               bei.id_conclusionne,
+               bei.id_conclusionweaknormhi,
+               bei.id_conclusionweaknormlo,
+               bei.id_conclusionweakposihi,
+               bei.id_conclusionweakposilo,
+               bei.input_code,
+               bei.inputcodeb,
+               bei.inputcodec,
+               bei.inputcoded,
+               bei.inputcodee,
+               bei.f_patientbaseinfo,
+               bei.patientbaseinfodisporder,
+               bei.note,
+               bei.disporder,
+               bei.f_examitemexportflag01,
+               bei.f_examitemexportflag02,
+               bei.f_nodepartsummary,
+               bei.f_comparereport,
+               bei.f_noreportoutput,
+               bei.f_alwayspositive,
+               bei.f_titleonreport,
+               bei.itemrefrange,
+               bei.keysummarygroup,
+               bei.f_useapprangeoccudisease,
+               bei.expressionoccudisease,
+               bei.division_id,
+               bei.type,
+               bei.createdate,
+               bei.modifydate,
+               bei.interface_code,
+               bei.valuedangerousmax,
+               bei.valuedangerousmin,
+               bei.is_desc,
+               bei.is_name,
+               bei.status,
+               bei.is_delete,
+               bei.is_public,
+               bei.fzx_ids,
+               bei.devicetype_position_checkitem,
+               bei.add_unit,
+               IF(bei.is_public IS NULL, '', IF(bei.is_public = 1, '公共', sb.fzx)) AS fzx
+        FROM md_basexamltem bei
+                 LEFT JOIN sys_branch sb ON bei.fzx_ids = sb.branch_id
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="BasexamltemMap">
+        SELECT bei.id,
+        bei.id AS cid,
+        bei.sysmanmark,
+        bei.keyexamitem,
+        bei.examitem_name,
+        bei.examitem_nameabr,
+        bei.examitem_nameprn,
+        bei.examitem_nameeng,
+        bei.examitem_nameengabr,
+        bei.examitem_code,
+        bei.examitem_code2,
+        bei.examitem_code3,
+        bei.examitem_codehm,
+        bei.examitemcodex,
+        bei.lbdm_examitemtype,
+        bei.id_examitemtype,
+        bei.id_treegroup,
+        bei.id_treegroupsub,
+        bei.valuetype,
+        bei.valueunit,
+        bei.valuememolines,
+        bei.f_autocalc,
+        bei.f_print,
+        bei.f_multival,
+        bei.commongroup,
+        bei.valuecheckcols,
+        bei.f_entryonly,
+        bei.f_noentry,
+        bei.f_entrytoconclusion,
+        bei.f_usecheck,
+        bei.f_sameline,
+        bei.f_can_dup,
+        bei.f_lab_byhand,
+        bei.f_lab_nowait,
+        bei.conclusionlevel,
+        bei.f_summarytitle,
+        bei.phraseforhilo,
+        bei.increments,
+        bei.numprecision,
+        bei.valuevalidmin,
+        bei.valuevalidmax,
+        bei.itemflagcaselessthan,
+        bei.itemflagcasegreaterthan,
+        bei.f_bothnumtext,
+        bei.f_numonly,
+        bei.f_useappmaxmin,
+        bei.f_includemin,
+        bei.f_includemax,
+        bei.f_male,
+        bei.valuemaledef,
+        bei.valuemalemax,
+        bei.valuemalenormmid,
+        bei.valuemalemin,
+        bei.valuemaleweakup,
+        bei.valuemaleweakdown,
+        bei.valuemalesevereup,
+        bei.valuemaleseveredown,
+        bei.f_female,
+        bei.valuefemaledef,
+        bei.valuefemalemax,
+        bei.valuefemalenormmid,
+        bei.valuefemalemin,
+        bei.valuefemaleweakup,
+        bei.valuefemaleweakdown,
+        bei.valuefemalesevereup,
+        bei.valuefemaleseveredown,
+        bei.gxdm,
+        bei.expression,
+        bei.id_conclusionhi,
+        bei.id_conclusionlo,
+        bei.id_conclusionpo,
+        bei.id_conclusionne,
+        bei.id_conclusionweaknormhi,
+        bei.id_conclusionweaknormlo,
+        bei.id_conclusionweakposihi,
+        bei.id_conclusionweakposilo,
+        bei.input_code,
+        bei.inputcodeb,
+        bei.inputcodec,
+        bei.inputcoded,
+        bei.inputcodee,
+        bei.f_patientbaseinfo,
+        bei.patientbaseinfodisporder,
+        bei.note,
+        bei.disporder,
+        bei.f_examitemexportflag01,
+        bei.f_examitemexportflag02,
+        bei.f_nodepartsummary,
+        bei.f_comparereport,
+        bei.f_noreportoutput,
+        bei.f_alwayspositive,
+        bei.f_titleonreport,
+        bei.itemrefrange,
+        bei.keysummarygroup,
+        bei.f_useapprangeoccudisease,
+        bei.expressionoccudisease,
+        bei.division_id,
+        bei.type,
+        bei.createdate,
+        bei.modifydate,
+        bei.interface_code,
+        bei.valuedangerousmax,
+        bei.valuedangerousmin,
+        bei.is_desc,
+        bei.is_name,
+        bei.status,
+        bei.is_delete,
+        bei.is_public,
+        bei.fzx_ids,
+        bei.devicetype_position_checkitem,
+        bei.add_unit,
+        IF(bei.is_public IS NULL, '', IF(bei.is_public = 1, '公共', sb.fzx)) AS fzx,
+        mbt.examitemtype_name,
+        sd.dept_name as name
+        FROM md_basexamltem bei
+        LEFT JOIN sys_branch sb ON bei.fzx_ids = sb.branch_id
+        LEFT JOIN md_basexamltemtype mbt on mbt.id = bei.id_examitemtype
+        LEFT JOIN sys_dept sd on sd.dept_no = bei.division_id
+        <where>
+            bei.is_delete = 0
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND bei.input_code like concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.examitemName!=null and param.examitemName!=''">
+                AND bei.examitem_name like concat('%',#{param.examitemName},'%')
+            </if>
+            <if test="param.divisionId!=null and param.divisionId!=''">
+                AND bei.division_id = #{param.divisionId}
+            </if>
+            <if test="param.type!=null">
+                AND bei.type in (#{param.type},2)
+            </if>
+            <if test="param.forMale!=null and param.forMale != 2">
+                AND bei.f_male IN (#{param.forMale},2)
+            </if>
+        </where>
+        order by bei.createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="BasexamltemMap">
+        <include refid="selectBasexamltemVo"/>
+        <where>
+            bei.id = #{id}
+            AND bei.is_delete = 0
+        </where>
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getAllJcid" resultType="com.center.medical.data.bean.model.Basexamltem">
+        select mb.id,
+        mb.examitem_name,
+        mbt.examitemtype_name,
+        mb.input_code,
+        mb.id_examitemtype
+        from md_basexamltem mb
+        left join md_basexamltemtype mbt on mbt.id = mb.id_examitemtype
+        <where>
+            mb.is_delete = 0
+            <if test="inputCode!=null and inputCode!=''">
+                AND mb.input_code like concat('%',#{inputCode},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getExamsByItemId" resultType="com.center.medical.data.bean.vo.ExamsByItemVo">
+        SELECT e.examitem_name,
+               e.id
+        FROM md_basexamltem e
+                 INNER JOIN md_inspect_charge ic ON ic.charge_id = #{id}
+            AND ic.inspect_id = e.id
+            AND ic.is_delete = 0
+        ORDER BY ic.order_index
+    </select>
+</mapper>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppFamilyMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppFamily" id="AppFamilyMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="idcard" column="IDCARD"/>
+        <result property="tel" column="TEL"/>
+        <result property="idMarriage" column="ID_MARRIAGE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="archiveId" column="ARCHIVE_ID"/>
+        <result property="birthday" column="BIRTHDAY"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppFamilyVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               USER_ID,
+               NAME,
+               SEX,
+               IDCARD,
+               TEL,
+               ID_MARRIAGE,
+               IS_DELETE,
+               ARCHIVE_ID,
+               BIRTHDAY
+        from APP_FAMILY
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppFamilyMap">
+        <include refid="selectAppFamilyVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppFamilyMap">
+        <include refid="selectAppFamilyVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.ComboanditemMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Comboanditem" id="ComboanditemMap">
+        <id property="id" column="id"/>
+        <result property="tcid" column="tcid"/>
+        <result property="sfxmid" column="sfxmid"/>
+        <result property="sfbx" column="sfbx"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="sfbj" column="sfbj"/>
+        <result property="sort" column="sort"/>
+        <result property="itemSort" column="item_sort"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectComboanditemVo">
+        select id,
+               tcid,
+               sfxmid,
+               sfbx,
+               is_delete,
+               xsjlid,
+               createdate,
+               modifydate,
+               sfbj,
+               sort,
+               item_sort
+        from md_comboanditem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPageList" resultMap="ComboanditemMap">
+        <include refid="selectComboanditemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ComboanditemMap">
+        <include refid="selectComboanditemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+    <!-- 获取收费项目列表-->
+    <select id="getListByComboId" resultType="com.center.medical.sellcrm.bean.vo.ComboAndItemVo">
+        SELECT
+        cai.id,
+        cai.item_sort AS sort,
+        cai.sfxmid,
+        cai.sfbj,
+        i.examfeeitem_name AS sfxmmc,
+        i.sfxmsrm,
+        i.xb,
+        i.jcyy,
+        i.unitprice AS jg,
+        i.bz,
+        i.tjlx,
+        i.depart_name AS ssks
+        FROM
+        md_comboanditem cai
+        RIGHT JOIN md_items i ON i.id = cai.sfxmid
+        LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        <where>
+            cai.is_delete = 0
+            AND cai.tcid = #{comboId}
+        </where>
+        ORDER BY
+        p.shunxu,
+        cai.sort
+    </select>
+
+    <!-- 查询最小套餐关联的收费项目-->
+    <select id="getItemData" resultType="com.center.medical.sellcrm.bean.vo.ItemDataVo">
+        SELECT
+        mi.id,
+        mm.id AS mealId,
+        mi.examfeeitem_name AS sfxmmc,
+        mi.sfxmsrm,
+        mi.xb,
+        mi.jcyy,
+        mi.unitprice AS jg,
+        mi.bz,
+        mi.tjlx,
+        mi.depart_name AS ssks,
+        (1) as xmzt,
+        pt.print_name AS printType,
+        pt.shunxu AS printShunxu,
+        mi.jcyy,
+        mi.costprice
+        FROM md_comboanditem mm
+        LEFT JOIN md_items mi ON mi.id = mm.sfxmid
+        LEFT JOIN md_printtype pt ON pt.id = mi.xsdyfl
+        <where>
+            mm.is_delete = 0
+            <if test="tcId!=null and tcId!=''">
+                AND tcid = #{tcId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取收费项目-->
+    <select id="getItems" resultType="com.center.medical.sellcrm.bean.vo.GetItemsVo">
+        SELECT cai.id,
+               cai.sort,
+               i.id               AS sfxmid,
+               i.examfeeitem_name AS sfxmmc,
+               i.sfxmsrm          AS sfxmsrm,
+               i.xb,
+               i.jcyy,
+               i.unitprice        AS jg,
+               i.bz,
+               i.tjlx,
+               i.depart_name      AS ssks,
+               cai.sfbj
+        FROM md_comboanditem cai
+                 INNER JOIN md_items i
+                            ON i.id = cai.sfxmid
+                 LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+                 LEFT JOIN sys_dept d ON d.dept_no = i.id_depart
+        WHERE cai.tcid = #{tcId}
+          AND cai.is_delete = 0
+        ORDER BY p.shunxu,
+                 d.report_sort
+    </select>
+</mapper>
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.WsRolesMapper">
+
+    <resultMap type="com.center.medical.bean.model.WsRoles" id="WsRolesMap">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="description" column="description"/>
+        <result property="issystem" column="issystem"/>
+        <result property="roleType" column="role_type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWsRolesVo">
+        select id, name, createdate, modifydate, description, issystem, role_type
+        from ws_roles
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WsRolesMap">
+        <include refid="selectWsRolesVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WsRolesMap">
+        <include refid="selectWsRolesVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

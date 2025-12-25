@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxResourceMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxResource" id="QxResourceMap">
+        <id property="id" column="ID"/>
+        <result property="resourcename" column="RESOURCENAME"/>
+        <result property="resourceurl" column="RESOURCEURL"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="modulename" column="MODULENAME"/>
+        <result property="moduleid" column="MODULEID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="imgvalue" column="IMGVALUE"/>
+        <result property="presource" column="PRESOURCE"/>
+        <result property="state" column="STATE"/>
+        <result property="sortorder" column="SORTORDER"/>
+        <result property="issystem" column="ISSYSTEM"/>
+        <result property="type" column="TYPE"/>
+        <result property="isSearch" column="IS_SEARCH"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxResourceVo">
+        select ID,
+               RESOURCENAME,
+               RESOURCEURL,
+               DESCRIPTION,
+               MODULENAME,
+               MODULEID,
+               CREATEDATE,
+               MODIFYDATE,
+               IMGVALUE,
+               PRESOURCE,
+               STATE,
+               SORTORDER,
+               ISSYSTEM,
+               TYPE,
+               IS_SEARCH
+        from QX_RESOURCE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxResourceMap">
+        <include refid="selectQxResourceVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxResourceMap">
+        <include refid="selectQxResourceVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.OrderConflictMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.OrderConflict" id="OrderConflictMap">
+        <id property="id" column="id"/>
+        <result property="rate" column="rate"/>
+        <result property="ddId" column="dd_id"/>
+        <result property="planIds" column="plan_ids"/>
+        <result property="dealResult" column="deal_result"/>
+        <result property="passPlanId" column="pass_plan_id"/>
+        <result property="rejectPlanId" column="reject_plan_id"/>
+        <result property="dealerId" column="dealer_id"/>
+        <result property="dealerName" column="dealer_name"/>
+        <result property="remark" column="remark"/>
+        <result property="status" column="status"/>
+        <result property="dealDate" column="deal_date"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrderConflictVo">
+        select id,
+               rate,
+               dd_id,
+               plan_ids,
+               deal_result,
+               pass_plan_id,
+               reject_plan_id,
+               dealer_id,
+               dealer_name,
+               remark,
+               status,
+               deal_date,
+               createdate,
+               modifydate
+        from crm_order_conflict
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrderConflictMap">
+        <include refid="selectOrderConflictVo"/>
+        <where>
+            <if test="param.startTime!=null">
+                AND createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND createdate <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.status!=null">
+                status = #{param.status}
+            </if>
+            <if test="param.ddId!=null and param.ddId!=''">
+                AND dd_id = #{param.ddId}
+            </if>
+            <if test="param.dealResult!=null">
+                AND deal_result = #{param.dealResult}
+            </if>
+            <if test="param.planIds!=null and param.planIds!=''">
+                AND plan_ids LIKE concat('%',#{param.planIds},'%')
+            </if>
+        </where>
+        LIMIT #{adapter.begin}, #{adapter.size}
+    </select>
+
+    <select id="countByParam" resultType="java.lang.Long">
+        SELECT COUNT(id) FROM crm_order_conflict
+        <where>
+            <if test="param.startTime!=null">
+                AND createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND createdate <![CDATA[ < ]]> #{param.endTime}
+            </if>
+            <if test="param.status!=null">
+                status = #{param.status}
+            </if>
+            <if test="param.ddId!=null and param.ddId!=''">
+                AND dd_id = #{param.ddId}
+            </if>
+            <if test="param.dealResult!=null">
+                AND deal_result = #{param.dealResult}
+            </if>
+            <if test="param.planIds!=null and param.planIds!=''">
+                AND plan_ids LIKE concat('%',#{param.planIds},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrderConflictMap">
+        <include refid="selectOrderConflictVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

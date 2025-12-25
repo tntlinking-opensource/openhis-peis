@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.QrtzSimpropTriggersMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.QrtzSimpropTriggers" id="QrtzSimpropTriggersMap">
+        <id property="schedName" column="sched_name"/>
+        <result property="triggerName" column="trigger_name"/>
+        <result property="triggerGroup" column="trigger_group"/>
+        <result property="strProp1" column="str_prop_1"/>
+        <result property="strProp2" column="str_prop_2"/>
+        <result property="strProp3" column="str_prop_3"/>
+        <result property="intProp1" column="int_prop_1"/>
+        <result property="intProp2" column="int_prop_2"/>
+        <result property="longProp1" column="long_prop_1"/>
+        <result property="longProp2" column="long_prop_2"/>
+        <result property="decProp1" column="dec_prop_1"/>
+        <result property="decProp2" column="dec_prop_2"/>
+        <result property="boolProp1" column="bool_prop_1"/>
+        <result property="boolProp2" column="bool_prop_2"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQrtzSimpropTriggersVo">
+        select sched_name,
+               trigger_name,
+               trigger_group,
+               str_prop_1,
+               str_prop_2,
+               str_prop_3,
+               int_prop_1,
+               int_prop_2,
+               long_prop_1,
+               long_prop_2,
+               dec_prop_1,
+               dec_prop_2,
+               bool_prop_1,
+               bool_prop_2
+        from qrtz_simprop_triggers
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QrtzSimpropTriggersMap">
+        <include refid="selectQrtzSimpropTriggersVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QrtzSimpropTriggersMap">
+        <include refid="selectQrtzSimpropTriggersVo"/>
+        <where>
+            schedName = #{id}
+        </where>
+    </select>
+
+</mapper>
+

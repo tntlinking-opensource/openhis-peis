@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.DrugstorePrescribeMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.DrugstorePrescribe" id="DrugstorePrescribeMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="drugId" column="DRUG_ID"/>
+        <result property="username" column="USERNAME"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="reason" column="REASON"/>
+        <result property="prescribeTime" column="PRESCRIBE_TIME"/>
+        <result property="prescribeNum" column="PRESCRIBE_NUM"/>
+        <result property="transactionPrice" column="TRANSACTION_PRICE"/>
+        <result property="isFinished" column="IS_FINISHED"/>
+        <result property="prescribeNote" column="PRESCRIBE_NOTE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDrugstorePrescribeVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               DRUG_ID,
+               USERNAME,
+               PATIENTCODE,
+               REASON,
+               PRESCRIBE_TIME,
+               PRESCRIBE_NUM,
+               TRANSACTION_PRICE,
+               IS_FINISHED,
+               PRESCRIBE_NOTE
+        from DRUGSTORE_PRESCRIBE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DrugstorePrescribeMap">
+        <include refid="selectDrugstorePrescribeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DrugstorePrescribeMap">
+        <include refid="selectDrugstorePrescribeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

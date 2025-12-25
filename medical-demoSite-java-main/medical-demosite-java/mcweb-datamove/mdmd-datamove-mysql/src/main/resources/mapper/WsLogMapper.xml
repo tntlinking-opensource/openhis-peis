@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.WsLogMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.WsLog" id="WsLogMap">
+        <id property="id" column="id"/>
+        <result property="czUser" column="cz_user"/>
+        <result property="czDate" column="cz_date"/>
+        <result property="djType" column="dj_type"/>
+        <result property="czType" column="cz_type"/>
+        <result property="czObject" column="cz_object"/>
+        <result property="ipDz" column="ip_dz"/>
+        <result property="pcName" column="pc_name"/>
+        <result property="rmk" column="rmk"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="czdj" column="czdj"/>
+        <result property="fzx" column="fzx"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWsLogVo">
+        select id,
+               cz_user,
+               cz_date,
+               dj_type,
+               cz_type,
+               cz_object,
+               ip_dz,
+               pc_name,
+               rmk,
+               createdate,
+               modifydate,
+               czdj,
+               fzx
+        from ws_log
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="WsLogMap">
+        <include refid="selectWsLogVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WsLogMap">
+        <include refid="selectWsLogVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

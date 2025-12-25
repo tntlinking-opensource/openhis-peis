@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.OrderDiscountMapper">
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.OCPageVo">
+        SELECT o.id,
+        o.ddh,
+        o.ddmc,
+        o.ddzk,
+        s.khdwmc,
+        o.khdwdh,
+        u.user_name AS xsjl,
+        o.cjddrq,
+        o.jhjqc,
+        o.jhjqd,
+        fzxs.fzxnames AS fzx
+        FROM md_createorder o
+        INNER JOIN md_orderandfzx f ON f.ddid = o.id
+        LEFT JOIN crm_sellcustomer s ON s.id = o.khdwmcid
+        LEFT JOIN sys_user u ON u.user_no = o.xsjlid
+        LEFT JOIN (
+        SELECT oi.id AS oid,
+        group_concat(b.fzx) fzxnames
+        FROM md_createorder oi
+        LEFT JOIN md_orderandfzx fi ON fi.ddid = oi.id
+        LEFT JOIN sys_branch b ON b.id = fi.fzxid
+        GROUP BY oi.id
+        ) fzxs ON fzxs.oid = o.id
+        <where>
+            o.is_delete = 0
+            AND o.spzt = 4
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND o.ddh LIKE concat('%',#{param.ddh},'%')
+            </if>
+            <if test="param.ddmc!=null and param.ddmc!=''">
+                AND o.ddmc LIKE concat('%',#{param.ddmc},'%')
+            </if>
+            <if test="param.ddzk!=null and param.ddzk!=''">
+                AND o.ddzk = #{param.ddzk}
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND o.xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND f.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND o.xsjlid =#{param.userNo}
+            </if>
+        </where>
+        GROUP BY
+        o.id,
+        o.ddh,
+        o.ddmc,
+        o.ddzk,
+        s.khdwmc,
+        o.khdwdh,
+        u.user_name,
+        o.cjddrq,
+        o.jhjqc,
+        o.jhjqd,
+        fzxs.fzxnames
+        ORDER BY
+        o.cjddrq DESC,
+        o.ddmc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.sellcrm.bean.model.Createorder">
+
+    </select>
+
+</mapper>
+

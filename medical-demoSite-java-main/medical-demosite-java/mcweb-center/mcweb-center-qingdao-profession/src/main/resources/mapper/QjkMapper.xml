@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.center.qingdao.profession.mapper.QjkMapper">
+
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getHarmList" resultType="com.center.medical.center.qingdao.profession.entity.dto.HarmDto">
+        SELECT
+            id,
+            harm_name
+        FROM
+            md_harm
+        <where>
+            is_delete = 0
+        </where>
+    </select>
+
+
+    <!-- 查询体检人信息 -->
+    <select id="getTjRenM" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenM">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.nation,
+            p.resarea,
+            p.phone,
+            p.address,
+            p.marriage,
+            p.idcardno,
+            p.birthdate,
+            sc.license_name as orgName,
+            p.trades,
+            p.zgl,
+            p.jhgl,
+            p.jhys,
+            reg.user_name docreg,
+            p.dateregister,
+            p.medicaltype,
+            p.inpatientno,
+            p.id_examtype,
+            zjdoc.user_name zjys,
+            p.dateregisternotime,
+            st.summary_id,
+            pp.picture,
+            st.verdict,
+            st.summarize,
+            st.offer,
+            st.report_conclusions,
+            sc.social_credit_code
+        FROM
+            md_peispatient p
+                LEFT JOIN crm_sellcustomer sc ON sc.id = p.id_org
+                LEFT JOIN md_peispatient_photo pp ON pp.patientcode = p.patientcode
+                LEFT JOIN md_peis_state ps ON ps.patientcode = p.patientcode
+                INNER JOIN md_section_total st ON st.patientcode = p.patientcode
+                AND st.disease_health = 1
+                INNER JOIN sys_user reg ON reg.user_no = p.id_doctorreg
+                INNER JOIN sys_user zjdoc ON zjdoc.user_no = p.patientcodehiden
+        <where>
+            p.jhys != '402848e3634e951901635c7233c017bb'
+	        AND p.zytjzt = 11
+            <if test="startDate!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="endDate!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{endDate}
+            </if>
+            AND (ps.patientflag IS NULL OR ps.patientflag !=1)
+        </where>
+        ORDER BY p.createdate DESC
+    </select>
+
+
+    <!-- 获取检查数据 -->
+    <select id="getTjRenDData" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenDData">
+        SELECT
+            d.patientcode,
+            d.item_id,
+            d.item_name,
+            d.fee_name,
+            d.fee_id,
+            d.sign_list,
+            qd.dept_name,
+            qd.dept_no,
+            pei.refrange,
+            pei.inspect_name
+        FROM
+            md_describe d
+                INNER JOIN md_peispatient p ON p.patientcode = d.patientcode
+                INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = d.patientcode
+                AND pi.id_examfeeitem = d.fee_id
+                AND pi.f_examinated = 1
+                INNER JOIN sys_dept qd ON qd.dept_no = d.dep_id
+                LEFT JOIN md_peispatientexamitem pei ON pei.patientcode = d.patientcode
+                AND pei.id_examitem = d.item_id
+        <where>
+            <if test="patientCodes!=null">
+                d.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+          AND (
+                EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                        WHERE
+                            cei.item_id = d.fee_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+                OR EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                                INNER JOIN md_items i ON i.id = cei.item_id
+                                INNER JOIN md_inspect_charge ic ON ic.charge_id = i.id
+                                AND ic.is_delete = 0
+                                AND ic.inspect_id = cei.exam_id
+                        WHERE
+                            cei.item_id = d.fee_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+            )
+    </select>
+
+
+    <!-- 获取检查数据2 -->
+    <select id="getTjRenDData2" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenDData">
+        SELECT
+            r.patientcode,
+            r.item_id,
+            r.item_name,
+            r.item_name feename,
+            r.item_id feeid,
+            r.examresultsummary,
+            qd.dept_name,
+            qd.dept_no,
+            '' refrange,
+            '' inspect_name
+        FROM
+            md_pacs_result r
+                INNER JOIN md_peispatient p ON p.patientcode = r.patientcode
+                INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = r.patientcode
+                AND pi.id_examfeeitem = r.item_id
+                AND pi.f_examinated = 1
+                INNER JOIN sys_dept qd ON qd.dept_no = r.dep_id
+        <where>
+            <if test="patientCodes!=null">
+                r.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+          AND (
+                EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                        WHERE
+                            cei.item_id = r.item_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+                OR EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                                INNER JOIN md_items i ON i.id = cei.item_id
+                                INNER JOIN md_inspect_charge ic ON ic.charge_id = i.id
+                                AND ic.is_delete = 0
+                                AND ic.inspect_id = cei.exam_id
+                        WHERE
+                            cei.item_id = r.item_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+            )
+    </select>
+
+
+
+    <!-- 获取科室小结数据 -->
+    <select id="getTjRenMKeshiXJS" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenMKeshiXJ">
+        select
+            srm.patientcode,
+            srm.dep_id,
+            d.fee_id,
+            srm.zy_conclusions,
+            qu.user_name lrr,
+            srm.write_time
+        from
+            md_section_result_main srm
+                inner join md_peispatient p on p.patientcode = srm.patientcode
+                left join sys_user qu on qu.user_no = srm.write_id
+                inner join md_describe d on d.patientcode = srm.patientcode
+                and d.dep_id = srm.dep_id
+                inner join md_peispatientfeeitem pi on pi.id_patient = p.patientcode
+                and pi.id_examfeeitem = d.fee_id
+                and pi.f_examinated = 1
+        <where>
+            1  = 1
+            <if test="patientCodes!=null">
+                and srm.patientcode in
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+          and srm.zy_conclusions is not null
+          and (
+                exists (
+                        select
+                            1
+                        from
+                            md_comboexamitem cei
+                        where
+                            cei.item_id = d.fee_id
+                          and cei.medical_type = p.medicaltype
+                          and (
+                                    cei.harm_id = p.jhys
+                                or p.jhys like '%,' || cei.harm_id || ',%'
+                                or p.jhys like '%,' || cei.harm_id
+                                or p.jhys like cei.harm_id || ',%'
+                            ))
+                or exists (
+                        select
+                            1
+                        from
+                            md_comboexamitem cei
+                                inner join md_items i on i.id = cei.item_id
+                                inner join md_inspect_charge ic on ic.charge_id = i.id
+                                and ic.is_delete = 0
+                                and ic.inspect_id = cei.exam_id
+                        where
+                            cei.item_id = d.fee_id
+                          and cei.medical_type = p.medicaltype
+                          and (
+                                    cei.harm_id = p.jhys
+                                or p.jhys like '%,' || cei.harm_id || ',%'
+                                or p.jhys like '%,' || cei.harm_id
+                                or p.jhys like cei.harm_id || ',%'
+                            ))
+            )
+        </where>
+        group by
+            srm.patientcode,
+            srm.dep_id,
+            d.fee_id,
+            srm.zy_conclusions,
+            qu.user_name,
+            srm.write_time
+    </select>
+
+
+    <!-- 获取科室总结数据 -->
+    <select id="getTjRenKeShiZj" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenKeShiZj">
+        SELECT
+            r.patientcode,
+            r.dep_id,
+            r.item_id,
+            r.examresultdesc,
+            r.examresultsummary,
+            qu.user_name lrr,
+            srm.write_time,
+            r.item_name
+        FROM
+            md_section_result_main srm
+                INNER JOIN md_peispatient p ON p.patientcode = srm.patientcode
+                LEFT JOIN sys_user qu ON qu.user_no = srm.write_id
+                INNER JOIN md_pacs_result r ON r.patientcode = srm.patientcode
+                AND r.dep_id = srm.dep_id
+                INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = p.patientcode
+                AND pi.id_examfeeitem = r.item_id
+                AND pi.f_examinated = 1
+        <where>
+            1  = 1
+            <if test="patientCodes!=null">
+                and srm.patientcode in
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+          AND srm.zy_conclusions IS NOT NULL
+          AND (
+                EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                        WHERE
+                            cei.item_id = r.item_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+                OR EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            md_comboexamitem cei
+                                INNER JOIN md_items i ON i.id = cei.item_id
+                                INNER JOIN md_inspect_charge ic ON ic.charge_id = i.id
+                                AND ic.is_delete = 0
+                                AND ic.inspect_id = cei.exam_id
+                        WHERE
+                            cei.item_id = r.item_id
+                          AND cei.medical_type = p.medicaltype
+                          AND (
+                                    cei.harm_id = p.jhys
+                                OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                                OR p.jhys LIKE '%,' || cei.harm_id
+                                OR p.jhys LIKE cei.harm_id || ',%'
+                            ))
+            )
+        </where>
+    </select>
+
+
+    <!-- 获取接害信息 -->
+    <select id="getTjRenMJieHai" resultType="com.center.medical.center.qingdao.profession.entity.dto.TjRenMJieHai">
+        select
+            p.idcardno,
+            zys.start_date,
+            zys.stop_date,
+            zys.dept,
+            zys.type_of_work,
+            zys.occupation_harm,
+            zys.occupation_defend,
+            qu.user_name lrr,
+            zys.createdate
+        from
+            md_wz_zys zys
+                inner join md_peispatientarchive v ON zys.id_patientarchive = v.id
+                inner JOIN md_peispatient p ON p.patientarchiveno = v.patientarchiveno
+                inner join sys_user qu on qu.user_no = zys.create_id
+        <where>
+            <if test="patientCodes!=null">
+                p.patientcode IN
+                <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                    #{patientCode}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 插入完成后修改状态 -->
+    <update id="tagPatients">
+        UPDATE md_peis_state
+        SET patientflag = 1
+        WHERE
+            patientcode IN
+            <foreach collection="patientCodes" item="patientCode" open="(" close=")" separator=",">
+                #{patientCode}
+            </foreach>
+    </update>
+
+
+
+    <!-- 获取需要报告赋码的数据 -->
+    <select id="getNeedReportCodingData" resultType="com.center.medical.center.qingdao.profession.entity.dto.NeedReportCodingDataDto">
+        SELECT
+        ps.patientcode,
+        p.dateregister
+        FROM
+        md_peispatient p
+        INNER JOIN md_peis_state ps ON ps.patientcode = p.patientcode
+        LEFT JOIN md_attachment a ON a.patientcode = ps.patientcode
+        AND a.file_type = '赋码'
+        WHERE
+        ps.jinan_status = '1'
+        AND a.id IS NULL
+        AND p.dateregister >= CURDATE() - INTERVAL 15 DAY
+    </select>
+
+
+    <!--插入附件表-->
+    <insert id="insertAttachment">
+        insert into md_attachment (file_path,file_type,patientcode,createdate)
+        values (#{param.filePath},"赋码base64",#{param.patientcode},sysdate())
+    </insert>
+
+
+    <!-- 获取需要报告赋码的数据 -->
+    <select id="getDefaultBranch" resultType="com.center.medical.center.qingdao.profession.entity.dto.DefaultBranchDto">
+        SELECT branch_id,jm
+        FROM sys_branch
+        <where>
+            is_default = 1
+            and is_delete = 0
+        </where>
+    </select>
+</mapper>
+

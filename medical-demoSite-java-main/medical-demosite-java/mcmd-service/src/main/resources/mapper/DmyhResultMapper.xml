@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.DmyhResultMapper">
+
+    <resultMap type="com.center.medical.bean.model.DmyhResult" id="DmyhResultMap">
+        <id property="id" column="id"/>
+        <result property="ruxy" column="ruxy"/>
+        <result property="luxy" column="luxy"/>
+        <result property="rdxy" column="rdxy"/>
+        <result property="ldxy" column="ldxy"/>
+        <result property="xl" column="xl"/>
+        <result property="rpwv" column="rpwv"/>
+        <result property="lpwv" column="lpwv"/>
+        <result property="rabi" column="rabi"/>
+        <result property="labi" column="labi"/>
+        <result property="rtbi" column="rtbi"/>
+        <result property="ltbi" column="ltbi"/>
+        <result property="height" column="height"/>
+        <result property="weight" column="weight"/>
+        <result property="sex" column="sex"/>
+        <result property="tai" column="tai"/>
+        <result property="tinfo" column="tinfo"/>
+        <result property="tjrepno" column="tjrepno"/>
+        <result property="age" column="age"/>
+        <result property="cDate" column="c_date"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="patientcode" column="patientcode"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDmyhResultVo">
+        select id,
+               ruxy,
+               luxy,
+               rdxy,
+               ldxy,
+               xl,
+               rpwv,
+               lpwv,
+               rabi,
+               labi,
+               rtbi,
+               ltbi,
+               height,
+               weight,
+               sex,
+               tai,
+               tinfo,
+               tjrepno,
+               age,
+               c_date,
+               createdate,
+               modifydate,
+               create_id,
+               modify_id,
+               patientcode
+        from md_dmyh_result
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="DmyhResultMap">
+        <include refid="selectDmyhResultVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DmyhResultMap">
+        <include refid="selectDmyhResultVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

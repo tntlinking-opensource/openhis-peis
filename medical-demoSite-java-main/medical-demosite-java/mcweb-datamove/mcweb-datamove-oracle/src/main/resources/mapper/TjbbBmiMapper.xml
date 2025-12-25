@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.TjbbBmiMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.TjbbBmi" id="TjbbBmiMap">
+        <id property="id" column="ID"/>
+        <result property="xh" column="XH"/>
+        <result property="bmi" column="BMI"/>
+        <result property="ckfw" column="CKFW"/>
+        <result property="valueMin" column="VALUE_MIN"/>
+        <result property="valueMax" column="VALUE_MAX"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectTjbbBmiVo">
+        select XH,
+               BMI,
+               CKFW,
+               VALUE_MIN,
+               VALUE_MAX,
+               CREATEDATE,
+               MODIFYDATE,
+               CREATE_ID,
+               MODIFY_ID,
+               ID,
+               PATIENTCODE
+        from TJBB_BMI
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="TjbbBmiMap">
+        <include refid="selectTjbbBmiVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="TjbbBmiMap">
+        <include refid="selectTjbbBmiVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

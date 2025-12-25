@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdWzGrxxMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdWzGrxx" id="MdWzGrxxMap">
+        <id property="id" column="id"/>
+        <result property="djls" column="djls"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="amount" column="amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="name" column="name"/>
+        <result property="namePhonetic" column="name_phonetic"/>
+        <result property="age" column="age"/>
+        <result property="sexCode" column="sex_code"/>
+        <result property="idCard" column="id_card"/>
+        <result property="nation" column="nation"/>
+        <result property="birthPlace" column="birth_place"/>
+        <result property="kultur" column="kultur"/>
+        <result property="maritalStatus" column="marital_status"/>
+        <result property="totalLengthOfServer" column="total_length_of_server"/>
+        <result property="nowLengthOfServer" column="now_length_of_server"/>
+        <result property="occupationHarm" column="occupation_harm"/>
+        <result property="workingPoct" column="working_poct"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="remark" column="remark"/>
+        <result property="qrbz" column="qrbz"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdWzGrxxVo">
+        select id,
+               djls,
+               patientcode,
+               amount,
+               create_date,
+               name,
+               name_phonetic,
+               age,
+               sex_code,
+               id_card,
+               nation,
+               birth_place,
+               kultur,
+               marital_status,
+               total_length_of_server,
+               now_length_of_server,
+               occupation_harm,
+               working_poct,
+               db_user,
+               remark,
+               qrbz,
+               create_id,
+               modify_id,
+               createdate,
+               modifydate
+        from md_wz_grxx
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdWzGrxxMap">
+        <include refid="selectMdWzGrxxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdWzGrxxMap">
+        <include refid="selectMdWzGrxxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

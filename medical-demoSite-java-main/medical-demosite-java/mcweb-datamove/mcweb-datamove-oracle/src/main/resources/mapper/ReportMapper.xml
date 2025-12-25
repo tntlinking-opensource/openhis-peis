@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.ReportMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Report" id="ReportMap">
+        <id property="id" column="ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="diseaseHealth" column="DISEASE_HEALTH"/>
+        <result property="isPrintMessage" column="IS_PRINT_MESSAGE"/>
+        <result property="urlWord" column="URL_WORD"/>
+        <result property="urlPdf" column="URL_PDF"/>
+        <result property="status" column="STATUS"/>
+        <result property="isTotal" column="IS_TOTAL"/>
+        <result property="printMan" column="PRINT_MAN"/>
+        <result property="printId" column="PRINT_ID"/>
+        <result property="printTime" column="PRINT_TIME"/>
+        <result property="createNum" column="CREATE_NUM"/>
+        <result property="printNum" column="PRINT_NUM"/>
+        <result property="firstId" column="FIRST_ID"/>
+        <result property="firstMan" column="FIRST_MAN"/>
+        <result property="firstTime" column="FIRST_TIME"/>
+        <result property="firstReason" column="FIRST_REASON"/>
+        <result property="secondId" column="SECOND_ID"/>
+        <result property="secondMan" column="SECOND_MAN"/>
+        <result property="secondTime" column="SECOND_TIME"/>
+        <result property="secondReason" column="SECOND_REASON"/>
+        <result property="lastId" column="LAST_ID"/>
+        <result property="lastMan" column="LAST_MAN"/>
+        <result property="lastTime" column="LAST_TIME"/>
+        <result property="lastReason" column="LAST_REASON"/>
+        <result property="joinPersonId" column="JOIN_PERSON_ID"/>
+        <result property="joinPersonMan" column="JOIN_PERSON_MAN"/>
+        <result property="joinTime" column="JOIN_TIME"/>
+        <result property="revPersonId" column="REV_PERSON_ID"/>
+        <result property="revPersonMan" column="REV_PERSON_MAN"/>
+        <result property="revTime" column="REV_TIME"/>
+        <result property="grantId" column="GRANT_ID"/>
+        <result property="chestNum" column="CHEST_NUM"/>
+        <result property="notificationResult" column="NOTIFICATION_RESULT"/>
+        <result property="getterId" column="GETTER_ID"/>
+        <result property="getterPhone" column="GETTER_PHONE"/>
+        <result property="getterName" column="GETTER_NAME"/>
+        <result property="issueId" column="ISSUE_ID"/>
+        <result property="returnId" column="RETURN_ID"/>
+        <result property="getTime" column="GET_TIME"/>
+        <result property="returnTime" column="RETURN_TIME"/>
+        <result property="expressId" column="EXPRESS_ID"/>
+        <result property="expressNum" column="EXPRESS_NUM"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="age" column="AGE"/>
+        <result property="idOrg" column="ID_ORG"/>
+        <result property="orgName" column="ORG_NAME"/>
+        <result property="dateregister" column="DATEREGISTER"/>
+        <result property="phone" column="PHONE"/>
+        <result property="idOpendoctor" column="ID_OPENDOCTOR"/>
+        <result property="doctorapply" column="DOCTORAPPLY"/>
+        <result property="idDoctorfinal" column="ID_DOCTORFINAL"/>
+        <result property="doctorfinalNameR" column="DOCTORFINAL_NAME_R"/>
+        <result property="datefinalexamed" column="DATEFINALEXAMED"/>
+        <result property="numorgresv" column="NUMORGRESV"/>
+        <result property="tbbz" column="TBBZ"/>
+        <result property="notifyDate" column="NOTIFY_DATE"/>
+        <result property="notifyMemo" column="NOTIFY_MEMO"/>
+        <result property="generateName" column="GENERATE_NAME"/>
+        <result property="generateHint" column="GENERATE_HINT"/>
+        <result property="generateDate" column="GENERATE_DATE"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="configId" column="CONFIG_ID"/>
+        <result property="isNuclein" column="IS_NUCLEIN"/>
+        <result property="noticer" column="NOTICER"/>
+        <result property="signUrl" column="SIGN_URL"/>
+        <result property="signConfigId" column="SIGN_CONFIG_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectReportVo">
+        select ID,
+               PATIENTCODE,
+               CREATEDATE,
+               MODIFYDATE,
+               DISEASE_HEALTH,
+               IS_PRINT_MESSAGE,
+               URL_WORD,
+               URL_PDF,
+               STATUS,
+               IS_TOTAL,
+               PRINT_MAN,
+               PRINT_ID,
+               PRINT_TIME,
+               CREATE_NUM,
+               PRINT_NUM,
+               FIRST_ID,
+               FIRST_MAN,
+               FIRST_TIME,
+               FIRST_REASON,
+               SECOND_ID,
+               SECOND_MAN,
+               SECOND_TIME,
+               SECOND_REASON,
+               LAST_ID,
+               LAST_MAN,
+               LAST_TIME,
+               LAST_REASON,
+               JOIN_PERSON_ID,
+               JOIN_PERSON_MAN,
+               JOIN_TIME,
+               REV_PERSON_ID,
+               REV_PERSON_MAN,
+               REV_TIME,
+               GRANT_ID,
+               CHEST_NUM,
+               NOTIFICATION_RESULT,
+               GETTER_ID,
+               GETTER_PHONE,
+               GETTER_NAME,
+               ISSUE_ID,
+               RETURN_ID,
+               GET_TIME,
+               RETURN_TIME,
+               EXPRESS_ID,
+               EXPRESS_NUM,
+               PATIENTNAME,
+               SEX,
+               AGE,
+               ID_ORG,
+               ORG_NAME,
+               DATEREGISTER,
+               PHONE,
+               ID_OPENDOCTOR,
+               DOCTORAPPLY,
+               ID_DOCTORFINAL,
+               DOCTORFINAL_NAME_R,
+               DATEFINALEXAMED,
+               NUMORGRESV,
+               TBBZ,
+               NOTIFY_DATE,
+               NOTIFY_MEMO,
+               GENERATE_NAME,
+               GENERATE_HINT,
+               GENERATE_DATE,
+               SHORT_CODE,
+               CONFIG_ID,
+               IS_NUCLEIN,
+               NOTICER,
+               SIGN_URL,
+               SIGN_CONFIG_ID
+        from REPORT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="ReportMap">
+        <include refid="selectReportVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="ReportMap">
+        <include refid="selectReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

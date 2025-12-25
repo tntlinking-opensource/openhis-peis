@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdShortmessageMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdShortmessage" id="MdShortmessageMap">
+        <id property="id" column="id"/>
+        <result property="messageType" column="message_type"/>
+        <result property="messageName" column="message_name"/>
+        <result property="messageText" column="message_text"/>
+        <result property="inputcode" column="inputcode"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="note" column="note"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="templateId" column="template_id"/>
+        <result property="params" column="params"/>
+        <result property="appid" column="appid"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdShortmessageVo">
+        select id,
+               message_type,
+               message_name,
+               message_text,
+               inputcode,
+               createdate,
+               modifydate,
+               note,
+               is_delete,
+               template_id,
+               params,
+               appid
+        from md_shortmessage
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdShortmessageMap">
+        <include refid="selectMdShortmessageVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdShortmessageMap">
+        <include refid="selectMdShortmessageVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

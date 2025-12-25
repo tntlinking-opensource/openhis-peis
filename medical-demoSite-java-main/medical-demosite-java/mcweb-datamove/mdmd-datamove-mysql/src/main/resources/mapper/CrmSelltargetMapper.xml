@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.CrmSelltargetMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.CrmSelltarget" id="CrmSelltargetMap">
+        <id property="id" column="id"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="year" column="year"/>
+        <result property="dyjdmb" column="dyjdmb"/>
+        <result property="dejdmb" column="dejdmb"/>
+        <result property="dsjdmb" column="dsjdmb"/>
+        <result property="dijdmb" column="dijdmb"/>
+        <result property="qnmb" column="qnmb"/>
+        <result property="qnhke" column="qnhke"/>
+        <result property="hkbl" column="hkbl"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="bz" column="bz"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCrmSelltargetVo">
+        select id, xsjlid, year, dyjdmb, dejdmb, dsjdmb, dijdmb, qnmb, qnhke, hkbl, fzxid, createdate, modifydate, bz
+        from crm_selltarget
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CrmSelltargetMap">
+        <include refid="selectCrmSelltargetVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CrmSelltargetMap">
+        <include refid="selectCrmSelltargetVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

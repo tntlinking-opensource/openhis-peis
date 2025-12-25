@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppDoctorMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppDoctor" id="AppDoctorMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isDisable" column="IS_DISABLE"/>
+        <result property="name" column="NAME"/>
+        <result property="picture" column="PICTURE"/>
+        <result property="isConsult" column="IS_CONSULT"/>
+        <result property="consultPrice" column="CONSULT_PRICE"/>
+        <result property="idx" column="IDX"/>
+        <result property="details" column="DETAILS"/>
+        <result property="isPublic" column="IS_PUBLIC"/>
+        <result property="consultType" column="CONSULT_TYPE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppDoctorVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               USER_ID,
+               IS_DELETE,
+               IS_DISABLE,
+               NAME,
+               PICTURE,
+               IS_CONSULT,
+               CONSULT_PRICE,
+               IDX,
+               DETAILS,
+               IS_PUBLIC,
+               CONSULT_TYPE
+        from APP_DOCTOR
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppDoctorMap">
+        <include refid="selectAppDoctorVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppDoctorMap">
+        <include refid="selectAppDoctorVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

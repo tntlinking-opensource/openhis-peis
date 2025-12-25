@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.SysTableConfigMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.SysTableConfig" id="SysTableConfigMap">
+        <id property="id" column="id"/>
+        <result property="dbName" column="db_name"/>
+        <result property="tableName" column="table_name"/>
+        <result property="keyName" column="key_name"/>
+        <result property="cidName" column="cid_name"/>
+        <result property="pid" column="pid"/>
+        <result property="pkeyName" column="pkey_name"/>
+        <result property="curKeyName" column="cur_key_name"/>
+        <result property="syncType" column="sync_type"/>
+        <result property="needSync" column="need_sync"/>
+        <result property="syncCondition" column="sync_condition"/>
+        <result property="fileKeyName" column="file_key_name"/>
+        <result property="syncNow" column="sync_now"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSysTableConfigVo">
+        select id,
+               db_name,
+               table_name,
+               key_name,
+               cid_name,
+               pid,
+               pkey_name,
+               cur_key_name,
+               sync_type,
+               need_sync,
+               sync_condition,
+               file_key_name,
+               sync_now,
+               createdate,
+               modifydate
+        from sys_table_config
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SysTableConfigMap">
+        <include refid="selectSysTableConfigVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SysTableConfigMap">
+        <include refid="selectSysTableConfigVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

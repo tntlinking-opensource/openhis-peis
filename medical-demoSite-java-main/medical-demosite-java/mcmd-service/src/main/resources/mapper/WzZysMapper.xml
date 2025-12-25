@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.WzZysMapper">
+
+    <resultMap type="com.center.medical.bean.model.WzZys" id="WzZysMap">
+        <id property="id" column="id"/>
+        <result property="djls" column="djls"/>
+        <result property="idPatientarchive" column="id_patientarchive"/>
+        <result property="amount" column="amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="startDate" column="start_date"/>
+        <result property="stopDate" column="stop_date"/>
+        <result property="dept" column="dept"/>
+        <result property="branch" column="branch"/>
+        <result property="typeOfWork" column="type_of_work"/>
+        <result property="occupationHarm" column="occupation_harm"/>
+        <result property="localeTestAmount" column="locale_test_amount"/>
+        <result property="defendManage" column="defend_manage"/>
+        <result property="occupationBargain" column="occupation_bargain"/>
+        <result property="occupationDefend" column="occupation_defend"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="remark" column="remark"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectWzZysVo">
+        select id,
+               djls,
+               id_patientarchive,
+               amount,
+               create_date,
+               start_date,
+               stop_date,
+               dept,
+               branch,
+               type_of_work,
+               occupation_harm,
+               locale_test_amount,
+               defend_manage,
+               occupation_bargain,
+               occupation_defend,
+               db_user,
+               remark,
+               createdate,
+               modifydate,
+               create_id,
+               modify_id,
+               dept_id
+        from md_wz_zys
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="WzZysMap">
+        <include refid="selectWzZysVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="WzZysMap">
+        <include refid="selectWzZysVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>medical-center</artifactId>
+        <groupId>com.center.medical</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mcmd-quartz</artifactId>
+
+    <description>
+        quartz定时任务
+    </description>
+
+    <dependencies>
+
+        <!-- 定时任务 -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mchange</groupId>
+                    <artifactId>c3p0</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>2.3.2</version>
+        </dependency>
+
+        <!-- 通用工具-->
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-bean</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-reservation-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-sell-crm-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-report-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.center.medical</groupId>
+            <artifactId>mcmd-system-common</artifactId>
+            <version>${mc.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

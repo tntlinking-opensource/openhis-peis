@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.NewReservationMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.bean.model.Peispatient">
+
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getHomePageList" resultType="com.center.medical.reception.bean.dto.HomePageListDto">
+        SELECT
+        rt.id,
+        rt.reservation_date,
+        (CASE
+        WHEN rs.id is not null
+        THEN CONCAT(SUBSTRING(rs.start_time, 1, 5), '-', SUBSTRING(rs.end_time, 1, 5))
+        ELSE NULL
+        END) AS timeSlot,
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        ul.level_name,
+        b.fzx,
+        (CASE WHEN p.f_readytofinal = 1 THEN 4 WHEN p.f_registered = 1 THEN 3 WHEN p.id IS NULL THEN 1 ELSE 2 END ) as status,
+        p.createdate
+        FROM md_peispatient p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_reservation_setting rs on rs.id = rt.time_id
+        LEFT JOIN md_peispatientarchive pa on pa.patientarchiveno = p.patientarchiveno
+        LEFT JOIN md_createorder co on co.ddh = p.numorgresv
+        LEFT JOIN md_peisorgreservation pv on pv.ddh = co.id
+        <where>
+            1 = 1
+            AND (p.f_paused is null or p.f_paused = 0)
+            AND p.phone = #{phone}
+            AND (p.readytofinal_date IS NULL
+            OR p.readytofinal_date >= DATE_SUB( NOW(), INTERVAL 1 WEEK ))
+            AND (co.id is null or pv.f_finished = 0)
+        </where>
+        GROUP BY p.patientcode
+        UNION
+        SELECT
+        rt.id,
+        rt.reservation_date,
+        (CASE
+        WHEN rs.id is not null
+        THEN CONCAT(SUBSTRING(rs.start_time, 1, 5), '-', SUBSTRING(rs.end_time, 1, 5))
+        ELSE NULL
+        END) AS timeSlot,
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        ul.level_name,
+        b.fzx,
+        (CASE WHEN p.f_readytofinal = 1 THEN 4 WHEN p.f_registered = 1 THEN 3 WHEN p.id IS NULL THEN 1 ELSE 2 END ) as status,
+        p.createdate
+        FROM md_peispatient p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_reservation_setting rs on rs.id = rt.time_id
+        LEFT JOIN md_peispatientarchive pa on pa.patientarchiveno = p.patientarchiveno
+        LEFT JOIN md_createorder co on co.ddh = p.numorgresv
+        LEFT JOIN md_peisorgreservation pv on pv.ddh = co.id
+        <where>
+            1 = 1
+            AND (p.f_paused is null or p.f_paused = 0)
+            AND pa.phone = #{phone}
+            AND (p.readytofinal_date IS NULL
+            OR p.readytofinal_date >= DATE_SUB( NOW(), INTERVAL 1 WEEK ))
+            AND (co.id is null or pv.f_finished = 0)
+        </where>
+        GROUP BY p.patientcode
+        ORDER BY createdate DESC
+    </select>
+
+
+    <!-- 查询列表数据 -->
+    <select id="getUserIdcard" resultType="com.center.medical.reception.bean.dto.UserIdcardDto">
+        SELECT
+            pa.patientname,
+            pa.idcardno,
+            pa.id_sex,
+            pa.age,
+            pa.countreportoccupationxml
+        FROM md_peispatientarchive pa
+        <where>
+            pa.phone = #{phone}
+        </where>
+    </select>
+
+
+    <!-- 获取体检者数据 -->
+    <select id="getNewReData" resultType="com.center.medical.reception.bean.dto.GetNewReDataDto">
+        SELECT
+            r.id,
+            r.reservation_no,
+            r.reservation_date,
+            r.time_id,
+            p.patientcode,
+            p.patientname,
+            p.id_patientclass,
+            p.id_sex,
+            p.idcardno,
+            p.hospitalcode as branchId,
+            p.id_tjtc as examsuiteId,
+            p.examsuite_name,
+            b.fzx as branchName,
+            b.address,
+            b.tel,
+            p.f_usecodehiden,
+            p.numorgresv,
+            p.id_tjtc,
+            p.id_org,
+            (CASE WHEN P.f_readytofinal = 1 THEN 4 ELSE IFNULL(r.status,1) END) as status,
+            p.dateregister,
+            (case when p.jktjzt >= 7 and p.jktjzt != 8 then r1.url_pdf else null end) as urlPdf,
+            (case when p.zytjzt >= 7 and p.zytjzt != 8 then r2.url_pdf else null end) as urlPdf2,
+            (case when p.jktjzt >= 7 and p.jktjzt != 8 then mor.pdf_url else null end) as urlPdf3,
+            (case when p.jktjzt >= 7 and p.jktjzt != 8 then rc1.id else null end) as reportContentId,
+            (case when p.zytjzt >= 7 and p.zytjzt != 8 then rc2.id else null end) as reportContentId2,
+            (case when p.jktjzt >= 7 and p.jktjzt != 8 then rc3.id else null end) as reportContentId3
+        FROM
+            md_peispatient p
+                LEFT JOIN sys_branch b on b.branch_id = p.hospitalcode
+                LEFT JOIN md_reservation r on r.patientcode = p.patientcode
+                AND r.status IN (1,2,3)
+                LEFT JOIN md_report r1 on r1.patientcode = p.patientcode
+                AND r1.disease_health = 0
+                LEFT JOIN md_report r2 on r2.patientcode = p.patientcode
+                AND r2.disease_health = 1
+                LEFT JOIN md_other_report mor ON mor.patientcode = r.patientcode
+                and mor.report_type = 3
+                LEFT JOIN md_report_content rc1 ON rc1.patientcode = p.patientcode
+                AND rc1.report_type = 5 AND rc1.id_examtype = 0
+                LEFT JOIN md_report_content rc2 ON rc2.patientcode = p.patientcode
+                AND rc2.report_type = 5 AND rc2.id_examtype = 1
+                LEFT JOIN md_report_content rc3 ON rc3.patientcode = p.patientcode
+                AND rc3.report_type = 3 AND rc3.id_examtype = 0
+        WHERE
+            p.patientcode = #{patientcode}
+    </select>
+
+
+    <!-- 获取检查项目数据 -->
+    <select id="getItemData" resultType="com.center.medical.reception.bean.dto.NewReItemsDto">
+        SELECT
+            i.id,
+            i.examfeeitem_nameprn AS itemName,
+            i.jcyy,
+            pf.price,
+            pf.factprice,
+            p.print_name,
+            p.shunxu
+        FROM
+            md_peispatientfeeitem pf
+                LEFT JOIN md_items i ON i.id = pf.id_examfeeitem
+                LEFT JOIN md_printtype p ON p.id = i.xsdyfl
+        WHERE
+            pf.id_patient = #{patientcode}
+            and pf.change_item = 0
+        ORDER BY
+            p.shunxu,
+            p.print_name
+    </select>
+
+
+    <!-- 获取检查项目数据 -->
+    <select id="queryUnit" resultType="com.center.medical.reception.bean.dto.QueryUnitDto">
+        SELECT
+            cs.id,
+            cs.khdwmc as orgName
+        FROM
+            md_reservation_group_code rgc
+                LEFT JOIN crm_sellcustomer cs ON cs.id = rgc.id_org
+        WHERE
+            rgc.STATUS = 0
+            <if test="name!=null and name!=''">
+                and cs.khdwmc like concat('%',#{name},'%')
+            </if>
+        GROUP BY cs.id
+    </select>
+
+
+    <!-- 帮人预约 -->
+    <select id="helpAppoint" resultType="com.center.medical.reception.bean.dto.HelpAppointDto">
+        SELECT
+        rt.id,
+        rt.reservation_date,
+        (CASE
+        WHEN rs.id is not null
+        THEN CONCAT(SUBSTRING(rs.start_time, 1, 5), '-', SUBSTRING(rs.end_time, 1, 5))
+        ELSE NULL
+        END) AS timeSlot,
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        ul.level_name,
+        b.fzx,
+        (CASE WHEN p.f_readytofinal = 1 THEN 4 WHEN p.f_registered = 1 THEN 3 WHEN p.id IS NULL THEN 1 ELSE 2 END ) as status,
+        p.createdate
+        FROM md_peispatient p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_reservation_setting rs on rs.id = rt.time_id
+        LEFT JOIN md_peispatientarchive pa on pa.patientarchiveno = p.patientarchiveno
+        <where>
+            1 = 1
+            AND p.f_paused = 0
+            AND (p.phone = #{phone} OR  pa.phone = #{phone})
+            AND rt.id is null
+        </where>
+        GROUP BY p.patientcode
+        ORDER BY p.createdate DESC
+    </select>
+
+
+
+    <!-- 我的订单 -->
+    <select id="myOrder" resultType="com.center.medical.reception.bean.dto.MyOrderDto">
+        SELECT
+        p.id,
+        p.reservation_no,
+        p.reservation_date,
+        (CASE
+        WHEN rs.id is not null
+        THEN CONCAT(SUBSTRING(rs.start_time, 1, 5), '-', SUBSTRING(rs.end_time, 1, 5))
+        ELSE NULL
+        END) AS timeSlot,
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        ul.level_name,
+        b.fzx,
+        (CASE WHEN p.f_readytofinal = 1 THEN 4 WHEN p.f_registered = 1 THEN 3 WHEN p.id IS NULL THEN 1 ELSE 2 END ) as status,
+        (SELECT count(*) FROM md_peispatientfeeitem where id_patient = p.patientcode and change_item = 0) as inspectIndex,
+        p.numorgresv,
+        pcm.moneyamount,
+        (CASE WHEN p.id_opendoctor = '1788757788712371823' THEN 1 ELSE 0 END) as purchaseType,
+        p.patientbizno,
+        (CASE WHEN p.f_registered = 0 THEN 1 WHEN mq.id IS NOT NULL THEN 1 ELSE 0 END ) AS satisfactionLevel
+        FROM
+        (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        p.f_registered,
+        p.f_readytofinal,
+        p.numorgresv,
+        p.id_opendoctor,
+        p.patientbizno,
+        p.id_patientclass,
+        p.hospitalcode,
+        p.createdate,
+        rt.time_id,
+        rt.id,
+        rt.reservation_no,
+        rt.reservation_date,
+        rt.STATUS
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatientarchive pa ON pa.patientarchiveno = p.patientarchiveno
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        <where>
+            1 = 1
+            AND p.f_paused = 0
+            AND p.phone = #{param.phone}
+            <if test="param.status!=null and param.status!=''">
+                AND (CASE WHEN p.f_registered = 1 and P.f_readytofinal = 1 THEN 4 ELSE IFNULL(rt.status,1) END) = #{param.status}
+            </if>
+        </where>
+        UNION
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.org_name,
+        p.examsuite_name,
+        p.f_registered,
+        p.f_readytofinal,
+        p.numorgresv,
+        p.id_opendoctor,
+        p.patientbizno,
+        p.id_patientclass,
+        p.hospitalcode,
+        p.createdate,
+        rt.time_id,
+        rt.id,
+        rt.reservation_no,
+        rt.reservation_date,
+        rt.STATUS
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatientarchive pa ON pa.patientarchiveno = p.patientarchiveno
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        <where>
+            1 = 1
+            AND p.f_paused = 0
+            AND pa.phone = #{param.phone}
+            <if test="param.status!=null and param.status!=''">
+                AND (CASE WHEN p.f_registered = 1 and P.f_readytofinal = 1 THEN 4 ELSE IFNULL(rt.status,1) END) = #{param.status}
+            </if>
+        </where>
+        ) p
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        LEFT JOIN md_reservation_setting rs on rs.id = p.time_id
+        LEFT JOIN md_peispatient_charge_main pcm on pcm.patientcode = p.patientcode
+        LEFT JOIN md_questionnaire mq on mq.patientcode = RIGHT(p.patientcode, 8)
+        and mq.type = 1
+        GROUP BY p.patientcode
+        ORDER BY p.createdate DESC
+    </select>
+
+
+    <!-- 订单角标 -->
+    <select id="orderMarkers" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM md_peispatient p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (1,2,3)
+        LEFT JOIN md_peispatientarchive pa on pa.patientarchiveno = p.patientarchiveno
+        <where>
+            1 = 1
+            AND p.f_paused = 0
+            AND (p.phone = #{phone} OR  pa.phone = #{phone})
+            <if test="status!=null and status!=''">
+                AND (CASE WHEN P.f_readytofinal = 1 THEN 4 ELSE IFNULL(rt.status,1) END) = #{status}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 订单角标 -->
+    <select id="getOrderFzx" resultType="com.center.medical.reception.bean.dto.OrderFzxDto">
+        SELECT
+            b.branch_id,
+            (CASE WHEN b.fzx = '西海岸东区' THEN '西海岸东区（井冈山路店）'
+                  WHEN b.fzx = '西海岸西区' THEN '西海岸西区（珠海路店）'
+                  ELSE b.fzx END
+            ) AS branchName,
+            b.address,
+            b.tel
+        FROM
+            md_createorder co
+                LEFT join md_orderandfzx orf on orf.ddid = co.id
+                LEFT JOIN sys_branch b on b.branch_id = orf.fzxid
+        WHERE
+            co.ddh = #{numorgresv}
+        GROUP BY b.branch_id
+    </select>
+</mapper>
+

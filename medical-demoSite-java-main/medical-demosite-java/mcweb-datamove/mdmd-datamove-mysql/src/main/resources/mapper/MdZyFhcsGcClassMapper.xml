@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdZyFhcsGcClassMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdZyFhcsGcClass" id="MdZyFhcsGcClassMap">
+        <id property="id" column="id"/>
+        <result property="defendEngineeringClassCode" column="defend_engineering_class_code"/>
+        <result property="defendEngineeringClass" column="defend_engineering_class"/>
+        <result property="inputCode" column="input_code"/>
+        <result property="dbUser" column="db_user"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdZyFhcsGcClassVo">
+        select id,
+               defend_engineering_class_code,
+               defend_engineering_class,
+               input_code,
+               db_user,
+               createdate,
+               modifydate,
+               is_delete
+        from md_zy_fhcs_gc_class
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdZyFhcsGcClassMap">
+        <include refid="selectMdZyFhcsGcClassVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdZyFhcsGcClassMap">
+        <include refid="selectMdZyFhcsGcClassVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

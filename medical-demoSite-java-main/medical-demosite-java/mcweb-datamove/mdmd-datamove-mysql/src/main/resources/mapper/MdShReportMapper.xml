@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdShReportMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdShReport" id="MdShReportMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="idcardno" column="idcardno"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="reportType" column="report_type"/>
+        <result property="depId" column="dep_id"/>
+        <result property="isCharged" column="is_charged"/>
+        <result property="isPrinted" column="is_printed"/>
+        <result property="errorMsg" column="error_msg"/>
+        <result property="printTime" column="print_time"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdShReportVo">
+        select id,
+               createdate,
+               modifydate,
+               idcardno,
+               patientcode,
+               report_type,
+               dep_id,
+               is_charged,
+               is_printed,
+               error_msg,
+               print_time
+        from md_sh_report
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdShReportMap">
+        <include refid="selectMdShReportVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdShReportMap">
+        <include refid="selectMdShReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdSectionResultMainMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdSectionResultMain" id="MdSectionResultMainMap">
+        <id property="id" column="id"/>
+        <result property="depId" column="dep_id"/>
+        <result property="rummagerId" column="rummager_id"/>
+        <result property="writeId" column="write_id"/>
+        <result property="rummagerTime" column="rummager_time"/>
+        <result property="writeTime" column="write_time"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isAudit" column="is_audit"/>
+        <result property="auditId" column="audit_id"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="isDanager" column="is_danager"/>
+        <result property="danagerLevel" column="danager_level"/>
+        <result property="conclusions" column="conclusions"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="auditName" column="audit_name"/>
+        <result property="rummagerName" column="rummager_name"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="isFinish" column="is_finish"/>
+        <result property="zyConclusions" column="zy_conclusions"/>
+        <result property="associativeTable" column="associative_table"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="fileType" column="file_type"/>
+        <result property="filePath" column="file_path"/>
+        <result property="pacsConclusions" column="pacs_conclusions"/>
+        <result property="zyPacsConclusions" column="zy_pacs_conclusions"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdSectionResultMainVo">
+        select id,
+               dep_id,
+               rummager_id,
+               write_id,
+               rummager_time,
+               write_time,
+               createdate,
+               modifydate,
+               is_audit,
+               audit_id,
+               audit_time,
+               is_danager,
+               danager_level,
+               conclusions,
+               is_delete,
+               audit_name,
+               rummager_name,
+               patientcode,
+               is_finish,
+               zy_conclusions,
+               associative_table,
+               short_code,
+               file_type,
+               file_path,
+               pacs_conclusions,
+               zy_pacs_conclusions
+        from md_section_result_main
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdSectionResultMainMap">
+        <include refid="selectMdSectionResultMainVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdSectionResultMainMap">
+        <include refid="selectMdSectionResultMainVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

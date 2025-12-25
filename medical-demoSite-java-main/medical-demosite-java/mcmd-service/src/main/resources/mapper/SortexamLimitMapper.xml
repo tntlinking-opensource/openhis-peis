@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.SortexamLimitMapper">
+
+    <resultMap type="com.center.medical.bean.model.SortexamLimit" id="SortexamLimitMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="cid" column="cid"/>
+        <result property="sortDate" column="sort_date"/>
+        <result property="vip" column="vip"/>
+        <result property="vvip" column="vvip"/>
+        <result property="am" column="am"/>
+        <result property="pm" column="pm"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSortexamLimitVo">
+        select id,
+               createdate,
+               modifydate,
+               cid,
+               sort_date,
+               vip,
+               vvip,
+               am,
+               pm
+        from md_sortexam_limit
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="SortexamLimitMap">
+        <include refid="selectSortexamLimitVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SortexamLimitMap">
+        <include refid="selectSortexamLimitVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

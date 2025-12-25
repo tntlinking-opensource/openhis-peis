@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.QyjjlxMapper">
+
+    <resultMap type="com.center.medical.bean.model.Qyjjlx" id="QyjjlxMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="qyjjlx" column="qyjjlx"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQyjjlxVo">
+        select id, createdate, modifydate, qyjjlx
+        from md_qyjjlx
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="QyjjlxMap">
+        <include refid="selectQyjjlxVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QyjjlxMap">
+        <include refid="selectQyjjlxVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

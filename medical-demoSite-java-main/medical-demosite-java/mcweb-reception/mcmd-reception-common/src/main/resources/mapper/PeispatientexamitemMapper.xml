@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.PeispatientexamitemMapper">
+
+    <resultMap type="com.center.medical.bean.model.Peispatientexamitem" id="PeispatientexamitemMaps">
+        <id property="id" column="id"/>
+        <result property="examitemvaluesnumber2" column="examitemvaluesnumber2"/>
+        <result property="examitemvaluesnumber3" column="examitemvaluesnumber3"/>
+        <result property="befidDisporderR" column="befid_disporder_r"/>
+        <result property="rowcreatetime" column="rowcreatetime"/>
+        <result property="fLabrcvdfromlis" column="f_labrcvdfromlis"/>
+        <result property="valueoper" column="valueoper"/>
+        <result property="valueoper2" column="valueoper2"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="status" column="status"/>
+        <result property="lisCode" column="lis_code"/>
+        <result property="units" column="units"/>
+        <result property="depId" column="dep_id"/>
+        <result property="reportRange" column="report_range"/>
+        <result property="examitemvaluesreport" column="examitemvaluesreport"/>
+        <result property="patientName" column="patient_name"/>
+        <result property="examDoctor" column="exam_doctor"/>
+        <result property="examDateTime" column="exam_date_time"/>
+        <result property="imageFullPath" column="image_full_path"/>
+        <result property="auditName" column="audit_name"/>
+        <result property="inspectName" column="inspect_name"/>
+        <result property="auditDate" column="audit_date"/>
+        <result property="reflow" column="reflow"/>
+        <result property="refhigh" column="refhigh"/>
+        <result property="lisybbh" column="lisybbh"/>
+        <result property="tableValue" column="table_value"/>
+        <result property="zyConclusions" column="zy_conclusions"/>
+        <result property="conclusions" column="conclusions"/>
+        <result property="sectionResultTwoData" column="section_result_two_data"/>
+        <result property="ms" column="ms"/>
+        <result property="inputResult" column="input_result"/>
+        <result property="isUnchecked" column="is_unchecked"/>
+        <result property="basconclusionId" column="basconclusion_id"/>
+        <result property="positive" column="positive"/>
+        <result property="examitemNameprn" column="examitem_nameprn"/>
+        <result property="examfeeitemNameprn" column="examfeeitem_nameprn"/>
+        <result property="type" column="type"/>
+        <result property="posistive" column="posistive"/>
+        <result property="zyStatus" column="zy_status"/>
+        <result property="inspectCode" column="inspect_code"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="receiveDate" column="receive_date"/>
+        <result property="adiconCode" column="adicon_code"/>
+        <result property="associativeTable" column="associative_table"/>
+        <result property="idPatientexamitem" column="id_patientexamitem"/>
+        <result property="idPatientexamdepart" column="id_patientexamdepart"/>
+        <result property="idPatientfeeitem" column="id_patientfeeitem"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="idExamfeeitem" column="id_examfeeitem"/>
+        <result property="examfeeitem" column="examfeeitem"/>
+        <result property="idExamitem" column="id_examitem"/>
+        <result property="examitemNameR" column="examitem_name_r"/>
+        <result property="examitemCodeR" column="examitem_code_r"/>
+        <result property="idExamitemvalue" column="id_examitemvalue"/>
+        <result property="severedegree" column="severedegree"/>
+        <result property="refrange" column="refrange"/>
+        <result property="examitemvalues" column="examitemvalues"/>
+        <result property="examitemvaluestext" column="examitemvaluestext"/>
+        <result property="examitemvaluesshort" column="examitemvaluesshort"/>
+        <result property="examitemvaluesnumber" column="examitemvaluesnumber"/>
+        <result property="labitemflag" column="labitemflag"/>
+        <result property="fLabitemnormal" column="f_labitemnormal"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientexamitemVo">
+        select id,
+               examitemvaluesnumber2,
+               examitemvaluesnumber3,
+               befid_disporder_r,
+               rowcreatetime,
+               f_labrcvdfromlis,
+               valueoper,
+               valueoper2,
+               createdate,
+               modifydate,
+               status,
+               lis_code,
+               units,
+               dep_id,
+               report_range,
+               examitemvaluesreport,
+               patient_name,
+               exam_doctor,
+               exam_date_time,
+               image_full_path,
+               audit_name,
+               inspect_name,
+               audit_date,
+               reflow,
+               refhigh,
+               lisybbh,
+               table_value,
+               zy_conclusions,
+               conclusions,
+               section_result_two_data,
+               ms,
+               input_result,
+               is_unchecked,
+               basconclusion_id,
+               positive,
+               examitem_nameprn,
+               examfeeitem_nameprn,
+               type,
+               posistive,
+               zy_status,
+               inspect_code,
+               short_code,
+               receive_date,
+               adicon_code,
+               associative_table,
+               id_patientexamitem,
+               id_patientexamdepart,
+               id_patientfeeitem,
+               patientcode,
+               id_examfeeitem,
+               examfeeitem,
+               id_examitem,
+               examitem_name_r,
+               examitem_code_r,
+               id_examitemvalue,
+               severedegree,
+               refrange,
+               examitemvalues,
+               examitemvaluestext,
+               examitemvaluesshort,
+               examitemvaluesnumber,
+               labitemflag,
+               f_labitemnormal
+        from md_peispatientexamitem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="PeispatientexamitemMaps">
+        <include refid="selectPeispatientexamitemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeispatientexamitemMaps">
+        <include refid="selectPeispatientexamitemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 检验科结果分页查询 -->
+    <select id="searchDivision" resultType="com.center.medical.bean.model.Peispatientexamitem">
+        SELECT
+        p.id,
+        i.examfeeitem_name as examfeeitem,
+        e.examitem_name as examitemNameR,
+        p.lis_code,
+        IFNULL(p.examitemvaluesnumber,p.examitemvaluesshort) as result,
+        p.examitemvaluesnumber,
+        p.status,
+        p.units,
+        p.refrange,
+        p.inspect_name,
+        p.exam_date_time,
+        p.examitemvaluesshort,
+        p.report_range,
+        p.examitemvaluesreport,
+        p.audit_name,
+        p.reflow,
+        p.refhigh,
+        p.lisybbh,
+        p.id_examitem
+        FROM
+        md_peispatientfeeitem pi
+        INNER JOIN md_items i ON i.id = pi.id_examfeeitem
+        INNER JOIN md_inspect_charge c ON c.charge_id = i.id
+        INNER JOIN md_basexamltem e ON e.id = c.inspect_id
+        LEFT JOIN md_yblx yb ON yb.id = i.id_labtype
+        LEFT JOIN md_peispatientexamitem p ON p.id_examitem = e.id
+        AND p.id_examfeeitem = i.id
+        AND p.patientcode = pi.id_patient
+        AND p.dep_id = pi.id_ks
+        WHERE
+        1 = 1
+        <if test="param.id!=null and param.id!=''">
+            AND pi.id = #{param.id}
+        </if>
+        <if test="param.ksId!=null and param.ksId!=''">
+            AND pi.id_ks = #{param.ksId}
+        </if>
+        <if test="param.patientCode!=null and param.patientCode!=''">
+            AND pi.id_patient = #{param.patientCode}
+        </if>
+        AND pi.f_giveup = 0
+        AND ( pi.sfjj IS NULL OR pi.sfjj = 0 )
+        AND pi.change_item = 0
+        AND pi.f_feecharged = 1
+        AND pi.f_transferedhl7 IS NULL
+        AND c.is_delete = 0
+        AND e.is_delete = 0
+        AND i.examfeeitem_code IS NOT NULL
+        ORDER BY
+        yb.xh,
+        i.id,
+        c.order_index
+    </select>
+
+
+    <!-- 获取本次体检号的所有收费项目ID -->
+    <select id="getItemId" resultType="string">
+        SELECT p.id_examfeeitem
+        FROM md_peispatientexamitem p
+        WHERE p.patientcode = #{patientcode}
+        GROUP BY p.id_examfeeitem
+    </select>
+
+
+    <!-- 获取本次体检号的所有收费项目ID -->
+    <select id="getgriddata" resultType="com.center.medical.bean.model.Peispatientexamitem">
+        select p.id,
+               i.examfeeitem_name                                    as examfeeitem,
+               e.examitem_name                                       as examitemNameR,
+               p.lis_code,
+               IFNULL(p.examitemvaluesnumber, p.examitemvaluesshort) AS result,
+               p.examitemvaluesnumber,
+               p.status,
+               p.units,
+               p.refrange,
+               p.inspect_name,
+               p.exam_date_time,
+               p.examitemvaluesshort,
+               p.report_range,
+               p.examitemvaluesreport,
+               p.audit_name,
+               p.reflow,
+               p.refhigh,
+               p.lisybbh,
+               p.id_examitem
+        from md_peispatientfeeitem pi
+                 inner join md_items i on i.id = pi.id_examfeeitem
+                 inner join md_inspect_charge c on c.charge_id = i.id
+                 inner join md_basexamltem e on e.id = c.inspect_id
+                 left join md_yblx yb on yb.id = i.id_labtype
+                 left join md_peispatientexamitem p on p.id_examitem = e.id
+            and p.id_examfeeitem = i.id
+            and p.patientcode = pi.id_patient
+            and p.dep_id = pi.id_ks
+        where pi.id_ks = #{param.ksId}
+          and pi.id_patient = #{param.patientCode}
+          and pi.f_giveup = 0
+          and (pi.sfjj is null or pi.sfjj = 0)
+          and pi.change_item = 0
+          and pi.f_feecharged = 1
+          and pi.f_transferedhl7 is null
+          and c.is_delete = 0
+          and e.is_delete = 0
+          and i.examfeeitem_code is not null
+        order by yb.xh,
+                 i.id,
+                 c.order_index
+    </select>
+
+
+    <!-- 获取本次体检号的所有收费项目ID -->
+    <select id="getInspectReportVo" resultType="com.center.medical.reception.bean.vo.GetInspectReportVo">
+        SELECT 	p.examfeeitem_nameprn AS itemName,
+                p.examitem_nameprn AS item,
+                p.examitemvaluesreport AS result,
+                p.units AS sign,
+                <if test="dh!=null">
+                    <if test="dh == 0">
+                        p.status AS consult,
+                        p.refrange AS unit,
+                    </if>
+                    <if test="dh == 1">
+                        p.zy_status AS consult,
+                        IFNULL(p.report_range,p.refrange) AS unit,
+                    </if>
+                </if>
+                p.inspect_name AS pName,
+                STR_TO_DATE ( p.audit_date, '%Y-%m-%d' ) AS date,
+                i.xh,
+                c.order_index,
+                i.id AS iid,
+                p.id_examitem,
+                p.audit_name,
+                STR_TO_DATE ( p.receive_date, '%Y-%m-%d %T' ) AS receive_date,
+                i.id_labtype,
+                p.examitemvaluestext
+        FROM
+            md_peispatientexamitem p
+            INNER JOIN md_items i ON i.id = p.id_examfeeitem
+            INNER JOIN md_inspect_charge c ON c.charge_id = i.id
+            AND c.is_delete = 0
+            INNER JOIN md_basexamltem e ON e.id = c.inspect_id
+            AND e.id = p.id_examitem
+            INNER JOIN md_peispatientfeeitem pf ON pf.id_patient = p.patientcode
+            AND pf.id_examfeeitem = p.id_examfeeitem
+            AND pf.f_examinated = 1
+        WHERE
+            ( i.bgdybs IS NULL OR i.bgdybs = '0' )
+            AND p.patientcode = #{patientcode}
+            AND i.examfeeitem_code IS NOT NULL
+            <if test="dh!=null and dh == 1" >
+                AND p.type = 1
+            </if>
+        ORDER BY i.xh,i.id,c.order_index
+    </select>
+</mapper>
+

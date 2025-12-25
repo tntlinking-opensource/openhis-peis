@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdMonthtargetMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdMonthtarget" id="MdMonthtargetMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="year" column="year"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="bz" column="bz"/>
+        <result property="target1" column="target1"/>
+        <result property="target2" column="target2"/>
+        <result property="target3" column="target3"/>
+        <result property="target4" column="target4"/>
+        <result property="target5" column="target5"/>
+        <result property="target6" column="target6"/>
+        <result property="target7" column="target7"/>
+        <result property="target8" column="target8"/>
+        <result property="target9" column="target9"/>
+        <result property="target10" column="target10"/>
+        <result property="target11" column="target11"/>
+        <result property="target12" column="target12"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdMonthtargetVo">
+        select id,
+               createdate,
+               modifydate,
+               xsjlid, year, fzxid, bz, target1, target2, target3, target4, target5, target6, target7, target8, target9, target10, target11, target12
+        from md_monthtarget
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdMonthtargetMap">
+        <include refid="selectMdMonthtargetVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdMonthtargetMap">
+        <include refid="selectMdMonthtargetVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

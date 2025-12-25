@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.query.dao.ItemsStatusQueryMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.query.bean.vo.StatusQueryVo">
+        SELECT
+            p.id_examtype,
+            STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS dateregister,
+            p.patientcode,
+            p.patientname,
+            p.id_sex,
+            p.age,
+            p.doctorapply,
+            p.org_name,
+            p.org_depart,
+            p.phone,
+            pi.examfeeitem_name,
+            pi.f_transferedhl7,
+            pi.f_giveup,
+            pi.f_delayed,
+            pi.sfjj,
+            ( CASE WHEN p.numorgresv =- 1 THEN NULL ELSE p.numorgresv END ) AS ddh,
+            p.idcardno,
+            pi.f_examinated,
+            pi.price,
+            pi.factprice
+        FROM
+            md_peispatientfeeitem pi
+                INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        <where>
+            pi.change_item = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.regStartTime!=null">
+                AND p.f_registered = 1
+                AND p.dateregister <![CDATA[ >= ]]>STR_TO_DATE ( #{param.regStartTime}, '%Y-%m-%d %T' )
+            </if>
+            <if test="param.regEndTime!=null">
+                AND p.f_registered = 1
+                AND p.dateregister <![CDATA[ <= ]]>STR_TO_DATE ( #{param.regEndTime}, '%Y-%m-%d %T' )
+            </if>
+            <if test="param.startTime!=null">
+                AND p.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.type!=null">
+                <if test="param.type == 1">
+                    AND pi.f_giveup = 1
+                </if>
+                <if test="param.type == 2">
+                    AND pi.f_transferedhl7 IS NOT NULL
+                </if>
+                <if test="param.type == 3">
+                    AND pi.sfjj = 1
+                </if>
+                <if test="param.type == 4">
+                    AND pi.f_delayed = 1
+                </if>
+                <if test="param.type == 5">
+                    AND ( pi.f_giveup IS NULL OR pi.f_giveup = 0 )
+                    AND pi.f_transferedhl7 IS NULL
+                    AND ( pi.sfjj IS NULL OR pi.sfjj = 0 )
+                    AND ( pi.f_delayed IS NULL OR pi.f_delayed = 0 )
+                    AND ( pi.f_examinated IS NULL OR pi.f_examinated = 0)
+                </if>
+                <if test="param.type == 6">
+                    AND pi.f_examinated = 1
+                </if>
+            </if>
+            <if test="param.useCodeHidden!=null">
+                AND p.f_usecodehiden = #{param.useCodeHidden}
+            </if>
+            <if test="param.examType!=null">
+                <if test="param.examType == 0">
+                    AND (p.id_examtype = 0 OR p.id_examtype = 2)
+                </if>
+                <if test="param.examType == 1">
+                    AND (
+                    p.id_examtype = 1
+                    OR p.id_examtype = 3
+                    OR (
+                    p.id_examtype = 2
+                    AND EXISTS (
+                    SELECT
+                    1
+                    FROM
+                    md_comboexamitem cei
+                    INNER JOIN md_inspect_charge ic ON ic.inspect_id = cei.exam_id
+                    WHERE
+                    ic.charge_id = pi.id_examfeeitem
+                    AND cei.medical_type = p.medicaltype
+                    AND (
+                    p.jhys = cei.harm_id
+                    OR p.jhys LIKE cei.harm_id || ',%'
+                    OR p.jhys LIKE '%,' || cei.harm_id
+                    OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                    ))))
+                </if>
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND p.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND p.org_name LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                AND pi.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+        </where>
+    </select>
+
+
+
+
+
+    <!-- 导出迟检、拒检、弃检、补检统计 -->
+    <select id="getExportData" resultType="com.center.medical.query.bean.vo.StatusQueryVo">
+        SELECT
+        p.id_examtype,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d' ) AS dateregister,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.doctorapply,
+        p.org_name,
+        p.org_depart,
+        p.phone,
+        pi.examfeeitem_name,
+        pi.f_transferedhl7,
+        pi.f_giveup,
+        pi.f_delayed,
+        pi.sfjj,
+        ( CASE WHEN p.numorgresv =- 1 THEN NULL ELSE p.numorgresv END ) AS ddh,
+        p.idcardno,
+        pi.f_examinated,
+        pi.price,
+        pi.factprice
+        FROM
+        md_peispatientfeeitem pi
+        INNER JOIN md_peispatient p ON p.patientcode = pi.id_patient
+        <where>
+            pi.change_item = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.regStartTime!=null">
+                AND p.f_registered = 1
+                AND p.dateregister <![CDATA[ >= ]]>STR_TO_DATE ( #{param.regStartTime}, '%Y-%m-%d %T' )
+            </if>
+            <if test="param.regEndTime!=null">
+                AND p.f_registered = 1
+                AND p.dateregister <![CDATA[ <= ]]>STR_TO_DATE ( #{param.regEndTime}, '%Y-%m-%d %T' )
+            </if>
+            <if test="param.startTime!=null">
+                AND p.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.type!=null">
+                <if test="param.type == 1">
+                    AND pi.f_giveup = 1
+                </if>
+                <if test="param.type == 2">
+                    AND pi.f_transferedhl7 IS NOT NULL
+                </if>
+                <if test="param.type == 3">
+                    AND pi.sfjj = 1
+                </if>
+                <if test="param.type == 4">
+                    AND pi.f_delayed = 1
+                </if>
+                <if test="param.type == 5">
+                    AND ( pi.f_giveup IS NULL OR pi.f_giveup = 0 )
+                    AND pi.f_transferedhl7 IS NULL
+                    AND ( pi.sfjj IS NULL OR pi.sfjj = 0 )
+                    AND ( pi.f_delayed IS NULL OR pi.f_delayed = 0 )
+                    AND ( pi.f_examinated IS NULL OR pi.f_examinated = 0)
+                </if>
+                <if test="param.type == 6">
+                    AND pi.f_examinated = 1
+                </if>
+            </if>
+            <if test="param.useCodeHidden!=null">
+                AND p.f_usecodehiden = #{param.useCodeHidden}
+            </if>
+            <if test="param.examType!=null">
+                <if test="param.examType == 0">
+                    AND (p.id_examtype = 0 OR p.id_examtype = 2)
+                </if>
+                <if test="param.examType == 1">
+                    AND (
+                    p.id_examtype = 1
+                    OR p.id_examtype = 3
+                    OR (
+                    p.id_examtype = 2
+                    AND EXISTS (
+                    SELECT
+                    1
+                    FROM
+                    md_comboexamitem cei
+                    INNER JOIN md_inspect_charge ic ON ic.inspect_id = cei.exam_id
+                    WHERE
+                    ic.charge_id = pi.id_examfeeitem
+                    AND cei.medical_type = p.medicaltype
+                    AND (
+                    p.jhys = cei.harm_id
+                    OR p.jhys LIKE cei.harm_id || ',%'
+                    OR p.jhys LIKE '%,' || cei.harm_id
+                    OR p.jhys LIKE '%,' || cei.harm_id || ',%'
+                    ))))
+                </if>
+            </if>
+            <if test="param.phone!=null and param.phone!=''">
+                AND p.phone LIKE concat('%',#{param.phone},'%')
+            </if>
+            <if test="param.orgName!=null and param.orgName!=''">
+                AND p.org_name LIKE concat('%',#{param.orgName},'%')
+            </if>
+            <if test="param.examfeeitemName!=null and param.examfeeitemName!=''">
+                AND pi.examfeeitem_name LIKE concat('%',#{param.examfeeitemName},'%')
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+        </where>
+    </select>
+
+
+
+    <!-- 分页查询科室拒检查询 -->
+    <select id="getOriginalRejection" resultType="com.center.medical.query.bean.vo.OriginalVo">
+        SELECT
+            p.patientcode,
+            p.patientname,
+            p.org_name,
+            p.numorgresv,
+            s.summarize
+        FROM
+            md_peispatient p
+                INNER JOIN md_section_total s ON s.patientcode = p.patientcode
+                AND s.disease_health = 1
+        <where>
+            s.summarize LIKE '%拒检%'
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode LIKE concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname LIKE concat('%',#{param.patientname},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
+

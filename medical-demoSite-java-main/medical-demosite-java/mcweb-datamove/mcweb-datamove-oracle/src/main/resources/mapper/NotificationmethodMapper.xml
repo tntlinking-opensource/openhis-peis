@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.NotificationmethodMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Notificationmethod" id="NotificationmethodMap">
+        <id property="id" column="ID"/>
+        <result property="methodName" column="METHOD_NAME"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="creater" column="CREATER"/>
+        <result property="isDelete" column="IS_DELETE"/>
+        <result property="isSendNotice" column="IS_SEND_NOTICE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectNotificationmethodVo">
+        select ID,
+               METHOD_NAME,
+               INPUT_CODE,
+               CREATEDATE,
+               MODIFYDATE,
+               CREATER,
+               IS_DELETE,
+               IS_SEND_NOTICE
+        from NOTIFICATIONMETHOD
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="NotificationmethodMap">
+        <include refid="selectNotificationmethodVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="NotificationmethodMap">
+        <include refid="selectNotificationmethodVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

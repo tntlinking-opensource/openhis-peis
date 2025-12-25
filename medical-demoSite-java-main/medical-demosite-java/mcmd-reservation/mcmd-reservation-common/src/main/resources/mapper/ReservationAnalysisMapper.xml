@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reservation.dao.ReservationAnalysisMapper">
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultType="com.center.medical.reservation.bean.vo.ReAnalysisVo">
+        SELECT
+            cs.id,
+            b.fzx,
+            cs.khdwmc,
+            cs.int_id,
+            SUM((CASE WHEN r.level_id = 3 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vvip1,
+            SUM((CASE WHEN r.level_id = 3 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS vvip2,
+            SUM((CASE WHEN r.level_id = 3 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vvip3,
+            SUM((CASE WHEN r.level_id = 2 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vip1,
+            SUM((CASE WHEN r.level_id = 2 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS vip2,
+            SUM((CASE WHEN r.level_id = 2 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vip3,
+            SUM((CASE WHEN r.level_id = 1 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS ordinary1,
+            SUM((CASE WHEN r.level_id = 1 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS ordinary2,
+            SUM((CASE WHEN r.level_id = 1 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS ordinary3
+        FROM
+            md_peispatient p
+                LEFT JOIN md_reservation r ON r.patientcode = p.patientcode
+                LEFT JOIN crm_sellcustomer cs ON cs.id = r.id_org
+                LEFT JOIN sys_branch b ON b.branch_id = r.branch_id
+        <where>
+            cs.id IS NOT NULL
+            <if test="param.branchId!=null and param.branchId!=''">
+                AND b.branch_id = #{param.branchId}
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cs.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND cs.int_id = #{param.intId}
+            </if>
+            <if test="param.reservationDate!=null">
+                AND r.reservation_date = #{param.reservationDate}
+            </if>
+        </where>
+        GROUP BY cs.id
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.reservation.bean.model.Reservation">
+
+    </select>
+
+
+
+    <!-- 右侧页面分页 -->
+    <select id="rightPage" resultType="com.center.medical.reservation.bean.vo.RARightPageVo">
+        SELECT
+            p.id,
+            p.patientname,
+            r.level_id,
+            r.reservation_date,
+            CONCAT( rs.start_time, '-', rs.end_time ) as timePeriod,
+            (case when qu.id is not null then 1 else 0 end) as questionnaire,
+            p.dateregister,
+            p.doctorapply,
+            p.note,
+            p.patientcode
+        FROM
+            md_peispatient p
+                LEFT JOIN md_reservation r ON r.patientcode = p.patientcode
+                LEFT JOIN md_reservation_setting rs ON rs.id = r.time_id
+                LEFT JOIN md_questionnaire qu on qu.patientcode = RIGHT(r.patientcode, 8)
+        <where>
+            1 = 1
+            <if test="param.id!=null and param.id!=''">
+                AND r.id_org = #{param.id}
+            </if>
+            <if test="param.reservationDate!=null and param.type!=null and param.type!=3">
+                AND r.reservation_date = #{param.reservationDate}
+            </if>
+            <if test="param.type!=null">
+                <choose>
+                    <when test="param.type == 1">
+                        AND r.id is not null
+                        AND p.f_registered = 1
+                    </when>
+                    <when test="param.type == 2">
+                        AND r.id is not null
+                        AND p.f_registered = 0
+                    </when>
+                    <when test="param.type == 3">
+                        AND r.id is null
+                        AND p.f_registered = 1
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <!-- 导出左侧数据 -->
+    <select id="exportPage" resultType="com.center.medical.reservation.bean.vo.ReAnalysisVo">
+        SELECT
+        cs.id,
+        b.fzx,
+        cs.khdwmc,
+        cs.int_id,
+        SUM((CASE WHEN r.level_id = 3 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vvip1,
+        SUM((CASE WHEN r.level_id = 3 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS vvip2,
+        SUM((CASE WHEN r.level_id = 3 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vvip3,
+        SUM((CASE WHEN r.level_id = 2 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vip1,
+        SUM((CASE WHEN r.level_id = 2 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS vip2,
+        SUM((CASE WHEN r.level_id = 2 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS vip3,
+        SUM((CASE WHEN r.level_id = 1 AND r.id is not null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS ordinary1,
+        SUM((CASE WHEN r.level_id = 1 AND r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS ordinary2,
+        SUM((CASE WHEN r.level_id = 1 AND r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS ordinary3
+        FROM
+        md_peispatient p
+        LEFT JOIN md_reservation r ON r.patientcode = p.patientcode
+        LEFT JOIN crm_sellcustomer cs ON cs.id = r.id_org
+        LEFT JOIN sys_branch b ON b.branch_id = r.branch_id
+        <where>
+            cs.id IS NOT NULL
+            <if test="param.branchId!=null and param.branchId!=''">
+                AND b.branch_id = #{param.branchId}
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cs.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND cs.int_id = #{param.intId}
+            </if>
+            <if test="param.reservationDate!=null">
+                AND r.reservation_date = #{param.reservationDate}
+            </if>
+        </where>
+        GROUP BY cs.id
+    </select>
+
+
+
+    <!-- 导出右侧分页 -->
+    <select id="exportRightPage" resultType="com.center.medical.reservation.bean.vo.RARightPageVo">
+        SELECT
+        p.id,
+        p.patientname,
+        r.level_id,
+        r.reservation_date,
+        CONCAT( rs.start_time, '-', rs.end_time ) as timePeriod,
+        (case when qu.id is not null then 1 else 0 end) as questionnaire,
+        p.dateregister,
+        p.doctorapply,
+        p.note,
+        p.patientcode
+        FROM
+        md_peispatient p
+        LEFT JOIN md_reservation r ON r.patientcode = p.patientcode
+        LEFT JOIN md_reservation_setting rs ON rs.id = r.time_id
+        LEFT JOIN md_questionnaire qu on qu.patientcode = RIGHT(r.patientcode, 8)
+        <where>
+            1 = 1
+            <if test="param.id!=null and param.id!=''">
+                AND r.id_org = #{param.id}
+            </if>
+            <if test="param.reservationDate!=null and param.type!=null and param.type!=3">
+                AND r.reservation_date = #{param.reservationDate}
+            </if>
+            <if test="param.type!=null">
+                <choose>
+                    <when test="param.type == 1">
+                        AND r.id is not null
+                        AND p.f_registered = 1
+                    </when>
+                    <when test="param.type == 2">
+                        AND r.id is not null
+                        AND p.f_registered = 0
+                    </when>
+                    <when test="param.type == 3">
+                        AND r.id is null
+                        AND p.f_registered = 1
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <!-- 今日情况 -->
+    <select id="getToday" resultType="com.center.medical.reservation.bean.vo.RATodayVo">
+        SELECT
+        sum((CASE WHEN r.id is not null THEN 1 ELSE 0 END)) as num1,
+        SUM((CASE WHEN r.id is not null AND p.f_registered = 0 THEN 1 ELSE 0 END)) AS num2,
+        SUM((CASE WHEN r.id is null AND p.f_registered = 1 THEN 1 ELSE 0 END)) AS num3
+        FROM
+        md_peispatient p
+        LEFT JOIN md_reservation r ON r.patientcode = p.patientcode
+        LEFT JOIN crm_sellcustomer cs ON cs.id = r.id_org
+        LEFT JOIN sys_branch b ON b.branch_id = r.branch_id
+        <where>
+            cs.id IS NOT NULL
+            <if test="param.branchId!=null and param.branchId!=''">
+                AND b.branch_id = #{param.branchId}
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND cs.khdwmc like concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND cs.int_id = #{param.intId}
+            </if>
+            <if test="param.reservationDate!=null">
+                AND r.reservation_date = #{param.reservationDate}
+            </if>
+        </where>
+    </select>
+
+</mapper>
+

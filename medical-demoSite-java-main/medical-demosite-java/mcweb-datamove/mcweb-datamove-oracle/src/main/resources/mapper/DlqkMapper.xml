@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.DlqkMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Dlqk" id="DlqkMap">
+        <id property="id" column="ID"/>
+        <result property="bm" column="BM"/>
+        <result property="mc" column="MC"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectDlqkVo">
+        select BM,
+               MC,
+               CREATE_ID,
+               MODIFY_ID,
+               ID,
+               PATIENTCODE,
+               CREATEDATE,
+               MODIFYDATE
+        from DLQK
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="DlqkMap">
+        <include refid="selectDlqkVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="DlqkMap">
+        <include refid="selectDlqkVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

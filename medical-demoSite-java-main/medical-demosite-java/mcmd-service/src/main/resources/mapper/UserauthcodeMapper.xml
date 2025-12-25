@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.UserauthcodeMapper">
+
+    <resultMap type="com.center.medical.bean.model.Userauthcode" id="UserauthcodeMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="userId" column="user_id"/>
+        <result property="authCode" column="auth_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectUserauthcodeVo">
+        select id, createdate, modifydate, user_id, auth_code
+        from md_userauthcode
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="UserauthcodeMap">
+        <include refid="selectUserauthcodeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="UserauthcodeMap">
+        <include refid="selectUserauthcodeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

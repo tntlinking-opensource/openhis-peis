@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.SummaryQueryMapper">
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.SQPageVo">
+        SELECT
+        a.patientcode,
+        a.patientname,
+        a.id_sex AS sex,
+        a.age,
+        a.org_depart,
+        a.trades,
+        a.jhgl,
+        a.jhys,
+        group_concat( pi.examfeeitem_name) AS items,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name
+        FROM
+        (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_depart,
+        IFNULL( bw.type_name, p.trades ) trades,
+        p.jhgl,
+        p.jhys,
+        z.occupation_summary,
+        group_concat( zv.summary_text ) summary_text,
+        b.fzx,
+        p.org_name
+        FROM
+        md_peispatient p
+        LEFT JOIN md_base_worktype bw ON bw.id = p.worktype_id
+        INNER JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        AND z.serial_no = 7
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+        </where>
+
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_depart,
+        p.trades,
+        bw.type_name,
+        p.jhgl,
+        p.jhys,
+        z.occupation_summary,
+        b.fzx,
+        p.org_name
+        ) a
+        INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = a.patientcode
+        AND ( pi.f_examinated IS NULL OR pi.f_examinated = 0 )
+        AND ( pi.change_item IS NULL OR pi.change_item = 0 )
+        GROUP BY
+        a.patientcode,
+        a.patientname,
+        a.id_sex,
+        a.age,
+        a.org_depart,
+        a.trades,
+        a.jhgl,
+        a.jhys,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name
+        ORDER BY
+        a.patientcode DESC
+    </select>
+
+
+    <!-- 导出本次职业健康检查拒检补检人员 -->
+    <select id="getExportData" resultType="com.center.medical.statistics.bean.vo.SQPageVo">
+        SELECT
+        a.patientcode,
+        a.patientname,
+        a.id_sex AS sex,
+        a.age,
+        a.org_depart,
+        a.trades,
+        a.jhgl,
+        a.jhys,
+        group_concat( pi.examfeeitem_name) AS items,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name
+        FROM
+        (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_depart,
+        IFNULL( bw.type_name, p.trades ) trades,
+        p.jhgl,
+        p.jhys,
+        z.occupation_summary,
+        group_concat( zv.summary_text ) summary_text,
+        b.fzx,
+        p.org_name
+        FROM
+        md_peispatient p
+        LEFT JOIN md_base_worktype bw ON bw.id = p.worktype_id
+        INNER JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        AND z.serial_no = 7
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+        </where>
+
+        GROUP BY
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_depart,
+        p.trades,
+        bw.type_name,
+        p.jhgl,
+        p.jhys,
+        z.occupation_summary,
+        b.fzx,
+        p.org_name
+        ) a
+        INNER JOIN md_peispatientfeeitem pi ON pi.id_patient = a.patientcode
+        AND ( pi.f_examinated IS NULL OR pi.f_examinated = 0 )
+        AND ( pi.change_item IS NULL OR pi.change_item = 0 )
+        GROUP BY
+        a.patientcode,
+        a.patientname,
+        a.id_sex,
+        a.age,
+        a.org_depart,
+        a.trades,
+        a.jhgl,
+        a.jhys,
+        a.occupation_summary,
+        a.summary_text,
+        a.fzx,
+        a.org_name
+        ORDER BY
+        a.patientcode DESC
+    </select>
+
+
+    <!-- 分页职业健康检查职业禁忌证人员名单 -->
+    <select id="getSummaryData" resultType="com.center.medical.statistics.bean.vo.SummaryDataVo">
+        SELECT
+        s1.medicaltype,
+        s1.patientname,
+        s1.id_sex AS sex,
+        s1.age,
+        round( s1.jhgl / 12, 1 ) AS jhgl,
+        s1.jhys,
+        s1.disease,
+        s1.org_name,
+        s1.patientcode,
+        s1.fzx,
+        s.posistive
+        FROM
+        (
+        SELECT
+        p.medicaltype,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.jhgl,
+        p.jhys,
+        <if test="param.serialNo!=null">
+            <if test="param.serialNo == 1">
+                group_concat( o.occupation_diseast ) disease,
+            </if>
+            <if test="param.serialNo == 2">
+                group_concat( zv.diagnosis ) disease,
+            </if>
+            <if test="param.serialNo == 3">
+                group_concat( z.occupation_summary ) disease,
+            </if>
+        </if>
+        p.org_name,
+        p.patientcode,
+        b.fzx
+        FROM
+        md_peispatient p
+        INNER JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        AND z.serial_no = #{param.serialNo}
+        <if test="param.serialNo == 1">
+            LEFT JOIN md_occupation_diseast o ON o.id = zv.occupation_diseast
+        </if>
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.medicaltype!=null and param.medicaltype!=''">
+                AND p.medicaltype = #{param.medicaltype}
+            </if>
+        </where>
+        GROUP BY
+        p.medicaltype,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.jhgl,
+        p.jhys,
+        p.org_name,
+        p.patientcode,
+        b.fzx
+        ) s1
+        INNER JOIN md_section_total s ON s.patientcode = s1.patientcode
+        AND s.disease_health = 1
+        ORDER BY
+        s1.patientcode DESC
+    </select>
+
+    <!-- 分页职业健康检查职业禁忌证人员名单 -->
+    <select id="exportJjz" resultType="com.center.medical.statistics.bean.vo.SummaryDataVo">
+        SELECT
+        s1.medicaltype,
+        s1.patientname,
+        s1.id_sex AS sex,
+        s1.age,
+        round( s1.jhgl / 12, 1 ) AS jhgl,
+        s1.jhys,
+        s1.disease,
+        s1.org_name,
+        s1.patientcode,
+        s1.fzx,
+        s.posistive
+        FROM
+        (
+        SELECT
+        p.medicaltype,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.jhgl,
+        p.jhys,
+        <if test="param.serialNo!=null">
+            <if test="param.serialNo == 1">
+                group_concat( o.occupation_diseast ) disease,
+            </if>
+            <if test="param.serialNo == 2">
+                group_concat( zv.diagnosis ) disease,
+            </if>
+            <if test="param.serialNo == 3">
+                group_concat( z.occupation_summary ) disease,
+            </if>
+        </if>
+        p.org_name,
+        p.patientcode,
+        b.fzx
+        FROM
+        md_peispatient p
+        INNER JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        AND z.serial_no = #{param.serialNo}
+        <if test="param.serialNo == 1">
+            LEFT JOIN md_occupation_diseast o ON o.id = zv.occupation_diseast
+        </if>
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.zytjzt > 0
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.cid!=null and param.cid!=''">
+                AND p.hospitalcode = #{param.cid}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND p.id_org = #{param.idOrg}
+            </if>
+            <if test="param.medicaltype!=null and param.medicaltype!=''">
+                AND p.medicaltype = #{param.medicaltype}
+            </if>
+        </where>
+        GROUP BY
+        p.medicaltype,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.jhgl,
+        p.jhys,
+        p.org_name,
+        p.patientcode,
+        b.fzx
+        ) s1
+        INNER JOIN md_section_total s ON s.patientcode = s1.patientcode
+        AND s.disease_health = 1
+        ORDER BY
+        s1.patientcode DESC
+    </select>
+
+
+    <!-- 分页职业健康检查职业禁忌证人员名单 -->
+    <select id="getComponyQuery" resultType="com.center.medical.statistics.bean.vo.ComponyQueryVo">
+        SELECT
+        s.khdwmc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '0' THEN p.id ELSE NULL END )) AS sgq,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '0' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS sgqJjz,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '1' THEN p.id ELSE NULL END )) AS zg,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS zgJjz,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS zgZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS zgFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '2' THEN p.id ELSE NULL END )) AS lg,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS lgZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS lgFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '4' THEN p.id ELSE NULL END )) AS yj,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS yjZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS yjFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '3' THEN p.id ELSE NULL END )) AS lgsf,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS lgsfZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS lgsfFc
+        FROM
+        md_peispatient p
+        LEFT JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        LEFT JOIN crm_sellcustomer s ON s.id = p.id_org
+        <where>
+            p.zytjzt > 0
+            AND s.khdwmc IS NOT NULL
+            <if test="param.startTime!=null">
+                AND p.dateregisternotime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregisternotime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY p.id_org,s.khdwmc,s.int_id
+        ORDER BY s.int_id
+    </select>
+
+
+    <!-- 导出单位职业健康检查结果附表（按用人单位统计） -->
+    <select id="exportComponyQuery" resultType="com.center.medical.statistics.bean.vo.ComponyQueryVo">
+        SELECT
+        s.khdwmc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '0' THEN p.id ELSE NULL END )) AS sgq,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '0' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS sgqJjz,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '1' THEN p.id ELSE NULL END )) AS zg,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS zgJjz,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS zgZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS zgFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '2' THEN p.id ELSE NULL END )) AS lg,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS lgZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS lgFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '4' THEN p.id ELSE NULL END )) AS yj,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS yjZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS yjFc,
+        count(
+        DISTINCT ( CASE WHEN p.medicaltype = '3' THEN p.id ELSE NULL END )) AS lgsf,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS lgsfZyb,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS lgsfFc
+        FROM
+        md_peispatient p
+        LEFT JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        LEFT JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        LEFT JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        LEFT JOIN crm_sellcustomer s ON s.id = p.id_org
+        <where>
+            p.zytjzt > 0
+            AND s.khdwmc IS NOT NULL
+            <if test="param.startTime!=null">
+                AND p.dateregisternotime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregisternotime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.branchIds!=null and param.branchIds.size > 0">
+                AND p.hospitalcode IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY p.id_org,s.khdwmc,s.int_id
+        ORDER BY s.int_id
+    </select>
+
+
+    <!-- 查询职业健康检查结果汇总表 (按危害因素) -->
+    <select id="getHarmQuery" resultType="com.center.medical.statistics.bean.dto.SQZrsDto">
+        WITH RECURSIVE split_string AS (
+        SELECT
+        SUBSTRING_INDEX(jhys, ',', 1) AS val,
+        SUBSTRING(jhys, LENGTH(SUBSTRING_INDEX(jhys, ',', 1)) + 2) AS remaining,
+        patientcode,
+        medicaltype,
+        1 AS LEVEL
+        FROM
+        md_peispatient
+        WHERE jhys IS NOT NULL
+        AND zytjzt >= 0
+        <if test="param.startTime!=null">
+            AND dateregister <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND dateregister <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.branchIds!=null and param.branchIds.size > 0">
+            AND hospitalcode IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+
+        UNION ALL
+
+        SELECT
+        SUBSTRING_INDEX(remaining, ',', 1),
+        SUBSTRING(remaining, LENGTH(SUBSTRING_INDEX(remaining, ',', 1)) + 2),
+        patientcode,
+        medicaltype,
+        LEVEL + 1
+        FROM
+        split_string
+        WHERE
+        remaining != ''
+        )
+
+        SELECT
+        hc.id,
+        hc.name AS harmClass,
+        COUNT(DISTINCT tem1.patientcode) AS type0,
+        COUNT(DISTINCT CASE WHEN tem1.medicaltype = 1 THEN tem1.patientcode END) AS type1,  -- 统计 medicaltype = 1 的 patientcode 数量
+        COUNT(DISTINCT CASE WHEN tem1.medicaltype = 2 THEN tem1.patientcode END) AS type2,  -- 统计 medicaltype = 1 的 patientcode 数量
+        COUNT(DISTINCT CASE WHEN tem1.medicaltype = 3 THEN tem1.patientcode END) AS type3,  -- 统计 medicaltype = 1 的 patientcode 数量
+        COUNT(DISTINCT CASE WHEN tem1.medicaltype = 4 THEN tem1.patientcode END) AS type4  -- 统计 medicaltype = 1 的 patientcode 数量
+        FROM md_zy_harm_class hc
+        LEFT JOIN (
+        SELECT
+        h.harm_name,
+        h.harm_class,
+        tem.patientcode,
+        tem.medicaltype
+        FROM md_harm h
+        INNER JOIN (
+        SELECT
+        patientcode,
+        val,
+        medicaltype
+        FROM split_string
+        ) tem ON tem.val = h.id
+        ) tem1 ON tem1.harm_class = hc.id
+        WHERE hc.is_delete = 0
+        GROUP BY hc.id, hc.name
+        ORDER BY
+        hc.harm_class
+    </select>
+
+
+    <!-- 查询职业健康检查结果汇总表 (按危害因素) -->
+    <select id="getYcrs" resultType="com.center.medical.statistics.bean.dto.YcrsDto">
+        SELECT
+        zv.health_evaluation_class,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '0' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS type02,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 2 ) THEN p.id ELSE NULL END )) AS type12,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS type11,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '1' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS type13,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS type21,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '2' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS type23,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS type41,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '4' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS type43,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 1 ) THEN p.id ELSE NULL END )) AS type31,
+        count(
+        DISTINCT ( CASE WHEN ( p.medicaltype = '3' AND z.serial_no = 3 ) THEN p.id ELSE NULL END )) AS type33
+        FROM
+        md_peispatient p
+        INNER JOIN md_comments_progessional c ON c.patientcode = p.patientcode
+        INNER JOIN md_zy_vs_summary zv ON zv.id = c.progessional_id
+        AND zv.is_delete = 0
+        INNER JOIN md_zy_summary z ON z.id = zv.occupation_summary
+        AND z.is_delete = 0
+        WHERE
+        p.zytjzt > 0
+        <if test="param.startTime!=null">
+            AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+        </if>
+        <if test="param.endTime!=null">
+            AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+        </if>
+        <if test="param.branchIds!=null and param.branchIds.size > 0">
+            AND p.hospitalcode IN
+            <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                #{brandId}
+            </foreach>
+        </if>
+        GROUP BY zv.health_evaluation_class
+    </select>
+</mapper>
+

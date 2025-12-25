@@ -1,0 +1,436 @@
+<!-- 首页轮播图  开发人：麦沃德科技 予安 -->
+<template>
+  <div class="app-container flex-direction-column">
+    <!-- 筛选 -->
+    <el-form size="small" :model="queryParams" ref="queryForm" :inline="true" class="no-margin-bottom">
+      <el-form-item prop="branchId" label="分中心">
+        <!-- <el-input style="width: 230px" v-model="queryParams.inputCode" placeholder="请输入输入码"></el-input> -->
+        <el-select v-model="queryParams.branchId" placeholder="请选择分中心" clearable style="width: 230px" @change="handleQuery">
+          <el-option v-for="item in fzxOptions" :key="item.id" :label="item.fzx" :value="item.branchId" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="status" label="状态">
+        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 230px" @change="handleQuery">
+          <el-option label="启用" :value="1" />
+          <el-option label="关闭" :value="0" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button class="zk-btn-style1" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button class="zk-btn-style2" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button class="zk-btn-style2" icon="el-icon-plus" size="mini" @click="handleAdd" v-hasPermi="['applet:swiper_list:add']">新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button class="zk-btn-style2" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate" v-hasPermi="['applet:swiper_list:edit']">修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button class="zk-btn-style2" icon="el-icon-delete" size="mini" :disabled="multiple" @click="handleRemove" v-hasPermi="['applet:swiper_list:remove']">删除</el-button>
+      </el-col>
+    </el-row>
+    <div class="table-box">
+      <el-table ref="tableDate" border v-loading="loading" :data="tableDate" height="100%" @selection-change="handleSelectionChange" @row-click="rowClick">
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="序列" width="55" type="index" align="center" />
+        <el-table-column label="分中心" align="center" prop="fzx" show-overflow-tooltip />
+        <el-table-column label="图片" align="center">
+          <template slot-scope="scope">
+            <el-image style="width: 100px; height: 80px" :src="imgPath + scope.row.imgUrl" :preview-src-list="imgList"> </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="类型" align="center">
+          <template slot-scope="scope">
+            {{ ['小程序', '外链', '图文'][scope.row.imgType] }}
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" align="center" prop="des" show-overflow-tooltip />
+        <el-table-column label="状态" align="center">
+          <template slot-scope="scope">
+            <span style="color: green" v-if="scope.row.status == 1">启用</span>
+            <span style="color: red" v-else-if="scope.row.status == 0">关闭</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['applet:swiper_list:edit']">修改</el-button>
+            <el-button size="mini" type="text" icon="el-icon-delete" @click="handleRemove(scope.row)" v-hasPermi="['applet:swiper_list:remove']">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <pagination v-show="total > 0" :total="total" :page.sync="queryParams.current" :limit.sync="queryParams.size" @pagination="getList" />
+    <!-- 添加或修改工作流对话框 -->
+    <el-dialog :title="title" :visible.sync="open" width="1060px" class="sub-center report-setting" destroy-on-close append-to-body :close-on-click-modal="false">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px" :inline="true" hide-required-asterisk v-loading="loading">
+        <el-form-item label="分中心" prop="branchId">
+          <el-select v-model="form.branchId" placeholder="请选择分中心" clearable style="width: 340px" @change="handleChangeFzx">
+            <el-option v-for="item in fzxOptions" :key="item.id" :label="item.fzx" :value="item.branchId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="图片" prop="imgUrl" style="display: block">
+          <div class="setimg">
+            <image-upload class="upload-report-setting" ref="upload" :uploadData="uploadData" :typeChoose="1" @submitFile="submitFile" @uploadFinish="uploadFinish" />
+            <el-image v-if="form.id && form.imgUrl" :src="imgPath + form.imgUrl" :preview-src-list="[imgPath + form.imgUrl]" style="width: 100px; height: 100px"></el-image>
+          </div>
+        </el-form-item>
+        <el-form-item label="类型" prop="imgType">
+          <el-select v-model="form.imgType" placeholder="请选择类型" clearable style="width: 340px" @change="handleChangeType">
+            <el-option v-for="item in typeOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="form.imgType === 0 ? 'appId' : '链接'" prop="link" v-if="form.imgType === 0 || form.imgType === 1">
+          <el-input v-model="form.link" :placeholder="'请输入' + (form.imgType === 0 ? 'appId' : '链接')" clearable style="width: 340px" />
+        </el-form-item>
+        <el-form-item label="文章标题" prop="title" v-else-if="form.imgType === 2">
+          <input-select :selectData="selectData" :isTrim="true" :onlyValue="true" :initialValue="titleName" @change="selectChange"></input-select>
+        </el-form-item>
+        <el-form-item label="套餐名称" prop="title" v-else-if="form.imgType === 3">
+          <input-select :selectData="selectData2" :isTrim="true" :onlyValue="true" :initialValue="comboName" :showTooltip="true" @change="selectChange2"></input-select>
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择状态" style="width: 340px">
+            <el-option label="启用" :value="1" />
+            <el-option label="关闭" :value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="描述" prop="des">
+          <el-input type="textarea" :rows="2" v-model="form.des" placeholder="请输入描述" clearable style="width: 810px" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getListApi, saOrUp, getDetailsApi, deleteApi } from '@/api/applet/swiper_list.js'
+import { getListApi as getBranchData } from '@/api/applet/center_list.js'
+export default {
+  name: 'Swiper_list',
+  data() {
+    return {
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
+      // 查询参数
+      queryParams: {
+        current: 1,
+        size: 20,
+        branchId: '',
+        status: '',
+      },
+      // 文章列表传入数据模板
+      selectData: {
+        placeholder: '请输入文章标题',
+        value: '文章标题', //第二列标题
+        url: '/app/appArticle/page', //请求连接
+        selectWidth: 340, //选择器宽度（选填，默认230）不加px,传100%则为100%
+        bindValue: '', //初始值
+        secondName: 'title', //接口返回值对应第二列的参数名(不传默认为'name')
+        queryData: 'title', //向接口传递的参数名(不传默认为'inputCode')
+      },
+      // 套餐列表传入数据模板
+      selectData2: {
+        placeholder: '请输入套餐名称',
+        value: '套餐名称', //第二列标题
+        url: '/app/createmealApp/page', //请求连接
+        selectWidth: 340, //选择器宽度（选填，默认230）不加px,传100%则为100%
+        bindValue: '', //初始值
+        secondName: 'tjtcmc', //接口返回值对应第二列的参数名(不传默认为'name')
+        queryData: 'tcmc', //向接口传递的参数名(不传默认为'inputCode')
+      },
+      // 总条数
+      total: 0,
+      // 维护表格数据
+      tableDate: [],
+      // 图片地址前缀
+      imgPath: '',
+      // 图片列表
+      imgList: [],
+      // 上传图片配置参数
+      uploadData: {
+        url: '/common/upload', //文件上传地址
+        multiple: false, //是否可以上传多个
+        limit: 1,
+        // fileType: ['xls', 'xlsx'],//文件类型
+        data: {
+          //上传时附带的额外参数
+        },
+        picture: '',
+      },
+
+      // 是否显示弹出层
+      open: false,
+      // 弹出层标题
+      title: '',
+      // 遮罩层
+      loading: true,
+      // 分中心列表
+      fzxOptions: [],
+      // 类型列表
+      typeOptions: [
+        { label: '小程序', value: 0 },
+        { label: '外链', value: 1 },
+        { label: '文章', value: 2 },
+        { label: '套餐', value: 3 },
+      ],
+      // 文章标题
+      titleName: '',
+      // 套餐标题
+      comboName: '',
+      // 表单参数
+      form: {},
+      // 表单校验
+      rules: {
+        branchId: [{ required: true, message: '分中心不能为空', trigger: 'change' }],
+      },
+    }
+  },
+  created() {
+    this.imgPath = this.$getCookie('imgPath')
+    getBranchData({ size: 100 }).then(({ data }) => {
+      this.fzxOptions = data.records
+    })
+    this.getList()
+  },
+  methods: {
+    // 刷新
+    handleQuery() {
+      this.queryParams.current = 1
+      this.getList()
+    },
+    resetQuery() {
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
+    /** 查询工作流列表 */
+    getList() {
+      this.loading = true
+      getListApi(this.queryParams)
+        .then(({ data }) => {
+          this.tableDate = data.records
+          this.imgList = data.records.map((item) => this.imgPath + item.imgUrl)
+          this.total = data.total
+          this.loading = false
+        })
+        .catch((error) => {
+          console.error(error)
+          this.loading = false
+        })
+    },
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.ids = selection.map((item) => item.imgId)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    // 表格单击事件
+    rowClick(row, col) {
+      if (col.type != 'selection') this.$refs.tableDate.clearSelection()
+      this.$refs.tableDate.toggleRowSelection(row)
+    },
+    /** 新增按钮操作 */
+    handleAdd() {
+      this.reset()
+      this.title = '新增'
+      this.open = true
+    },
+    /** 删除按钮操作 */
+    handleRemove(row) {
+      const ids = row.imgId || this.ids.join(',')
+      this.$modal
+        .confirm('您确定要删除该信息吗？', '提示')
+        .then(function () {
+          return deleteApi(ids)
+        })
+        .then(() => {
+          this.getList()
+          this.$modal.msgSuccess('删除成功')
+        })
+        .catch(() => {})
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.reset()
+      const id = row.imgId || this.ids.join(',')
+      this.open = true
+      this.title = '编辑'
+      this.loading = true
+      getDetailsApi(id)
+        .then((response) => {
+          this.form = response.data
+          this.form.branchId = this.form.branchId.toString()
+          if (this.form.imgType == 2 || this.form.imgType == 3) {
+            if (this.form.link) {
+              let link = JSON.parse(this.form.link) || {}
+              if (link.name) {
+                if (this.form.imgType == 2) {
+                  this.titleName = link.name
+                } else {
+                  this.comboName = link.name
+                }
+              }
+            }
+          }
+          this.loading = false
+        })
+        .catch((error) => {
+          console.error(error)
+          this.loading = false
+        })
+    },
+    // 修改分中心
+    handleChangeFzx(val) {
+      this.fzxOptions.forEach((el) => {
+        if (el.branchId == val) {
+          this.form.fzx = el.fzx
+        }
+      })
+    },
+    //确认分中心imgUrl
+    submitFile() {
+      var msg = this.$refs.upload.isUpload()
+      this.loading = this.$loading({
+        lock: true,
+        text: '加载中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      if (msg === true) {
+        this.$refs.upload.handelUpload()
+      } else {
+        this.uploadFinish(1)
+      }
+    },
+    //接收分中心imgUrl返回地址
+    uploadFinish(value, res) {
+      if (value == 1) {
+        this.$modal.msgSuccess('上传成功!')
+      } else {
+        this.$modal.msgSuccess('上传失败!')
+      }
+      this.loading.close()
+      this.loading = false
+      this.form.imgUrl = res.data
+    },
+    // 切换轮播图类型
+    handleChangeType() {
+      this.form.link = ''
+      // if (this.form.imgType == 2) {
+      //   getArticleListApi()
+      // }
+    },
+    // change方法返回选中的值
+    selectChange(value) {
+      let link = {
+        id: value.id,
+        name: value.title,
+      }
+      this.form.link = JSON.stringify(link)
+    },
+    // change方法返回选中的值
+    selectChange2(value) {
+      let link = {
+        id: value.id,
+        name: value.tjtcmc,
+        fzxId: value.fzxId,
+        fzxName: value.fzxName,
+      }
+      this.form.link = JSON.stringify(link)
+    },
+
+    // 取消按钮
+    cancel() {
+      this.open = false
+      this.reset()
+    },
+    // 表单重置
+    reset() {
+      this.form = {
+        branchId: '',
+        fzx: '',
+        status: 0,
+        imgType: '',
+        imgUrl: '',
+        des: '',
+      }
+      this.resetForm('form')
+    },
+    /** 提交按钮 */
+    submitForm() {
+      if (this.form.imgUrl == '') {
+        this.$modal.msgError('请上传图片！')
+        return
+      }
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          saOrUp(this.form).then((response) => {
+            if (this.form.imgId != null) {
+              this.$modal.msgSuccess('修改成功')
+            } else {
+              this.$modal.msgSuccess('新增成功')
+            }
+            this.open = false
+            this.getList()
+          })
+        }
+      })
+    },
+  },
+}
+</script>
+<style lang="scss">
+.sub-center {
+  .el-input-number {
+    .el-input__inner {
+      text-align: left;
+    }
+  }
+
+  .label-title {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+    margin-bottom: 12px;
+  }
+}
+.report-setting {
+  .setimg {
+    display: flex;
+    flex-direction: inherit;
+    width: auto;
+    img {
+      background-color: transparent;
+    }
+    .btn {
+      margin: 8px;
+      width: 70px;
+      height: 36px;
+    }
+  }
+}
+</style>
+
+<style scoped>
+.upload-report-setting /deep/ .el-upload-dragger {
+  padding: 0;
+  border: 0;
+}
+
+.upload-report-setting /deep/ .el-upload-list__item-name {
+  display: none;
+  /* max-width: 80px;
+  padding: 0; */
+}
+</style>

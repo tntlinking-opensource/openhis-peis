@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.system.dao.KdSaleerMapper">
+
+    <resultMap type="com.center.medical.system.bean.model.KdSaleer" id="SaleerMap">
+        <result property="accountName" column="account_name"/>
+        <result property="accountNo" column="account_no"/>
+        <result property="useStatusId" column="use_status_id"/>
+        <result property="ctDate" column="ct_date"/>
+        <result property="ltDate" column="lt_date"/>
+        <result property="centerorgname" column="centerorgname"/>
+        <result property="md5" column="md5"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSaleerVo">
+        SELECT account_name, account_no, use_status_id, ct_date, lt_date, centerorgname, md5
+        FROM kd_saleer
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="SaleerMap">
+        <include refid="selectSaleerVo"/>
+        <where>
+            <if test="param.accountName != null and param.accountName != ''">
+                account_name LIKE CONCAT("%", #{param.accountName}, "%")
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过账户号查询 -->
+    <select id="getByAccountNo" resultMap="SaleerMap">
+        <include refid="selectSaleerVo"/>
+        <where>
+            account_no = #{kingdeeAccountNo}
+        </where>
+    </select>
+
+</mapper>
+

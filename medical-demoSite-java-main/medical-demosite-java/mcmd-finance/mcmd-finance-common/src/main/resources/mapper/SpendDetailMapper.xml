@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.finance.dao.SpendDetailMapper">
+
+    <resultMap type="com.center.medical.finance.bean.model.Card" id="CardMap">
+        <id property="id" column="id"/>
+        <result property="cardNo" column="card_no"/>
+        <result property="balanceLimit" column="balance_limit"/>
+        <result property="createdate" column="createdate"/>
+        <result property="createId" column="create_id"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="modifyId" column="modify_id"/>
+        <result property="typeId" column="type_id"/>
+        <result property="sellId" column="sell_id"/>
+        <result property="sellTime" column="sell_time"/>
+        <result property="validity" column="validity"/>
+        <result property="cardState" column="card_state"/>
+        <result property="memo" column="memo"/>
+        <result property="getterId" column="getter_id"/>
+        <result property="getTime" column="get_time"/>
+        <result property="grantId" column="grant_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="cardPrefix" column="card_prefix"/>
+        <result property="cardLogo" column="card_logo"/>
+        <result property="balanceJf" column="balance_jf"/>
+        <result property="payId" column="pay_id"/>
+        <result property="skMoney" column="sk_money"/>
+        <result property="isDeletea" column="is_deletea"/>
+        <result property="password" column="password"/>
+        <result property="tel" column="tel"/>
+        <result property="orderId" column="order_id"/>
+        <result property="tcId" column="tc_id"/>
+        <result property="balanceMoney" column="balance_money"/>
+        <result property="tcDateregister" column="tc_dateregister"/>
+        <result property="tcPatientcode" column="tc_patientcode"/>
+        <result property="tcChecked" column="tc_checked"/>
+        <result property="recheckMoney" column="recheck_money"/>
+        <result property="sellStatus" column="sell_status"/>
+        <result property="tcPrice" column="tc_price"/>
+        <result property="sellPrice" column="sell_price"/>
+        <result property="purchaser" column="purchaser"/>
+        <result property="phone" column="phone"/>
+        <result property="zk" column="zk"/>
+        <result property="processId" column="process_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardVo">
+        select id,
+               card_no,
+               balance_limit,
+               createdate,
+               create_id,
+               modifydate,
+               modify_id,
+               type_id,
+               sell_id,
+               sell_time,
+               validity,
+               card_state,
+               memo,
+               getter_id,
+               get_time,
+               grant_id,
+               is_delete,
+               card_prefix,
+               card_logo,
+               balance_jf,
+               pay_id,
+               sk_money,
+               is_deletea,
+               password,
+               tel,
+               order_id,
+               tc_id,
+               balance_money,
+               tc_dateregister,
+               tc_patientcode,
+               tc_checked,
+               recheck_money,
+               sell_status,
+               tc_price,
+               sell_price,
+               purchaser,
+               phone,
+               zk,
+               process_id
+        from md_card
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.finance.bean.vo.SDPageVo">
+        SELECT o.id,
+        o.card_id,
+        o.`limit`,
+        o.branch_center,
+        o.operation_id,
+        STR_TO_DATE(o.operation_time, '%Y-%m-%d') AS operationTime,
+        o.is_add,
+        o.memotext,
+        o.charge_id,
+        o.handle_money,
+        c.memo AS kbz,
+        STR_TO_DATE(c.validity, '%Y-%m-%d') AS yxq,
+        c.card_logo AS kbs,
+        c.card_state AS ksm,
+        t.type_name AS cardType,
+        p.patientname AS tjzxm,
+        pc.moneyamountpaid AS jsf,
+        o.consumetype,
+        sb.fzx
+        FROM md_limit_operation o
+        LEFT JOIN md_card c ON c.card_no = o.card_id
+        LEFT JOIN md_card_type t ON t.id = o.card_type
+        LEFT JOIN md_peispatient p ON p.patientcode = o.charge_id
+        LEFT JOIN md_peispatient_reservation_charge pc ON pc.patientcode = o.charge_id
+        LEFT JOIN sys_branch sb ON sb.branch_id = o.branch_center
+        <where>
+            o.is_delete = 0
+            AND c.is_delete = 0
+            <if test="param.branchCenter!=null and param.branchCenter!=''">
+                AND o.branch_center = #{param.branchCenter}
+            </if>
+            <if test="param.isAdd != null and param.isAdd != -1">
+                AND o.is_add = #{param.isAdd}
+            </if>
+            <if test="param.cardId!=null and param.cardId!=''">
+                AND o.card_id = #{param.cardId}
+            </if>
+            <if test="param.startTime!=null">
+                AND o.operation_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND o.operation_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.consumetype != null">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND (o.consumetype = #{param.consumetype} OR o.consumetype IS NULL )
+                    </when>
+                    <otherwise>
+                        AND o.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY o.operation_time DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CardMap">
+        <include refid="selectCardVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 导出体检卡消费明细 -->
+    <select id="getExportData" resultType="com.center.medical.finance.bean.vo.SDPageVo">
+        SELECT o.id,
+        o.card_id,
+        o.`limit`,
+        b.fzx AS branchCenter,
+        o.operation_id,
+        STR_TO_DATE(o.operation_time, '%Y-%m-%d') AS operationTime,
+        o.is_add,
+        o.memotext,
+        o.charge_id,
+        o.handle_money,
+        c.memo AS kbz,
+        STR_TO_DATE(c.validity, '%Y-%m-%d') AS yxq,
+        c.card_logo AS kbs,
+        c.card_state AS ksm,
+        t.type_name AS cardType,
+        p.patientname AS tjzxm,
+        pc.moneyamountpaid AS jsf,
+        o.consumetype
+        FROM md_limit_operation o
+        LEFT JOIN md_card c ON c.card_no = o.card_id
+        LEFT JOIN md_card_type t ON t.id = o.card_type
+        LEFT JOIN md_peispatient p ON p.patientcode = o.charge_id
+        LEFT JOIN md_peispatient_reservation_charge pc ON pc.patientcode = o.charge_id
+        LEFT JOIN sys_branch b ON o.branch_center = b.id
+        <where>
+            o.is_delete = 0
+            AND c.is_delete = 0
+            <if test="param.branchCenter!=null and param.branchCenter!=''">
+                AND o.branch_center = #{param.branchCenter}
+            </if>
+            <if test="param.isAdd != null and param.isAdd != -1">
+                AND o.is_add = #{param.isAdd}
+            </if>
+            <if test="param.cardId!=null and param.cardId!=''">
+                AND o.card_id = #{param.cardId}
+            </if>
+            <if test="param.startTime!=null">
+                AND o.operation_time <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND o.operation_time <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.consumetype != null">
+                <choose>
+                    <when test="param.consumetype == 0">
+                        AND (o.consumetype = #{param.consumetype} OR o.consumetype IS NULL )
+                    </when>
+                    <otherwise>
+                        AND o.consumetype = #{param.consumetype}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        ORDER BY o.operation_time DESC
+    </select>
+</mapper>
+

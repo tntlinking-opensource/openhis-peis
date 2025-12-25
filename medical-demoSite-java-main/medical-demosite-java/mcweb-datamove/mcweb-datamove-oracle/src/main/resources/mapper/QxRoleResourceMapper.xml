@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.QxRoleResourceMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.QxRoleResource" id="QxRoleResourceMap">
+        <id property="roleId" column="ROLE_ID"/>
+        <result property="resourceId" column="RESOURCE_ID"/>
+        <result property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectQxRoleResourceVo">
+        select ROLE_ID, RESOURCE_ID, ID, CREATEDATE, MODIFYDATE
+        from QX_ROLE_RESOURCE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="QxRoleResourceMap">
+        <include refid="selectQxRoleResourceVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="QxRoleResourceMap">
+        <include refid="selectQxRoleResourceVo"/>
+        <where>
+            roleId = #{id}
+        </where>
+    </select>
+
+</mapper>
+

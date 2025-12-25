@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.CustomerfollowMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Customerfollow" id="CustomerfollowMap">
+        <id property="id" column="id"/>
+        <result property="khdwmcid" column="khdwmcid"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="zt" column="zt"/>
+        <result property="khfzr" column="khfzr"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="gjjd" column="gjjd"/>
+        <result property="gjrq" column="gjrq"/>
+        <result property="gjnr" column="gjnr"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="jsrq" column="jsrq"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCustomerfollowVo">
+        select id,
+               khdwmcid,
+               khdwmc,
+               zt,
+               khfzr,
+               xsjlid,
+               xsjl,
+               gjjd,
+               gjrq,
+               gjnr,
+               fzxid,
+               createdate,
+               modifydate,
+               jsrq
+        from crm_customerfollow
+    </sql>
+
+    <!-- 分页查询阶段跟踪列表 -->
+    <select id="getPage" resultType="com.center.medical.sellcrm.bean.model.Customerfollow">
+        SELECT
+        c.khdwmc,
+        c.id,
+        c.zt,
+        c.xsjl,
+        c.gjjd,
+        b.gro as ksrq,
+        c.jsrq,
+        c.gjnr,
+        d.fzx,
+        c.khdwmcid
+        FROM
+        crm_customerfollow c
+        INNER JOIN ( SELECT cin.khdwmcid AS khid, max( cin.createdate ) AS cdate FROM crm_customerfollow cin GROUP BY cin.khdwmcid ) a ON c.khdwmcid = a.khid
+        AND c.createdate = a.cdate
+        INNER JOIN (
+        SELECT
+        c3.khdwmcid AS m,
+        c3.gjjd AS n,
+        min( c3.gjrq ) AS gro
+        FROM
+        crm_customerfollow c3
+        GROUP BY
+        c3.khdwmcid,
+        c3.gjjd
+        ) b ON b.m = c.khdwmcid
+        AND b.n = c.gjjd
+        LEFT JOIN sys_branch d ON d.id = c.fzxid
+        <where>
+            1 = 1
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND c.xsjlid =#{param.xsjlid}
+            </if>
+            <if test="param.branchIds!=null">
+                AND c.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND c.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.xsjl!=null and param.xsjl!=''">
+                AND c.xsjl LIKE concat('%',#{param.xsjl},'%')
+            </if>
+            <if test="param.gjjd!=null">
+                AND c.gjjd =#{param.gjjd}
+            </if>
+        </where>
+        ORDER BY c.gjrq DESC
+    </select>
+
+    <!-- 获取指定客户跟踪记录-->
+    <select id="getListByCumId" resultType="com.center.medical.sellcrm.bean.model.Customerfollow">
+        SELECT
+        c2.zx as ksrq,
+        c3.jsrq,
+        c3.id,
+        c3.khdwmcid,
+        c3.khdwmc,
+        c3.zt,
+        c3.khfzr,
+        c3.xsjl,
+        c3.gjjd,
+        c3.gjnr,
+        d.fzx AS fzx
+        FROM
+        (
+        SELECT
+        min( c.gjrq ) AS zx,
+        c.khdwmcid,
+        c.gjjd
+        FROM
+        crm_customerfollow c
+        GROUP BY
+        c.khdwmcid,
+        c.gjjd
+        ) c2
+        LEFT JOIN crm_customerfollow c3 ON c2.khdwmcid = c3.khdwmcid
+        AND c2.gjjd = c3.gjjd
+        LEFT JOIN sys_branch d ON d.id = c3.fzxid
+        <where>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND c3.xsjlid =#{param.xsjlid}
+            </if>
+            <if test="param.branchIds!=null">
+                AND c3.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND c3.khdwmcid =#{param.khdwmcid}
+            </if>
+        </where>
+        ORDER BY
+        c3.createdate DESC
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CustomerfollowMap">
+        <include refid="selectCustomerfollowVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

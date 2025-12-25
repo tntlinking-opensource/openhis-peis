@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.GroupReviewNoticeMapper">
+
+    <resultMap type="com.center.medical.bean.model.GroupReviewNotice" id="GroupReviewNoticeMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="creator" column="creator"/>
+        <result property="status" column="status"/>
+        <result property="errorMsg" column="error_msg"/>
+        <result property="configId" column="config_id"/>
+        <result property="url" column="url"/>
+        <result property="ddh" column="ddh"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectGroupReviewNoticeVo">
+        select id,
+               createdate,
+               modifydate,
+               start_date,
+               end_date,
+               customer_id,
+               creator,
+               status,
+               error_msg,
+               config_id,
+               url,
+               ddh
+        from md_group_review_notice
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.GroupReviewNoticeVo">
+        SELECT
+            r.id,
+            STR_TO_DATE ( r.start_date, '%Y-%m-%d' ) startDate,
+            STR_TO_DATE ( r.end_date, '%Y-%m-%d' ) endDate,
+            sc.khdwmc orgName,
+            r.creator,
+            r.status,
+            r.createdate createDate,
+            r.error_msg,
+            r.ddh,
+            r.url
+        FROM
+            md_group_review_notice r
+                INNER JOIN crm_sellcustomer sc ON sc.id = r.customer_id
+        <where>
+            1 = 1
+            <if test="param.customerId!=null and param.customerId!=''">
+                AND r.customer_id = #{param.customerId}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                md_group_review_notice_patient grnp
+                INNER JOIN md_peispatient p ON p.patientcode = grnp.patientcode
+                WHERE
+                p.numorgresv = #{param.ddh}
+                AND grnp.main_id = r.id
+                )
+            </if>
+        </where>
+        order by r.createdate desc
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="GroupReviewNoticeMap">
+        <include refid="selectGroupReviewNoticeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

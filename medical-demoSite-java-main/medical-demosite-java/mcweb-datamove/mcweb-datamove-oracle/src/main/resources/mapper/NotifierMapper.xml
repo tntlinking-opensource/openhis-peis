@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.NotifierMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Notifier" id="NotifierMap">
+        <id property="id" column="ID"/>
+        <result property="reportId" column="REPORT_ID"/>
+        <result property="notifierId" column="NOTIFIER_ID"/>
+        <result property="notificationMode" column="NOTIFICATION_MODE"/>
+        <result property="notificationDetails" column="NOTIFICATION_DETAILS"/>
+        <result property="notificationTime" column="NOTIFICATION_TIME"/>
+        <result property="notificationResult" column="NOTIFICATION_RESULT"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="memo" column="MEMO"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectNotifierVo">
+        select ID,
+               REPORT_ID,
+               NOTIFIER_ID,
+               NOTIFICATION_MODE,
+               NOTIFICATION_DETAILS,
+               NOTIFICATION_TIME,
+               NOTIFICATION_RESULT,
+               CREATEDATE,
+               MODIFYDATE,
+               MEMO
+        from NOTIFIER
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="NotifierMap">
+        <include refid="selectNotifierVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="NotifierMap">
+        <include refid="selectNotifierVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

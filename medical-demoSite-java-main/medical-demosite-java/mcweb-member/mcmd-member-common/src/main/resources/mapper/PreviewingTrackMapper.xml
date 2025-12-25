@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.member.dao.PreviewingTrackMapper">
+
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeispatientVo">
+        select id,
+               id_orgpatient,
+               id_cis,
+               patientarchiveno,
+               patientcode,
+               patientbizno,
+               idcardno,
+               numorgresv,
+               patientname,
+               input_code,
+               id_orgreservationgroup,
+               id_orgreservation,
+               id_org,
+               org_name,
+               org_depart,
+               have_private,
+               id_payway,
+               payway,
+               personpricelimit,
+               id_sex,
+               birthdate,
+               age,
+               id_marriage,
+               marriage,
+               id_nation,
+               nation,
+               address,
+               id_informway,
+               id_opendoctor,
+               email,
+               phone,
+               id_patientclass,
+               id_resarea,
+               resarea,
+               f_isforprepare,
+               f_isforreserve,
+               f_registered,
+               dateregister,
+               guidancenote,
+               id_doctorreg,
+               doctorreg,
+               id_examtype,
+               id_examsuite,
+               examsuite_name,
+               examsuite_alias,
+               id_doctorapply,
+               doctorapply,
+               f_guidanceprinted,
+               f_examstarted,
+               f_readytofinal,
+               f_paused,
+               f_finallocked,
+               f_finalexamed,
+               id_doctorfinal,
+               doctorfinal_name_r,
+               datefinalexamed,
+               f_closed,
+               dateclosed,
+               note,
+               knowledge,
+               timingstartedat,
+               hospitalcode,
+               id_examplace,
+               parsedassignedsuiteandfi,
+               parsedassignedgroupandfi,
+               parsedsuiteandfi,
+               parsedsuiteandfilab,
+               id_guidenurse,
+               patientnameencoded,
+               patientcodehiden,
+               f_wordprinted,
+               guidancenote2,
+               f_usecodehiden,
+               id_patientclass3,
+               dateregisternotime,
+               counterreportprinted,
+               f_isrecheck,
+               f_settlenone,
+               dateguidancereturned,
+               f_outpatient,
+               patientnamereceipt,
+               patientnamepinyin,
+               statusofhm,
+               instancetag,
+               inpatientno,
+               insuranceno,
+               countreportxml,
+               countreportcompare,
+               countreportoccupation,
+               countreportoccupationpdf,
+               countreportoccupationxml,
+               scbs,
+               id_tjtc,
+               jzdw,
+               jzdwr,
+               spr,
+               tjr,
+               lqfs,
+               yzbm,
+               yjaddress,
+               qtxz,
+               is_hmdb,
+               is_hmd,
+               isjj,
+               zgl,
+               jhgl,
+               jhys,
+               jktjzt,
+               zytjzt,
+               tmyd,
+               medicaldate,
+               trades,
+               cjjgsfyhf,
+               bhgybsfyhf,
+               yxjgsfyhf,
+               medicaltype,
+               prepayment,
+               tcprice,
+               createdate,
+               modifydate,
+               cultural,
+               workno,
+               work_date,
+               harm_date,
+               disease_print_num,
+               health_print_num,
+               readytofinal_date,
+               guide_signle_count,
+               short_code,
+               is_noticed,
+               review_pdf,
+               contraindicated_pdf,
+               disease_pdf,
+               ts_limit,
+               checkout_date,
+               checkout_status,
+               worktype_id,
+               id_examclass,
+               original_trade,
+               `status`
+        from md_peispatient
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.member.bean.vo.PreviewingTrackVo">
+        SELECT
+        b.id,
+        b.is_inspect,
+        b.inspect_time,
+        b.patientcode,
+        b.patientname,
+        b.id_sex,
+        b.age,
+        b.org_name AS dw,
+        b.phone,
+        b.idcardno,
+        b.address,
+        b.dateregister,
+        b.ljcs AS count,
+        b.examfeeitem_name,
+        ( CASE WHEN jkst.id IS NULL THEN
+        zyst.verdict ELSE jkst.verdict END) AS verdict,
+        b.moneyamountpaid,
+        b.payways,
+        b.visit_id,
+        b.visit_time,
+        b.memo,
+        b.examsuite_name,
+        b.doctorapply,
+        jkst.offer AS conclusions,
+        b.additems
+        FROM
+        ( SELECT
+        p.id,
+        avw.is_inspect,
+        STR_TO_DATE ( avw.inspect_time, '%Y-%m-%d' ) inspect_time,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.phone,
+        p.idcardno,
+        p.address,
+        STR_TO_DATE( p.dateregister, '%Y-%m-%d' ) dateregister,
+        lj.ljcs,
+        group_concat( pi.examfeeitem_name ) examfeeitem_name,
+        pcm.moneyamountpaid,
+        pw.payways,
+        avw.visit_id,
+        STR_TO_DATE ( avw.visit_time, '%Y-%m-%d %T' ) visit_time,
+        avw.memo,
+        p.examsuite_name,
+        p.doctorapply,
+        group_concat( CASE WHEN pi.sfjx = 1 THEN pi.examfeeitem_name ELSE NULL END ) additems
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_section_total st ON st.patientcode = p.patientcode
+        AND st.disease_health = 0
+        INNER JOIN md_peispatientarchive a ON a.patientarchiveno  = p.patientarchiveno
+        LEFT JOIN md_advance_visit_write avw ON avw.patientarchiveno_id = a.id
+        INNER JOIN (
+        SELECT
+        ain.id,
+        count( 1 ) ljcs
+        FROM
+        md_peispatient pin
+        INNER JOIN md_peispatientarchive ain ON ain.patientarchiveno  = pin.patientarchiveno
+        GROUP BY
+        ain.id
+        ) lj ON lj.id = a.id
+        LEFT JOIN md_peispatientfeeitem pi ON pi.id_patient = p.patientcode
+        AND pi.change_item = 0
+        AND pi.f_giveup = 0
+        AND pi.sfjj = 0
+        LEFT JOIN (
+        SELECT
+        c.patientcode,
+        group_concat( pw.payway_name, ',' ) payways
+        FROM
+        md_dictpayway pw
+        INNER JOIN ( SELECT DISTINCT patientcode, id_payway FROM md_peispatientcharge ) c ON pw.id = c.id_payway
+        GROUP BY
+        c.patientcode
+        ) pw ON pw.patientcode = p.patientcode
+        <where>
+            p.f_usecodehiden = 0
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND a.fzx = #{param.fzxid}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.isInspect!=null and param.isInspect!=''">
+                <choose>
+                    <when test="param.hasEmpty !=null and param.hasEmpty == 'true'">
+                        <choose>
+                            <when test="param.flag !=null and param.flag == 'true'">
+                                AND avw.is_inspect IS NULL
+                            </when>
+                            <otherwise>
+                                AND (
+                                avw.is_inspect IS NULL
+                                OR avw.is_inspect IN
+                                <foreach collection="param.isInspect" item="isInspec" open="(" close=")" separator=",">
+                                    #{isInspec}
+                                </foreach>
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <otherwise>
+                        AND avw.is_inspect IN
+                        <foreach collection="param.isInspect" item="isInspec" open="(" close=")" separator=",">
+                            #{isInspec}
+                        </foreach>
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.minmoneyamountpaid!=null">
+                AND pcm.moneyamountpaid <![CDATA[ >= ]]> #{param.minmoneyamountpaid}
+            </if>
+            <if test="param.maxmoneyamountpaid!=null">
+                AND pcm.moneyamountpaid <![CDATA[ <= ]]> #{param.maxmoneyamountpaid}
+            </if>
+            <if test="param.examsuiteName!=null and param.examsuiteName!=''">
+                AND p.examsuite_name like concat('%',#{param.examsuiteName},'%')
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        GROUP BY
+        p.id,
+        avw.is_inspect,
+        avw.inspect_time,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.phone,
+        p.idcardno,
+        p.address,
+        p.dateregister,
+        lj.ljcs,
+        pcm.moneyamountpaid,
+        pw.payways,
+        avw.visit_id,
+        avw.visit_time,
+        avw.memo,
+        p.examsuite_name,
+        p.doctorapply
+        )b
+        LEFT JOIN md_section_total jkst ON jkst.patientcode = b.patientcode
+        AND jkst.disease_health = 0
+        LEFT JOIN md_section_total zyst ON zyst.patientcode = b.patientcode
+        AND zyst.disease_health = 1
+        ORDER BY
+        b.is_inspect DESC,
+        b.inspect_time DESC,
+        b.patientname
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultType="com.center.medical.bean.model.Peispatient">
+        <include refid="selectPeispatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+
+    <!-- 个检预检回访导出 -->
+    <select id="getExportData" resultType="com.center.medical.member.bean.vo.PreviewingTrackVo">
+        SELECT
+        b.id,
+        b.is_inspect,
+        b.inspect_time,
+        b.patientcode,
+        b.patientname,
+        b.id_sex,
+        b.age,
+        b.org_name AS dw,
+        b.phone,
+        b.idcardno,
+        b.address,
+        b.dateregister,
+        b.ljcs AS count,
+        b.examfeeitem_name,
+        ( CASE WHEN jkst.id IS NULL THEN
+        zyst.verdict ELSE jkst.verdict END) AS verdict,
+        b.moneyamountpaid,
+        b.payways,
+        b.visit_id,
+        b.visit_time,
+        b.memo,
+        b.examsuite_name,
+        b.doctorapply,
+        jkst.offer AS conclusions,
+        b.additems
+        FROM
+        ( SELECT
+        p.id,
+        avw.is_inspect,
+        STR_TO_DATE ( avw.inspect_time, '%Y-%m-%d' ) inspect_time,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.phone,
+        p.idcardno,
+        p.address,
+        STR_TO_DATE( p.dateregister, '%Y-%m-%d' ) dateregister,
+        lj.ljcs,
+        group_concat( pi.examfeeitem_name ) examfeeitem_name,
+        pcm.moneyamountpaid,
+        pw.payways,
+        avw.visit_id,
+        STR_TO_DATE ( avw.visit_time, '%Y-%m-%d %T' ) visit_time,
+        avw.memo,
+        p.examsuite_name,
+        p.doctorapply,
+        group_concat( CASE WHEN pi.sfjx = 1 THEN pi.examfeeitem_name ELSE NULL END ) additems
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_section_total st ON st.patientcode = p.patientcode
+        AND st.disease_health = 0
+        INNER JOIN md_peispatientarchive a ON a.patientarchiveno = p.patientarchiveno
+        LEFT JOIN md_advance_visit_write avw ON avw.patientarchiveno_id = a.id
+        INNER JOIN (
+        SELECT
+        ain.id,
+        count( 1 ) ljcs
+        FROM
+        md_peispatient pin
+        INNER JOIN md_peispatientarchive ain ON ain.patientarchiveno = pin.patientarchiveno
+        GROUP BY
+        ain.id
+        ) lj ON lj.id = a.id
+        LEFT JOIN md_peispatientfeeitem pi ON pi.id_patient = p.patientcode
+        AND pi.change_item = 0
+        AND pi.f_giveup = 0
+        AND pi.sfjj = 0
+        LEFT JOIN (
+        SELECT
+        c.patientcode,
+        group_concat( pw.payway_name, ',' ) payways
+        FROM
+        md_dictpayway pw
+        INNER JOIN ( SELECT DISTINCT patientcode, id_payway FROM md_peispatientcharge ) c ON pw.id = c.id_payway
+        GROUP BY
+        c.patientcode
+        ) pw ON pw.patientcode = p.patientcode
+        <where>
+            p.f_usecodehiden = 0
+            <if test="param.fzxid!=null and param.fzxid!=''">
+                AND a.fzx = #{param.fzxid}
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND p.patientname like concat('%',#{param.patientname},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND p.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.isInspect!=null and param.isInspect!=''">
+                <choose>
+                    <when test="param.hasEmpty !=null and param.hasEmpty == 'true'">
+                        <choose>
+                            <when test="param.flag !=null and param.flag == 'true'">
+                                AND avw.is_inspect IS NULL
+                            </when>
+                            <otherwise>
+                                AND (
+                                avw.is_inspect IS NULL
+                                OR avw.is_inspect IN
+                                <foreach collection="param.isInspect" item="isInspec" open="(" close=")" separator=",">
+                                    #{isInspec}
+                                </foreach>
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <otherwise>
+                        AND avw.is_inspect IN
+                        <foreach collection="param.isInspect" item="isInspec" open="(" close=")" separator=",">
+                            #{isInspec}
+                        </foreach>
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.minmoneyamountpaid!=null">
+                AND pcm.moneyamountpaid <![CDATA[ >= ]]> #{param.minmoneyamountpaid}
+            </if>
+            <if test="param.maxmoneyamountpaid!=null">
+                AND pcm.moneyamountpaid <![CDATA[ <= ]]> #{param.maxmoneyamountpaid}
+            </if>
+            <if test="param.examsuiteName!=null and param.examsuiteName!=''">
+                AND p.examsuite_name like concat('%',#{param.examsuiteName},'%')
+            </if>
+            <if test="param.idOpendoctor!=null and param.idOpendoctor!=''">
+                AND p.id_opendoctor = #{param.idOpendoctor}
+            </if>
+        </where>
+        GROUP BY
+        p.id,
+        avw.is_inspect,
+        avw.inspect_time,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.org_name,
+        p.phone,
+        p.idcardno,
+        p.address,
+        p.dateregister,
+        lj.ljcs,
+        pcm.moneyamountpaid,
+        pw.payways,
+        avw.visit_id,
+        avw.visit_time,
+        avw.memo,
+        p.examsuite_name,
+        p.doctorapply
+        )b
+        LEFT JOIN md_section_total jkst ON jkst.patientcode = b.patientcode
+        AND jkst.disease_health = 0
+        LEFT JOIN md_section_total zyst ON zyst.patientcode = b.patientcode
+        AND zyst.disease_health = 1
+        ORDER BY
+        b.is_inspect DESC,
+        b.inspect_time DESC,
+        b.patientname
+    </select>
+</mapper>
+

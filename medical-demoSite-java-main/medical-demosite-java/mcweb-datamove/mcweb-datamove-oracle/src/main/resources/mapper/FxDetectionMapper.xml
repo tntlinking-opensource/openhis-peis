@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.FxDetectionMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.FxDetection" id="FxDetectionMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="sampleId" column="SAMPLE_ID"/>
+        <result property="depName" column="DEP_NAME"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="conclusion" column="CONCLUSION"/>
+        <result property="checkMale" column="CHECK_MALE"/>
+        <result property="checkFemale" column="CHECK_FEMALE"/>
+        <result property="checkTotal" column="CHECK_TOTAL"/>
+        <result property="allMale" column="ALL_MALE"/>
+        <result property="allFemale" column="ALL_FEMALE"/>
+        <result property="allTotal" column="ALL_TOTAL"/>
+        <result property="detectionMale" column="DETECTION_MALE"/>
+        <result property="detectionFemale" column="DETECTION_FEMALE"/>
+        <result property="detectionTotal" column="DETECTION_TOTAL"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="age" column="AGE"/>
+        <result property="orgDepart" column="ORG_DEPART"/>
+        <result property="basconclusionId" column="BASCONCLUSION_ID"/>
+        <result property="reportSort" column="REPORT_SORT"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFxDetectionVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               SAMPLE_ID,
+               DEP_NAME,
+               DEP_ID,
+               CONCLUSION,
+               CHECK_MALE,
+               CHECK_FEMALE,
+               CHECK_TOTAL,
+               ALL_MALE,
+               ALL_FEMALE,
+               ALL_TOTAL,
+               DETECTION_MALE,
+               DETECTION_FEMALE,
+               DETECTION_TOTAL,
+               PATIENTCODE,
+               PATIENTNAME,
+               SEX,
+               AGE,
+               ORG_DEPART,
+               BASCONCLUSION_ID,
+               REPORT_SORT
+        from FX_DETECTION
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FxDetectionMap">
+        <include refid="selectFxDetectionVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FxDetectionMap">
+        <include refid="selectFxDetectionVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

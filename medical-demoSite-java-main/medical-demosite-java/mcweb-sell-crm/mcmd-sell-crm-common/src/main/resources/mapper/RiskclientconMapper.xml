@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.sellcrm.dao.RiskclientconMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Riskclientcon" id="RiskclientconMap">
+        <id property="id" column="id"/>
+        <result property="riskid" column="riskid"/>
+        <result property="gwxm" column="gwxm"/>
+        <result property="wjzxj" column="wjzxj"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="wjzjb" column="wjzjb"/>
+        <result property="doctorId" column="doctor_id"/>
+        <result property="checkTime" column="check_time"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="sfxm" column="sfxm"/>
+        <result property="tbbz" column="tbbz"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectRiskclientconVo">
+        select id,
+               riskid,
+               gwxm,
+               wjzxj,
+               createdate,
+               modifydate,
+               division_id,
+               wjzjb,
+               doctor_id,
+               check_time,
+               patientcode,
+               sfxm,
+               tbbz
+        from md_riskclientcon
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="RiskclientconMap">
+        <include refid="selectRiskclientconVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="RiskclientconMap">
+        <include refid="selectRiskclientconVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

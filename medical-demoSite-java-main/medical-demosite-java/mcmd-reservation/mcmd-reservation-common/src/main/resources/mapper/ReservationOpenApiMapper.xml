@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reservation.dao.ReservationOpenApiMapper">
+
+    <resultMap type="com.center.medical.bean.dto.GroupOrderDto" id="GroupOrderMap">
+        <result property="numorgresv" column="numorgresv"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="patientname" column="patientname"/>
+        <result property="idOrg" column="id_org"/>
+        <result property="orgName" column="org_name"/>
+        <result property="idTjtc" column="id_tjtc"/>
+        <result property="examsuiteName" column="examsuite_name"/>
+        <result property="levelId" column="id_patientclass"/>
+        <result property="levelName" column="level_name"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="ddmc" column="ddmc"/>
+        <result property="idcardno" column="idcardno"/>
+        <result property="idSex" column="id_sex"/>
+        <result property="birthdate" column="birthdate"/>
+        <result property="fzx" column="fzx"/>
+        <collection property="itemList" javaType="java.util.List" column="patientcode"
+                    ofType="com.center.medical.bean.dto.ItemDto" select="getExamItemList">
+        </collection>
+    </resultMap>
+    <resultMap type="com.center.medical.bean.dto.ItemDto" id="ExamItemMap">
+        <id property="id" column="id"/>
+        <result property="examfeeitemName" column="examfeeitem_name"/>
+        <result property="sfjx" column="sfjx"/>
+        <result property="count" column="count"/>
+        <result property="isbx" column="isbx"/>
+    </resultMap>
+
+    <!-- 根据手机号获取我的待预约团体订单列表 -->
+    <select id="getGroupOrderList" resultMap="GroupOrderMap">
+        SELECT
+        p.numorgresv,
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        p.id_tjtc,
+        p.examsuite_name,
+        p.id_patientclass,
+        ul.level_name,
+        co.fzxid,
+        co.ddmc,
+        p.idcardno,
+        p.birthdate,
+        p.id_sex
+        FROM `md_peispatient` p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (2)
+        LEFT JOIN md_createorder co ON p.numorgresv = co.ddh
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.numorgresv != '-1'
+            AND p.numorgresv != ''
+            AND p.numorgresv IS NOT NULL
+            AND p.f_registered = 0
+            AND rt.id IS NULL
+            AND p.phone = #{phone}
+        </where>
+    </select>
+    <!--根据体检号获取体检者收费项目列表-->
+    <select id="getExamItemList" resultMap="ExamItemMap">
+        SELECT
+        pfi.examfeeitem_name,
+        pfi.sfjx,
+        pfi.count,
+        pfi.isbx
+        FROM md_peispatientfeeitem pfi
+        <where>
+            pfi.id_patient = #{patientcode}
+        </where>
+    </select>
+
+
+    <!-- 根据手机号获取我的待预约团体订单列表 -->
+    <select id="getPersonList" resultMap="GroupOrderMap">
+        SELECT
+        p.numorgresv,
+        p.patientcode,
+        p.patientname,
+        p.id_org,
+        p.org_name,
+        p.id_tjtc,
+        p.examsuite_name,
+        p.id_patientclass,
+        ul.level_name,
+        p.idcardno,
+        p.id_sex,
+        p.birthdate,
+        b.fzx,
+        p.hospitalcode as fzxid
+        FROM md_peispatient p
+        LEFT JOIN md_reservation rt ON p.patientcode = rt.patientcode AND rt.`status` IN (0,2,3)
+        LEFT JOIN md_user_level ul ON p.id_patientclass = ul.level_id
+        LEFT JOIN sys_branch b ON b.branch_id = p.hospitalcode
+        <where>
+            p.phone = #{phone}
+            AND (p.numorgresv = '-1'
+            or p.numorgresv = ''
+            or p.numorgresv IS NULL)
+            AND p.f_registered = 0
+            AND rt.id IS NULL
+        </where>
+    </select>
+</mapper>
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.CompareReportMapper">
+
+    <resultMap type="com.center.medical.bean.model.CompareReport" id="CompareReportMap">
+        <id property="id" column="id"/>
+        <result property="patientarchiveno" column="patientarchiveno"/>
+        <result property="patientcodeThis" column="patientcode_this"/>
+        <result property="patientcodeBefore" column="patientcode_before"/>
+        <result property="patientcodeSecond" column="patientcode_second"/>
+        <result property="registerThis" column="register_this"/>
+        <result property="registerBefore" column="register_before"/>
+        <result property="registerSecond" column="register_second"/>
+        <result property="pathWord" column="path_word"/>
+        <result property="pathPdf" column="path_pdf"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="configId" column="config_id"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCompareReportVo">
+        select id,
+               patientarchiveno,
+               patientcode_this,
+               patientcode_before,
+               patientcode_second,
+               register_this,
+               register_before,
+               register_second,
+               path_word,
+               path_pdf,
+               createdate,
+               modifydate,
+               is_delete,
+               config_id
+        from md_compare_report
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultMap="CompareReportMap">
+        <include refid="selectCompareReportVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CompareReportMap">
+        <include refid="selectCompareReportVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

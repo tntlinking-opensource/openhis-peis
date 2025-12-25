@@ -1,0 +1,34 @@
+package com.center.medical.datamove.common.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.center.medical.datamove.common.bean.model.MdAttachmentGroup;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.center.medical.common.utils.page.PageParam;
+
+/**
+ * 文件分组表(MdAttachmentGroup)服务接口
+ *
+ * @author ay
+ * @since 2023-07-17 20:45:07
+ */
+public interface MdAttachmentGroupService extends IService<MdAttachmentGroup> {
+
+    /**
+     * 分页查询[文件分组表]列表
+     *
+     * @param page  分页参数
+     * @param param 查询参数
+     * @return 分页数据
+     */
+    IPage<MdAttachmentGroup> getPage(PageParam<MdAttachmentGroup> page, MdAttachmentGroup param);
+
+    /**
+     * 根据主键id获取记录详情
+     *
+     * @param id 主键fileGroupId
+     * @return 详情信息
+     */
+    MdAttachmentGroup getInfoById(String id);
+
+}
+

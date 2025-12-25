@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.CrmClientcommonMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.CrmClientcommon" id="CrmClientcommonMap">
+        <id property="id" column="id"/>
+        <result property="khdwmc" column="khdwmc"/>
+        <result property="khdwsrm" column="khdwsrm"/>
+        <result property="khdwlxr" column="khdwlxr"/>
+        <result property="khdh" column="khdh"/>
+        <result property="sshy" column="sshy"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="dwjgdm" column="dwjgdm"/>
+        <result property="khdwdz" column="khdwdz"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="lqcstj" column="lqcstj"/>
+        <result property="fpzt" column="fpzt"/>
+        <result property="frdwmc" column="frdwmc"/>
+        <result property="fddbr" column="fddbr"/>
+        <result property="yzbm" column="yzbm"/>
+        <result property="qygm" column="qygm"/>
+        <result property="qyjjlx" column="qyjjlx"/>
+        <result property="zywsfzr" column="zywsfzr"/>
+        <result property="khdwzcdz" column="khdwzcdz"/>
+        <result property="zywsgljg" column="zywsgljg"/>
+        <result property="zclx" column="zclx"/>
+        <result property="lsgx" column="lsgx"/>
+        <result property="sjzgdw" column="sjzgdw"/>
+        <result property="sjcyrs" column="sjcyrs"/>
+        <result property="ldrs" column="ldrs"/>
+        <result property="scgrs" column="scgrs"/>
+        <result property="khsctjdwdz" column="khsctjdwdz"/>
+        <result property="bz" column="bz"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCrmClientcommonVo">
+        select id,
+               khdwmc,
+               khdwsrm,
+               khdwlxr,
+               khdh,
+               sshy,
+               xsjl,
+               dwjgdm,
+               khdwdz,
+               fzxid,
+               xsjlid,
+               lqcstj,
+               fpzt,
+               frdwmc,
+               fddbr,
+               yzbm,
+               qygm,
+               qyjjlx,
+               zywsfzr,
+               khdwzcdz,
+               zywsgljg,
+               zclx,
+               lsgx,
+               sjzgdw,
+               sjcyrs,
+               ldrs,
+               scgrs,
+               khsctjdwdz,
+               bz,
+               is_delete,
+               createdate,
+               modifydate
+        from crm_clientcommon
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CrmClientcommonMap">
+        <include refid="selectCrmClientcommonVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CrmClientcommonMap">
+        <include refid="selectCrmClientcommonVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

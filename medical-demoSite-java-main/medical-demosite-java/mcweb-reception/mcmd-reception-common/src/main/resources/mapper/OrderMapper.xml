@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.reception.dao.OrderMapper">
+
+    <resultMap type="com.center.medical.sellcrm.bean.model.Createorder" id="CreateorderMap">
+        <id property="id" column="id"/>
+        <result property="ddh" column="ddh"/>
+        <result property="ddmc" column="ddmc"/>
+        <result property="dddm" column="dddm"/>
+        <result property="khdwmcid" column="khdwmcid"/>
+        <result property="txfs" column="txfs"/>
+        <result property="fsdxsjh" column="fsdxsjh"/>
+        <result property="cjddrq" column="cjddrq"/>
+        <result property="khdwdh" column="khdwdh"/>
+        <result property="tjzx" column="tjzx"/>
+        <result property="jhjqc" column="jhjqc"/>
+        <result property="jhjqd" column="jhjqd"/>
+        <result property="sfyqdht" column="sfyqdht"/>
+        <result property="htbh" column="htbh"/>
+        <result property="nxtjrs" column="nxtjrs"/>
+        <result property="vxtjrs" column="vxtjrs"/>
+        <result property="ddjg" column="ddjg"/>
+        <result property="ddzk" column="ddzk"/>
+        <result property="ddyhj" column="ddyhj"/>
+        <result property="qtxz" column="qtxz"/>
+        <result property="spzt" column="spzt"/>
+        <result property="spyj" column="spyj"/>
+        <result property="xsjlid" column="xsjlid"/>
+        <result property="xsjl" column="xsjl"/>
+        <result property="fzxid" column="fzxid"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="urls" column="urls"/>
+        <result property="bgzt" column="bgzt"/>
+        <result property="xsdh" column="xsdh"/>
+        <result property="tjxs" column="tjxs"/>
+        <result property="clurls" column="clurls"/>
+        <result property="clspzt" column="clspzt"/>
+        <result property="clspyj" column="clspyj"/>
+        <result property="idInforway" column="id_inforway"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="spr" column="spr"/>
+        <result property="clspr" column="clspr"/>
+        <result property="isOnline" column="is_online"/>
+        <result property="submitTime" column="submit_time"/>
+        <result property="cantReplace" column="cant_replace"/>
+        <result property="chestNum" column="chest_num"/>
+        <result property="bgmemo" column="bgmemo"/>
+        <result property="reviewPayway" column="review_payway"/>
+        <result property="reviewZk" column="review_zk"/>
+        <result property="templateJm" column="template_jm"/>
+        <result property="templateText" column="template_text"/>
+        <result property="kdzlName" column="kdzl_name"/>
+        <result property="isMarket" column="is_market"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCreateorderVo">
+        select id,
+               ddh,
+               ddmc,
+               dddm,
+               khdwmcid,
+               txfs,
+               fsdxsjh,
+               cjddrq,
+               khdwdh,
+               tjzx,
+               jhjqc,
+               jhjqd,
+               sfyqdht,
+               htbh,
+               nxtjrs,
+               vxtjrs,
+               ddjg,
+               ddzk,
+               ddyhj,
+               qtxz,
+               spzt,
+               spyj,
+               xsjlid,
+               xsjl,
+               fzxid,
+               is_delete,
+               createdate,
+               modifydate,
+               urls,
+               bgzt,
+               xsdh,
+               tjxs,
+               clurls,
+               clspzt,
+               clspyj,
+               id_inforway,
+               tjlx,
+               spr,
+               clspr,
+               is_online,
+               submit_time,
+               cant_replace,
+               chest_num,
+               bgmemo,
+               review_payway,
+               review_zk,
+               template_jm,
+               template_text,
+               kdzl_name,
+               is_market
+        from md_createorder
+    </sql>
+
+    <!--分页查询备单订单列表-->
+    <select id="getPage" resultType="com.center.medical.reception.bean.vo.BdOrderVo">
+        SELECT co.id,
+        co.ddh,
+        co.ddmc,
+        sc.khdwmc,
+        co.xsjlid,
+        co.jhjqc,
+        co.jhjqd,
+        co.nxtjrs,
+        co.vxtjrs,
+        co.nxtjrs + co.vxtjrs AS plancount,
+        co.khdwdh,
+        co.qtxz,
+        sc.khdwzcdz,
+        sc.xsjl AS xsjlmc,
+        p.nums AS a_count,
+        co.urls,
+        oaf.tbzt,
+        v.f_finished AS finish,
+        co.bgzt,
+        co.submit_time,
+        oaf.bdrq,
+        co.bgmemo,
+        co.is_online,
+        co.kdzl_name,
+        sc.int_id
+        FROM md_createorder co
+        LEFT JOIN crm_sellcustomer sc
+        ON co.khdwmcid = sc.id
+        LEFT JOIN md_orderandfzx oaf ON co.id = oaf.ddid
+        LEFT JOIN (SELECT numorgresv, count(1) nums FROM md_peispatient GROUP BY numorgresv) p
+        ON p.numorgresv = co.ddh
+        LEFT JOIN md_peisorgreservation v ON co.id = v.ddh
+        LEFT JOIN sys_user u ON u.user_no = co.xsjlid
+        <where>
+            co.is_delete = 0
+            AND sc.is_delete = 0
+            AND co.spzt = 4
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND co.ddh LIKE concat('%',#{param.ddh},'%')
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND co.khdwmcid = #{param.khdwmcid}
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND co.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.kdzlName!=null and param.kdzlName!=''">
+                AND co.kdzl_name LIKE concat('%',#{param.kdzlName},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND sc.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND (co.xsjlid = #{param.userNo}
+                OR co.kdzl_name like concat('%', #{param.userName},'%')
+                OR u.superior_id = #{param.userNo})
+            </if>
+            <if test="param.cids!=null">
+                AND oaf.fzxid IN
+                <foreach collection="param.cids" item="cid" open="(" close=")" separator=",">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id = #{param.intId}
+            </if>
+            <if test="param.lowerLevelIds!=null">
+                AND co.xsjlid IN
+                <foreach collection="param.lowerLevelIds" item="lowerLevelId" open="(" close=")" separator=",">
+                    #{lowerLevelId}
+                </foreach>
+            </if>
+        </where>
+        group by co.id
+        <if test="param.sortByOrder!=null and param.sortByOrder==1">
+            ORDER BY co.ddh DESC
+        </if>
+        <if test="param.sortByOrder!=null and param.sortByOrder==0">
+            ORDER BY (
+            CASE
+            WHEN (oaf.tbzt IS NULL OR oaf.tbzt != 1)
+            AND co.bgzt = 5 THEN
+            - 1
+            WHEN (oaf.tbzt IS NULL OR oaf.tbzt != 1)
+            AND co.bgzt = 4 THEN
+            0
+            ELSE 1
+            END
+            ) ASC,
+            oaf.bdrq DESC
+        </if>
+
+
+    </select>
+
+
+    <!--获取分组下相应的人员信息-->
+    <select id="getPatientData" resultType="com.center.medical.reception.bean.vo.OrderPaDataVo">
+        SELECT
+        p.id,
+        p.hospitalcode,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.phone,
+        p.birthdate,
+        p.idcardno,
+        p.id_marriage,
+        p.id_nation,
+        p.cultural,
+        p.org_depart,
+        p.workno,
+        p.trades,
+        p.work_date,
+        p.zgl,
+        p.harm_date,
+        p.jhgl,
+        p.medicaltype,
+        p.note,
+        (case when nsms.id_contact is null then 0 else 1 end) AS smsContact,
+        p.jhys,
+        p.id_patientclass,
+        p.f_registered,
+        wt.type_name AS workType,
+        p.worktype_id,
+        p.ts_limit,
+        mn.name as nationName,
+        p.sabc
+        FROM
+        md_peispatient p
+        LEFT JOIN md_notify_sms_exam nsms ON p.patientcode = nsms.patientcode
+        LEFT JOIN md_base_worktype wt ON wt.id = p.worktype_id
+        LEFT JOIN md_nation mn ON mn.id = p.id_nation
+        <where>
+            1 = 1
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND p.id_orgreservationgroup = #{param.idOrgreservationgroup}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.fRegistered!=null and param.fRegistered!=''">
+                AND (p.f_registered is null or p.f_registered = 0)
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND (p.patientname LIKE concat('%',#{param.patientname},'%')
+                or p.input_code LIKE concat('%',#{param.patientname},'%'))
+            </if>
+            AND p.id_examtype <![CDATA[ <> ]]> '3'
+        </where>
+
+        <choose>
+            <when test="param.sortField !=null and param.sortOrder !=null">
+                <choose>
+                    <when test="param.sortField == 'pinyin'">
+                        ORDER BY p.input_code ${param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'patientcode'">
+                        ORDER BY p.patientcode ${param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'patientname'">
+                        ORDER BY p.patientname ${param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'idSex'">
+                        ORDER BY p.id_sex ${param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'age'">
+                        ORDER BY p.age ${param.sortOrder}
+                    </when>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY p.createdate DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--分页查询备单订单列表-->
+    <select id="getStatistics" resultType="com.center.medical.reception.bean.vo.StatisticsVo">
+        SELECT
+        count( CASE WHEN co.is_online = 1 THEN 1 ELSE NULL END ) AS xsbd,
+        count( CASE WHEN oaf.tbzt = 1 AND ( co.is_online != 1 OR co.is_online IS NULL ) THEN 1 ELSE NULL END ) AS ybd,
+        count( CASE WHEN ( oaf.tbzt != 1 OR oaf.tbzt IS NULL ) AND ( co.is_online != 1 OR co.is_online IS NULL )
+        AND co.bgzt = 4 THEN 1 ELSE NULL END) AS bgwbd,
+        count( CASE WHEN ( oaf.tbzt != 1 OR oaf.tbzt IS NULL ) AND ( co.bgzt != 4 OR co.bgzt IS NULL )
+        AND ( co.is_online != 1 OR co.is_online IS NULL ) THEN 1 ELSE NULL END) AS wbd
+        FROM md_createorder co
+        LEFT JOIN crm_sellcustomer sc
+        ON co.khdwmcid = sc.id
+        LEFT JOIN md_orderandfzx oaf ON co.id = oaf.ddid
+        LEFT JOIN (SELECT numorgresv, count(1) nums FROM md_peispatient GROUP BY numorgresv) p
+        ON p.numorgresv = co.ddh
+        LEFT JOIN md_peisorgreservation v ON co.id = v.ddh
+        <where>
+            co.is_delete = 0
+            AND sc.is_delete = 0
+            AND co.spzt = 4
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND co.ddh LIKE concat('%',#{param.ddh},'%')
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND co.khdwmcid = #{param.khdwmcid}
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND co.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.kdzlName!=null and param.kdzlName!=''">
+                AND co.kdzl_name LIKE concat('%',#{param.kdzlName},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND sc.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND co.xsjlid LIKE concat('%',#{param.userNo},'%')
+            </if>
+            <if test="param.branchIds!=null">
+                AND co.fzxid IN
+                <foreach collection="param.branchIds" item="brandId" open="(" close=")" separator=",">
+                    #{brandId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+    <!--分页查询备单订单列表-->
+    <select id="getExportData" resultType="com.center.medical.reception.bean.vo.BdOrderVo">
+        SELECT co.id,
+        co.ddh,
+        co.ddmc,
+        sc.khdwmc,
+        co.xsjlid,
+        co.jhjqc,
+        co.jhjqd,
+        co.nxtjrs,
+        co.vxtjrs,
+        co.nxtjrs + co.vxtjrs AS plancount,
+        co.khdwdh,
+        co.qtxz,
+        sc.khdwzcdz,
+        sc.xsjl AS xsjlmc,
+        p.nums AS a_count,
+        co.urls,
+        oaf.tbzt,
+        v.f_finished AS finish,
+        co.bgzt,
+        co.submit_time,
+        oaf.bdrq,
+        co.bgmemo,
+        co.is_online,
+        co.kdzl_name,
+        sc.int_id
+        FROM md_createorder co
+        LEFT JOIN crm_sellcustomer sc
+        ON co.khdwmcid = sc.id
+        LEFT JOIN md_orderandfzx oaf ON co.id = oaf.ddid
+        LEFT JOIN (SELECT numorgresv, count(1) nums FROM md_peispatient GROUP BY numorgresv) p
+        ON p.numorgresv = co.ddh
+        LEFT JOIN md_peisorgreservation v ON co.id = v.ddh
+        LEFT JOIN sys_user u ON u.user_no = co.xsjlid
+        <where>
+            co.is_delete = 0
+            AND sc.is_delete = 0
+            AND co.spzt = 4
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND co.ddh LIKE concat('%',#{param.ddh},'%')
+            </if>
+            <if test="param.khdwmcid!=null and param.khdwmcid!=''">
+                AND co.khdwmcid = #{param.khdwmcid}
+            </if>
+            <if test="param.xsjlid!=null and param.xsjlid!=''">
+                AND co.xsjlid = #{param.xsjlid}
+            </if>
+            <if test="param.kdzlName!=null and param.kdzlName!=''">
+                AND co.kdzl_name LIKE concat('%',#{param.kdzlName},'%')
+            </if>
+            <if test="param.khdwmc!=null and param.khdwmc!=''">
+                AND sc.khdwmc LIKE concat('%',#{param.khdwmc},'%')
+            </if>
+            <if test="param.userNo!=null and param.userNo!=''">
+                AND (co.xsjlid = #{param.userNo}
+                OR co.kdzl_name like concat('%', #{param.userName},'%')
+                OR u.superior_id = #{param.userNo})
+            </if>
+            <if test="param.cids!=null">
+                AND oaf.fzxid IN
+                <foreach collection="param.cids" item="cid" open="(" close=")" separator=",">
+                    #{cid}
+                </foreach>
+            </if>
+            <if test="param.intId!=null and param.intId!=''">
+                AND sc.int_id = #{param.intId}
+            </if>
+        </where>
+        group by co.id
+        <if test="param.sortByOrder!=null and param.sortByOrder==1">
+            ORDER BY co.ddh DESC
+        </if>
+        <if test="param.sortByOrder!=null and param.sortByOrder==0">
+            ORDER BY (
+            CASE
+            WHEN (oaf.tbzt IS NULL OR oaf.tbzt != 1)
+            AND co.bgzt = 5 THEN
+            - 1
+            WHEN (oaf.tbzt IS NULL OR oaf.tbzt != 1)
+            AND co.bgzt = 4 THEN
+            0
+            ELSE 1
+            END
+            ) ASC,
+            oaf.bdrq DESC
+        </if>
+    </select>
+
+
+    <!--分页查询备单订单列表-->
+    <select id="exportGuidanceList" resultType="com.center.medical.reception.bean.vo.ExportGuidanceListVo">
+        SELECT p.patientname,
+               p.id_sex,
+               p.phone,
+               p.age,
+               p.idcardno,
+               p.examsuite_name,
+               p.doctorreg,
+               m.payway_name,
+               p.jhys,
+               p.trades,
+               '' dateinorganization,
+               p.id_examtype,
+               p.patientcode
+        FROM md_peispatient p
+                 INNER JOIN md_peisorgreservationgroup g ON g.id = p.id_orgreservationgroup
+                 LEFT JOIN md_dictpayway m ON m.id = g.id_payway
+        WHERE p.id_orgreservation = #{id}
+          AND (p.f_registered IS NULL OR p.f_registered = 0)
+          AND p.id_orgreservationgroup IS NOT NULL
+
+    </select>
+
+
+
+    <!--查询该订单号下的未发预约短信的体检者-->
+    <select id="getSMSPeiByByDddh" resultType="com.center.medical.bean.model.Peispatient">
+        SELECT p.*
+        FROM md_peispatient p
+            LEFT JOIN md_sms_record sms on sms.patientcode = p.patientcode
+            and sms.notify_type = 0
+        WHERE numorgresv = #{ddh}
+          AND sms.id is null
+          AND (p.f_registered IS NULL OR P.f_registered = 0)
+    </select>
+
+
+
+
+    <!--获取分组下相应的人员信息(不分页)-->
+    <select id="getPatientDataList" resultType="com.center.medical.reception.bean.vo.OrderPaDataVo">
+        SELECT
+        p.id,
+        p.hospitalcode,
+        p.patientcode,
+        p.patientname,
+        p.id_sex,
+        p.age,
+        p.phone,
+        p.birthdate,
+        p.idcardno,
+        p.id_marriage,
+        p.id_nation,
+        p.cultural,
+        p.org_depart,
+        p.workno,
+        p.trades,
+        p.work_date,
+        p.zgl,
+        p.harm_date,
+        p.jhgl,
+        p.medicaltype,
+        p.note,
+        (case when nsms.id_contact is null then 0 else 1 end) AS smsContact,
+        p.jhys,
+        p.id_patientclass,
+        p.f_registered,
+        wt.type_name AS workType,
+        p.worktype_id,
+        p.ts_limit,
+        mn.name as nationName
+        FROM
+        md_peispatient p
+        LEFT JOIN md_notify_sms_exam nsms ON p.patientcode = nsms.patientcode
+        LEFT JOIN md_base_worktype wt ON wt.id = p.worktype_id
+        LEFT JOIN md_nation mn ON mn.id = p.id_nation
+        <where>
+            1 = 1
+            <if test="param.idOrgreservationgroup!=null and param.idOrgreservationgroup!=''">
+                AND p.id_orgreservationgroup = #{param.idOrgreservationgroup}
+            </if>
+            <if test="param.ddh!=null and param.ddh!=''">
+                AND p.numorgresv = #{param.ddh}
+            </if>
+            <if test="param.inputCode!=null and param.inputCode!=''">
+                AND p.input_code LIKE concat('%',#{param.inputCode},'%')
+            </if>
+            <if test="param.fRegistered!=null and param.fRegistered!=''">
+                AND (p.f_registered is null or p.f_registered = 0)
+            </if>
+            <if test="param.patientname!=null and param.patientname!=''">
+                AND (p.patientname LIKE concat('%',#{param.patientname},'%')
+                or p.input_code LIKE concat('%',#{param.patientname},'%'))
+            </if>
+            AND p.id_examtype <![CDATA[ <> ]]> '3'
+        </where>
+
+        <choose>
+            <when test="param.sortField !=null and param.sortOrder !=null">
+                <choose>
+                    <when test="param.sortField == 'pinyin'">
+                        ORDER BY p.input_code #{param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'patientcode'">
+                        ORDER BY p.patientcode #{param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'patientname'">
+                        ORDER BY p.patientname #{param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'idSex'">
+                        ORDER BY p.id_sex #{param.sortOrder}
+                    </when>
+                    <when test="param.sortField == 'age'">
+                        ORDER BY p.age #{param.sortOrder}
+                    </when>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY p.createdate ASC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--校正体检者-->
+    <select id="checkPeispatient" resultType="com.center.medical.reception.bean.vo.CheckPeispatientVo">
+        SELECT
+            p.id,p.patientcode,p.id_payway,pg.id_payway
+        FROM
+            md_peispatient p
+            left join md_peisorgreservationgroup pg on pg.id = p.id_orgreservationgroup
+        <where>
+            1 = 1
+            and p.f_registered != 1
+            and p.id_payway != pg.id_payway
+            and pg.id_payway = #{idPayway}
+        </where>
+    </select>
+</mapper>
+

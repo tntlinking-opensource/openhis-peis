@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.SellprintteamsMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Sellprintteams" id="SellprintteamsMap">
+        <id property="id" column="ID"/>
+        <result property="dyxmflmc" column="DYXMFLMC"/>
+        <result property="srm" column="SRM"/>
+        <result property="bz" column="BZ"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="isDelete" column="IS_DELETE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSellprintteamsVo">
+        select ID, DYXMFLMC, SRM, BZ, CREATEDATE, MODIFYDATE, IS_DELETE
+        from SELLPRINTTEAMS
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SellprintteamsMap">
+        <include refid="selectSellprintteamsVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SellprintteamsMap">
+        <include refid="selectSellprintteamsVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

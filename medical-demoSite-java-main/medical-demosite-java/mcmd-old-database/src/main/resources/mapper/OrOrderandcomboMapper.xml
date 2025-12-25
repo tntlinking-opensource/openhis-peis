@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.OrOrderandcomboMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.OrOrderandcombo" id="OrderandcomboMap">
+        <id property="id" column="ID"/>
+        <result property="ddid" column="DDID"/>
+        <result property="tcid" column="TCID"/>
+        <result property="xsjlid" column="XSJLID"/>
+        <result property="combostate" column="COMBOSTATE"/>
+        <result property="isjj" column="ISJJ"/>
+        <result property="sfybd" column="SFYBD"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="spzt" column="SPZT"/>
+        <result property="isbg" column="ISBG"/>
+        <result property="show" column="SHOW"/>
+        <result property="idExamclass" column="ID_EXAMCLASS"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectOrderandcomboVo">
+        select ID,
+               DDID,
+               TCID,
+               XSJLID,
+               COMBOSTATE,
+               ISJJ,
+               SFYBD,
+               CREATEDATE,
+               MODIFYDATE,
+               SPZT,
+               ISBG,
+               SHOW,
+               ID_EXAMCLASS
+        from ORDERANDCOMBO
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="OrderandcomboMap">
+        <include refid="selectOrderandcomboVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="OrderandcomboMap">
+        <include refid="selectOrderandcomboVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

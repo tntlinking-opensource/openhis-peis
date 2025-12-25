@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.FinanceCountMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.FinanceCountVo">
+        SELECT * FROM (
+        SELECT
+            p.patientcode,
+            p.patientname,
+            IFNULL ( pcm.moneyamount, 0 ) AS moneyamount,
+            payway.payway_name AS paywayName,
+            STR_TO_DATE ( charge.feechargetime, '%Y-%m-%d %T' ) AS feechargetime,
+            (CASE WHEN charge.note LIKE '预收' THEN 1 ELSE 0 END) AS sfys,
+            (CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END) AS ysje,
+            (CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END) AS ssmoney,
+            STR_TO_DATE ( p.dateregister, '%Y-%m-%d %T' )  AS sstime
+        FROM
+            md_peispatient p
+                LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+                LEFT JOIN md_peispatientcharge charge ON p.patientcode = charge.patientcode
+                LEFT JOIN md_dictpayway payway ON charge.id_payway = payway.id
+        <where>
+            charge.is_delete = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND P.f_registered = 1
+        </where>
+        ORDER BY charge.createdate DESC,charge.num_index DESC ) AS aaaaa
+        UNION ALL
+        SELECT * FROM (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        IFNULL ( pcm.moneyamount, 0 ) AS moneyamount,
+        payway.payway_name AS payway,
+        STR_TO_DATE ( charge.feechargetime, '%Y-%m-%d %T' ) AS feechargetime,
+        (CASE WHEN charge.note LIKE '预收' THEN 1 ELSE 0 END) AS sfys,
+        (CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END) AS ysje,
+        (CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END) AS ssmoney,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d %T' )  AS sstime
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_peispatientcharge charge ON p.patientcode = charge.patientcode
+        LEFT JOIN md_dictpayway payway ON charge.id_payway = payway.id
+        <where>
+            charge.is_delete = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND (p.f_registered IS NULL OR P.F_REGISTERED =0)
+        </where>
+        ORDER BY charge.createdate DESC,charge.num_index DESC ) AS bbbbb
+    </select>
+
+
+
+
+    <!-- 导出财务收费统计 -->
+    <select id="exportData" resultType="com.center.medical.statistics.bean.vo.FinanceCountVo">
+        SELECT * FROM (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        IFNULL ( pcm.moneyamount, 0 ) AS moneyamount,
+        payway.payway_name AS paywayName,
+        STR_TO_DATE ( charge.feechargetime, '%Y-%m-%d %T' ) AS feechargetime,
+        (CASE WHEN charge.note LIKE '预收' THEN 1 ELSE 0 END) AS sfys,
+        (CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END) AS ysje,
+        (CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END) AS ssmoney,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d %T' )  AS sstime
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_peispatientcharge charge ON p.patientcode = charge.patientcode
+        LEFT JOIN md_dictpayway payway ON charge.id_payway = payway.id
+        <where>
+            charge.is_delete = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND charge.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND P.f_registered = 1
+        </where>
+        ORDER BY charge.createdate DESC,charge.num_index DESC ) AS aaaaa
+        UNION ALL
+        SELECT * FROM (
+        SELECT
+        p.patientcode,
+        p.patientname,
+        IFNULL ( pcm.moneyamount, 0 ) AS moneyamount,
+        payway.payway_name AS payway,
+        STR_TO_DATE ( charge.feechargetime, '%Y-%m-%d %T' ) AS feechargetime,
+        (CASE WHEN charge.note LIKE '预收' THEN 1 ELSE 0 END) AS sfys,
+        (CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END) AS ysje,
+        (CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END) AS ssmoney,
+        STR_TO_DATE ( p.dateregister, '%Y-%m-%d %T' )  AS sstime
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_peispatientcharge charge ON p.patientcode = charge.patientcode
+        LEFT JOIN md_dictpayway payway ON charge.id_payway = payway.id
+        <where>
+            charge.is_delete = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND charge.createdate <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.createdate <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND (p.f_registered IS NULL OR P.F_REGISTERED =0)
+        </where>
+        ORDER BY charge.createdate DESC,charge.num_index DESC ) AS bbbbb
+    </select>
+
+
+    <!-- 分页查询费用合计 -->
+    <select id="getTotalList" resultType="com.center.medical.statistics.bean.vo.FCTotalVo">
+        SELECT
+        min( payname ) AS paywayName,
+        sum(IFNULL ( ysje, 0 )) AS yjMaoney,
+        sum(IFNULL ( shmoney, 0 )) AS shMoney,
+        (sum(IFNULL ( ysje, 0 )) + sum(IFNULL ( shmoney, 0 ))) AS total
+        FROM
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+            payway.id,
+            payway.payway_name payname,
+            CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END ysje,
+            CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END shmoney,
+            payway.createdate
+        FROM
+            md_dictpayway payway
+                LEFT JOIN md_peispatientcharge charge ON charge.id_payway = payway.id
+                LEFT JOIN md_peispatient p ON p.patientcode = charge.patientcode
+        <where>
+            charge.is_delete = 0
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        AND p.f_registered = 1 ) AS aaaaa
+        UNION ALL
+        SELECT * FROM (
+        SELECT
+        payway.id,
+        payway.payway_name payname,
+        CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END ysje,
+        CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END shmoney,
+        payway.createdate
+        FROM
+        md_dictpayway payway
+        LEFT JOIN md_peispatientcharge charge ON charge.id_payway = payway.id
+        LEFT JOIN md_peispatient p ON p.patientcode = charge.patientcode
+        <where>
+            charge.is_delete = 0
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND (p.f_registered IS NULL OR p.f_registered = 0)
+        </where>
+            ) AS bbbbb
+            ) TOT
+        GROUP BY tot.id,tot.createdate
+        ORDER BY tot.createdate DESC
+    </select>
+
+
+    <!-- 导出财务收费汇总 -->
+    <select id="totalExport" resultType="com.center.medical.statistics.bean.vo.FCTotalVo">
+        SELECT
+        min( payname ) AS paywayName,
+        sum(IFNULL ( ysje, 0 )) AS yjMaoney,
+        sum(IFNULL ( shmoney, 0 )) AS shMoney,
+        (sum(IFNULL ( ysje, 0 )) + sum(IFNULL ( shmoney, 0 ))) AS total
+        FROM
+        (
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        payway.id,
+        payway.payway_name payname,
+        CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END ysje,
+        CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END shmoney,
+        payway.createdate
+        FROM
+        md_dictpayway payway
+        LEFT JOIN md_peispatientcharge charge ON charge.id_payway = payway.id
+        LEFT JOIN md_peispatient p ON p.patientcode = charge.patientcode
+        <where>
+            charge.is_delete = 0
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        AND p.f_registered = 1 ) AS aaaaa
+        UNION ALL
+        SELECT * FROM (
+        SELECT
+        payway.id,
+        payway.payway_name payname,
+        CASE WHEN charge.note LIKE '预收' THEN charge.moneyamountpaid ELSE 0 END ysje,
+        CASE WHEN charge.note LIKE '预收' THEN 0 ELSE charge.moneyamountpaid END shmoney,
+        payway.createdate
+        FROM
+        md_dictpayway payway
+        LEFT JOIN md_peispatientcharge charge ON charge.id_payway = payway.id
+        LEFT JOIN md_peispatient p ON p.patientcode = charge.patientcode
+        <where>
+            charge.is_delete = 0
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            AND (p.f_registered IS NULL OR p.f_registered = 0)
+        </where>
+        ) AS bbbbb
+        ) TOT
+        GROUP BY tot.id,tot.createdate
+        ORDER BY tot.createdate DESC
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="financeCountAmount" resultType="com.center.medical.statistics.bean.vo.FinanceAmountVo">
+        SELECT
+        sum(CASE WHEN (p.id_org is not null and p.id_org != '') THEN charge.moneyamountpaid ELSE 0  END) AS tthj,
+        sum(CASE WHEN (p.id_org is not null and p.id_org != '') THEN 0 ELSE charge.moneyamountpaid END) AS gjhj
+        FROM
+        md_peispatient p
+        LEFT JOIN md_peispatient_charge_main pcm ON pcm.patientcode = p.patientcode
+        LEFT JOIN md_peispatientcharge charge ON p.patientcode = charge.patientcode
+        LEFT JOIN md_dictpayway payway ON charge.id_payway = payway.id
+        <where>
+            charge.is_delete = 0
+            <if test="param.patientcode!=null and param.patientcode!=''">
+                AND p.patientcode like concat('%',#{param.patientcode},'%')
+            </if>
+            <if test="param.startTime!=null">
+                AND charge.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND charge.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+        </where>
+        ORDER BY charge.createdate DESC,charge.num_index DESC
+    </select>
+</mapper>
+

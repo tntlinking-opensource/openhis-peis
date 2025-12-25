@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdOperateLogMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdOperateLog" id="MdOperateLogMap">
+        <id property="id" column="id"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="operator" column="operator"/>
+        <result property="method" column="method"/>
+        <result property="note" column="note"/>
+        <result property="opType" column="op_type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdOperateLogVo">
+        select id, createdate, modifydate, operator, method, note, op_type
+        from md_operate_log
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdOperateLogMap">
+        <include refid="selectMdOperateLogVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdOperateLogMap">
+        <include refid="selectMdOperateLogVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.ChargeDistributeMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.ChargeDistributeVo">
+        SELECT
+            d.dept_name AS charge0,
+            p.examfeeitem_name AS charge1,
+            IFNULL(count( DISTINCT p.id_patient ),0) AS charge2,
+            sum( p.factprice ) AS charge3,
+            sum( p.price ) AS charge4,
+            sum( i.costprice ) AS charge5,
+            IFNULL(count( DISTINCT CASE WHEN t.f_usecodehiden = 0 THEN p.id_patient ELSE NULL END ),0) AS charge7,
+            IFNULL(count( DISTINCT CASE WHEN p.id_payway = '5' THEN p.id_patient ELSE NULL END ) ,0)AS charge9,
+            "" AS charge10
+        FROM
+            md_peispatientfeeitem p
+                LEFT JOIN sys_dept d ON p.id_ks = d.dept_no
+                INNER JOIN md_items i ON p.id_examfeeitem = i.id
+                INNER JOIN md_peispatient t ON p.id_patient = t.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.examfeeitem_name LIKE concat('%',#{param.name},'%')
+            </if>
+            AND ( p.change_item IS NULL OR p.change_item = 0 )
+            AND p.f_feecharged = 1
+            <if test="param.divisionId!=null and param.divisionId!=''">
+                AND p.id_ks = #{param.divisionId}
+            </if>
+        </where>
+        GROUP BY
+        d.dept_name,
+        p.examfeeitem_name
+        ORDER BY
+        d.dept_name,
+        count( DISTINCT p.id_patient ) DESC
+    </select>
+
+    <!-- 查询列表数据 -->
+    <select id="exportData" resultType="com.center.medical.statistics.bean.vo.ChargeDistributeVo">
+        SELECT
+        d.dept_name AS charge0,
+        p.examfeeitem_name AS charge1,
+        IFNULL(count( DISTINCT p.id_patient ),0) AS charge2,
+        sum( p.factprice ) AS charge3,
+        sum( p.price ) AS charge4,
+        sum( i.costprice ) AS charge5,
+        IFNULL(count( DISTINCT CASE WHEN t.f_usecodehiden = 0 THEN p.id_patient ELSE NULL END ),0) AS charge7,
+        IFNULL(count( DISTINCT CASE WHEN p.id_payway = '5' THEN p.id_patient ELSE NULL END ) ,0)AS charge9,
+        "" AS charge10
+        FROM
+        md_peispatientfeeitem p
+        LEFT JOIN sys_dept d ON p.id_ks = d.dept_no
+        INNER JOIN md_items i ON p.id_examfeeitem = i.id
+        INNER JOIN md_peispatient t ON p.id_patient = t.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.examfeeitem_name LIKE concat('%',#{param.name},'%')
+            </if>
+            AND ( p.change_item IS NULL OR p.change_item = 0 )
+            AND p.f_feecharged = 1
+            <if test="param.divisionId!=null and param.divisionId!=''">
+                AND p.id_ks = #{param.divisionId}
+            </if>
+        </where>
+        GROUP BY
+        d.dept_name,
+        p.examfeeitem_name
+        ORDER BY
+        d.dept_name,
+        count( DISTINCT p.id_patient ) DESC
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getTotal" resultType="com.center.medical.statistics.bean.vo.CDGetTotalVo">
+        SELECT
+        IFNULL(count( DISTINCT p.id_patient ),0) AS charge2,
+        sum( p.factprice ) AS charge3,
+        sum( p.price ) AS charge4,
+        sum( i.costprice ) AS charge5
+        FROM
+        md_peispatientfeeitem p
+        LEFT JOIN sys_dept d ON p.id_ks = d.dept_no
+        INNER JOIN md_items i ON p.id_examfeeitem = i.id
+        INNER JOIN md_peispatient t ON p.id_patient = t.patientcode
+        <where>
+            1 = 1
+            <if test="param.startTime!=null">
+                AND p.feechargetime <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND p.feechargetime <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND p.examfeeitem_name LIKE concat('%',#{param.name},'%')
+            </if>
+            AND ( p.change_item IS NULL OR p.change_item = 0 )
+            AND p.f_feecharged = 1
+            <if test="param.divisionId!=null and param.divisionId!=''">
+                AND p.id_ks = #{param.divisionId}
+            </if>
+        </where>
+    </select>
+</mapper>
+

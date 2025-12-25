@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.olddata.dao.MdMealanditemMapper">
+
+    <resultMap type="com.center.medical.olddata.bean.model.MdMealanditem" id="MdMealanditemMap">
+        <id property="id" column="id"/>
+        <result property="tcid" column="tcid"/>
+        <result property="sfxmid" column="sfxmid"/>
+        <result property="sfbx" column="sfbx"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="isSystem" column="is_system"/>
+        <result property="price" column="price"/>
+        <result property="itemSort" column="item_sort"/>
+        <result property="itemGroup" column="item_group"/>
+        <result property="groupType" column="group_type"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdMealanditemVo">
+        select id,
+               tcid,
+               sfxmid,
+               sfbx,
+               createdate,
+               modifydate,
+               is_system,
+               price,
+               item_sort,
+               item_group,
+               group_type
+        from md_mealanditem
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdMealanditemMap">
+        <include refid="selectMdMealanditemVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdMealanditemMap">
+        <include refid="selectMdMealanditemVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

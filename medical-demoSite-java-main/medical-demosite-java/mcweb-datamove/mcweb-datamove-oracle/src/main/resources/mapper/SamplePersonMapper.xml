@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.SamplePersonMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.SamplePerson" id="SamplePersonMap">
+        <id property="id" column="ID"/>
+        <result property="ballCheckId" column="BALL_CHECK_ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="groupId" column="GROUP_ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="patientId" column="PATIENT_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSamplePersonVo">
+        select ID, BALL_CHECK_ID, PATIENTCODE, GROUP_ID, CREATEDATE, MODIFYDATE, PATIENT_ID
+        from SAMPLE_PERSON
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SamplePersonMap">
+        <include refid="selectSamplePersonVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SamplePersonMap">
+        <include refid="selectSamplePersonVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

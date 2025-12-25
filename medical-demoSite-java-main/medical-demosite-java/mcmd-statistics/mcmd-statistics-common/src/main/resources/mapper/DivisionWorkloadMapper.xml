@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.statistics.dao.DivisionWorkloadMapper">
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="getList" resultType="com.center.medical.statistics.bean.vo.DivisionWorkVo">
+        SELECT
+            d.dept_name AS division0,
+            s.patientcode AS division1,
+            s.patientname AS division2,
+            s.id_sex AS division3,
+            s.age AS division4,
+            s.org_name AS division5,
+            p.is_audit AS division6,
+            s.dateregister AS division7,
+            s.medicaldate AS division8,
+            u.user_name AS division9,
+            x.user_name AS division10,
+            p.is_audit AS division11,
+            p.audit_time AS division12,
+            p.conclusions AS division13,
+            p.zy_conclusions,
+            s.org_depart AS orgDepart,
+            (CASE WHEN s.numorgresv =- 1 THEN NULL ELSE s.numorgresv END) AS numorgresv,
+            s.id_patientclass AS division14,
+            s.phone AS division15,
+            s.idcardno AS idcardno,
+            s.doctorapply,
+            p.audit_name
+        FROM
+            md_peispatientfeeitem pi
+                LEFT JOIN md_section_result_main p ON p.patientcode = pi.id_patient
+                AND p.dep_id = pi.id_ks
+                INNER JOIN md_peispatient s ON s.patientcode = pi.id_patient
+                LEFT JOIN sys_user x ON x.user_no = p.rummager_id
+                INNER JOIN sys_dept d ON d.dept_no = pi.id_ks
+                AND d.is_function = 1
+                LEFT JOIN sys_user u ON u.user_no = p.write_id
+        <where>
+            s.f_registered = 1
+            AND pi.change_item = 0
+            <if test="param.startTime!=null">
+                AND s.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND s.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startTime2!=null">
+                AND p.audit_time <![CDATA[ >= ]]> #{param.startTime2}
+            </if>
+            <if test="param.endTime2!=null">
+                AND p.audit_time <![CDATA[ <= ]]> #{param.endTime2}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND x.user_name LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.writename!=null and param.writename!=''">
+                AND u.user_name LIKE concat('%',#{param.writename},'%')
+            </if>
+            <if test="param.status!=null">
+                <choose>
+                    <when test="param.status == 1">
+                        AND p.is_audit = '1'
+                    </when>
+                    <otherwise>
+                        AND (p.is_audit IS NULL OR p.is_audit = '0')
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.ks!=null and param.ks!=''">
+                AND pi.id_ks = #{param.ks}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND s.id_org = #{param.idOrg}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND s.numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.auditName!=null and param.auditName!=''">
+                AND p.audit_name LIKE concat('%',#{param.auditName},'%')
+            </if>
+        </where>
+        GROUP BY
+            d.dept_name,
+            s.patientcode,
+            s.patientname,
+            s.id_sex,
+            s.age,
+            s.org_name,
+            p.is_audit,
+            s.dateregister,
+            s.medicaldate,
+            u.user_name,
+            x.user_name,
+            p.is_audit,
+            p.audit_time,
+            p.conclusions,
+            p.zy_conclusions,
+            s.org_depart,
+            s.numorgresv,
+            s.id_patientclass,
+            s.phone,
+            s.idcardno,
+            s.doctorapply
+        ORDER BY
+            d.dept_name,
+            s.org_name DESC
+    </select>
+
+
+
+    <!-- 查询列表数据 -->
+    <select id="exportData" resultType="com.center.medical.statistics.bean.vo.DivisionWorkVo">
+        SELECT
+        d.dept_name AS division0,
+        s.patientcode AS division1,
+        s.patientname AS division2,
+        s.id_sex AS division3,
+        s.age AS division4,
+        s.org_name AS division5,
+        p.is_audit AS division6,
+        s.dateregister AS division7,
+        s.medicaldate AS division8,
+        u.user_name AS division9,
+        x.user_name AS division10,
+        p.is_audit AS division11,
+        p.audit_time AS division12,
+        p.conclusions AS division13,
+        p.zy_conclusions,
+        s.org_depart AS orgDepart,
+        (CASE WHEN s.numorgresv =- 1 THEN NULL ELSE s.numorgresv END) AS numorgresv,
+        s.id_patientclass AS division14,
+        s.phone AS division15,
+        s.idcardno AS idcardno,
+        s.doctorapply,
+        p.audit_name
+        FROM
+        md_peispatientfeeitem pi
+        LEFT JOIN md_section_result_main p ON p.patientcode = pi.id_patient
+        AND p.dep_id = pi.id_ks
+        INNER JOIN md_peispatient s ON s.patientcode = pi.id_patient
+        LEFT JOIN sys_user x ON x.user_no = p.rummager_id
+        INNER JOIN sys_dept d ON d.dept_no = pi.id_ks
+        AND d.is_function = 1
+        LEFT JOIN sys_user u ON u.user_no = p.write_id
+        <where>
+            s.f_registered = 1
+            AND pi.change_item = 0
+            <if test="param.startTime!=null">
+                AND s.dateregister <![CDATA[ >= ]]> #{param.startTime}
+            </if>
+            <if test="param.endTime!=null">
+                AND s.dateregister <![CDATA[ <= ]]> #{param.endTime}
+            </if>
+            <if test="param.startTime2!=null">
+                AND p.audit_time <![CDATA[ >= ]]> #{param.startTime2}
+            </if>
+            <if test="param.endTime2!=null">
+                AND p.audit_time <![CDATA[ <= ]]> #{param.endTime2}
+            </if>
+            <if test="param.name!=null and param.name!=''">
+                AND x.user_name LIKE concat('%',#{param.name},'%')
+            </if>
+            <if test="param.writename!=null and param.writename!=''">
+                AND u.user_name LIKE concat('%',#{param.writename},'%')
+            </if>
+            <if test="param.status!=null">
+                <choose>
+                    <when test="param.status == 1">
+                        AND p.is_audit = '1'
+                    </when>
+                    <otherwise>
+                        AND (p.is_audit IS NULL OR p.is_audit = '0')
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="param.ks!=null and param.ks!=''">
+                AND pi.id_ks = #{param.ks}
+            </if>
+            <if test="param.idOrg!=null and param.idOrg!=''">
+                AND s.id_org = #{param.idOrg}
+            </if>
+            <if test="param.numorgresv!=null and param.numorgresv!=''">
+                AND s.numorgresv = #{param.numorgresv}
+            </if>
+            <if test="param.auditName!=null and param.auditName!=''">
+                AND p.audit_name LIKE concat('%',#{param.auditName},'%')
+            </if>
+        </where>
+        GROUP BY
+        d.dept_name,
+        s.patientcode,
+        s.patientname,
+        s.id_sex,
+        s.age,
+        s.org_name,
+        p.is_audit,
+        s.dateregister,
+        s.medicaldate,
+        u.user_name,
+        x.user_name,
+        p.is_audit,
+        p.audit_time,
+        p.conclusions,
+        p.zy_conclusions,
+        s.org_depart,
+        s.numorgresv,
+        s.id_patientclass,
+        s.phone,
+        s.idcardno,
+        s.doctorapply
+        ORDER BY
+        d.dept_name,
+        s.org_name DESC
+    </select>
+
+</mapper>
+

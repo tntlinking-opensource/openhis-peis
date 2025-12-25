@@ -1,0 +1,139 @@
+// cover some element-ui styles
+
+.el-breadcrumb__inner,
+.el-breadcrumb__inner a {
+  font-weight: 400 !important;
+}
+
+.el-upload {
+  input[type="file"] {
+    display: none !important;
+  }
+}
+
+.el-upload__input {
+  display: none;
+}
+
+.el-message-box {
+  max-width: 90vw;
+}
+
+.cell {
+  .el-tag {
+    margin-right: 0px;
+  }
+}
+
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+.fixed-width {
+  .el-button--mini {
+    padding: 7px 10px;
+    width: 60px;
+  }
+}
+
+.status-col {
+  .cell {
+    padding: 0 10px;
+    text-align: center;
+
+    .el-tag {
+      margin-right: 0px;
+    }
+  }
+}
+
+.el-table th .cell {
+  font-weight: 600;
+}
+
+.el-table .cell {
+  color: #000;
+  font-size: 13px;
+  // font-family: SimHei;
+}
+
+// to fixed https://github.com/ElemeFE/element/issues/2461
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
+}
+
+// refine element ui upload
+.upload-container {
+  .el-upload {
+    width: 100%;
+
+    .el-upload-dragger {
+      width: 100%;
+      height: 200px;
+    }
+  }
+}
+
+// dropdown
+.el-dropdown-menu {
+  a {
+    display: block
+  }
+}
+
+// fix date-picker ui bug in filter-item
+.el-range-editor.el-input__inner {
+  display: inline-flex !important;
+}
+
+// to fix el-date-picker css style
+.el-range-separator {
+  box-sizing: content-box;
+}
+
+.el-menu--collapse>div>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+  display: none;
+}
+
+.el-checkbox.is-bordered,
+.el-checkbox__inner {
+  border: 1px solid #666 !important;
+}
+
+thead .is-checked .el-checkbox__inner,
+.is-checked.el-checkbox.is-bordered,
+thead .is-indeterminate .el-checkbox__inner,
+.el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-focus .el-checkbox__inner,
+.el-checkbox__inner:hover,
+.is-active .el-input__inner,
+.el-input__inner:focus {
+  border-color: rgba(254, 105, 57, 0.9) !important;
+}
+
+.el-input__inner {
+  color: #000 !important;
+  border: 1px solid #666 !important;
+}
+
+.el-table .el-table__cell,
+.el-table--border,
+.el-table--group {
+  border-color: #ccc !important;
+}
+
+body .el-table__row.hover-row>td.el-table__cell,
+body .el-table--striped .el-table__body tr.el-table__row--striped.hover-row>td.el-table__cell,
+.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell {
+  background: #ddd !important;
+}
+
+body .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: #eee;
+}

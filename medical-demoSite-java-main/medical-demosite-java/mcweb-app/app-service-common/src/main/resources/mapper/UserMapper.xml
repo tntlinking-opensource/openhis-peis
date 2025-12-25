@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.app.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.center.medical.app.bean.model.User">
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="user_mail" jdbcType="VARCHAR" property="userMail"/>
+        <result column="login_password" jdbcType="VARCHAR" property="loginPassword"/>
+        <result column="pay_password" jdbcType="VARCHAR" property="payPassword"/>
+        <result column="user_mobile" jdbcType="VARCHAR" property="userMobile"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="user_regtime" jdbcType="TIMESTAMP" property="userRegtime"/>
+        <result column="user_regip" jdbcType="VARCHAR" property="userRegip"/>
+        <result column="user_memo" jdbcType="VARCHAR" property="userMemo"/>
+        <result column="sex" jdbcType="CHAR" property="sex"/>
+        <result column="birth_date" jdbcType="CHAR" property="birthDate"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="level_type" jdbcType="INTEGER" property="levelType"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+
+    <resultMap id="BaseAndAppMap" type="com.center.medical.app.bean.model.User">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="user_mail" jdbcType="VARCHAR" property="userMail"/>
+        <result column="login_password" jdbcType="VARCHAR" property="loginPassword"/>
+        <result column="pay_password" jdbcType="VARCHAR" property="payPassword"/>
+        <result column="user_mobile" jdbcType="VARCHAR" property="userMobile"/>
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
+        <result column="user_regtime" jdbcType="TIMESTAMP" property="userRegtime"/>
+        <result column="vip_end_time" jdbcType="TIMESTAMP" property="vipEndTime"/>
+        <result column="user_regip" jdbcType="VARCHAR" property="userRegip"/>
+        <!--<result column="user_lasttime" jdbcType="TIMESTAMP" property="userLasttime" />-->
+        <!--<result column="user_lastip" jdbcType="VARCHAR" property="userLastip" />-->
+        <result column="user_memo" jdbcType="VARCHAR" property="userMemo"/>
+        <result column="sex" jdbcType="CHAR" property="sex"/>
+        <result column="birth_date" jdbcType="CHAR" property="birthDate"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="level_type" jdbcType="INTEGER" property="levelType"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <collection property="bizUserIdList" javaType="java.util.List" ofType="string">
+            <id column="bizUserIdList"/>
+        </collection>
+    </resultMap>
+
+    <!--通过第三方用户id获取对应客户端用户-->
+    <select id="getUserByBizUserId" resultMap="BaseResultMap">
+        select *
+        from md_user u
+        where u.user_id =
+              (select user_id from md_app_connect ac where ac.app_id = #{appId} and ac.biz_user_id = #{bizUserId})
+    </select>
+
+    <!--条件按查询，分页获取用户列表-->
+    <select id="getUserPage" resultType="com.center.medical.app.bean.model.User">
+        SELECT u.nick_name,u.status,u.pic,u.level,u.level_type,u.user_id,u.real_name,u.user_mobile
+        FROM md_user u
+        <where>
+            <if test="user.nickName != null and user.nickName != ''">
+                AND u.nick_name LIKE CONCAT("%",#{user.nickName},"%")
+            </if>
+            <if test="user.status != null">
+                AND u.status = #{user.status}
+            </if>
+            <if test="user.levelType != null and user.levelType != ''">
+                AND u.level_Type = #{user.levelType}
+            </if>
+            <if test="user.realName != null and user.realName != ''">
+                AND u.real_name LIKE CONCAT("%",#{user.realName},"%")
+            </if>
+            <if test="user.userMobile != null and user.userMobile != ''">
+                AND u.user_mobile LIKE CONCAT("%",#{user.userMobile},"%")
+            </if>
+        </where>
+    </select>
+
+    <!--获取用户详情-->
+    <select id="getUserDetail" resultMap="BaseAndAppMap">
+        SELECT u.*, ac.biz_user_id as bizUserIdList
+        FROM md_user u
+                 left JOIN md_app_connect ac ON u.user_id = ac.user_id and biz_user_id is not null
+        WHERE u.user_id = #{userId}
+    </select>
+
+    <!--获取用户id和用户注册时间-->
+    <select id="getUserListByUserNumbers" resultType="com.center.medical.app.bean.model.User">
+        SELECT user_id,user_regtime FROM md_user WHERE user_id IN
+        <foreach collection="userSet" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+
+    <!--根据多个手机号获取对应的用户-->
+    <select id="listByUserPhones" resultType="com.center.medical.app.bean.model.User">
+        select * from `md_user` where user_mobile in
+        <foreach collection="phones" item="phone" index="index" open="(" close=")" separator=",">
+            #{phone}
+        </foreach>
+    </select>
+
+    <!--根据多个邮箱获取对应的用户-->
+    <select id="listByUserMails" resultType="com.center.medical.app.bean.model.User" parameterType="java.util.List">
+        select * from `md_user` where user_mail in
+        <foreach collection="mails" item="mail" index="index" open="(" close=")" separator=",">
+            #{mail}
+        </foreach>
+    </select>
+
+    <!--根据用户名查询用户信息(区分用户名大小写)-->
+    <select id="selectOneByUserName" resultType="com.center.medical.app.bean.model.User">
+        select *
+        from `md_user`
+        where binary user_name = #{userName} limit 1
+    </select>
+
+    <!--根据用户名统计用户数据-->
+    <select id="selectCountByUserName" resultType="java.lang.Integer">
+        select count(*)
+        from `md_user`
+        where binary user_name = #{userName}
+    </select>
+
+    <!--获取指定用户名-->
+    <select id="listUserName" resultType="java.lang.String">
+        select user_name from md_user where nick_name in
+        <foreach collection="nickNames" item="nickName" open="(" close=")" separator=",">
+            #{nickName}
+        </foreach>
+    </select>
+</mapper>

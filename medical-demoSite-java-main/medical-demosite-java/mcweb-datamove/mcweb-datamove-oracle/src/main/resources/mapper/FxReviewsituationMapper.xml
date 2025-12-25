@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.FxReviewsituationMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.FxReviewsituation" id="FxReviewsituationMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="sampleId" column="SAMPLE_ID"/>
+        <result property="positives" column="POSITIVES"/>
+        <result property="summaryText" column="SUMMARY_TEXT"/>
+        <result property="occupationSummary" column="OCCUPATION_SUMMARY"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="age" column="AGE"/>
+        <result property="jhys" column="JHYS"/>
+        <result property="jhysIds" column="JHYS_IDS"/>
+        <result property="reviewStatus" column="REVIEW_STATUS"/>
+        <result property="summarySerialno" column="SUMMARY_SERIALNO"/>
+        <result property="trades" column="TRADES"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFxReviewsituationVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               PATIENTCODE,
+               SAMPLE_ID,
+               POSITIVES,
+               SUMMARY_TEXT,
+               OCCUPATION_SUMMARY,
+               PATIENTNAME,
+               SEX,
+               AGE,
+               JHYS,
+               JHYS_IDS,
+               REVIEW_STATUS,
+               SUMMARY_SERIALNO,
+               TRADES
+        from FX_REVIEWSITUATION
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FxReviewsituationMap">
+        <include refid="selectFxReviewsituationVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FxReviewsituationMap">
+        <include refid="selectFxReviewsituationVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

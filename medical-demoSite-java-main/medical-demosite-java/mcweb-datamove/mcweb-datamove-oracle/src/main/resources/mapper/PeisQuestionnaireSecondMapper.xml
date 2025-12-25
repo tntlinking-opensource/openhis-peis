@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.PeisQuestionnaireSecondMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.PeisQuestionnaireSecond"
+               id="PeisQuestionnaireSecondMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="idSex" column="ID_SEX"/>
+        <result property="birthdate" column="BIRTHDATE"/>
+        <result property="idcardno" column="IDCARDNO"/>
+        <result property="isHan" column="IS_HAN"/>
+        <result property="idProvince" column="ID_PROVINCE"/>
+        <result property="idCity" column="ID_CITY"/>
+        <result property="idArea" column="ID_AREA"/>
+        <result property="idMarriage" column="ID_MARRIAGE"/>
+        <result property="phone" column="PHONE"/>
+        <result property="family1" column="FAMILY1"/>
+        <result property="family2" column="FAMILY2"/>
+        <result property="family3" column="FAMILY3"/>
+        <result property="family4" column="FAMILY4"/>
+        <result property="present1" column="PRESENT1"/>
+        <result property="present2" column="PRESENT2"/>
+        <result property="present3" column="PRESENT3"/>
+        <result property="allergy1" column="ALLERGY1"/>
+        <result property="medication1" column="MEDICATION1"/>
+        <result property="medication2" column="MEDICATION2"/>
+        <result property="operation1" column="OPERATION1"/>
+        <result property="body1" column="BODY1"/>
+        <result property="body2" column="BODY2"/>
+        <result property="body3" column="BODY3"/>
+        <result property="body4" column="BODY4"/>
+        <result property="body5" column="BODY5"/>
+        <result property="body6" column="BODY6"/>
+        <result property="body7" column="BODY7"/>
+        <result property="body8" column="BODY8"/>
+        <result property="body9" column="BODY9"/>
+        <result property="smoke1" column="SMOKE1"/>
+        <result property="smoke2" column="SMOKE2"/>
+        <result property="smoke3" column="SMOKE3"/>
+        <result property="smoke4" column="SMOKE4"/>
+        <result property="drink1" column="DRINK1"/>
+        <result property="sport1" column="SPORT1"/>
+        <result property="sport2" column="SPORT2"/>
+        <result property="sport3" column="SPORT3"/>
+        <result property="environment1" column="ENVIRONMENT1"/>
+        <result property="sleep1" column="SLEEP1"/>
+        <result property="sleep2int" column="SLEEP2INT"/>
+        <result property="examination1" column="EXAMINATION1"/>
+        <result property="creator" column="CREATOR"/>
+        <result property="sleep2Other" column="SLEEP2_OTHER"/>
+        <result property="medication2Other" column="MEDICATION2_OTHER"/>
+        <result property="present2Other" column="PRESENT2_OTHER"/>
+        <result property="family3Other" column="FAMILY3_OTHER"/>
+        <result property="family2Other" column="FAMILY2_OTHER"/>
+        <result property="operation1Other" column="OPERATION1_OTHER"/>
+        <result property="appUserId" column="APP_USER_ID"/>
+        <result property="sleep2" column="SLEEP2"/>
+        <result property="body10" column="BODY10"/>
+        <result property="patientbizno" column="PATIENTBIZNO"/>
+        <result property="bmi" column="BMI"/>
+        <result property="height" column="HEIGHT"/>
+        <result property="weight" column="WEIGHT"/>
+        <result property="operation2" column="OPERATION2"/>
+        <result property="operation2other" column="OPERATION2OTHER"/>
+        <result property="birth1" column="BIRTH1"/>
+        <result property="birth2" column="BIRTH2"/>
+        <result property="birth2other" column="BIRTH2OTHER"/>
+        <result property="birth3" column="BIRTH3"/>
+        <result property="birth4" column="BIRTH4"/>
+        <result property="birth5" column="BIRTH5"/>
+        <result property="birth6" column="BIRTH6"/>
+        <result property="birth7" column="BIRTH7"/>
+        <result property="birth8" column="BIRTH8"/>
+        <result property="birth9" column="BIRTH9"/>
+        <result property="birth10" column="BIRTH10"/>
+        <result property="body21" column="BODY21"/>
+        <result property="body22" column="BODY22"/>
+        <result property="body23" column="BODY23"/>
+        <result property="body24" column="BODY24"/>
+        <result property="body25" column="BODY25"/>
+        <result property="body26" column="BODY26"/>
+        <result property="body31" column="BODY31"/>
+        <result property="body32" column="BODY32"/>
+        <result property="body33" column="BODY33"/>
+        <result property="body41" column="BODY41"/>
+        <result property="body71" column="BODY71"/>
+        <result property="body72" column="BODY72"/>
+        <result property="body73" column="BODY73"/>
+        <result property="body81" column="BODY81"/>
+        <result property="body82" column="BODY82"/>
+        <result property="body91" column="BODY91"/>
+        <result property="body92" column="BODY92"/>
+        <result property="eat1" column="EAT1"/>
+        <result property="eat2" column="EAT2"/>
+        <result property="eat3" column="EAT3"/>
+        <result property="eat4" column="EAT4"/>
+        <result property="eat5" column="EAT5"/>
+        <result property="eat6" column="EAT6"/>
+        <result property="eat7" column="EAT7"/>
+        <result property="eat8" column="EAT8"/>
+        <result property="eat9" column="EAT9"/>
+        <result property="eat10" column="EAT10"/>
+        <result property="eat11" column="EAT11"/>
+        <result property="eat12" column="EAT12"/>
+        <result property="eat13" column="EAT13"/>
+        <result property="eat14" column="EAT14"/>
+        <result property="eat15" column="EAT15"/>
+        <result property="eat16" column="EAT16"/>
+        <result property="eat17" column="EAT17"/>
+        <result property="eat18" column="EAT18"/>
+        <result property="eat19" column="EAT19"/>
+        <result property="drink2" column="DRINK2"/>
+        <result property="drink3" column="DRINK3"/>
+        <result property="drink4" column="DRINK4"/>
+        <result property="drink5" column="DRINK5"/>
+        <result property="sport11" column="SPORT11"/>
+        <result property="sport5" column="SPORT5"/>
+        <result property="sport6" column="SPORT6"/>
+        <result property="sport7" column="SPORT7"/>
+        <result property="sport8" column="SPORT8"/>
+        <result property="sport9" column="SPORT9"/>
+        <result property="spirit1" column="SPIRIT1"/>
+        <result property="spirit2" column="SPIRIT2"/>
+        <result property="spirit3" column="SPIRIT3"/>
+        <result property="spirit4" column="SPIRIT4"/>
+        <result property="spirit5" column="SPIRIT5"/>
+        <result property="spirit6" column="SPIRIT6"/>
+        <result property="spirit7" column="SPIRIT7"/>
+        <result property="spirit8" column="SPIRIT8"/>
+        <result property="spirit9" column="SPIRIT9"/>
+        <result property="sleep3" column="SLEEP3"/>
+        <result property="sleep4" column="SLEEP4"/>
+        <result property="examination2" column="EXAMINATION2"/>
+        <result property="examination3" column="EXAMINATION3"/>
+        <result property="examination4" column="EXAMINATION4"/>
+        <result property="examination5" column="EXAMINATION5"/>
+        <result property="examination6" column="EXAMINATION6"/>
+        <result property="examination7" column="EXAMINATION7"/>
+        <result property="examination8" column="EXAMINATION8"/>
+        <result property="examination9" column="EXAMINATION9"/>
+        <result property="examination10" column="EXAMINATION10"/>
+        <result property="examination11" column="EXAMINATION11"/>
+        <result property="examination12" column="EXAMINATION12"/>
+        <result property="examination13" column="EXAMINATION13"/>
+        <result property="examination14" column="EXAMINATION14"/>
+        <result property="examination15" column="EXAMINATION15"/>
+        <result property="examination16" column="EXAMINATION16"/>
+        <result property="examination17" column="EXAMINATION17"/>
+        <result property="examination18" column="EXAMINATION18"/>
+        <result property="examination19" column="EXAMINATION19"/>
+        <result property="operation2Other" column="OPERATION2_OTHER"/>
+        <result property="birth2Other" column="BIRTH2_OTHER"/>
+        <result property="birth8Other" column="BIRTH8_OTHER"/>
+        <result property="family21" column="FAMILY21"/>
+        <result property="present21" column="PRESENT21"/>
+        <result property="present21Other" column="PRESENT21_OTHER"/>
+        <result property="allergy2" column="ALLERGY2"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeisQuestionnaireSecondVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               PATIENTCODE,
+               PATIENTNAME,
+               ID_SEX,
+               BIRTHDATE,
+               IDCARDNO,
+               IS_HAN,
+               ID_PROVINCE,
+               ID_CITY,
+               ID_AREA,
+               ID_MARRIAGE,
+               PHONE,
+               FAMILY1,
+               FAMILY2,
+               FAMILY3,
+               FAMILY4,
+               PRESENT1,
+               PRESENT2,
+               PRESENT3,
+               ALLERGY1,
+               MEDICATION1,
+               MEDICATION2,
+               OPERATION1,
+               BODY1,
+               BODY2,
+               BODY3,
+               BODY4,
+               BODY5,
+               BODY6,
+               BODY7,
+               BODY8,
+               BODY9,
+               SMOKE1,
+               SMOKE2,
+               SMOKE3,
+               SMOKE4,
+               DRINK1,
+               SPORT1,
+               SPORT2,
+               SPORT3,
+               ENVIRONMENT1,
+               SLEEP1,
+               SLEEP2INT,
+               EXAMINATION1,
+               CREATOR,
+               SLEEP2_OTHER,
+               MEDICATION2_OTHER,
+               PRESENT2_OTHER,
+               FAMILY3_OTHER,
+               FAMILY2_OTHER,
+               OPERATION1_OTHER,
+               APP_USER_ID,
+               SLEEP2,
+               BODY10,
+               PATIENTBIZNO,
+               BMI,
+               HEIGHT,
+               WEIGHT,
+               OPERATION2,
+               OPERATION2OTHER,
+               BIRTH1,
+               BIRTH2,
+               BIRTH2OTHER,
+               BIRTH3,
+               BIRTH4,
+               BIRTH5,
+               BIRTH6,
+               BIRTH7,
+               BIRTH8,
+               BIRTH9,
+               BIRTH10,
+               BODY21,
+               BODY22,
+               BODY23,
+               BODY24,
+               BODY25,
+               BODY26,
+               BODY31,
+               BODY32,
+               BODY33,
+               BODY41,
+               BODY71,
+               BODY72,
+               BODY73,
+               BODY81,
+               BODY82,
+               BODY91,
+               BODY92,
+               EAT1,
+               EAT2,
+               EAT3,
+               EAT4,
+               EAT5,
+               EAT6,
+               EAT7,
+               EAT8,
+               EAT9,
+               EAT10,
+               EAT11,
+               EAT12,
+               EAT13,
+               EAT14,
+               EAT15,
+               EAT16,
+               EAT17,
+               EAT18,
+               EAT19,
+               DRINK2,
+               DRINK3,
+               DRINK4,
+               DRINK5,
+               SPORT11,
+               SPORT5,
+               SPORT6,
+               SPORT7,
+               SPORT8,
+               SPORT9,
+               SPIRIT1,
+               SPIRIT2,
+               SPIRIT3,
+               SPIRIT4,
+               SPIRIT5,
+               SPIRIT6,
+               SPIRIT7,
+               SPIRIT8,
+               SPIRIT9,
+               SLEEP3,
+               SLEEP4,
+               EXAMINATION2,
+               EXAMINATION3,
+               EXAMINATION4,
+               EXAMINATION5,
+               EXAMINATION6,
+               EXAMINATION7,
+               EXAMINATION8,
+               EXAMINATION9,
+               EXAMINATION10,
+               EXAMINATION11,
+               EXAMINATION12,
+               EXAMINATION13,
+               EXAMINATION14,
+               EXAMINATION15,
+               EXAMINATION16,
+               EXAMINATION17,
+               EXAMINATION18,
+               EXAMINATION19,
+               OPERATION2_OTHER,
+               BIRTH2_OTHER,
+               BIRTH8_OTHER,
+               FAMILY21,
+               PRESENT21,
+               PRESENT21_OTHER,
+               ALLERGY2
+        from PEIS_QUESTIONNAIRE_SECOND
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeisQuestionnaireSecondMap">
+        <include refid="selectPeisQuestionnaireSecondVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeisQuestionnaireSecondMap">
+        <include refid="selectPeisQuestionnaireSecondVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

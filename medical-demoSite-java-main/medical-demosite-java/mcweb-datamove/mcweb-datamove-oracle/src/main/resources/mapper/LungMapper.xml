@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.LungMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.Lung" id="LungMap">
+        <id property="id" column="ID"/>
+        <result property="depId" column="DEP_ID"/>
+        <result property="tjrq" column="TJRQ"/>
+        <result property="xj" column="XJ"/>
+        <result property="createId" column="CREATE_ID"/>
+        <result property="modifyId" column="MODIFY_ID"/>
+        <result property="fvc" column="FVC"/>
+        <result property="fev" column="FEV"/>
+        <result property="fevFvc" column="FEV_FVC"/>
+        <result property="percentageMmef" column="PERCENTAGE_MMEF"/>
+        <result property="predictMmef" column="PREDICT_MMEF"/>
+        <result property="mmef" column="MMEF"/>
+        <result property="percentageFeffa" column="PERCENTAGE_FEFFA"/>
+        <result property="predictFeffa" column="PREDICT_FEFFA"/>
+        <result property="feffa" column="FEFFA"/>
+        <result property="percentageFeffb" column="PERCENTAGE_FEFFB"/>
+        <result property="predictFeffb" column="PREDICT_FEFFB"/>
+        <result property="feffb" column="FEFFB"/>
+        <result property="percentageFeffc" column="PERCENTAGE_FEFFC"/>
+        <result property="predictFeffc" column="PREDICT_FEFFC"/>
+        <result property="feffc" column="FEFFC"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="predictFvc" column="PREDICT_FVC"/>
+        <result property="percentageFvc" column="PERCENTAGE_FVC"/>
+        <result property="predictFev" column="PREDICT_FEV"/>
+        <result property="percentageFev" column="PERCENTAGE_FEV"/>
+        <result property="predictFevFvc" column="PREDICT_FEV_FVC"/>
+        <result property="percentageFevFvc" column="PERCENTAGE_FEV_FVC"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectLungVo">
+        select DEP_ID,
+               TJRQ,
+               XJ,
+               CREATE_ID,
+               MODIFY_ID,
+               ID,
+               FVC,
+               FEV,
+               FEV_FVC,
+               PERCENTAGE_MMEF,
+               PREDICT_MMEF,
+               MMEF,
+               PERCENTAGE_FEFFA,
+               PREDICT_FEFFA,
+               FEFFA,
+               PERCENTAGE_FEFFB,
+               PREDICT_FEFFB,
+               FEFFB,
+               PERCENTAGE_FEFFC,
+               PREDICT_FEFFC,
+               FEFFC,
+               PATIENTCODE,
+               CREATEDATE,
+               MODIFYDATE,
+               PREDICT_FVC,
+               PERCENTAGE_FVC,
+               PREDICT_FEV,
+               PERCENTAGE_FEV,
+               PREDICT_FEV_FVC,
+               PERCENTAGE_FEV_FVC
+        from LUNG
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="LungMap">
+        <include refid="selectLungVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="LungMap">
+        <include refid="selectLungVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

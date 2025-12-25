@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.abteilung.dao.SectionResultTwoMapper">
+
+    <resultMap type="com.center.medical.abteilung.bean.model.SectionResultTwo" id="SectionResultTwoMap">
+        <id property="id" column="id"/>
+        <result property="mainId" column="main_id"/>
+        <result property="verdictId" column="verdict_id"/>
+        <result property="nodule" column="nodule"/>
+        <result property="posistive" column="posistive"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="intensiveLevel" column="intensive_level"/>
+        <result property="isUnchecked" column="is_unchecked"/>
+        <result property="diseaseHealth" column="disease_health"/>
+        <result property="basconclusionId" column="basconclusion_id"/>
+        <result property="divisionId" column="division_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="chargesId" column="charges_id"/>
+        <result property="ms" column="ms"/>
+        <result property="isDanger" column="is_danger"/>
+        <result property="inputResult" column="input_result"/>
+        <result property="tjlx" column="tjlx"/>
+        <result property="shortCode" column="short_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectSectionResultTwoVo">
+        select id,
+               main_id,
+               verdict_id,
+               nodule,
+               posistive,
+               createdate,
+               modifydate,
+               patientcode,
+               intensive_level,
+               is_unchecked,
+               disease_health,
+               basconclusion_id,
+               division_id,
+               is_delete,
+               charges_id,
+               ms,
+               is_danger,
+               input_result,
+               tjlx,
+               short_code
+        from md_section_result_two
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="SectionResultTwoMap">
+        <include refid="selectSectionResultTwoVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="SectionResultTwoMap">
+        <include refid="selectSectionResultTwoVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!--获取体检者分检结论-->
+    <select id="getListByPatientCode" resultType="com.center.medical.abteilung.bean.dto.SrtPcDto">
+        SELECT
+        t.id,
+        t.division_id,
+        t.basconclusion_id
+        FROM md_section_result_two t
+        INNER JOIN md_section_result_main m ON t.main_id = m.id
+        <where>
+            t.basconclusion_id IS NOT NULL
+            AND m.is_audit=1
+            AND NOT EXISTS(SELECT 1 FROM md_items i WHERE i.id=t.charges_id AND i.bgdybs='1')
+            <if test="patientcode!=null and patientcode!=''">
+                AND T.PATIENTCODE=#{patientcode}
+            </if>
+            <choose>
+                <when test="dh==0">
+                    AND t.tjlx!=2
+                </when>
+                <otherwise>
+                    AND t.tjlx!=0
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY t.createdate DESC
+    </select>
+
+
+    <!--获取体检者分检结论-->
+    <select id="findByCodeDh" resultType="com.center.medical.abteilung.bean.dto.FindByCodeDhDto">
+        SELECT
+            t.basconclusion_id,
+            b.division_id,
+            b.name,
+            b.suggestion
+        FROM
+            md_section_result_two t
+                INNER JOIN md_section_result_main m ON t.main_id = m.id
+                INNER JOIN md_basconclusion b ON b.id = t.basconclusion_id
+        <where>
+              1 = 1
+            <if test="patientcode!=null and patientcode!=''">
+                AND t.patientcode = #{patientcode}
+            </if>
+            <choose>
+                <when test="dh==0">
+                    AND t.tjlx!=2
+                </when>
+                <otherwise>
+                    AND t.tjlx!=0
+                </otherwise>
+            </choose>
+            AND m.is_audit = 1
+            AND NOT EXISTS ( SELECT 1 FROM md_items i WHERE i.id = t.charges_id AND i.bgdybs = '1' )
+        </where>
+        ORDER BY
+            t.createdate DESC
+    </select>
+
+
+    <!--查询职业的id通过体检号-->
+    <select id="findIdByCode" resultType="com.center.medical.abteilung.bean.model.SectionResultTwo">
+        SELECT
+            t.id,
+            t.division_id,
+            t.basconclusion_id
+        FROM
+            md_section_result_two t
+                INNER JOIN md_section_result_main m ON t.main_id = m.id
+        <where>
+              1 = 1
+        <if test="patientcode!=null and patientcode!=''">
+            AND t.patientcode = #{patientcode}
+        </if>
+            AND t.basconclusion_id IS NOT NULL
+            AND t.tjlx != 0
+	        AND m.is_audit = 1
+        </where>
+        ORDER BY
+            t.createdate DESC
+    </select>
+
+
+
+    <!--查询健康的id通过体检号-->
+    <select id="findHeId" resultType="com.center.medical.abteilung.bean.model.SectionResultTwo">
+        SELECT
+            t.id,
+            t.division_id,
+            t.basconclusion_id
+        FROM
+            md_section_result_two t
+                INNER JOIN md_section_result_main m ON t.main_id = m.id
+        <where>
+            1 = 1
+            <if test="patientcode!=null and patientcode!=''">
+                AND t.patientcode = #{patientcode}
+            </if>
+            AND t.basconclusion_id IS NOT NULL
+            AND t.tjlx != 2
+	        AND m.is_audit = 1
+        </where>
+        ORDER BY
+            t.createdate DESC
+    </select>
+
+
+
+    <!--获取本届体检者都有哪些科室体检-->
+    <select id="getdepId" resultType="string">
+        SELECT
+            s.division_id
+        FROM
+            md_section_result_two s
+        WHERE
+            s.patientcode = #{patientcode}
+        GROUP BY
+            s.division_id
+    </select>
+
+
+
+    <!--获取体检者分检结论-->
+    <select id="findPacsByCodeDh" resultType="com.center.medical.abteilung.bean.dto.FindByCodeDhDto">
+        SELECT
+        t.basconclusion_id,
+        b.division_id,
+        b.name,
+        b.suggestion
+        FROM
+        md_pacs_section_result_two t
+        INNER JOIN md_basconclusion b ON b.id = t.basconclusion_id
+        <where>
+            t.basconclusion_id IS NOT NULL
+            <if test="patientcode!=null and patientcode!=''">
+                AND t.patientcode = #{patientcode}
+            </if>
+            <choose>
+                <when test="dh==0">
+                    AND t.tjlx!=2
+                </when>
+                <otherwise>
+                    AND t.tjlx!=0
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY
+        t.createdate DESC
+    </select>
+</mapper>
+

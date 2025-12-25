@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppPrenoMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppPreno" id="AppPrenoMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="cid" column="CID"/>
+        <result property="outNum" column="OUT_NUM"/>
+        <result property="takeNum" column="TAKE_NUM"/>
+        <result property="startTime" column="START_TIME"/>
+        <result property="endTime" column="END_TIME"/>
+        <result property="fzx" column="FZX"/>
+        <result property="takeTime" column="TAKE_TIME"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppPrenoVo">
+        select ID,
+               CREATEDATE,
+               MODIFYDATE,
+               CID,
+               OUT_NUM,
+               TAKE_NUM,
+               START_TIME,
+               END_TIME,
+               FZX,
+               TAKE_TIME
+        from APP_PRENO
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppPrenoMap">
+        <include refid="selectAppPrenoVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppPrenoMap">
+        <include refid="selectAppPrenoVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

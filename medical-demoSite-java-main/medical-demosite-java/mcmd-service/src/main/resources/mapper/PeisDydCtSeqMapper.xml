@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.dao.PeisDydCtSeqMapper">
+
+    <resultMap type="com.center.medical.bean.model.PeisDydCtSeq" id="PeisDydCtSeqMap">
+        <id property="id" column="id"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="seq" column="seq"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectPeisDydCtSeqVo">
+        select id, patientcode, seq, createdate, modifydate
+        from md_peis_dyd_ct_seq
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="PeisDydCtSeqMap">
+        <include refid="selectPeisDydCtSeqVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="PeisDydCtSeqMap">
+        <include refid="selectPeisDydCtSeqVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <!-- 通过体检号查询 -->
+    <select id="getByPatientcode" resultMap="PeisDydCtSeqMap">
+        <include refid="selectPeisDydCtSeqVo"/>
+        <where>
+            patientcode = #{patientCode}
+        </where>
+    </select>
+
+    <!-- 获取当天最后一个序号 -->
+    <select id="getLastSeq" resultType="java.lang.Integer">
+        select seq
+        FROM md_peis_dyd_ct_seq
+        <where>
+            1 = 1
+            AND  STR_TO_DATE(createdate,'%Y-%m-%d') = STR_TO_DATE(#{time},'%Y-%m-%d')
+        </where>
+        order by createdate desc
+        limit 1
+    </select>
+</mapper>
+

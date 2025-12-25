@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.report.dao.PatientfeeitemRMapper">
+    <!--根据条件获取体检者收费项目数据-->
+    <select id="getExamedList" resultType="com.center.medical.abteilung.bean.model.SectionResultMain">
+        SELECT DISTINCT
+        m.*,
+        d.report_sort
+        FROM
+        md_section_result_main m
+        INNER JOIN sys_dept d ON d.dept_no = m.dep_id
+        INNER JOIN md_peispatientfeeitem p ON p.id_patient = m.patientcode
+        AND p.id_ks = m.dep_id
+        AND p.f_examinated = 1
+        LEFT JOIN md_inspect_charge ic ON ic.charge_id = p.id_examfeeitem
+        AND ic.is_delete = 0
+        LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+        AND e.is_delete = 0
+        <where>
+            m.patientcode = #{patientCode}
+            AND ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c
+            WHERE
+            c.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c.medical_type = #{medicalType}
+            AND c.item_id = p.id_examfeeitem
+            )> 0
+            OR ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c2
+            WHERE
+            c2.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c2.medical_type = #{medicalType}
+            AND c2.exam_id = e.id
+            )> 0
+            )
+            )
+        </where>
+    </select>
+    <!--查询有弃检职业项目的科室-->
+    <select id="getGiveUpList" resultType="com.center.medical.report.bean.vo.QjOsVo">
+        SELECT d.dept_no AS id,
+        GROUP_CONCAT(DISTINCT p.examfeeitem_name ) AS feeitem_names
+        FROM md_peispatientfeeitem p
+        INNER JOIN sys_dept d ON d.dept_no = p.id_ks
+        LEFT JOIN md_inspect_charge ic ON ic.charge_id = p.id_examfeeitem
+        AND ic.is_delete = 0
+        LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+        AND e.is_delete = 0
+        <where>
+            p.id_patient = #{patientCode}
+            AND ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c
+            WHERE
+            c.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c.medical_type = #{medicalType}
+            AND c.item_id = p.id_examfeeitem
+            )> 0
+            OR ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c2
+            WHERE
+            c2.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c2.medical_type = #{medicalType}
+            AND c2.exam_id = e.id
+            )> 0
+            )
+            )
+            AND p.f_giveup = 1
+        </where>
+        GROUP BY
+        d.dept_no,
+        d.report_sort
+    </select>
+
+    <!--查询所有职业拒检项目，展现在综述和职业阳性结果-->
+    <select id="getRejectList" resultType="java.lang.String">
+        SELECT GROUP_CONCAT(DISTINCT pi.examfeeitem_name )
+        FROM md_peispatientfeeitem pi
+        LEFT JOIN md_inspect_charge ic ON ic.charge_id = pi.id_examfeeitem
+        AND ic.is_delete = 0
+        LEFT JOIN md_basexamltem e ON e.id = ic.inspect_id
+        AND e.is_delete = 0
+        <where>
+            pi.id_patient = #{patientCode}
+            AND ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c
+            WHERE
+            c.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c.medical_type = #{medicalType}
+            AND c.item_id = pi.id_examfeeitem
+            )> 0
+            OR ((
+            SELECT
+            count(*)
+            FROM
+            md_comboexamitem c2
+            WHERE
+            c2.harm_id IN
+            <foreach collection="harmList" item="harm" open="(" close=")" separator=",">
+                #{harm}
+            </foreach>
+            AND c2.medical_type = #{medicalType}
+            AND c2.exam_id = e.id
+            )> 0
+            )
+            )
+            AND pi.sfjj =1
+        </where>
+    </select>
+
+</mapper>
+

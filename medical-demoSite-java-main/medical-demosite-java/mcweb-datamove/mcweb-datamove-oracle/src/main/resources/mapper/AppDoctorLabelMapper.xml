@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.AppDoctorLabelMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.AppDoctorLabel" id="AppDoctorLabelMap">
+        <id property="id" column="ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="labelId" column="LABEL_ID"/>
+        <result property="doctorId" column="DOCTOR_ID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectAppDoctorLabelVo">
+        select ID, CREATEDATE, MODIFYDATE, LABEL_ID, DOCTOR_ID
+        from APP_DOCTOR_LABEL
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="AppDoctorLabelMap">
+        <include refid="selectAppDoctorLabelVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="AppDoctorLabelMap">
+        <include refid="selectAppDoctorLabelVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

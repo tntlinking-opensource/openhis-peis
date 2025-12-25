@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdPeispatientchargeMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdPeispatientcharge" id="MdPeispatientchargeMap">
+        <id property="id" column="id"/>
+        <result property="idPatientcharge" column="id_patientcharge"/>
+        <result property="idPatientchargesheet" column="id_patientchargesheet"/>
+        <result property="patientcode" column="patientcode"/>
+        <result property="idPayway" column="id_payway"/>
+        <result property="payway" column="payway"/>
+        <result property="moneyamount" column="moneyamount"/>
+        <result property="moneyamountpaid" column="moneyamountpaid"/>
+        <result property="fWorkByorgdelta" column="f_work_byorgdelta"/>
+        <result property="fFeetransfered" column="f_feetransfered"/>
+        <result property="fFeeconfirmed" column="f_feeconfirmed"/>
+        <result property="fFeecharged" column="f_feecharged"/>
+        <result property="fFeechargedinttrans" column="f_feechargedinttrans"/>
+        <result property="fFeechargedoncredit" column="f_feechargedoncredit"/>
+        <result property="fIsreturn" column="f_isreturn"/>
+        <result property="fReceiptprinted" column="f_receiptprinted"/>
+        <result property="idFeecharger" column="id_feecharger"/>
+        <result property="feechargetime" column="feechargetime"/>
+        <result property="note" column="note"/>
+        <result property="verThisrecord" column="ver_thisrecord"/>
+        <result property="fWorkInnerModify" column="f_work_inner_modify"/>
+        <result property="leagmembercardno" column="leagmembercardno"/>
+        <result property="idExamplace" column="id_examplace"/>
+        <result property="receiptsheetnofrominterface" column="receiptsheetnofrominterface"/>
+        <result property="fFeechargedbyinterface" column="f_feechargedbyinterface"/>
+        <result property="whofeechargedbyinterface" column="whofeechargedbyinterface"/>
+        <result property="intpatientchargeCode" column="intpatientcharge_code"/>
+        <result property="intpatientchargeDate" column="intpatientcharge_date"/>
+        <result property="isJq" column="is_jq"/>
+        <result property="isTotalcharge" column="is_totalcharge"/>
+        <result property="cardno" column="cardno"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createdate" column="createdate"/>
+        <result property="modifydate" column="modifydate"/>
+        <result property="numIndex" column="num_index"/>
+        <result property="shortCode" column="short_code"/>
+        <result property="isAdd" column="is_add"/>
+        <result property="tradeNo" column="trade_no"/>
+        <result property="chargeMainVersion" column="charge_main_version"/>
+        <result property="chargeMainId" column="charge_main_id"/>
+        <result property="txTradeNo" column="tx_trade_no"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdPeispatientchargeVo">
+        select id,
+               id_patientcharge,
+               id_patientchargesheet,
+               patientcode,
+               id_payway,
+               payway,
+               moneyamount,
+               moneyamountpaid,
+               f_work_byorgdelta,
+               f_feetransfered,
+               f_feeconfirmed,
+               f_feecharged,
+               f_feechargedinttrans,
+               f_feechargedoncredit,
+               f_isreturn,
+               f_receiptprinted,
+               id_feecharger,
+               feechargetime,
+               note,
+               ver_thisrecord,
+               f_work_inner_modify,
+               leagmembercardno,
+               id_examplace,
+               receiptsheetnofrominterface,
+               f_feechargedbyinterface,
+               whofeechargedbyinterface,
+               intpatientcharge_code,
+               intpatientcharge_date,
+               is_jq,
+               is_totalcharge,
+               cardno,
+               is_delete,
+               createdate,
+               modifydate,
+               num_index,
+               short_code,
+               is_add,
+               trade_no,
+               charge_main_version,
+               charge_main_id,
+               tx_trade_no
+        from md_peispatientcharge
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdPeispatientchargeMap">
+        <include refid="selectMdPeispatientchargeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdPeispatientchargeMap">
+        <include refid="selectMdPeispatientchargeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

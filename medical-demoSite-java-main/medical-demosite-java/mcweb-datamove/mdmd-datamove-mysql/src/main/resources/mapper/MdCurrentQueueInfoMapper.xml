@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.common.dao.MdCurrentQueueInfoMapper">
+
+    <resultMap type="com.center.medical.datamove.common.bean.model.MdCurrentQueueInfo" id="MdCurrentQueueInfoMap">
+        <id property="id" column="id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="userId" column="user_id"/>
+        <result property="patientCode" column="patient_code"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectMdCurrentQueueInfoVo">
+        select id, create_date, user_id, patient_code
+        from md_current_queue_info
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="MdCurrentQueueInfoMap">
+        <include refid="selectMdCurrentQueueInfoVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="MdCurrentQueueInfoMap">
+        <include refid="selectMdCurrentQueueInfoVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

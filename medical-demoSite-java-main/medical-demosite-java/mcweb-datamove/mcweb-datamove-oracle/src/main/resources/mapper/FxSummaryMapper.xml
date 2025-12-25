@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.FxSummaryMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.FxSummary" id="FxSummaryMap">
+        <id property="id" column="ID"/>
+        <result property="sampleId" column="SAMPLE_ID"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="regimentationNote" column="REGIMENTATION_NOTE"/>
+        <result property="harmName" column="HARM_NAME"/>
+        <result property="harmId" column="HARM_ID"/>
+        <result property="orgDepart" column="ORG_DEPART"/>
+        <result property="yszyb" column="YSZYB"/>
+        <result property="zyjjz" column="ZYJJZ"/>
+        <result property="fc" column="FC"/>
+        <result property="qtjb" column="QTJB"/>
+        <result property="wjyc" column="WJYC"/>
+        <result property="classId" column="CLASS_ID"/>
+        <result property="className" column="CLASS_NAME"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectFxSummaryVo">
+        select ID,
+               SAMPLE_ID,
+               CREATEDATE,
+               MODIFYDATE,
+               REGIMENTATION_NOTE,
+               HARM_NAME,
+               HARM_ID,
+               ORG_DEPART,
+               YSZYB,
+               ZYJJZ,
+               FC,
+               QTJB,
+               WJYC,
+               CLASS_ID,
+               CLASS_NAME
+        from FX_SUMMARY
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="FxSummaryMap">
+        <include refid="selectFxSummaryVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="FxSummaryMap">
+        <include refid="selectFxSummaryVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

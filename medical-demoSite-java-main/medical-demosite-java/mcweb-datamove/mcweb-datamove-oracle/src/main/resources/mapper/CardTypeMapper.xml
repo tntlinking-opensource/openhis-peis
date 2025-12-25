@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.CardTypeMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.CardType" id="CardTypeMap">
+        <id property="id" column="ID"/>
+        <result property="typeName" column="TYPE_NAME"/>
+        <result property="cardMoney" column="CARD_MONEY"/>
+        <result property="isRecharge" column="IS_RECHARGE"/>
+        <result property="memo" column="MEMO"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="cardLogo" column="CARD_LOGO"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="cardPrefix" column="CARD_PREFIX"/>
+        <result property="jf" column="JF"/>
+        <result property="type" column="TYPE"/>
+        <result property="flag" column="FLAG"/>
+        <result property="cid" column="CID"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectCardTypeVo">
+        select ID,
+               TYPE_NAME,
+               CARD_MONEY,
+               IS_RECHARGE,
+               MEMO,
+               CREATEDATE,
+               CARD_LOGO,
+               MODIFYDATE,
+               CARD_PREFIX,
+               JF,
+               TYPE,
+               FLAG,
+               CID
+        from CARD_TYPE
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="CardTypeMap">
+        <include refid="selectCardTypeVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="CardTypeMap">
+        <include refid="selectCardTypeVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+

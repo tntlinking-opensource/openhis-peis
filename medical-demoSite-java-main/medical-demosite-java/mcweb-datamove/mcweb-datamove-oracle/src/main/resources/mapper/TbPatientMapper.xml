@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.center.medical.datamove.oracle.dao.TbPatientMapper">
+
+    <resultMap type="com.center.medical.datamove.oracle.bean.model.TbPatient" id="TbPatientMap">
+        <id property="id" column="ID"/>
+        <result property="patientcode" column="PATIENTCODE"/>
+        <result property="idcardno" column="IDCARDNO"/>
+        <result property="patientname" column="PATIENTNAME"/>
+        <result property="inputCode" column="INPUT_CODE"/>
+        <result property="idSex" column="ID_SEX"/>
+        <result property="birthdate" column="BIRTHDATE"/>
+        <result property="age" column="AGE"/>
+        <result property="idMarriage" column="ID_MARRIAGE"/>
+        <result property="marriage" column="MARRIAGE"/>
+        <result property="phone" column="PHONE"/>
+        <result property="idPatientclass" column="ID_PATIENTCLASS"/>
+        <result property="dateregister" column="DATEREGISTER"/>
+        <result property="shortCode" column="SHORT_CODE"/>
+        <result property="createdate" column="CREATEDATE"/>
+        <result property="modifydate" column="MODIFYDATE"/>
+        <result property="pictures" column="PICTURES"/>
+        <result property="upFzxId" column="UP_FZX_ID"/>
+        <result property="downFzxId" column="DOWN_FZX_ID"/>
+        <result property="upName" column="UP_NAME"/>
+        <result property="downTime" column="DOWN_TIME"/>
+        <result property="backTime" column="BACK_TIME"/>
+        <result property="finishTime" column="FINISH_TIME"/>
+        <result property="status" column="STATUS"/>
+        <result property="downName" column="DOWN_NAME"/>
+        <result property="backName" column="BACK_NAME"/>
+        <result property="finishName" column="FINISH_NAME"/>
+        <result property="idExamtype" column="ID_EXAMTYPE"/>
+    </resultMap>
+
+    <!-- 数据表字段属性 -->
+    <sql id="selectTbPatientVo">
+        select PATIENTCODE,
+               IDCARDNO,
+               PATIENTNAME,
+               INPUT_CODE,
+               ID_SEX,
+               BIRTHDATE,
+               AGE,
+               ID_MARRIAGE,
+               MARRIAGE,
+               PHONE,
+               ID_PATIENTCLASS,
+               DATEREGISTER,
+               SHORT_CODE,
+               ID,
+               CREATEDATE,
+               MODIFYDATE,
+               PICTURES,
+               UP_FZX_ID,
+               DOWN_FZX_ID,
+               UP_NAME,
+               DOWN_TIME,
+               BACK_TIME,
+               FINISH_TIME,
+               STATUS,
+               DOWN_NAME,
+               BACK_NAME,
+               FINISH_NAME,
+               ID_EXAMTYPE
+        from TB_PATIENT
+    </sql>
+
+    <!-- 查询列表数据 -->
+    <select id="getPage" resultMap="TbPatientMap">
+        <include refid="selectTbPatientVo"/>
+    </select>
+
+    <!-- 根据主键id获取记录详情 -->
+    <select id="getInfoById" resultMap="TbPatientMap">
+        <include refid="selectTbPatientVo"/>
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>
+
