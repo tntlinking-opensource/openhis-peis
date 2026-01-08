@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="healthone" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c0acac59-22e6-4a3b-97f7-0cb01540394f">
+	<property name="ireport.zoom" value="2.853116706110004"/>
+	<property name="ireport.x" value="293"/>
+	<property name="ireport.y" value="1312"/>
+	<import value="org.apache.commons.codec.binary.Base64"/>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="0.0" lineColor="#000000"/>
+			<topPen lineWidth="0.0"/>
+			<leftPen lineWidth="0.0"/>
+			<bottomPen lineWidth="0.0"/>
+			<rightPen lineWidth="0.0"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="dataset1" uuid="e28d40c3-234e-4ee5-bb8d-94c81f7fa055">
+		<parameter name="department" class="java.lang.String"/>
+		<parameter name="patientcode" class="java.lang.String"/>
+		<parameter name="patientname" class="java.lang.String"/>
+		<parameter name="sex" class="java.lang.String"/>
+		<parameter name="age" class="java.lang.String"/>
+		<parameter name="phone" class="java.lang.String"/>
+		<parameter name="combo" class="java.lang.String"/>
+		<parameter name="dateregister" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Table Dataset 5" uuid="57c24465-d9b1-490f-8c6f-cefa8e51172b">
+		<field name="title" class="java.lang.String"/>
+		<field name="value" class="java.lang.String"/>
+		<field name="barcode" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="workunit" class="java.lang.String"/>
+	<parameter name="department" class="java.lang.String"/>
+	<parameter name="patientcode" class="java.lang.String"/>
+	<parameter name="patientname" class="java.lang.String"/>
+	<parameter name="sex" class="java.lang.String"/>
+	<parameter name="age" class="java.lang.String"/>
+	<parameter name="combo" class="java.lang.String"/>
+	<parameter name="phone" class="java.lang.String"/>
+	<parameter name="dateregister" class="java.lang.String"/>
+	<parameter name="titleList" class="java.util.Collection"/>
+	<parameter name="headImg" class="java.lang.String"/>
+	<parameter name="org_address" class="java.lang.String"/>
+	<parameter name="org_phone" class="java.lang.String"/>
+	<parameter name="org_zipcode" class="java.lang.String"/>
+	<parameter name="background" class="java.lang.String"/>
+	<background>
+		<band height="802">
+			<image>
+				<reportElement x="0" y="0" width="555" height="800" uuid="d586878e-c60c-4904-94dc-d4032d983fe8"/>
+				<imageExpression><![CDATA[$P{background}]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="177" splitType="Stretch"/>
+	</title>
+	<detail>
+		<band height="426">
+			<componentElement>
+				<reportElement key="table 2" x="128" y="341" width="382" height="24" uuid="ffc709a3-245d-4639-8425-85e03b945825"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset 5" uuid="c54a0f9c-0089-4a74-a7b9-2f71b813d166">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRMapCollectionDataSource($P{titleList})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="108" uuid="8f3f85d5-36cb-4dcd-99da-e82a58b8c9f6">
+						<jr:detailCell height="24" rowSpan="1">
+							<textField>
+								<reportElement x="20" y="0" width="86" height="24" uuid="528b0f40-d954-4ef5-a6d1-13c270d167ed"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+									<font fontName="宋体" size="12" isBold="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="6" uuid="9265389e-695a-44c8-82dd-63e3c4ac9643">
+						<jr:detailCell height="24" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="239" uuid="23c6e44c-16e3-4343-97ce-4d0822dd7de9">
+						<jr:detailCell style="table 2_TD" height="24" rowSpan="1">
+							<textField>
+								<reportElement mode="Opaque" x="0" y="0" width="239" height="24" uuid="f6e12784-a272-4291-9ed1-999d80fe626f">
+									<printWhenExpression><![CDATA[$F{barcode}==null]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font fontName="宋体" size="12" isUnderline="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+							<textField>
+								<reportElement mode="Opaque" x="0" y="0" width="85" height="24" uuid="50344ef0-6336-4216-8795-c9d89a89ac7b">
+									<printWhenExpression><![CDATA[$F{barcode}!=null]]></printWhenExpression>
+								</reportElement>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font fontName="宋体" size="12" isUnderline="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+							</textField>
+							<image scaleImage="RealSize" hAlign="Left" vAlign="Middle">
+								<reportElement x="70" y="0" width="105" height="24" uuid="1f122415-93d9-4a54-b6a1-0b7b69db638b">
+									<printWhenExpression><![CDATA[$F{barcode}!=null]]></printWhenExpression>
+								</reportElement>
+								<imageExpression><![CDATA[new ByteArrayInputStream(new Base64().decodeBase64(new StringBuffer($F{barcode}).toString().getBytes("UTF-8")))]]></imageExpression>
+							</image>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement mode="Opaque" x="148" y="317" width="86" height="24" uuid="dff6f5a3-3ec6-4fa3-a2a7-f912bedb984b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="宋体" size="12" isBold="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[体检单位：]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="238" y="316" width="344" height="24" uuid="7d58398e-d09f-484a-b510-60b3253b2401"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="宋体" size="12" isUnderline="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workunit}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="240" y="390" width="239" height="1" uuid="f301793f-8a4f-43e9-b707-5278e75a4818"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="148" y="366" width="86" height="24" uuid="7f8f9b99-d4ac-4b77-94ef-d17b8d0b14bf"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="宋体" size="12" isBold="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[体检日期：]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="240" y="366" width="271" height="24" uuid="66c759e4-4135-449f-ae84-9f9087a721ec"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dateregister}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="51" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="25" width="555" height="21" forecolor="#000000" uuid="d27cd5ba-8179-49f3-9af8-80eb95bdfbf5"/>
+				<textElement textAlignment="Center" markup="none">
+					<font fontName="宋体" size="9" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["地址："+$P{org_address}+"           电话："+$P{org_phone}+"                邮编："+$P{org_zipcode}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

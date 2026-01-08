@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="profession-1.5" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="116adbcb-efdd-414b-abeb-6de55d88b076">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="184"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="605" splitType="Stretch">
+			<staticText>
+				<reportElement x="61" y="326" width="420" height="271" uuid="5641c3f8-16c4-4682-905c-4a33a155e093"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[1、本报告涂改无效。
+2、本报告无主检医师签字无效。
+3、本报告无本单位盖章无效。
+4、本报告只对本次体检有效。
+5、若对本报告有异议，请于收到报告书之日起十五日内向本机构提出，逾期不予受理。
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="300" width="420" height="25" uuid="219a299d-7613-470d-9dce-9dbc724bf59d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="华文宋体2" size="14" isBold="true" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[报告说明：]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

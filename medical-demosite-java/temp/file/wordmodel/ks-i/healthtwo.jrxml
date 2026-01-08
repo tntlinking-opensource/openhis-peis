@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="healthtwo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9213aba3-4776-44d8-837f-1bb3bde22e38">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="style1"/>
+	<subDataset name="Table Dataset 1" uuid="63d895be-0f2e-4e36-9770-1a9f724cfedd"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="726" splitType="Stretch">
+			<elementGroup>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="381" width="420" height="70" uuid="dab2c9b7-3101-4937-a549-511fc9e3e93b"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="11" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[体检后会发现一些异常指标，这些异常指标有的是有诊断意义的，而有的只是为进一步检查提供了线索，所以对于异常指标就需要向医生或健康管理师咨询。要提醒您的是：各项检测结果是动态变化的，以后复查这些指标会有所不同，遇到这种情况也可以向我们咨询。更加关键的是：发现异常指标后，自己一定要行动起来！通过自己的行动来改善和控制这些异常指标，这是您自己对您的健康最好的奖赏！]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="555" height="32" uuid="4ba12a8e-c327-415d-a8af-a87bae8e80a8"/>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="黑体" size="19" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[怎样看体检报告]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="506" width="420" height="25" uuid="35d19b47-1dbc-4db8-bd2f-18f80d5dbf27"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[您是否曾停下脚步聆听身体的声音]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="556" width="420" height="25" uuid="32dae735-0aa2-4362-88bc-7993269130b5"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[都在提醒您应该更关心它的变化]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="606" width="420" height="25" uuid="d8ccbffd-f11e-4bdb-9b39-4b387e215ecd"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[但却不代表它不存在]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="273" width="420" height="83" uuid="f00e34c7-bc34-405d-8fd2-f4d095d82976"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="华文宋体" size="11" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[有一些因素会影响到体检结果，如精神紧张、过度兴奋、睡眠不足都可以影响心率、血压等；宵夜可以影响血糖、血脂等；患有糖尿病、高血压等病在服药前、后其检测结果是不同的；又如尿液中基本上没有红细胞，但女性经期可因为污染，尿中会出现较多的红细胞。所以体检前一天晚上，饮食宜简单、清淡、尽量不要吃夜宵，也不宜长时间做娱乐活动和剧烈的体育活动。]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="581" width="420" height="25" uuid="36321cf0-407c-4baa-9552-72096a6cd365"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[您或许忽略了或许听不到]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="57" width="420" height="191" uuid="0cf34678-02fd-4ebd-8f0f-4249216c6a7e"/>
+					<textElement verticalAlignment="Middle" markup="none">
+						<font fontName="华文宋体" size="11" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["每个人都有“看病”的经历。“看病”是对疾病进行检查、诊断、采取治疗的过程。健康体检是针对常见而且影响健康的异常指标进行筛查的过程。通过多项检查结果，对健康状况作出初步评价，目的是提醒您关注您的健康并且积极行动起来，改变不良的生活方式，树立“主动防病，有病早治”的理念，所以体检的健康总评与看病的诊断是不同的。健康体检发现指标异常，就会给您一个提醒，而不是达到疾病的诊断标准才提醒您，所以健康体检不是“看病”。健康体检内容主要包括：一是医生对你所检查的内容进行评价，让你了解自己的健康状况，以采取相应的保健措施；二是对明确的疾病作出诊断，提醒你要接受必要的治疗；三是对一些可疑指标或结果，建议进一步检查或追踪观察。需要声明的是：限于大部分单位体检只是针对最常见的问题而设计，不可能把每个人的异常都做出检查；一次体检只是对本次体检内容进行评价，不包括检测项目以外的评价。人们祈望在健康没有出现大问题之前，把所有异常问题都提前解决，即使以目前先进的医疗技术，仍然不能实现。"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="481" width="420" height="25" uuid="72fa5e18-a8e5-4214-87dd-e4948031f92d"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[生活在步调繁忙紧凑的现代社会里]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="451" width="420" height="30" uuid="e2cead2a-6228-4a0e-a93e-ff04674ffe5f"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[☆温馨提示]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="531" width="420" height="25" uuid="cfe78783-cd6a-4b6e-8fae-cba61acfa7b4"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[许多身体细微的声响]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="57" y="32" width="420" height="25" uuid="7557c8b9-dc62-4d33-b71e-c83bb2056cee"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="黑体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[☆体检与“看病”不同：]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="248" width="420" height="25" uuid="1004964e-1ebc-4be8-a88f-e22fd4c365fa"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="黑体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[☆影响体检结果的因素：]]></text>
+				</staticText>
+				<staticText>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="57" y="356" width="420" height="25" uuid="97ff4b73-b013-4d75-b457-620180518ad4"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="宋体" size="14" isBold="true" isItalic="true" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[☆怎样对待体检的异常指标：]]></text>
+				</staticText>
+			</elementGroup>
+		</band>
+	</detail>
+</jasperReport>

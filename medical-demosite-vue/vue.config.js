@@ -46,7 +46,7 @@ module.exports = {
       '/resours_host': {
         // target: 'XXX.XXX.XXX:8080',
         // 锦都
-        target: 'http://XXX.XXX.XXX:8080',
+        target: 'http://localhost:8090',
         changeOrigin: true,
         pathRewrite: {
           '^/resours_host': '',

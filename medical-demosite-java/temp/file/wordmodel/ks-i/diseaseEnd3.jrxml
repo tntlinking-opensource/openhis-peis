@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="diseaseEnd3" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3ff85d11-fb29-417e-9c3b-658d76671638">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="qrcode" class="java.lang.String"/>
+	<parameter name="miniProgramCode" class="java.lang.String"/>
+	<parameter name="org_address" class="java.lang.String"/>
+	<parameter name="org_phone" class="java.lang.String"/>
+	<parameter name="org_zipcode" class="java.lang.String"/>
+	<parameter name="org_email" class="java.lang.String"/>
+	<parameter name="org_fax" class="java.lang.String"/>
+	<parameter name="org_orgName" class="java.lang.String"/>
+	<parameter name="org_zzzs" class="java.lang.String"/>
+	<parameter name="end_logo" class="java.lang.String"/>
+	<parameter name="end_qrcode" class="java.lang.String"/>
+	<parameter name="jinduLogo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="774">
+			<staticText>
+				<reportElement x="61" y="543" width="420" height="25" uuid="ab9d0b76-8a03-490a-b0ac-4d5cad3f449d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="华文宋体2" size="14" isBold="true" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[职业健康检查机构信息：]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="568" width="420" height="24" uuid="3d8d2743-2035-4fd2-9784-ce7f4d47d45b"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["名    称："+$P{org_orgName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="718" width="336" height="25" uuid="005eb438-3a13-45ce-8455-ee4eeacdaf2c"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体2" size="14" isBold="true" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{org_zzzs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="718" width="84" height="25" uuid="dcdc5a84-1244-4a68-ba76-ac1870808b23"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[资质证书号：]]></text>
+			</staticText>
+			<image>
+				<reportElement x="129" y="115" width="300" height="300" uuid="b3c1a189-a2a6-48d1-9863-b3dc12104d5d"/>
+				<imageExpression><![CDATA[$P{jinduLogo}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="201" y="154" width="154" height="147" uuid="b3c1a189-a2a6-48d1-9863-b3dc12103d5d">
+					<printWhenExpression><![CDATA[!"0".equals($P{end_logo})]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="239" y="301" width="80" height="88" uuid="ac42e0b5-b437-44e9-b97c-9a3a5a7b5bdc">
+					<printWhenExpression><![CDATA[!"0".equals($P{end_qrcode})]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{miniProgramCode}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="593" width="420" height="24" uuid="9a46dd70-48c2-4a30-bea9-6350f3f13aba"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["地    址："+$P{org_address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="618" width="420" height="24" uuid="8bd86789-f6e3-40a9-808d-5dc96e825147"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["电    话："+$P{org_phone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="643" width="420" height="24" uuid="128ec00b-ce3b-43d5-b3fd-3b7598dfdfaa"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["电子邮箱："+$P{org_email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="668" width="420" height="24" uuid="c4e9c0e8-f6c2-4a49-bf2c-06305bc86b34"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["邮    编："+$P{org_zipcode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="61" y="693" width="420" height="24" uuid="f4a10568-fdbc-4382-9ed3-2f5faa3bc0f3"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="华文宋体" size="14" isBold="false" isItalic="false" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["传    真："+$P{org_fax}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="239" y="393" width="80" height="88" uuid="f76377c9-f458-4ea5-8e89-fb207cebb4e1">
+					<printWhenExpression><![CDATA[!"0".equals($P{end_qrcode})]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{qrcode}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

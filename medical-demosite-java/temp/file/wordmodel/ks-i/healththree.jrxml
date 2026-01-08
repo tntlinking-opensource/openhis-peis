@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="healththree" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56c84cf1-32d6-4123-9efa-1d2e4e8c8d66">
+	<property name="ireport.zoom" value="1.6934217901613318"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="182"/>
+	<import value="org.apache.commons.codec.binary.Base64"/>
+	<style name="tablethree">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TDthree" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 4" uuid="08f9dc73-6743-4c06-beda-6647f4096935">
+		<parameter name="workunit" class="java.lang.String"/>
+		<parameter name="patientcode" class="java.lang.String"/>
+		<parameter name="patientname" class="java.lang.String"/>
+		<parameter name="sex" class="java.lang.String"/>
+		<parameter name="age" class="java.lang.String"/>
+		<parameter name="dateregister" class="java.lang.String"/>
+		<parameter name="marriage" class="java.lang.String"/>
+		<parameter name="barcode" class="java.lang.String"/>
+		<parameter name="patientarchive" class="java.lang.String"/>
+		<parameter name="totaloffer" class="java.lang.String"/>
+		<parameter name="reportdate" class="java.lang.String"/>
+		<parameter name="head" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="workunit" class="java.lang.String"/>
+	<parameter name="patientcode" class="java.lang.String"/>
+	<parameter name="patientname" class="java.lang.String"/>
+	<parameter name="sex" class="java.lang.String"/>
+	<parameter name="age" class="java.lang.String"/>
+	<parameter name="dateregister" class="java.lang.String"/>
+	<parameter name="marriage" class="java.lang.String"/>
+	<parameter name="barcode" class="java.lang.String"/>
+	<parameter name="patientarchive" class="java.lang.String"/>
+	<parameter name="totaloffer" class="java.lang.String"/>
+	<parameter name="reportdate" class="java.lang.String"/>
+	<parameter name="head" class="java.lang.Object"/>
+	<parameter name="pageNum" class="java.lang.Integer"/>
+	<parameter name="topImg" class="java.lang.String"/>
+	<parameter name="zxdh" class="java.lang.String"/>
+	<parameter name="header" class="java.lang.String"/>
+	<parameter name="signName" class="java.lang.String"/>
+	<parameter name="signPic" class="java.lang.String"/>
+	<parameter name="defaultTotaldoctor" class="java.lang.String"/>
+	<parameter name="defaultSignPic" class="java.lang.String"/>
+	<parameter name="stampPic" class="java.lang.String"/>
+	<pageHeader>
+		<band height="50">
+			<textField>
+				<reportElement x="220" y="0" width="335" height="30" uuid="a5480d3d-d58b-4ace-b986-c24de3ebd906"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="华文宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{patientcode}+" - "+$P{patientname}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="25" y="30" width="507" height="1" uuid="e5fa99cc-a4e5-41c8-9901-bc4191ff5048"/>
+			</line>
+			<image>
+				<reportElement x="25" y="0" width="117" height="29" uuid="f5c767ec-4a3b-447e-9164-31c88853df63"/>
+				<imageExpression><![CDATA[$P{header}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="536" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="57" y="196" width="100" height="20" uuid="b44fae02-8bf2-4e0f-a956-4e83b390bc23"/>
+				<textElement>
+					<font fontName="宋体" size="14" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[【体检建议】]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="57" y="234" width="465" height="23" uuid="7889598c-2960-423a-96fa-a21c69ad49f0"/>
+				<textElement textAlignment="Left" markup="none">
+					<font fontName="华文宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totaloffer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="57" y="269" width="322" height="23" uuid="70affd4e-1ae3-4483-9fb2-aa3bb0be66f7"/>
+				<textElement textAlignment="Right" markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[总检医生：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="57" y="317" width="322" height="23" uuid="ed9dfe43-f187-41a3-8170-1c73df6038ea"/>
+				<textElement textAlignment="Right" markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[报告日期：]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="376" y="313" width="100" height="1" uuid="5c32f21a-1029-4be1-9c38-f6122c9ce2e4"/>
+			</line>
+			<textField>
+				<reportElement positionType="Float" x="378" y="317" width="176" height="23" uuid="3c94f662-a2d6-458c-bf45-3d0069e0c4c7"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportdate}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="378" y="292" width="100" height="1" uuid="78d894a3-6ca1-4581-a59f-132b2136871a"/>
+			</line>
+			<textField>
+				<reportElement positionType="Float" x="57" y="385" width="465" height="151" uuid="23fc3a77-89d7-4637-a153-de1faa284f34"/>
+				<textElement textAlignment="Left" markup="none">
+					<font fontName="华文楷体" size="12" pdfFontName="hwkt.ttf" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["女".equals($P{sex}) ? ("1、以上是对本次体检部分阳性结果的解释和建议，请您详细阅读本报告的全部内容，如发现其他异常结果或有特殊疑问，请及时预约中心专家咨询，必要时进行复查以免延误诊断。" + "\n" +
+"2、本次体检报告反映的只是本次检查的结果及评估。" + "\n" +
+"3、本次体检设定为健康体检，其结果与评估仅供参考使用。如要进行特殊疾病的筛查与诊断，请咨询专家后选择特定检查项目，以免漏检。" + "\n" +
+"4、本体检报告为个人健康体检保密资料，我们已提供了独立保密包装，请注意保管。" + "\n" +
+"5、温馨提示：妇科检查项目中的月经史、婚育史信息由客户本人提供，只供大夫参考，若有不符可由客户本人提出更改。") : ("1、以上是对本次体检部分阳性结果的解释和建议，请您详细阅读本报告的全部内容，如发现其他异常结果或有特殊疑问，请及时预约中心专家咨询，必要时进行复查以免延误诊断。" + "\n" +
+"2、本次体检报告反映的只是本次检查的结果及评估。" + "\n" +
+"3、本次体检设定为健康体检，其结果与评估仅供参考使用。如要进行特殊疾病的筛查与诊断，请咨询专家后选择特定检查项目，以免漏检。" + "\n" +
+"4、本体检报告为个人健康体检保密资料，我们已提供了独立保密包装，请注意保管。" + "\n" )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="378" y="292" width="100" height="20" uuid="25d816f0-5038-444d-8929-78f2ca2be6db"/>
+				<textElement markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{zxdh}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement key="table 1" style="tablethree" mode="Transparent" x="22" y="16" width="515" height="170" uuid="88c86f40-19e0-466f-938e-538d99960e48"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset 4" uuid="90ced07b-ced8-4eea-b95b-178b2c17cbcb">
+						<datasetParameter name="patientarchive">
+							<datasetParameterExpression><![CDATA[$P{patientarchive}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="patientcode">
+							<datasetParameterExpression><![CDATA[$P{patientcode}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="head">
+							<datasetParameterExpression><![CDATA[$P{head}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="barcode">
+							<datasetParameterExpression><![CDATA[$P{barcode}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="marriage">
+							<datasetParameterExpression><![CDATA[$P{marriage}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="dateregister">
+							<datasetParameterExpression><![CDATA[$P{dateregister}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="age">
+							<datasetParameterExpression><![CDATA[$P{age}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="sex">
+							<datasetParameterExpression><![CDATA[$P{sex}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="patientname">
+							<datasetParameterExpression><![CDATA[$P{patientname}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="workunit">
+							<datasetParameterExpression><![CDATA[$P{workunit}]]></datasetParameterExpression>
+						</datasetParameter>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource(1)]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="387" uuid="5a2de073-3809-4b11-92e9-f3ecfb089233">
+						<jr:tableHeader style="table_TDthree" height="40" rowSpan="1">
+							<image scaleImage="RealSize" hAlign="Right" vAlign="Middle">
+								<reportElement x="0" y="0" width="387" height="40" uuid="1770eefc-bb2a-415d-93c4-595dc54f8530"/>
+								<imageExpression><![CDATA[new ByteArrayInputStream(new Base64().decodeBase64(new StringBuffer($P{barcode}).toString().getBytes("UTF-8")))]]></imageExpression>
+							</image>
+						</jr:tableHeader>
+						<jr:columnGroup width="387" uuid="affaa69e-ff9a-4ae8-bf98-8caaf8836d74">
+							<jr:tableHeader style="table_TDthree" height="40" rowSpan="1">
+								<staticText>
+									<reportElement mode="Opaque" x="8" y="0" width="98" height="16" forecolor="#7AA400" uuid="f81e992c-4e56-486e-a6b8-8fd16779f3a1"/>
+									<textElement verticalAlignment="Bottom">
+										<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[体检号码]]></text>
+								</staticText>
+								<textField>
+									<reportElement mode="Opaque" x="8" y="16" width="98" height="24" uuid="8be9b6ae-d9b5-495c-aa5b-2ad2e4378d16"/>
+									<textElement>
+										<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{patientcode}]]></textFieldExpression>
+								</textField>
+								<line>
+									<reportElement x="108" y="0" width="1" height="40" uuid="43813004-cf53-45b5-bc28-ce6268725801"/>
+								</line>
+								<line>
+									<reportElement x="193" y="0" width="1" height="40" uuid="bdc0ea72-7b3b-428b-8b04-d04ac16a5e00"/>
+								</line>
+								<line>
+									<reportElement x="254" y="0" width="1" height="40" uuid="488b1d84-0664-4524-86c4-bef2f3b68685"/>
+								</line>
+								<line>
+									<reportElement x="321" y="0" width="1" height="40" uuid="b34a927b-76f4-4af8-9000-9c01fc694d65"/>
+								</line>
+								<staticText>
+									<reportElement mode="Opaque" x="117" y="0" width="74" height="16" forecolor="#7AA400" uuid="bcc865bf-5115-4f73-9796-67617efd9720"/>
+									<textElement verticalAlignment="Bottom">
+										<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[姓名]]></text>
+								</staticText>
+								<textField isStretchWithOverflow="true">
+									<reportElement mode="Opaque" x="117" y="16" width="74" height="24" uuid="bdd24071-6166-4cb1-be51-b51bb9dfce55"/>
+									<textElement>
+										<font fontName="宋体" size="10" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{patientname}]]></textFieldExpression>
+								</textField>
+								<staticText>
+									<reportElement mode="Opaque" x="203" y="0" width="48" height="16" forecolor="#7AA400" uuid="0b46c341-368e-4275-979f-31ce10460e67"/>
+									<textElement verticalAlignment="Bottom">
+										<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[性别]]></text>
+								</staticText>
+								<textField>
+									<reportElement mode="Opaque" x="203" y="16" width="48" height="24" uuid="574b1411-fe7d-44e6-9304-b132ea7bd5ba"/>
+									<textElement>
+										<font fontName="宋体" size="10" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{sex}]]></textFieldExpression>
+								</textField>
+								<staticText>
+									<reportElement mode="Opaque" x="263" y="0" width="56" height="16" forecolor="#7AA400" uuid="596c27cc-0055-44cc-9d4c-3f4885b80656"/>
+									<textElement verticalAlignment="Bottom">
+										<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[年龄]]></text>
+								</staticText>
+								<textField>
+									<reportElement mode="Opaque" x="263" y="16" width="56" height="24" uuid="d909127b-9300-4177-b071-aefd4169b146"/>
+									<textElement>
+										<font fontName="宋体" size="10" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{age}+"岁"]]></textFieldExpression>
+								</textField>
+								<staticText>
+									<reportElement mode="Opaque" x="330" y="0" width="52" height="16" forecolor="#7AA400" uuid="05a09589-85c0-4d3f-99f8-67a243a42c7a"/>
+									<textElement verticalAlignment="Bottom">
+										<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[婚姻]]></text>
+								</staticText>
+								<textField>
+									<reportElement mode="Opaque" x="330" y="16" width="52" height="24" uuid="38e12d72-9bbb-45ac-81d5-3a4309ff1acf"/>
+									<textElement>
+										<font fontName="宋体" size="10" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{marriage}]]></textFieldExpression>
+								</textField>
+							</jr:tableHeader>
+							<jr:columnGroup width="387" uuid="05a9217d-8831-4347-a880-cef788d1cf1d">
+								<jr:tableHeader style="table_TDthree" height="40" rowSpan="1">
+									<line>
+										<reportElement x="108" y="0" width="1" height="40" uuid="62a6fbeb-e926-45a8-ad25-2d003d9ec952"/>
+									</line>
+									<staticText>
+										<reportElement mode="Opaque" x="8" y="0" width="93" height="16" forecolor="#7AA400" uuid="ceccbdca-a5d9-4a28-948d-7742e9bd9f8a"/>
+										<textElement verticalAlignment="Bottom">
+											<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+										</textElement>
+										<text><![CDATA[健康档案号码]]></text>
+									</staticText>
+									<textField>
+										<reportElement mode="Opaque" x="8" y="16" width="93" height="24" uuid="7419a88a-560c-40b9-bf81-37870ec49d9d"/>
+										<textElement>
+											<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$P{patientarchive}]]></textFieldExpression>
+									</textField>
+									<textField>
+										<reportElement mode="Opaque" x="117" y="16" width="265" height="24" uuid="976efa1a-34c9-432c-a7d1-5e81d16fd226"/>
+										<textElement>
+											<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$P{dateregister}]]></textFieldExpression>
+									</textField>
+									<staticText>
+										<reportElement mode="Opaque" x="117" y="0" width="265" height="16" forecolor="#7AA400" uuid="77da2a20-4d94-483a-aa48-d22ae8947eef"/>
+										<textElement verticalAlignment="Bottom">
+											<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+										</textElement>
+										<text><![CDATA[登记时间]]></text>
+									</staticText>
+								</jr:tableHeader>
+								<jr:column width="387" uuid="9a033209-a4e8-4775-b13d-5850cafe7982">
+									<jr:tableHeader style="table_TDthree" height="40" rowSpan="1">
+										<staticText>
+											<reportElement mode="Opaque" x="8" y="0" width="379" height="16" forecolor="#7AA400" uuid="4335450c-0c0c-4133-b4e5-d13a3fe1656b"/>
+											<textElement verticalAlignment="Bottom">
+												<font fontName="宋体" size="8" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+											</textElement>
+											<text><![CDATA[体检单位名称]]></text>
+										</staticText>
+										<textField isStretchWithOverflow="true">
+											<reportElement mode="Opaque" x="8" y="16" width="379" height="24" uuid="b798091f-3b51-4717-9129-f007e660e442"/>
+											<textElement verticalAlignment="Top">
+												<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+											</textElement>
+											<textFieldExpression><![CDATA[$P{workunit}]]></textFieldExpression>
+										</textField>
+									</jr:tableHeader>
+									<jr:detailCell style="table_TDthree" height="0" rowSpan="1"/>
+								</jr:column>
+							</jr:columnGroup>
+						</jr:columnGroup>
+					</jr:columnGroup>
+					<jr:column width="134" uuid="8c1143cc-8a13-4626-b490-4a095305bdad">
+						<jr:tableHeader style="table_TDthree" height="160" rowSpan="4">
+							<image scaleImage="RealSize" hAlign="Center" vAlign="Middle">
+								<reportElement x="0" y="0" width="134" height="160" uuid="910685f4-86b8-442a-86e4-7ec868bdb460"/>
+								<imageExpression><![CDATA[$P{head}]]></imageExpression>
+							</image>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TDthree" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TDthree" height="0" rowSpan="1"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement positionType="Float" x="57" y="363" width="58" height="15" uuid="37217d50-7888-4d53-9522-0142f3742a38"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="黑体" size="13" isBold="true" isItalic="false" pdfFontName="simhei.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[说明：]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="57" y="293" width="322" height="23" uuid="03f06226-d3f8-4159-8ebd-0455f5ffb4a6"/>
+				<textElement textAlignment="Right" markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[咨询电话：]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" isUsingCache="false">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" mode="Transparent" x="379" y="269" width="45" height="22" uuid="e0101898-7cfd-441e-84be-360e3a349b7a">
+					<printWhenExpression><![CDATA[$P{signPic}!=null]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{signPic}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="380" y="269" width="44" height="20" uuid="c9d6f1e0-d61f-460c-bbc6-785ccd04d58a">
+					<printWhenExpression><![CDATA[$P{signName}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{signName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="425" y="269" width="4" height="22" uuid="03f06226-d3f8-4159-8ebd-0455f6ffb4a7">
+					<printWhenExpression><![CDATA[$P{defaultSignPic}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="none">
+					<font fontName="宋体" size="14" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[/]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" isUsingCache="false">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" mode="Transparent" x="435" y="269" width="45" height="22" uuid="e0101898-7cfd-441e-84be-360e3a349b7a">
+					<printWhenExpression><![CDATA[$P{defaultSignPic}!=null]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{defaultSignPic}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="435" y="269" width="45" height="22" uuid="c9d6f1e0-d61f-460c-bbc6-785ccd04d58a">
+					<printWhenExpression><![CDATA[$P{defaultTotaldoctor}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="none">
+					<font fontName="宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{defaultTotaldoctor}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" isUsingCache="false">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" mode="Transparent" x="413" y="269" width="71" height="71" uuid="5b00325f-94e2-43a7-9ed2-30bd16ef4571">
+					<printWhenExpression><![CDATA[$P{stampPic}!=null]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[$P{stampPic}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="50">
+			<line>
+				<reportElement x="0" y="20" width="507" height="1" uuid="d64512b9-4e99-4376-86b7-3acedcc6ab66"/>
+			</line>
+			<textField>
+				<reportElement x="0" y="24" width="555" height="20" uuid="68523435-5274-4740-b8c6-1837c5b3bdb7"/>
+				<textElement textAlignment="Center">
+					<font fontName="华文宋体" size="12" pdfFontName="STSONG.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{patientcode}+"-第"+($P{pageNum}+$V{PAGE_NUMBER})+"页"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

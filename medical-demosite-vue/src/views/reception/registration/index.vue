@@ -1211,7 +1211,7 @@ export default {
       this.isOnline = true
     }
 
-    // this.isOnline = false
+     this.isOnline = false
 
     this.culturalList = getCultural()
     this.returnList()

@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="profession-tree" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c40d2b18-1ec5-4635-af20-e4eb4171f14f">
+	<property name="ireport.zoom" value="3.8906136901500066"/>
+	<property name="ireport.x" value="147"/>
+	<property name="ireport.y" value="1347"/>
+	<parameter name="patientcode" class="java.lang.String"/>
+	<parameter name="pageNum" class="java.lang.Integer"/>
+	<parameter name="anamnesis" class="java.lang.String"/>
+	<parameter name="beginAge" class="java.lang.String"/>
+	<parameter name="period" class="java.lang.String"/>
+	<parameter name="cycle" class="java.lang.String"/>
+	<parameter name="menolipsisAge" class="java.lang.String"/>
+	<parameter name="babyNum" class="java.lang.String"/>
+	<parameter name="misbirth" class="java.lang.String"/>
+	<parameter name="prematureBirth" class="java.lang.String"/>
+	<parameter name="deadBirth" class="java.lang.String"/>
+	<parameter name="fetalAnomalies" class="java.lang.String"/>
+	<parameter name="malformation" class="java.lang.String"/>
+	<parameter name="neverSmoking" class="java.lang.String"/>
+	<parameter name="occasionally" class="java.lang.String"/>
+	<parameter name="former" class="java.lang.String"/>
+	<parameter name="often" class="java.lang.String"/>
+	<parameter name="bagNum" class="java.lang.String"/>
+	<parameter name="smokeYear" class="java.lang.String"/>
+	<parameter name="neverDrank" class="java.lang.String"/>
+	<parameter name="occasionallyDrank" class="java.lang.String"/>
+	<parameter name="formerDrank" class="java.lang.String"/>
+	<parameter name="oftenDrank" class="java.lang.String"/>
+	<parameter name="types" class="java.lang.String"/>
+	<parameter name="drankYear" class="java.lang.String"/>
+	<parameter name="familyHistory" class="java.lang.String"/>
+	<parameter name="other" class="java.lang.String"/>
+	<parameter name="ml" class="java.lang.String"/>
+	<parameter name="patientname" class="java.lang.String"/>
+	<parameter name="topImg" class="java.lang.String"/>
+	<parameter name="familyHistory2" class="java.lang.String"/>
+	<parameter name="anamnesis2" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="447" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="109" y="45" width="397" height="25" uuid="c7af4480-40ff-4435-87f3-87a87ddfc729"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anamnesis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="25" y="45" width="83" height="25" uuid="5c64ac5c-65ed-4f5e-becd-83fcdf190087"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[一、既往病史:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="105" width="105" height="25" uuid="7362f641-cb40-4066-bc78-2e683d6df9e7"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[二、月经及生育史:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="130" y="105" width="30" height="25" uuid="3472ed8e-8abc-4233-9f0d-aa387c75434f"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[初潮]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="185" y="105" width="30" height="25" uuid="97161284-5cdf-428e-99d7-136cb637a6bb"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[岁，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="215" y="105" width="30" height="25" uuid="24026ca7-d394-4f89-b65e-ec146c24e769"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[经期]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="274" y="105" width="30" height="25" uuid="3d0d4567-81bf-4ba4-ace7-b861418c2f44"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[天，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="388" y="105" width="53" height="25" uuid="7853d7bc-d2e3-4156-a1e4-9c7fd6a28188"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[停经年龄]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="467" y="105" width="30" height="25" uuid="3bb61a62-d6e8-47e5-8227-e44fb05dde8d"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[岁，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="304" y="105" width="30" height="25" uuid="cad4d007-6796-4745-8cdb-0675db9f09ac"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[周期]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="358" y="105" width="29" height="25" uuid="2828d565-5e32-49ec-9e1b-c769f14ed529"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[天，]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="160" y="129" width="25" height="1" uuid="17671be4-6624-4694-95a9-886e1fe81935"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="245" y="129" width="26" height="1" uuid="8860a12a-a23d-4363-a183-41b65df32dc3"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="334" y="129" width="23" height="1" uuid="cb979ef8-04ef-4307-9dad-d7099528bb10"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="443" y="129" width="22" height="1" uuid="760ea506-5228-46be-9bae-d0b602896879"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="334" y="161" width="23" height="1" uuid="93cf5f76-ab93-4701-a8bf-f5087a3d9261"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="185" y="137" width="30" height="25" uuid="2719c6ef-9002-406d-9fbe-34d5679ccd5e"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[次，]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="160" y="161" width="25" height="1" uuid="e5c332f6-ac5c-466c-91a1-f5e3a70fa277"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="76" y="161" width="25" height="1" uuid="01bd4d8b-2fc4-41dc-a9cd-a7bd9c54464b"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="137" width="51" height="25" uuid="2386887b-f818-4bfe-8acb-257f359e82ba"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[现有子女]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="304" y="137" width="30" height="25" uuid="589e0a78-b23c-42eb-8df1-754552ca7a25"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[死产]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="358" y="137" width="29" height="25" uuid="eafb55c3-8f92-453b-b945-a12d2183d807"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[次，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="215" y="137" width="30" height="25" uuid="307a0109-54af-454d-9366-dadf1c99fde9"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[早产]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="245" y="161" width="26" height="1" uuid="4ea8bc1b-f8f8-4378-8cd7-8bfff3fdeb13"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="274" y="137" width="30" height="25" uuid="e64ca4ce-056e-41bd-9496-012edfa60e90"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[次，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="101" y="137" width="29" height="25" uuid="a4ed8e44-4ba5-4f85-8635-b4c02228402a"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[人，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="130" y="137" width="30" height="25" uuid="de2420e9-fa4c-47ba-9a59-668b5b00e1b7"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[流产]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="467" y="137" width="30" height="25" uuid="b1795799-e04f-4b68-b754-28ec18c21d63"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[次，]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="388" y="137" width="53" height="25" uuid="13cd3914-431d-4b03-8dd8-a9fb706c28f2"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[异  常  胎]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="443" y="162" width="22" height="1" uuid="a20df0b9-0ac7-44c5-9687-c51d5ce6980c"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="76" y="192" width="31" height="1" uuid="94016019-7f32-4ae2-af4a-722a8aad2202"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="168" width="51" height="25" uuid="e431a6c1-2948-45f3-8764-fdc382390e9f"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[先天畸形]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="107" y="168" width="30" height="25" uuid="4de9f87e-c09a-49d2-bd4b-6f919f44ce78"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[次。]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="209" width="68" height="25" uuid="118a4e88-7ac2-4bbd-bf30-5c0a8f164865"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[三、吸烟史:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="266" width="68" height="25" uuid="eb2542be-9af5-4b9e-a6a4-fadf2bfd0a9b"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[四、饮酒史:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="331" width="83" height="25" uuid="7f90cfb9-059c-45ce-adb0-224864b93365"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[五、家族史:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="25" y="405" width="68" height="25" uuid="a3c4e6fa-22ee-43da-a6eb-ef199bf91b59"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[六、其他:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="109" y="331" width="397" height="25" uuid="9592635a-bb0a-4031-81da-a9d07077f3f6"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{familyHistory}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="160" y="105" width="25" height="23" uuid="03201be6-e320-4adf-9001-6e27b9fec82c"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{beginAge}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="246" y="105" width="28" height="23" uuid="6f18ceb2-464f-4149-9dc4-4b695ced52e9"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{period}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="334" y="105" width="24" height="23" uuid="db76a86b-c8df-4a21-816b-efa8e90b6ffc"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cycle}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="442" y="105" width="25" height="23" uuid="abcf689b-e874-4eb1-9335-20aeb59feed7"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{menolipsisAge}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="76" y="137" width="25" height="23" uuid="484581ca-7311-49ac-9848-6c6b99e38074"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{babyNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="160" y="137" width="25" height="23" uuid="6c429b16-d432-4c60-9186-09b8ac7a32f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{misbirth}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="246" y="137" width="28" height="23" uuid="aab5b6e7-b8ce-4584-aba4-f1614cecb97c"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prematureBirth}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="334" y="137" width="24" height="23" uuid="230610e6-f27d-4ca3-9d67-cbf70c96ec83"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{deadBirth}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="442" y="137" width="25" height="23" uuid="6af9f51e-59da-4516-983b-8d4055b39336"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fetalAnomalies}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="76" y="168" width="31" height="23" uuid="f2f58540-f516-4be1-87d2-b7823f287eb5"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{malformation}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="108" y="209" width="463" height="25" uuid="921db0ae-2138-44e4-bdc2-0c8e1ba8df2f"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{neverSmoking}+"从不吸烟，"+$P{occasionally}+"偶尔吸烟，"+$P{former}+"以往曾经吸烟，现已戒除"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="108" y="235" width="15" height="25" uuid="a2c9ed88-f447-4da6-be25-4cc2daa0a9c6"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{often}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="108" y="266" width="463" height="25" uuid="f317e331-e231-4d4d-8d65-620bb0fa00f8"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{neverDrank}+"从不饮酒，"+$P{occasionallyDrank}+"偶尔饮酒，"+$P{formerDrank}+"以往经常饮酒，现已戒除"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="108" y="292" width="15" height="25" uuid="197a7cc6-ba12-40cf-9eb7-9f66a1f37840"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{oftenDrank}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="0" width="335" height="30" uuid="445219fe-e5d1-4a51-87e0-3c83364e3c3c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="华文宋体2" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{patientcode}+" - "+$P{patientname}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="25" y="30" width="507" height="1" uuid="3689bc2e-105f-4cd4-8846-f74e264449d2"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="109" y="72" width="397" height="25" uuid="54ca2565-ed17-4299-b70d-b92dfc3cee86"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anamnesis2}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="109" y="70" width="397" height="1" uuid="7e3ee0f7-9e22-4b86-9ac6-c7e2e201cb13"/>
+			</line>
+			<line>
+				<reportElement x="109" y="97" width="397" height="1" uuid="35a24754-bfc3-43e4-9f15-1e1cce195725"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="109" y="358" width="397" height="25" uuid="c2fc3b95-664e-4d28-94c8-4b3977118925"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{familyHistory2}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="109" y="357" width="397" height="1" uuid="fd67fd11-b9e3-4f06-a208-35fd0914c50a"/>
+			</line>
+			<line>
+				<reportElement x="109" y="384" width="397" height="1" uuid="7e630508-430f-4d42-b5cf-327b21e96bff"/>
+			</line>
+			<staticText>
+				<reportElement x="124" y="235" width="36" height="25" uuid="25c8846a-c48e-41e5-bf5a-a2a414e04333"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[经常吸]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="161" y="235" width="15" height="23" uuid="c2e50056-d489-4a50-a797-aacb64e0123b"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{bagNum}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="177" y="235" width="46" height="25" uuid="27f0869a-7c10-4637-b274-acb602a76d14"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[支/天,共]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="224" y="235" width="15" height="23" uuid="32b55671-8e5c-4b69-9fcd-dc1f208380f0"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{smokeYear}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="235" width="31" height="25" uuid="2cd4b221-a6b0-447d-a216-49e1c20b1cb4"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[年。]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="124" y="292" width="61" height="25" uuid="678346a5-21c3-486a-8616-70c7b151c364"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[现在经常饮]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement x="186" y="292" width="30" height="23" uuid="5e74881e-e5b1-43a9-ac45-2dcdcd53f635"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ml}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="217" y="292" width="93" height="25" uuid="ac05b5bf-dfa0-49f0-aabc-4f0e0f57db4c"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ml/日，饮酒种类]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="311" y="292" width="54" height="23" uuid="542ced25-4498-4ac2-ba32-b1c78df3f9cb"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{types}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="366" y="292" width="25" height="25" uuid="80f1684e-e626-43ba-bb94-8f5dd1b9e74c"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[，共]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="392" y="292" width="15" height="23" uuid="61517a33-0fe4-40ce-98cb-4f4be750aaa4"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{drankYear}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="408" y="292" width="31" height="25" uuid="65545759-4319-4479-a2dd-9c406522d959"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[年。]]></text>
+			</staticText>
+			<line>
+				<reportElement x="161" y="259" width="15" height="1" uuid="34ddc821-96a9-4b39-98ac-944ec77e22c6"/>
+			</line>
+			<line>
+				<reportElement x="224" y="259" width="15" height="1" uuid="4f418321-2315-46fa-a445-3d3df832139e"/>
+			</line>
+			<line>
+				<reportElement x="186" y="316" width="30" height="1" uuid="2b3a0d98-fad3-48d1-86ca-1537ef940135"/>
+			</line>
+			<line>
+				<reportElement x="311" y="316" width="54" height="1" uuid="5453c298-309c-4520-9b45-3f0ae79f566e"/>
+			</line>
+			<line>
+				<reportElement x="392" y="316" width="14" height="1" uuid="b2cdbcb0-5a75-45f3-aa25-cb65143e1805"/>
+			</line>
+			<line>
+				<reportElement x="109" y="429" width="397" height="1" uuid="7e630508-430f-4d42-b5cf-327b21e96bff"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="109" y="405" width="397" height="25" uuid="cb3c49cb-096c-4c9b-b34e-732695062c54"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="华文宋体" size="12" isUnderline="false" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{other}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="50">
+			<textField>
+				<reportElement x="0" y="24" width="555" height="20" uuid="07df8a62-357b-482e-9a30-84e33ffd3ab3"/>
+				<textElement textAlignment="Center">
+					<font fontName="华文宋体2" size="12" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{patientcode}+"-第"+($P{pageNum}+$V{PAGE_NUMBER})+"页"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="25" y="20" width="507" height="1" uuid="ffdfdad5-9589-4ca8-8930-1869eea98c36"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>
