@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: '沃德健管云平台',
+      title: '体检管理系统',
       logo: logoImg
     }
   }

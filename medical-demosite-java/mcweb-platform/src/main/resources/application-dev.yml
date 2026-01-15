@@ -15,14 +15,14 @@ zhongkang:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/newmec，Linux配置 /www/nas）
-  profile: /www/nas
+  profile: D:/newmec
   profileLinux: /www/nas
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数组计算 char 字符验证
   captchaType: math
   #是否线上系统
-  online: true
+  online: false
 
 server:
   # 服务器的HTTP端口，默认为8080

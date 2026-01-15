@@ -6,7 +6,7 @@
       <table class="tableBox" border="1">
         <tr class="tableTr">
           <td colspan="3" style="font-size: 18px; font-weight: 600; position: relative; padding: 10px 0; height: 80px">
-            <img src="@/assets/logo/logo.png" alt="" style="width: 65px; height: 65px; position: absolute; top: 50%; left: 10px; transform: translateY(-50%)" />
+            <img src="../../../assets/logo/logo.png" alt="" style="width: 65px; height: 65px; position: absolute; top: 50%; left: 10px; transform: translateY(-50%)" />
             {{ form.tcbt }}
           </td>
         </tr>

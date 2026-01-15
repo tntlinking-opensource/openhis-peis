@@ -3,7 +3,7 @@
   <div class="preview-share-report">
     <div v-if="!isValidation">
       <div class="search-logo">
-        <img src="@/assets/logo/logo.png" />
+        <img src="../../../assets/logo/logo.png" />
       </div>
       <el-form class="search-box" ref="searchForm" @submit.native.prevent>
         <el-form-item class="search-input">

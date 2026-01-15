@@ -4,7 +4,7 @@
     <template v-if="!isLogin">
       <div class="preview-search-report">
         <div class="search-logo">
-          <img src="@/assets/logo/logo.png" />
+          <img src="../../../assets/logo/logo.png" />
         </div>
         <el-form class="search-box" ref="searchForm" :model="searchForm" :rules="rules" @submit.native.prevent>
           <el-form-item class="search-input" prop="username">

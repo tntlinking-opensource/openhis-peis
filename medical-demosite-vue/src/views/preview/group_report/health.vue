@@ -363,7 +363,7 @@
       </div>
       <!-- 封底 -->
       <div class="report-end">
-        <img class="end-logo" src="@/assets/logo/logo.png" />
+        <img class="end-logo" src="../../../assets/logo/logo.png" />
         <div class="end-info">
           <div class="info-name">{{ branchConfig.name }}</div>
           <div class="info-title">企业员工健康检查统计报告</div>

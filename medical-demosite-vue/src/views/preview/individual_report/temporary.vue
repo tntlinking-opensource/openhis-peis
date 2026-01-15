@@ -58,7 +58,7 @@
       </div>
       <!-- 封底 -->
       <div class="report-end">
-        <img class="end-logo" src="@/assets/logo/logo.png" />
+        <img class="end-logo" src="../../../assets/logo/logo.png" />
         <img class="end-code" src="@/assets/images/report/mini_code.png" />
         <img class="end-code" src="@/assets/images/report/QR_code.png" />
       </div>
@@ -124,7 +124,7 @@
       </div>
       <!-- 封底 -->
       <div class="report-end">
-        <img class="end-logo" src="@/assets/logo/logo.png" />
+        <img class="end-logo" src="../../../assets/logo/logo.png" />
         <img class="end-code" src="@/assets/images/report/mini_code.png" />
         <img class="end-code" src="@/assets/images/report/QR_code.png" />
       </div>
