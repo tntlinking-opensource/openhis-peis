@@ -1,37 +1,46 @@
-# 健康体检管理系统
+# 平台介绍
 
-#### 介绍
-健康体检管理系统
+## 🏠【关于我们】
 
-#### 软件架构
-软件架构说明
+![天天开源](https://open.tntlinking.com/assets/logo-b-BzFUYaRU.png) 
 
+天天开源致力于构建开放共赢的平台，推动安全高效的开源应用普及。我们始终秉持“开源、众包、共享”的理念，致力于为医疗、教育、中小企业等行业提供优质的开源解决方案。
 
-#### 安装教程
+天天开源聚焦医疗、企业、教育三大行业信息化市场，现已发布OpenHIS、OpenCOM、OpenEDU系列开源软件产品。我们通过建立开源生态，联合生态伙伴共同打造创新行业协作模式，让数字化普惠、可信、安全。
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+天天开源的前身是新致开源，最早于2022年6月发布OpenHIS开源医疗，于2023年6月发布OpenCOM开源企业。2025年7月，新致开源品牌升级为天天开源。我们将持续践行开源精神，期待成为全球开源生态的引领者。
 
-#### 使用说明
+了解我们：https://open.tntlinking.com/about?site=github
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## 💾【部署包下载】
 
-#### 参与贡献
+请访问官网产品中心下载部署包：https://open.tntlinking.com/resource/productCenter?site=github
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+## 📚【支持文档】
 
+技术支持资源：https://open.tntlinking.com/resource/openProductDoc?site=github
+（含演示环境、操作手册、部署手册、开发手册、常见问题等）
 
-#### 特技
+产品介绍：https://open.tntlinking.com/resource/industryKnowledge?site=github
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+操作教程：https://open.tntlinking.com/resource/operationTutorial?site=github
+
+沙龙回顾：https://open.tntlinking.com/resource/openSourceSalon#23?site=github
+
+## 🤝【合作方式】
+
+产品服务价格：https://open.tntlinking.com/cost?site=github
+
+加入生态伙伴：https://open.tntlinking.com/ecology/becomePartner?site=github
+
+## 🤗【技术社区】
+
+请访问官网扫码加入技术社区交流：https://open.tntlinking.com/ecology/joinCommunity?site=github
+
+请关注公众号【天天开源软件】以便获得最新产品更新信息。
+
+# 项目介绍
+
+OpenHIS体检系统是一款适用于医院体检科及体检医疗机构的健康体检系统，包含体检预约、登记、检查、体检报告、结算等功能。系统有助于减少用户排队时间，提高体检科医生登记、检查结果录入的工作效率和服务质量，与其他系统接口实现自动导入检验结果，减轻医生工作强度，增加结果准确性。
+
+如需要其他产品源码，可访问天天开源官网。
